@@ -2,7 +2,7 @@
 
 **US State Lobbying Data LLM Pipeline** — open-source infrastructure to make state-level lobbying disclosure data usable as a real-time input for democracy measurement.
 
-Lead: Suhan Kacholia (Co-Founder, Analogy Group)
+Group project of the **Corda Democracy Fellowship**. Project lead: Suhan Kacholia (Co-Founder, Analogy Group). Multiple fellows contribute to this repo.
 
 ## Why this exists
 

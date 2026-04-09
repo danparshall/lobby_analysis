@@ -4,9 +4,20 @@ Agent instructions for working in this repo. This file describes **how to work h
 
 ## What this repo is
 
-`lobby_analysis` is a research project building an LLM pipeline over US state lobbying disclosure data. Lead: Suhan Kacholia (Analogy Group). Target scope: 5–8 priority states chosen for data quality and political significance. The output is open-source infrastructure for real-time democracy measurement.
+`lobby_analysis` is a research project building an LLM pipeline over US state lobbying disclosure data. It is a **group project of the Corda Democracy Fellowship**, led by Suhan Kacholia (Analogy Group), with multiple fellows contributing. Target scope: 5–8 priority states chosen for data quality and political significance. The output is open-source infrastructure for real-time democracy measurement.
 
 See `README.md` for full project framing.
+
+## Collaboration: this is a multi-committer repo
+
+Multiple fellows push to this repo. Treat branch hygiene as load-bearing — your local view of `main` may be behind, and other branches may belong to other people.
+
+- **`git fetch` at session start** so STATUS.md and the active branch list reflect what's actually on the remote, not just your local clone.
+- **Never rebase, force-push, or rewrite history on a branch you don't own.** If a branch wasn't created in this session and you don't know whose it is, ask before touching it.
+- **Never delete remote branches.** Even merged ones — leave cleanup to the branch owner.
+- **Pull before pushing** on any shared branch (including any branch you didn't create this session). If there are conflicts on someone else's work, **stop and surface them** rather than auto-resolving.
+- When updating `STATUS.md`, only edit rows for the branch you're working on. Don't rewrite other fellows' entries.
+- When in doubt about whether a change affects shared state, ask the user first.
 
 ## The researcher workflow
 
