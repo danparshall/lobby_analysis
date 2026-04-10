@@ -1,0 +1,4077 @@
+Measuring Interest Group Positions on Legislation:
+An AI-Driven Analysis of Lobbying Reports
+Jiseon Kima , Dongkwan Kima , Joohye Jeongb , Alice Oha, 1, * , and In Song Kimb, 1, *
+This manuscript was compiled on April 23, 2025
+
+Significance Statement
+
+RA
+FT
+
+arXiv:2504.15333v1 [cs.CY] 21 Apr 2025
+
+Special interest groups (SIGs) in the U.S. participate in a range of political activities, such
+as lobbying and making campaign donations, to influence policy decisions in the legislative
+and executive branches. The competing interests of these SIGs have profound implications
+for global issues such as international trade policies, immigration, climate change, and
+global health challenges. Despite the significance of understanding SIGs’ policy positions,
+empirical challenges in observing them have often led researchers to rely on indirect
+measurements or focus on a select few SIGs that publicly support or oppose a limited
+range of legislation. This study introduces the first large-scale effort to directly measure and
+predict a wide range of bill positions—Support, Oppose, Engage (Amend and Monitor)—
+across all legislative bills introduced from the 111th to the 117th Congresses. We leverage an
+advanced AI framework, including large language models (LLMs) and graph neural networks
+(GNNs), to develop a scalable pipeline that automatically extracts these positions from
+lobbying activities, resulting in a dataset of 42k bills annotated with 279k bill positions
+of 12k SIGs. With this large-scale dataset, we reveal (i) a strong correlation between a bill’s
+progression through legislative process stages and the positions taken by interest groups, (ii)
+a significant relationship between firm size and lobbying positions, (iii) notable distinctions in
+lobbying position distribution based on bill subject, and (iv) heterogeneity in the distribution
+of policy preferences across industries. We introduce a novel framework for examining
+lobbying strategies and offer opportunities to explore how interest groups shape the political
+landscape.
+Bill Position | Lobbying | Latent Preferences | Large Language Models | Graph Neural Networks
+
+D
+
+Who makes the laws? In the U.S., while elected officials formally craft legislation,
+the process is heavily shaped by other powerful actors—most notably special interest
+groups (SIGs) such as corporations, labor unions, and issue advocacy groups (1, 2).
+Interest groups∗ engage in lobbying to influence or subsidize policymakers’ positions
+on a wide range of issues (3), and their competing interests play a central role in
+shaping legislation on global challenges including international trade (4), climate
+change (5–8), economic inequality (9–11), foreign policy (12), and immigration (13).
+Thus, examining the policy preferences of individual interest groups, especially
+when they lobby specific legislative bills, offers critical insights into their influence
+on legislative outcomes.
+Despite significant progress in research enabled by the Lobbying Disclosure Act of
+1995, which helps scholars identify which interest groups lobby on which legislative
+bills (14), major empirical challenges persist in observing the positions interest
+groups take, such as whether they support or oppose the bills. Consequently, scholars
+often limit their analyses to selected interest groups within specific states (15, 16) or
+focus solely on particular policy issues (4), resulting in a lack of broader coverage.
+Other studies seeking to systematically measure policy preferences across a
+wide range of interest groups also face several limitations. First, research relying
+on indirect measures to infer interest group positions may not accurately reflect
+the actual stances that groups express during the legislative process. For example,
+the Database on Ideology, Money in Politics, and Elections (DIME) (17) provides
+campaign finance scores (CFscores) based solely on donation patterns to politicians
+whose ideological positions are estimated from sparse roll-call votes (18). This
+method assumes donations align closely with candidates’ ideologies, even though
+interest groups may not explicitly take policy positions. Second, datasets compiled by
+activists and nonprofit organizations, such as MapLight (19), manually code interest
+group positions by examining publicly available sources (e.g., company websites,
+press releases, government records). While valuable, these datasets generally capture
+revealed preferences only on selected legislation. Moreover, as discussed further
+
+This study provides the first largescale measurement of how special
+interest groups (SIGs) influence U.S.
+legislation by examining their positions on bills from the 111th to the
+117th Congresses. Using advanced
+AI methods, such as large language
+models (LLMs) and graph neural
+networks (GNNs), we measure latent SIG positions on a wide range
+of bills. Notable patterns emerge
+from our analysis, including the relationship between SIG positions
+and legislative progress in the U.S.,
+the impact of firm size on lobbying
+behavior, and variations in lobbying
+strategies across different bill topics
+and industries. We release the bill
+position dataset and lobbying position scores (LPscores) to support
+future research on interest group
+preferences.
+
+∗
+
+Author contributions: J.K., D.K., J.J., A.O., and I.K.
+designed research; J.K., D.K., and J.J. performed
+research; J.K., D.K., and J.J. analyzed data; and J.K.,
+D.K., J.J., A.O., and I.K. wrote the paper.
+The authors declare no competing interest.
+1
+
+To whom correspondence should be addressed. Email: alice.oh@kaist.edu and insong@mit.edu
+
+In this paper, we refer to special interest groups(SIGs) simply as interest groups.
+
+www.pnas.org/cgi/doi/10.1073/pnas.XXXXXXXXXX
+
+a
+Author affiliations: School of Computing, Korea Advanced Institute of Science and Technology (KAIST),
+Daejeon, Republic of Korea 34141; b Political Science,
+Massachusetts Institute of Technology (MIT), Cambridge, MA 02142
+
+PNAS
+
+—
+
+April 23, 2025
+
+—
+
+vol. XXX
+
+—
+
+no. XX
+
+—
+
+1–20
+
+Raw Data Sources
+
+1. LLM Annotation
+Bill ID
+
+Bills
+- Bill ID
+- Bill Title
+- Legislator
+
+Bill Title
+
+Lobbying Issues Text from LDA Report
+
+S.590
+
+Hidden Figures Congressional Endorsement
+of
+the
+Hidden
+Figures
+Gold Medal Act
+Congressional Gold Medal Act (H.R. 1396, S. 590)
+
+H.R.1249
+
+Leahy-Smith America Invents defeat S. 23 and H.R. 1249, and pass funding
+Act
+only bill for USPTO
+Advocacy for changes to H.R. 9, the Innovation
+Act regarding the potential impact …
+
+H.R.9
+
+Innovation Act
+
+S.744
+
+Border Security, Economic
+... Legislation watched includes: S 169, S 744, HR
+Opportunity, and Immigration
+2131, HR 459, HR 15 and S 600.
+Modernization Act
+
+2. GNN Annotation
+Extract lobbying
+text on bills, bill
+information, and
+involved entities
+
+Lobbyist
+Interest Group
+
+Classify lobbying issues for
+each bill as Support, Oppose,
+Amend, or Monitor
+
+Oppose
+Amend
+Monitor
+
+Bill Position
+
+Legislator
+
+?
+
+- Interest Group
+- Lobbyist
+- Lobbying Text
+
+Text Classification
+
+Support
+
+use LLM Annotation for
+Interest Group-Bill Link Type
+
+Input
+
+Lobbying Disclosure Act
+(LDA) Reports
+
+Bill Position
+LLM
+
+GNN
+
+Bill
+
+Link Type Prediction
+
+RA
+FT
+
+Train a GNN and
+predict unlabeled
+interest group - bill link type as
+Support, Oppose, or Engage
+
+Lobbying Network
+
+Legislative Network
+
+Fig. 1. Overview of bill position annotation pipeline. This outlines the two approaches used in our bill position annotation process. First, in LLM Annotation stage, text information
+from raw data sources is extracted, and positions are annotated using a large language model (LLM). When the text alone does not offer enough clarity to determine the bill
+position, lobbying and legislative network data are incorporated in the GNN Annotation pipeline, where a graph neural network (GNN) is used to refine the prediction. By
+minimizing human annotation, the pipeline is made more scalable, while still capturing the bill positions of interest groups involved in the legislative process, providing a dataset
+that reflects the real-world legislative activities and a wider range of lobbying types.
+
+D
+
+below, many interest groups in these datasets do not actively
+engage in lobbying, providing limited and indirect insights
+into their broader impacts on the legislative process. Third,
+interest group lobbying encompasses more nuanced actions
+beyond simply supporting or opposing legislation, including
+activities like proposing amendments, continuous monitoring,
+and incremental policy adjustments (20). Finally, manual
+data collection methods in prior studies are costly, difficult to
+scale, and challenging to reproduce, limiting their application
+to large-scale analyses.
+In this paper, we address these limitations by introducing
+the first large-scale measurement of interest group positions
+on individual bills they have directly lobbied from the 111th to
+117th U.S. Congresses. Unlike previous studies, our approach
+captures the explicit positions interest groups take during
+the lobbying process—not only support and opposition but
+also more nuanced stances such as amending or monitoring
+legislation. To ensure scalability and reproducibility, we
+develop an automated annotation pipeline that combines
+Large Language Models (LLMs) to systematically analyze
+lobbying reports submitted by individual interest groups with
+Graph Neural Networks (GNNs) to model the structure of
+lobbying and legislative networks. Specifically, we identify
+systematic patterns associated with different types of political
+position-taking, as reflected in the high-dimensional network
+connections among interest groups, lobbyists, and policymakers, along with their observable characteristics. Applying
+this pipeline, we provide a comprehensive measurement that
+2
+
+—
+
+www.pnas.org/cgi/doi/10.1073/pnas.XXXXXXXXXX
+
+uncovers previously hidden policy preferences of interest
+groups in the legislative process. Our measurements serve as
+a foundational resource for analyzing legislative processes,
+enabling the exploration of key dimensions such as bill
+outcomes, firm characteristics, policy topics, and industry
+involvement. The primary contributions of our study are as
+follows:
+• Comprehensive Bill Position Dataset: We construct
+a dataset that closely mirrors real-world legislative
+activity by incorporating multiple political actors and
+capturing a range of bill positions—Support, Oppose,
+and Engage (i.e., Amend and Monitor)—to offer a more
+detailed view of lobbying behavior.
+• Scalable Bill Position Annotation Pipeline: We
+introduce an automated, scalable pipeline for generating
+bill position data by combining Large Language Models
+(LLMs) to analyze lobbying reports with Graph Neural
+Networks (GNNs) to model lobbying and legislative
+networks.
+• Analysis of Lobbying Strategies and Hidden
+Interests: Our analysis reveals distinct patterns in
+lobbying strategies and uncovers the latent interests of
+interest groups, showing how these relate to bill outcomes,
+firm characteristics, policy topics, and industry sectors.
+
+We publicly release the bill position dataset and lobbying
+position scores (LPscores) to support research on interest
+group politics and computational social science.
+Kim et al.
+
+Table 1. Size of bill position dataset
+
+Bill Position Annotation Pipeline
+We introduce a scalable method for constructing a bill
+position dataset. Fig. 1 provides an overview of our pipeline.
+Starting from raw data sources, including Bills and Lobbying
+Disclosure Act (LDA) reports, our annotation process follows
+a two-step approach. First, we employ a large language
+model (LLM) to extract bill positions based on bill IDs,
+titles, and raw lobbying descriptions. Then, we apply a
+graph neural network (GNN) on lobbying and legislative
+network data with LLM-generated annotations. This step
+helps infer bill positions more accurately by leveraging
+network connections, especially when lobbying reports alone
+are unclear for annotation.
+As a result, using our pipeline with LLM and GNN, we
+obtain a total of 279,104 bill position data across 12,032
+interest groups and 42,475 bills as illustrated in Table 1.
+
+Our study covers 14 years of lobbying activities
+in the legislative process from the 111th to the 117th Congress, from
+2009 to 2022.† Lobbying reports, which are submitted quarterly by
+lobbyists on behalf of their clients, detail their lobbying efforts, the
+firms involved, the participating lobbyists, and the nature of the
+lobbying activities. We collected all lobbying reports filed during
+this period from the Senate Office of Public Records. We linked
+these lobbying activities to various bill-level details such as the
+bill’s title, the sponsoring and co-sponsoring legislators, and its
+status throughout the legislative process. We gathered this data
+from Congress.gov, the primary government source.
+
+Overall
+
+Interest Group
+Bill
+
+6,495
+22,820
+
+11,185
+36,824
+
+12,032
+42,475
+
+Support
+Oppose
+Amend
+Monitor
+
+25,099
+5,706
+9,317
+42,299
+
+54,204
+5,456
+
+79,303
+11,162
+
+137,023
+
+188,639
+
+Total
+
+82,421
+
+196,683
+
+279,104
+
+To evaluate the quality of LLM annotations on bill
+position classification, we examined the four categories defined
+in the bill annotation dataset: Support, Oppose, Amend, and
+Monitor. Two authors independently labeled the data, and we
+selected 391 samples for which both assigned the same label,
+reflecting clear expressions of bill position. The comparison between
+human labels and GPT-4’s annotations shows a high alignment,
+with accuracy and F1 scores of 96.93 and 97.19, respectively.
+Additionally, we verify the alignment of GPT-4’s annotations
+with the existing MapLight bill position dataset.¶ Our dataset
+shares 1,182 overlapping interest group–bill ID pairs with the
+MapLight data.‖ Among these, 1,076 pairs (91.03%) have matching
+bill positions, indicating a strong alignment despite differences in
+data sources.
+Validation
+
+RA
+FT
+
+1. LLM Annotation. We employ an LLM to extract bill positions
+
+from lobbying activity descriptions, effectively leveraging textual
+information in the source data.
+
+In the raw lobbying reports, interest group
+activities are documented in Section 16 under ‘Specific Lobbying
+Issues.’ These descriptions often encompass multiple lobbying
+activities and can be quite extensive. To improve the efficiency
+of LLM annotation, we segment them into individual lines. It is
+crucial to note that interest groups are legally mandated to report
+any congressional bills they have lobbied on, as required by the
+Lobbying Disclosure Act of 1995. To identify lobbying activities
+related to specific bills, we select descriptions that reference bill IDs
+from the entire set of lobbying texts. The types of bills considered
+in this study are limited to those that are formally enacted as law,
+specifically Senate and House bills. From this pool of approximately
+1.4 million bill-line text pairs, we further refine the dataset by
+selecting entries that contain keywords indicative of bill positions,
+such as ‘endorse’, ‘defeat’, ‘advocate’, and ‘watch.’ The keyword
+list is structured based on the definitions of lobbying and activity
+provided by each state,‡ as well as lobbying guidance documents
+issued by state authorities.§ A comprehensive list of keywords is
+available in SI Appendix 1. An example of a lobbying description
+can be found in Fig. 1, under the column labeled ‘Lobbying Issues
+Text from LDA Report.’
+
+2. GNN Annotation. When textual information may be limited in
+
+conveying the bill position—such as in cases where lobbying text
+lacks key indicators or is classified as ‘Mention’—we enhance our
+classification by incorporating network information that emerges
+during the legislative process. Prior research (14, 21) has shown
+that legislative network structures play a crucial role in predicting
+political activities, underscoring their relevance in this context. By
+leveraging these network-based insights, we complement textual
+analysis and improve the accuracy of bill position inference.
+
+D
+
+Preprocessing
+
+GNN Annotation
+
+LLM then generates an output with one label based on the given
+prompt, classifying the lobbying description associated with the bill
+into a specific position. (The full text input examples and prompt
+are described in SI Appendix 1.) If there is insufficient information
+to definitively classify the lobbying description into a particular
+bill position, we categorize it separately under ‘Mention.’ This
+ensures that ambiguous cases are distinctly labeled, preventing
+misclassifications due to a lack of context.
+
+Materials and Methods
+Raw Data Source
+
+LLM Annotation
+
+The “2. GNN Annotation stage” section
+depicted in the lower part of Fig. 1 illustrates the pipeline for
+annotating interest groups’ bill positions using high-dimensional
+policy network data. This graph includes various entities involved
+in lobbying activities and the legislative process, such as interest
+groups, bills, legislators, and lobbyists. In the lobbying network,
+connections are derived from lobbying reports, linking interest
+groups, lobbyists, and bills based on their collaborative advocacy
+efforts. For instance, when an interest group hires lobbyists to
+support a bill, a connection forms between them and the bill.
+The legislative network captures relationships between bills and
+legislators, where links are established through sponsorship or
+cosponsorship. Additionally, a connection between a lobbyist and
+a legislator is formed if they have previously worked together.∗∗
+One of the primary contributions of our study is leveraging this
+high-dimensional network structure to infer systemic patterns
+associated with latent positions, drawing on our understanding
+of other political actors’ preferences. Put simply, if actors A and
+B consistently lobby in similar ways within comparable political
+networks and A’s position toward a specific bill is known, we can
+Graph Configuration
+
+In our approach, we use Azure OpenAI to
+perform labeling with GPT-4 (2023-09-01-preview), setting the
+temperature to 0 to ensure deterministic outputs. As shown in
+Fig. 1 at “1. LLM Annotation stage”, we provide the LLM with
+instructions for bill position classification, supplying the target bill
+ID along with bill-related information, such as the bill title. The
+Text Classification
+
+†
+
+The 111th Congress marks the point where lobbying data became more structured and transparent
+following the full implementation of HLOGA (2007) and stricter disclosure rules under the Obama
+administration. See HLOGA of 2007, Pub. L. No. 110-81, 121 Stat. 735 (2007); Executive Order
+13490, January 21, 2009.
+
+¶
+
+https://www.maplight.org/data-series
+
+‡
+
+These definitions include terms related to lobbying and lobbyists, as outlined in the statutes of the
+respective states. See www.sos.state.co.us/pubs/lobby/files/guidanceManual.pdf
+
+‖
+
+Since MapLight provides only support and oppose labels, we limit our comparison to these
+categories.
+
+For reference, we use the Colorado Secretary of State Lobbying Guidance Manual. See www.ncsl.
+org/ethics/how-states-define-lobbying-and-lobbyist
+
+∗∗
+
+We gather this information from “Covered Official Position” reported under Section 18 of lobbying
+reports.
+
+§
+
+Kim et al.
+
+PNAS
+
+—
+
+April 23, 2025
+
+—
+
+vol. XXX
+
+—
+
+no. XX
+
+—
+
+3
+
+reliably predict B’s position on the bill, even if it hasn’t been
+explicitly disclosed.
+We implement a heterogeneous GNN for bill position annotation
+since interest groups, bills, and lobbyists represent distinct entity
+types. Each node in the graph is represented by an embedding
+that encodes its relevant attributes. Interest groups, for example,
+are described by attributes such as state, industry code, and
+government affiliation. Bills include details like their subject, the
+sponsoring party, and their final status in the legislative process.
+Likewise, lobbyists are characterized by features including ethnicity,
+gender, and past party affiliation for former Congress members.
+For more details on additional graph configurations and feature
+definitions for other entities, refer to the SI Appendix 2.
+During the initial experiments, we found that classifying bill
+positions into four categories, including Amend, led to significantly
+lower accuracy for this particular class. To improve model performance and ensure more reliable results, we decided to merge
+Amend and Monitor into a single Engage category. As a result, the
+task was reformulated as a 3-class classification problem: Support,
+Oppose, and Engage. This consolidation allowed the model to focus
+more effectively on the Support and Oppose categories, leading to
+more accurate and meaningful classifications overall.
+The task of the GNN is to predict the type
+of link between interest groups and bills (i.e., the bill position
+of interest groups). GNN is trained and evaluated using LLM
+annotations and labels from the MapLight dataset.†† The bill
+position dataset is divided into train, validation, and test sets in a
+ratio of 7:1:2. We conduct a hyperparameter search to determine
+the optimal GNN configuration and provide details on the search
+space and settings in the SI Appendix 2.
+The model with the best configuration achieves a solid performance with an overall accuracy of 78.51 and an F1 score of
+74.65.‡‡ The F1 scores for each class are as follows: Support at 79.19,
+Oppose at 64.06, and Engage at 80.70, all of which outperform the
+baseline configurations. Using the trained model, we predict the
+bill positions for unlabeled edges between interest groups and bills,
+treating these predictions as large-scale proxy labels. Bill positions
+are selected from the model’s predictions when the class probability
+is higher than 0.9.§§ As a result, through GNN annotation, a total
+of 196,683 bill position datasets are generated, as shown in Table 1.
+
+Lobbying position scores (LPscores)
+Similar to how roll call
+vote records are used to estimate legislators’ ideal points (22, 23),
+we construct a one-dimensional latent preference embedding for
+interest groups based on their bill positions. We refer to these
+as Lobbying Position Scores (LPscores). By aggregating LLM
+and GNN annotations along with the MapLight dataset, we
+generate latent interest scores using an item response theory (IRT)
+model to provide a unified measure of their positions. To estimate
+these scores, we apply the graded model (24) within the MIRT
+(Multidimensional Item Response Theory) package (25) in R, which
+allows us to handle ordered categorical labels. We focus on Support
+and Oppose labels, excluding Engage to maintain consistency with
+established approaches in political analysis and to better capture
+distinct policy preferences. To ensure reliable estimation, we retain
+only interest groups that have lobbied on at least 10 bills and
+bills that have been lobbied by at least 10 different groups. After
+this filtering, we derive latent preferences for 1,796 interest groups
+and 2,020 bills. We evaluated the reliability of the MIRT results
+and found an overall Expected A Posteriori (EAP) reliability of
+0.95, indicating that the estimated trait scores are highly stable
+and precise. The standard errors ranged from 0.03 to 0.30, all
+below the commonly accepted threshold of 0.32, confirming that
+the estimated scores are sufficiently reliable.
+
+RA
+FT
+
+Link Type Prediction
+
+the 111th to 115th Congresses. In contrast, our dataset covers
+the 111th to 117th Congresses, enabling direct comparisons of our
+measures against human-labeled interest group positions. MapLight
+lists a total of 194,479 interest group–bill position pairs; however,
+after mapping these pairs from lobbying reports,††† only 25,382
+pairs involving 2,195 interest groups and 5,780 bills remain. The
+fact that only 13.1% of the MapLight dataset matches our bill
+position data suggests that most MapLight interest groups do
+not actively lobby, providing limited insight into their broader
+legislative impact through direct lobbying activities. Moreover, our
+measures encompass over five times more interest groups (12,032)
+and seven times more bills (42,475). Thus, our proposed pipeline
+provides a scalable framework that can be directly applied to future
+congressional data, significantly enhancing coverage while reducing
+the need for human annotation.
+
+Comparison of Interest Group Preferences: CFscores vs. LPscores
+
+Campaign finance scores (CFscores), provided by DIME (26), are
+widely used to represent interest groups’ ideological positions
+based on campaign finance data. To compare these with our
+LPscores, which provide a direct measure of lobbying activity,
+we examine 218 interest groups with identical names in both
+datasets. Since CFscores are reported for individual Congresses,
+we first compute each group’s mean CFscore across all Congresses
+and compare it to their bill position-based latent preference. The
+Pearson correlation between the two is 0.191,‡‡‡ suggesting a
+positive but weak relationship. This indicates that while campaign
+contributions and lobbying activities may be related, they capture
+distinct aspects of interest group behavior.
+
+3. Bill Position Dataset Overview and Comparison.
+
+Our dataset covers bill positions from
+the 111th to the 117th Congress, providing a comprehensive and
+scalable approach for capturing the stance of interest groups
+on various legislative matters. The dataset includes 279,104 bill
+positions between 12,032 interest groups and 42,475 bills, ensuring
+broad coverage across a wide range of legislative activities, as
+shown in Table 1.¶¶ To the best of our knowledge, this is the first
+large-scale measurement of interest group positions that actively
+engage in lobbying activities.
+By comparing our dataset with the existing MapLight bill
+position dataset, we highlight its broader coverage and scale.
+Furthermore, we explain the differences between latent preferences
+based on our lobbying activity data and those based on campaign
+finance data, a widely used metric provided by DIME.
+
+D
+
+Overview of Our Dataset
+
+The replication codes for LLM, GNN annotation, and analysis are available at https://github.com/hikoseon12/
+lobbying-position, and the input and output data used for replication
+are available at the Harvard Dataverse: https://doi.org/10.7910/DVN/
+D0QWM2.
+Data Availability
+
+We
+compare the scale of our dataset with the coverage of the existing
+∗∗∗
+human-curated MapLight bill position dataset,
+which spans
+Comparison of Data Coverage with the MapLight Dataset
+
+††
+
+The sample from MapLight, mapped to the lobbying pairs organized in LobbyView, includes 18,180
+Support and 4,455 Oppose positions, totaling 22,635 bill position pairs used for GNN training.
+
+‡‡
+
+These scores represent the mean and standard deviation of predictions made five times with
+different random seeds.
+
+§§
+
+Youden’s Index is a measure that combines sensitivity (correctly identifying positives) and specificity
+(correctly identifying negatives) to find the best cutoff for model predictions. In our model, the
+Youden’s Index suggests a minimum cutoff of around 0.58. However, we use a threshold of 0.9
+to ensure more reliable results, minimizing false positives and improving the model’s overall
+trustworthiness.
+
+¶¶
+
+We exclude any instances where the interest group’s bill position is assigned multiple labels or
+conflicts with labels from sources such as LLM, GNN, or MapLight, ensuring that each interest
+group has only one bill position per bill. The analysis that follows is based on this cleaned dataset.
+
+∗∗∗
+
+This comparison is made with our original dataset, before excluding instances that conflict with
+MapLight bill position labels.
+
+4
+
+—
+
+www.pnas.org/cgi/doi/10.1073/pnas.XXXXXXXXXX
+
+Analysis
+Our bill position dataset serves as a foundational tool for
+understanding the underlying lobbying positions and strategies of interest groups and enables a variety of analyses. We
+illustrate this with four example findings from the following
+analyses. (1) We first examine the timeline of interest groups’
+bill positions, tracking positions across different stages of a
+†††
+
+We used Google Search to map each interest group name. The first relevant result—typically the
+group’s homepage or official profile—was selected. Ambiguous or generic results were manually
+reviewed for confirmation.
+
+‡‡‡
+
+Pearson correlation coefficient was computed using SciPy library. See https://docs.scipy.org/doc/
+scipy/reference/generated/scipy.stats.pearsonr.html
+
+Kim et al.
+
+Analysis 1: At What Stages Do Interest Groups Lobby with
+Bill Positions. Building on previous research by (27, 28),
+
+Lobbying Count
+
+Committee
+
+Referred to
+Committee
+
+Floor Debate
+
+Committee
+Passed Passed
+Reported Senate/House
+
+Enacted
+
+Vetoed Bill
+
+80
+60
+
+Presidential Action
+
+Committee
+
+Floor Debate
+
+After
+Enacted
+
+Presidential Action
+
+40
+20
+0
+
+Referred to
+Committee
+
+Committee
+Passed Passed
+Reported Senate/House
+
+Support
+
+Oppose
+
+Vetoed
+
+Amend
+
+After Enacted
+Vetoed
+
+Monitor
+
+Fig. 2. Frequency of interest group positions across different legislative stages. We
+compare the bill position distributions of interest groups across different legislative
+stages. The x-axis represents the stages of the legislative process, from bill
+introduction to enactment, with lines depicting the frequency of positions: Support
+(blue), Oppose (red), Amend (yellow), and Monitor (green). This analysis includes
+bills that were ultimately ‘Enacted’ and ‘Vetoed’. Bills with a higher frequency of
+Support are more likely to advance through the legislative process (‘Enacted’),
+while those with significant increases in Oppose or Amend typically fail to progress
+(‘Vetoed’). We observe a clear correlation between interest group positions and the
+eventual legislative outcome of the bills.
+
+D
+
+RA
+FT
+
+which shows how lobbying activities vary as a bill moves
+through different stages of the legislative process, our study
+goes a step further by analyzing the quarterly lobbying
+reports to estimate when lobbying happens. We map interest
+groups’ positions (Support, Oppose, Amend, and Monitor)
+to specific bill stages. This allows us to get a detailed
+view of how lobbying intensity increases as bills approach
+enactment, revealing the strategic nature of lobbying during
+key legislative junctures. Since a bill can be lobbied at various
+points during its legislative journey, we estimate the timing
+of lobbying based on when a lobbying report is submitted.
+Given that reports are filed quarterly, we treat the submission
+deadline as a proxy for the timing of lobbying, assuming that
+the lobbying efforts reported were directed at the bill’s most
+recent legislative stage.§§§ We then analyze how the four
+classes of bill position are distributed across the bill’s stages
+using the LLM annotation.
+Fig. 2 shows the distribution of bill positions across
+different stages in the legislative process, from the bill’s
+introduction to its final outcome. The colors of the lines
+represent: green for Support, pink for Oppose, yellow for
+Amend, and purple for Monitor. From left to right, the stages
+represent the full legislative process, from introduction to
+enactment, including committee review and the floor. The top
+chart shows the bill positions for the bills that are enacted,
+and the bottom chart shows the positions for the bills that
+are vetoed.
+Overall, as the bill progresses, the frequency of lobbying
+tends to increase. However, the extent of lobbying by interest
+groups varies depending on their positions and the stage of
+the legislative process. This indicates that as the bill nears
+the enactment stage, lobbying efforts not only become more
+focused, with interest groups intensifying their activities to
+align the bill’s passage with their interests, but also the
+composition of dominant political groups shifts at each stage.
+For the ‘Enacted’ bills, the top line plot in Fig. 2, we
+observe a significant increase of Support at the ‘Enacted’
+stage, while we observe minimal variation of Oppose and
+Amend across all stages. We observe an increase of Monitor,
+after the bill is enacted. After a bill becomes a law, it
+signals the implementation of its provisions, and as the
+bill often undergoes amendments afterward, many groups
+closely monitor the newly enacted law. This aligns with
+previous research (29), which indicates that lobbying activities
+intensify post-enactment as interest groups aim to influence
+implementation and subsequent regulatory adjustments. Our
+study offers a direct characterization of this increase in
+lobbying, primarily driven by heightened Monitor activities.
+
+Enacted Bill
+12500
+10000
+7500
+5000
+2500
+0
+
+Lobbying Count
+
+bill’s progress. (2) Secondly, we investigate how corporate
+lobbying is related to firm size. (3) We then investigate
+how the subject matter of the bills leads to variations in
+the distribution of lobbying positions, uncovering distinct
+preferences across different bill topics. (4) Finally, we explore
+the variation in interest group preferences across industries,
+offering insights into how they shape lobbying behavior and
+influence policy directions.
+
+§§§
+
+We follow the quarterly deadline for lobbying reports as specified by Congress. For more details,
+see https://lda.congress.gov/ld/help/default.htm?turl=Documents/LD2Requirements.htm.
+
+Kim et al.
+
+In contrast, for the ‘Vetoed’ bills, the bottom line plot in
+Fig. 2, the patterns of Oppose and Amend differ significantly.
+The frequency of Oppose and Amend increases significantly
+after the bill passes the floor, and the bill ultimately fails.
+Similarly, for the ‘Passed’ and ‘Failed’ bills during the floor
+process, we observe a comparable trend. In the case of Passed’
+bills, Monitor activities increase towards the end, while in
+Failed’ bills, Oppose and Amend activities rise. Detailed
+analysis is provided in the SI Appendix 3.
+Our research uncovers a systematic pattern in which active
+opposition to legislation emerges, particularly during the final
+stages of the legislative process. We suspect this may be due
+to a sense of urgency among stakeholders opposed to the bill,
+who view these final stages as their last chance to influence
+the outcome. Additionally, as a bill approaches enactment,
+it tends to attract more media attention and scrutiny. This
+increased visibility can mobilize opposition groups that may
+not have been previously aware of or concerned about the
+legislation.
+Analysis 2: How Corporate Lobbying is related to Firm Size.
+
+Firm size is widely recognized as a critical determinant of
+corporate political activities, primarily due to the fixed and
+variable costs associated with these efforts (30, 31). Although
+previous research indicates that only a few large firms engage
+in lobbying (4), scholars have a limited understanding of
+whether firm size influences the decision to lobby and the
+nature of the lobbying positions adopted. To address this gap,
+we analyze lobbying decisions on two fronts: first, the decision
+to engage in lobbying, and second, the specific lobbying
+positions chosen by firms that do lobby.
+We create a dataset that merges information on publicly
+traded companies from the Compustat database with lobbying
+records from 2009 to 2022. For each firm in each year, we
+first determine whether the firm engaged in lobbying. If
+PNAS
+
+—
+
+April 23, 2025
+
+—
+
+vol. XXX
+
+—
+
+no. XX
+
+—
+
+5
+
+Lobby
+Monitor
+Amend
+Oppose
+Support
+0.00
+
+0.05
+
+0.10
+
+0.15
+
+0.20
+
+Effect of Firm Size on Predicted Probability
+(90th - 10th Percentile)
+Fig. 3. Predicted probability changes in lobbying pattern between firms at the
+90th and 10th percentiles of employment. The top panel presents logistic regression–based estimates for the lobbying decision, while the bottom panel shows
+Dirichlet regression–based estimates for four lobbying positions (Support, Oppose,
+Amend, Monitor ). Each model uses firm-year level data and includes year fixed
+effects, and error bars represent the 90% and 95% confidence intervals (thick and
+thin lines, respectively) obtained using block bootstrap at the firm level.
+
+Bill Position
+
+Support
+Oppose
+Engage
+
+0.6
+
+Bill Position Ratio
+
+0.8
+
+1.0
+
+Fig. 4. Bill position ratios across different bill subjects. This shows the bill position
+ratios (Support, Oppose, and Engage) for the top 15 bill subjects containing the
+largest number of bills. The subjects are ordered by their Support ratio, illustrating
+how lobbying strategies vary across different legislative topics. Taxation-related bills
+have the highest Support ratio, indicating strong industry backing for favorable fiscal
+policies. In contrast, bills concerning Public lands and natural resources exhibit a
+higher Oppose ratio, reflecting resistance from industries affected by environmental
+regulations. Meanwhile, subjects such as Economics and public finance show a
+greater proportion of Engage positions, as lobbying in these cases often focuses on
+influencing appropriation decisions and securing favorable budget allocations rather
+than taking a definitive stance for or against the legislation.
+
+D
+
+RA
+FT
+
+it did, we compute the proportion of its lobbying activity
+for each position—Support, Oppose, Amend, or Monitor.
+To understand what influences a firm’s decision to lobby,
+we run logistic regression, using the number of employees
+as the primary measure of firm size. For firms that do
+lobby, we examine the relative composition of lobbying
+positions using Dirichlet regression, which is well-suited for
+analyzing proportional outcomes that sum to one.¶¶¶ For
+both models, our quantity of interest is defined as the average
+difference in predicted probabilities of lobbying outcomes
+between firms at the 90th and 10th percentiles of employment:
+∆ = E[ŷ(emp90 ) − ŷ(emp10 )].
+Fig. 3 presents the regression results. The top panel shows
+that larger firms have a substantially higher propensity to
+engage in lobbying, consistent with the literature; firms at
+the 90th percentile of size are 19.5 percentage points (p.p.)
+more likely to lobby than those at the 10th percentile. The
+bottom panel reveals distinctive patterns in the specific
+lobbying positions adopted by firms of different sizes. In
+particular, larger firms are significantly more likely to adopt
+Monitor positions (4.5 p.p difference), allowing them to
+track policy developments and build long-term relationships
+with policymakers. This strategic choice likely reflects their
+resource advantages, which enable sustained engagement in
+the policy process even without immediate policy objectives.
+Conversely, smaller firms are more likely to adopt reactive
+stances, specifically through Oppose or Amend positions,
+though the magnitude of these changes is modest (differences
+of 1.8 and 1.3 p.p., respectively). This may reflect the
+resource disadvantages of smaller firms and aligns with our
+earlier findings that the frequency of opposition increases
+significantly at the final stage of legislation. On the other
+hand, we observe no statistical difference in the predicted
+probabilities for Support positions. Notably, our findings—
+
+Taxation
+Health
+Transportation and public works
+Commerce
+Science, technology, communications
+Crime and law enforcement
+Immigration
+Energy
+Labor and employment
+Government operations and politics
+Finance and financial sector
+Public lands and natural resources
+Environmental protection
+Armed forces and national security
+Economics and public finance
+0.0
+0.2
+0.4
+
+¶¶¶
+
+The Dirichlet regression is estimated by maximizing the following log-likelihood function: ℓ(β) =
+
+PN
+i=1
+
+[ln Γ(
+
+PJ
+j=1
+
+αij ) −
+
+PJ
+j=1
+
+ln Γ(αij ) +
+
+PJ
+j=1
+
+(αij − 1) ln(yij )], where
+
+αij = exp(x⊤
+i βj ), xij includes employment and year fixed effects, and yij is the observed
+proportion of lobbying position j for firm i.
+
+6
+
+—
+
+www.pnas.org/cgi/doi/10.1073/pnas.XXXXXXXXXX
+
+particularly the positive relationship for Monitor positions—
+remain consistent across various model specifications that
+include additional controls such as industry fixed effects,
+fixed assets, and cost of goods sold, as detailed in the SI
+Appendix 4.
+Together, these results reveal how firm size shapes not
+only the decision to lobby but also the strategic positioning
+within the policy process, highlighting nuanced associations
+that call for further investigation into firm-level factors.
+Analysis 3: How Bill Positions Differ Across Subjects. Interest
+
+groups tend to adopt different positions on bills depending
+on the subject matter, with their strategies varying across
+policy areas. Fig. 4 shows the ratio of bill positions across
+the 15 most common bill subjects, ranked by Support ratio.
+Support is generally the most common position, while the
+proportions of Oppose and Engage vary by subject, reflecting
+differences in how interest groups engage with legislation.
+Several examples of topic-specific bills and associated interest
+group positions are illustrated in Fig. 6 (B), (C), and (D).
+Bills with a high Support ratio
+Bill subjects with a high
+Support ratio are often linked to specific policy areas,
+such as Taxation and Health. Major legislative initiatives
+in these categories typically involve tax reductions, financial incentives, or regulatory relief. For example, several bills focus on specific population groups or goods
+(e.g., S. 260 (115th) - Protecting Seniors’ Access to
+Medicare Act of 2017 (Fig. 6 (B)); S. 1562 (114th) Reform Taxation of Alcoholic Beverages). These bills
+benefit a clearly defined set of stakeholders, while they
+do not negatively affect anyone, thus it makes sense that
+there is minimal opposition and high support. In some
+Kim et al.
+
+cases, we observe broader participation from multiple industries, particularly in legislation involving small business
+tax deductions (e.g., S. 3612 (116th) - Small Business
+Expense Protection Act of 2020), where various sectors
+benefit from government-backed financial relief. Even when
+the policy targets a specific population, such as H.R. 674
+(112th) - Veterans’ Pensions and Compensation, the incentives offered can attract support from a diverse range of
+industries and interest groups.
+
+RA
+FT
+
+Bills with a high Engage ratio
+mainly pertain to public-sector legislation, including Armed
+forces and national security and Economics and public finance.
+These topics frequently involve budget allocation, resulting in
+a broad set of stakeholders lobbying due to the diverse funding
+distribution across sectors. An example, H.R. 8337 (116th)
+- Continuing Appropriations Act, 2021 and Other
+Extensions Act) (Fig. 6 (D)) affects multiple stakeholders
+and attracts a larger number of lobbying entities per bill.
+Additionally, legislation concerning broad budget allocations
+(e.g., H.R. 3082 (111th) - Continuing Appropriations
+and Surface Transportation Extensions Act, 2011;
+H.R. 133 (116th) - Consolidated Appropriations Act,
+2021) in defense, small businesses, transportation, rural
+development, energy, and environmental protection, attract
+lobbying by a diverse set of interest groups.
+Further details on the bills and the bill positions of the
+interest groups can be found in the SI Appendix 5.
+
+D
+
+Bills with a high Engage ratio
+
+Analysis 4: How Interest Group Preferences Vary Across
+Industries. The interest group’s latent score reflects their
+
+hidden preferences. Since each interest group has its own
+distinct interests, we compare the distribution of LPscores
+across industries to examine the similarities and differences
+in their preferences. Fig. 5 presents the LPscore distribution
+of 1,414 interest groups, covering 40 industries among the
+total 94. This includes the 36 industries,17 with the most
+common interest groups out of 94, adding three industry
+pairs—Abortion, Gun, and Ideology—that exhibit conflicting interests, visually grouped using the same box color.
+Industries in Fig. 5 are ordered by the average LP score in
+descending order from top to bottom. Overall, industries
+at the top are primarily associated with economic and
+industrial activities or aligned with conservative ideologies,
+17
+
+Industries are grouped according to the classification defined by OpenSecrets. For more details,
+please refer to https://www.opensecrets.org/federal-lobbying/industries
+
+Kim et al.
+
+Industry
+
+Bills with a high Oppose ratio
+Conversely, legislative topics
+with relatively low Support ratios are predominantly associated with public policy and regulatory matters. Notably,
+environmental and resource-related bills (e.g., Public lands
+and natural resources, Environmental Protection) exhibit a
+high Oppose ratio, indicating interest group efforts to counteract regulatory changes. For instance, coal industry deregulation (e.g., H.R. 3409 (112th) - Stop the War on Coal
+Act of 2012 (Fig. 6 (C)) and H.R. 806 (115th) - Ozone
+Standards Implementation Act of 2017) are strongly opposed by environmental interest groups while supported by
+commercial entities. In contrast, environmental safety and protection legislation (e.g., S. 847 (112th) - Safe Chemicals
+Act of 2011) is supported by environmental interest groups,
+while opposed by commercial industries.
+
+Building Materials & Equipment
+Abortion Policy/Anti-Abortion
+Republican/Conservative
+Agricultural Services/Products
+Electronics Mfg & Equip
+Business Associations
+Electric Utilities
+Real Estate
+Oil & Gas
+Misc Manufacturing & Distributing
+Chemical & Related Manufacturing
+Retail Sales
+Food & Beverage
+Insurance
+Automotive
+Pharmaceuticals/Health Products
+Gun Rights
+TV/Movies/Music
+Business Services
+Air Transport
+Sea Transport
+Railroads
+Renewable Energy
+Employer Listed/Category Unknown
+Misc Issues
+Civil Servants/Public Officials
+Health Services/HMOs
+Transportation Unions
+Non-Profit Institutions
+Misc Energy
+Hospitals/Nursing Homes
+Education
+Misc Unions
+Health Professionals
+Gun Control
+Human Rights
+Abortion Policy/Pro-Abortion Rights
+Environment
+Public Sector Unions
+Democratic/Liberal
+
+3
+
+2
+
+1
+0
+1
+Lobbying Position Score
+
+2
+
+Fig. 5. Industry-wise distribution of interest group preferences. The boxplot illustrates
+the distribution of LPscores for 1,414 interest groups across 40 industries. Industries
+are sorted by average scores in descending order, with economic and conservativealigned sectors at the top and social/progressive sectors at the bottom. Conflicting
+interest industries (e.g., Republican vs. Democratic, Pro-Abortion vs. Anti-Abortion,
+Gun Rights vs. Gun Control) are distinctly positioned, highlighting ideological divides.
+
+such as Building Materials & Equipment, Agricultural Services/Products, Real Estate, and Oil & Gas. On the other
+hand, those at the bottom are more focused on social values
+and services or tied to progressive ideologies, including sectors
+like Public Sector Unions, Environment, Human Rights, and
+Education. By comparing the positions of the 6 industries
+with conflicting interests, Republican/Conservative, Abortion
+Policy/Anti-Abortion, and Gun Rights industries are placed
+at the top, while Democratic/Liberal, Abortion Policy/ProAbortion, and Gun Control industries are positioned at the
+bottom. This clear separation highlights the latent divide in
+interests, effectively capturing the contrasting perspectives
+of these opposing groups.
+How does the distribution of interest groups’ bill positions vary
+based on the ideology of the bill?
+Fig. 6 (A) illustrates
+
+the kernel density estimation (KDE) plots showing the
+distribution density of bill positions based on the bills and
+interest groups.18 The x-axis represents LPscore of interest
+18
+
+The KDE plots are generated using the kdeplot function from the Seaborn library. See https:
+//seaborn.pydata.org/generated/seaborn.kdeplot.html
+
+PNAS
+
+—
+
+April 23, 2025
+
+—
+
+vol. XXX
+
+—
+
+no. XX
+
+—
+
+7
+
+Oppose
+
+1
+
+2.5 0.0
+
+2.5
+
+Bill Latent Score
+
+0
+
+1
+0
+1
+
+2.5 0.0 2.5
+Lobbying Position Score
+
+Industry
+
+2.5 0.0
+
+3
+
+2
+
+1
+
+0
+
+1
+
+2
+
+Lobbying Position Score
+
+2.5
+
+3
+
+H.R.3409 (112th Congress)
+Stop the War on Coal Act of 2012
+(Public lands and natural resources)
+
+3
+
+2
+
+1
+
+Food & Beverage
+General Contractors
+Commercial Banks
+Securities & Investment
+Real Estate
+Building Materials & Equipment
+Agricultural Services/Products
+Electronics Mfg & Equip
+Defense Electronics
+Electric Utilities
+Dairy
+Defense Aerospace
+Oil & Gas
+Insurance
+Pharmaceuticals/Health Products
+Business Services
+Casinos/Gambling
+Misc Transport
+Misc Finance
+Air Transport
+Civil Servants/Public Officials
+Health Services/HMOs
+Misc Manufacturing & Distributing
+Hospitals/Nursing Homes
+Other
+Abortion Policy/Pro-Abortion Rights
+Transportation Unions
+Education
+Health Professionals
+Industrial Unions
+Human Rights
+Misc Issues
+Environment
+Public Sector Unions
+
+RA
+FT
+
+Industry
+
+C
+General Contractors
+Business Associations
+Agricultural Services/Products
+Oil & Gas
+Misc Manufacturing & Distributing
+Steel Production
+Building Materials & Equipment
+Republican/Conservative
+Railroads
+Mining
+Misc Transport
+Electric Utilities
+Misc Issues
+Environment
+Human Rights
+
+0
+
+1
+
+2
+
+Lobbying Position Score
+
+H.R.8337 (116th Congress)
+Continuing Appropriations Act,
+2021 and Other Extensions Act
+(Economics and public finance)
+
+D
+
+Engage
+
+S.260 (115th Congress)
+Protecting Seniors' Access to
+Medicare Act of 2017
+(Health)
+
+B
+Abortion Policy/Anti-Abortion
+Misc Health
+Pharmaceuticals/Health Products
+Human Rights
+Hospitals/Nursing Homes
+Education
+Health Professionals
+
+1.0
+0.5
+0.0
+0.5
+1.0
+
+Industry
+
+Support
+Bill Latent Score
+
+Bill Latent Score
+
+A1
+
+3
+
+3
+
+2
+
+1
+
+0
+
+1
+
+2
+
+Lobbying Position Score
+
+3
+
+D
+
+Fig. 6. Bill-level distribution of bill positions across interest groups. (A) Distribution of bill positions across the latent scores of bills and interest groups. The x-axis represents the
+LPscore of interest groups, with commercial/conservative-leaning groups on the right and welfare/liberal-oriented groups on the left. The y-axis represents the latent scores of
+bills, where Republican-sponsored bills are generally positioned in the upper range and Democrat-sponsored bills in the lower range. Support tends to occur when interest
+groups and bills have similar policy preferences, forming an upward diagonal pattern, while Oppose is more frequent when they diverge, creating a downward diagonal trend.
+Engage (Amend/Monitor) is more concentrated in the center without a distinct directional trend. This reveals distinct patterns in how bill positions vary based on the policy
+preferences of interest groups. Panel (B, C, D): Comparison of bill position distribution by industry at the bill level. The y-axis represents the industries of interest groups,
+ordered by the descending average of all LP scores within each industry. We compare bill positions across different policy areas. (B) Taxation—Support is concentrated in the
+medical sector, with minimal opposition from other industries. (C) Public Lands and Natural Resources—A sharp divide—commercial and industry groups support the bill, while
+environmental and human rights groups strongly oppose it, reflecting conflicting economic and environmental interests. (D) Economics and Public Finance— The broad-impact
+economic bill attracts diverse interest groups, resulting in varied lobbying positions across industries. These patterns suggest that interest groups’ lobbying behavior and bill
+positions can be analyzed at the bill level, revealing sectoral alignment, industry conflicts, and the extent of interest group engagement across different policy areas.
+
+groups, while the y-axis corresponds to the latent scores of
+bills. Bills sponsored by Republicans tend to be positioned
+higher on the y-axis, while those sponsored by Democrats
+are generally lower. (Further details can be found in the SI
+Appendix 6.) On the x-axis, interest groups with business
+or conservative leanings are more prevalent toward the right,
+whereas welfare- and liberal-oriented groups are more common
+on the left. Bill positions vary depending on both the interest
+group and the bill. Support tends to appear where interest
+groups and bills have similar policy preferences, forming
+an upward diagonal pattern. Oppose is more common where
+their preferences diverge, creating a downward diagonal trend.
+Engage, including Amend and Monitor, are more centrally
+distributed without a strong directional tendency. This shows
+how bill positions reflect interest groups’ policy alignment or
+divergence, providing insight into their interests.
+8
+
+—
+
+www.pnas.org/cgi/doi/10.1073/pnas.XXXXXXXXXX
+
+Our data
+allow us to analyze interest groups’ bill positions at the bill
+level. Fig. 6 (B), (C), and (D) illustrate examples of interest
+groups’ bill positions on specific bills. The dots along the
+lines represent interest groups within each industry.
+In Fig. 6 (B), we examine S. 260 (115th) - Protecting
+Seniors’ Access to Medicare Act of 2017, a bill related
+to Taxation. Consistent with the taxation bill ratio in
+Fig. 4, only a small subset of interest groups—mainly those
+associated with the medical sector—engaged in lobbying on
+this bill, with a strong tendency to support it.
+Fig. 6 (C) presents H.R.3409 (112th) - Stop the War
+on Coal Act of 2012, which falls under the Public Lands
+and Natural Resources category. This bill has a high proportion of opposition, reflecting a clear conflict of interest among
+industries. Interest groups positioned at the top of the graph
+How do interest groups differ in their bill positions
+
+Kim et al.
+
+Conclusion
+
+D
+
+This study presents a novel, large-scale approach to measure
+and analyze the positions of special interest groups (SIGs)
+in the U.S. legislative process. By leveraging advanced AI
+methods—Large Language Models (LLMs) and Graph Neural
+Networks (GNNs)—we developed an automated and scalable
+pipeline that extracts bill positions from lobbying activities.
+This framework enables a more systematic and fine-grained
+understanding of how interest groups shape legislation beyond
+traditional datasets that rely on indirect measures such as
+campaign finance data.
+Our findings highlight several key insights into the lobbying
+landscape. First, there is a strong correlation between a bill’s
+legislative progression and the positions taken by interest
+groups, illustrating their strategic engagement at different
+stages. Second, firm size plays a critical role in lobbying
+decisions, with larger firms tending to adopt monitoring
+positions, leveraging their resource advantages, while smaller
+firms show a relatively greater reliance on reactive oppose
+and amend positions. Third, the distribution of bill positions
+varies significantly across legislative topics, revealing that
+industries align their lobbying efforts based on issue-specific
+stakes. Finally, interest groups’ lobbying behavior and bill
+positions can be analyzed at the bill level, revealing sectoral
+alignments, industry conflicts, and the extent of interest group
+engagement across different policy areas, with variations
+observed across both interest groups and specific policy
+domains.
+By providing a more comprehensive and structured
+dataset, this research paves the way for deeper investigations
+into how interest groups influence legislative outcomes, the interplay between corporate interests and public policy, and the
+broader implications of lobbying on democratic governance.
+Moreover, our AI-driven approach offers a scalable model for
+future studies, allowing researchers and policymakers to track
+lobbying activities more effectively over time. As artificial
+intelligence continues to enhance political science research,
+Kim et al.
+
+our work underscores its potential in increasing transparency
+and understanding in legislative processes. Future research
+can expand upon this foundation by incorporating additional
+data sources, refining predictive models, and exploring the
+evolving strategies of interest groups in shaping public policy.
+
+ACKNOWLEDGMENTS.
+
+This work was supported by MIT
+International Science and Technology Initiatives (MISTI) Global
+Seed Fund.
+1. FR Baumgartner, JM Berry, M Hojnacki, BL Leech, DC Kimball, Lobbying and policy
+change: Who wins, who loses, and why. (University of Chicago Press), (2009).
+2. GM Grossman, E Helpman, Special interest politics. (MIT Press, Cambridge, MA, USA),
+(2001).
+3. RL Hall, AV Deardorff, Lobbying as legislative subsidy. Am. Polit. Sci. Rev. 100, 69–84
+(2006).
+4. IS Kim, Political cleavages within industry: Firm level lobbying for trade liberalization. Am.
+Polit. Sci. Rev. 111, 1–20 (2016).
+5. J Farrell, Corporate funding and ideological polarization about climate change. Proc. Natl.
+Acad. Sci. 113, 92–97 (2016).
+6. RJ Brulle, Institutionalizing delay: foundation funding and the creation of us climate change
+counter-movement organizations. Clim. change 122, 681–694 (2014).
+7. LC Stokes, Short circuiting policy: Interest groups and the battle over clean energy and
+climate policy in the American States. (Oxford University Press), (2020).
+8. JJ Xie, et al., Tracing inclusivity at unfccc conferences through side events and interest
+group dynamics. Nat. Clim. Chang. pp. 1–9 (2025).
+9. ML Sands, Exposure to inequality affects support for redistribution. Proc. Natl. Acad. Sci.
+114, 663–668 (2017).
+10. P Dietze, MA Craig, Framing economic inequality and policy as group disadvantages
+(versus group advantages) spurs support for action. Nat. Hum. Behav. 5, 349–360 (2021).
+11. D Wang, Y Fang, Global climate governance inequality unveiled through dynamic influence
+assessment. npj Clim. Action 3, 75 (2024).
+12. HV Milner, D Tingley, Sailing the Water’s Edge: The Domestic Politics of American Foreign
+Policy. (Princeton University Press, Princeton, NJ, USA), (2015).
+13. S Liao, The effect of firm lobbying on high-skilled visa adjudication. The J. Polit. 85,
+1416–1429 (2023).
+14. IS Kim, D Kunisky, Mapping political communities: A statistical analysis of lobbying networks
+in legislative politics. Polit. Analysis 29, 317–336 (2021).
+15. N Grasse, B Heidbreder, The influence of lobbying activityin state legislatures: Evidence
+from wisconsin. Legislative Stud. Q. 36, 567–589 (2011).
+16. DM Butler, DR Miller, Does lobbying affect bill advancement? evidence from three state
+legislatures. Polit. Res. Q. 75, 547–561 (2022).
+17. A Bonica, Mapping the ideological marketplace. Am. J. Polit. Sci. 58, 367–386 (2014).
+18. A Bonica, Are donation-based measures of ideology valid predictors of individual-level
+policy preferences? The J. Polit. 81, 327–333 (2019).
+19. GM Lorenz, AC Furnas, JM Crosson, Large-n bill positions data from maplight. org: What
+can we learn from interest groups’ publicly observable legislative positions? Interest Groups
+& Advocacy 9, 342–360 (2020).
+20. DM Butler, DR Miller, Does lobbying affect bill advancement? evidence from three state
+legislatures. Polit. Res. Q. 75, 547–561 (2022).
+21. S Abi-Hassan, JM Box-Steffensmeier, DP Christenson, AR Kaufman, B Libgober, The
+ideologies of organized interests and amicus curiae briefs: Large-scale, social network
+imputation of ideal points. Polit. Analysis 31, 396–413 (2023).
+22. KT Poole, H Rosenthal, A spatial model for legislative roll call analysis. Am. journal political
+science pp. 357–384 (1985).
+23. J Clinton, S Jackman, D Rivers, The statistical analysis of roll call data. Am. Polit. Sci. Rev.
+98, 355–370 (2004).
+24. F Samejima, Estimation of latent ability using a response pattern of graded scores 1. ETS
+Res. Bull. Ser. 1968, i–169 (1968).
+25. RP Chalmers, mirt: A multidimensional item response theory package for the r environment.
+J. statistical Softw. 48, 1–29 (2012).
+26. A Bonica, Database on ideology, money in politics, and elections: Public version 3.1
+[computer file]. URL: https://data. stanford. edu/dime (2023).
+27. TT Holyoke, Strategic lobbying to support or oppose legislation in the us congress. The J.
+Legislative Stud. 25, 533–552 (2019).
+28. TT Holyoke, Strategic lobbying and the pressure to compromise member interests. Polit.
+Res. Q. 75, 1255–1270 (2022).
+29. HY You, Ex post lobbying. The J. Polit. 79, 1162–1176 (2017).
+30. LM Salamon, JJ Siegfried, Economic power and political influence: The impact of industry
+structure on public policy. Am. political science review 71, 1026–1043 (1977).
+31. M Bombardini, Firm heterogeneity and lobby participation. J. Int. Econ. 75, 329–348 (2008).
+32. Tracing the flow of policy ideas in legislatures: A text reuse approach. Am. J. Polit. Sci. 59,
+943–956 (2015).
+33. F Linder, B Desmarais, M Burgess, E Giraudy, Text as policy: Measuring policy similarity
+through bill text reuse. Policy Stud. J. 48, 546–574 (2020).
+34. J Kim, E Griggs, IS Kim, A Oh, Learning bill similarity with annotated and augmented
+corpora of bills in Proceedings of the 2021 Conference on Empirical Methods in Natural
+Language Processing, eds. MF Moens, X Huang, L Specia, SWt Yih. (Association for
+Computational Linguistics, Online and Punta Cana, Dominican Republic), pp. 10048–10064
+(2021).
+
+RA
+FT
+
+belong to the Commercial & Industry Sectors, while those
+at the bottom are affiliated with Environmental and Human
+Rights groups. The stark division in lobbying positions highlights the competing economic and environmental interests
+surrounding this legislation.
+Finally, Fig. 6 (D) showcases H.R.8337 (116th)
+- Continuing Appropriations Act, 2021 and Other
+Extensions Act, which belongs to Economics and Public
+Finance. Bills of this nature typically attract interest groups
+from a wide array of industries, as they encompass diverse
+topics with broad economic and regulatory implications.
+Consequently, these bills tend to have a higher proportion of
+Engage as their lobbying position.
+These examples illustrate how interest groups’ bill positions are shaped by industry-specific interests, with some bills
+attracting support from niche sectors, others revealing stark
+conflicts between opposing industries, and broad-reaching
+legislation engaging a wide array of stakeholders.
+These examples illustrate how bill positions vary across
+interest groups. While some bills see strong alignment within
+specific sectors, others expose divisions between industries,
+reflecting the complexity of policy preferences in lobbying
+dynamics.
+
+PNAS
+
+—
+
+April 23, 2025
+
+—
+
+vol. XXX
+
+—
+
+no. XX
+
+—
+
+9
+
+Table 4. GPT-4 setting
+
+Supporting Information Appendix (SI)
+1. LLM Annotation
+Keyword extraction. Table 3 presents a comprehensive list of
+
+keywords related to bill positions, which are essential for identifying
+and categorizing lobbying activities linked to specific legislative
+bills. These keywords are carefully selected based on established
+definitions of lobbying as outlined in state statutes and guidance
+documents,19 including the Colorado Secretary of State Lobbying
+Guidance Manual.20 They represent terms that denote various
+positions or actions that interest groups take in relation to
+legislation, including advocating for, supporting, opposing, or
+monitoring bills. The keywords in this list—such as support,
+endorse, oppose, defeat, and watch—are specifically chosen because
+they reflect the primary lobbying stances and activities that are
+tracked and reported by interest groups. By focusing on these key
+terms, we efficiently filter and segment the large volume of lobbying
+data, ensuring that only relevant bill-specific lobbying activities
+are included for further analysis. This structured approach allows
+for a more targeted and effective analysis of how interest groups
+engage with specific bills, ultimately enhancing the accuracy and
+usefulness of the dataset.
+Table 3. Keyword list related to bill positions
+
+Setting
+
+Value
+
+Temperature
+Model
+API version
+
+0.0
+gpt-4-1106-Preview
+2023-09-01-preview
+
+Bill Position LLM Prompt. To automatically annotate large-scale bill
+
+positions, lobbying activity texts are classified using large language
+models (LLMs). The LLM classifies the descriptions into one of
+five categories: Support, Oppose, Amend, Monitor, or Mention. We
+use the following prompt to classify lobbying activity texts:
+Classify the given text that explicitly describes lobbying
+activities for bill {bill id} into one of the five types:
+Support, Oppose, Amend, Monitor, or Mention without
+explanation.
+{bill id} short title: {short title}
+{bill id} official title: {official title}
+Text: {lobbying description}
+Answer:
+
+Bill Position Keywords
+
+The prompt includes the five categories and provides both the
+short and official titles of the bill to offer context about its subject.
+It also includes the lobbying description associated with the bill.
+To ensure that only the class label is outputted, without additional
+explanations, we append the instruction “without explanation”, as
+LLMs usually provide reasoning along with their answers. We try
+multiple versions with more detailed information, but the simplest
+version consistently yields high performance, so we choose this
+version.
+
+RA
+FT
+
+support, advocate, favor, endorse, engage, encourage, yes, passage,
+promote, attempt, influence, introduce, propose, draft, oppose, against,
+defeat, reject, repeal, amend, modify, delete, monitor, track, watch
+
+LLM Configuration. We use the GPT-4 model for LLM annotation,
+
+utilized through Azure OpenAI. The specific specifications of the
+model are provided in Table 4. The temperature is set to 0 to
+ensure deterministic responses.
+
+LLM Input Example. Table 2 below provides an example of the bill
+
+19
+
+These definitions include terms related to lobbying and lobbyists, as outlined in the statutes of the
+respective states. See www.sos.state.co.us/pubs/lobby/files/guidanceManual.pdf
+
+20
+
+For reference, we use the Colorado Secretary of State Lobbying Guidance Manual. See www.ncsl.
+org/ethics/how-states-define-lobbying-and-lobbyist
+
+ID, bill short title, bill official title, and lobbying description that
+are input into the LLM prompt. The result shows how the LLM
+accurately outputs the corresponding bill position based on this
+input.
+
+Bill ID
+
+10
+
+—
+
+D
+
+Table 2. Bill information and lobbying description for LLM annotation
+Bill Short Title
+
+Bill Official Title
+
+Lobbying Description
+
+H.R.1421 Improving Access
+to Medicare Coverage Act of 2017
+
+To amend title XVIII of the Social Security Act to count a period of receipt
+of outpatient observation services in
+a hospital toward satisfying the 3-day
+inpatient hospital stay requirement
+for coverage of skilled nursing facility
+services under Medicare, and for
+other purposes.
+
+S. 568, H.R. 1421, Improving Access to Medicare Coverage Act - Discussed our support
+for/endorsed bill.
+
+Support
+
+H.R.1249 Leahy-Smith
+America Invents
+Act
+
+To amend title 35, United States
+Code, to provide for patent reform.
+
+defeat S. 23 and H.R. 1249, and pass funding
+only bill for USPTO.
+
+Oppose
+
+H.R.9
+
+Innovation Act
+
+To amend title 35, United States
+Code, and the Leahy-Smith America
+Invents Act to make improvements
+and technical corrections, and for
+other purposes.
+
+Advocacy for changes to H.R. 9, the Innovation
+Act regarding the potential impact of provisions
+on the ability of universities to protect the rights
+of faculty and support research spin-outs.
+
+Amend
+
+S.744
+
+Border Security,
+Economic
+Opportunity,
+and Immigration
+Modernization Act
+
+A bill to provide for comprehensive
+immigration reform and for other purposes.
+
+Educated members of Congress and administration officials about the need to reform the
+immigration process and expand the number
+of worker-sponsored visas for highly skilled
+workers. Legislation watched includes: S 169,
+S 744, HR 2131, HR 459, HR 15 and S 600.
+
+Monitor
+
+www.pnas.org/cgi/doi/10.1073/pnas.XXXXXXXXXX
+
+Bill Position
+
+Kim et al.
+
+Table 5. Annotation Guideline
+Bill Position
+
+Description
+
+Support
+
+If the lobbying activity explicitly supports the bill, label it as ’Support’. Efforts to pass the bill through lobbying, endorsing
+specific parts of the bill, proposing the bill, or participating in its introduction all fall under the category of ’Support’.
+
+Oppose
+
+If the lobbying activity explicitly supports the bill, label it as ’Oppose’. If the activity opposes specific parts of the bill, it
+should also be labeled as ’Oppose’.
+
+Amend
+
+For cases labeled ’Amend’: Label as ’Amend’ if the lobbying activity aims to change the bill. ’Amend’ is only applicable
+when there is explicit mention of intending to amend the bill. Additionally, mentioning an amendment to the bill is also
+considered as ’Amend’. For cases labeled ’ Mention’: Label as ’Mention’ if the lobbying activity does not aim to change
+the bill. If the bill itself is aimed at amending another bill, and the description simply outlines the content of the bill, this
+does not constitute amending the bill, so it should be annotated as ’Mention’.
+
+Monitor
+
+If the lobbying activity is explicitly stated to involve monitoring or tracking the bill, label it as ’Monitor’. Taking a position
+(supporting, opposing) or engaging in lobbying for amendments to the bill does not classify as ’Monitor’.
+
+Employed by a
+Lobbying Firm
+
+Registrant
+(Lobbying Firm)
+
+Hired a Lobbying Firm
+
+Lobbyist
+
+Lobby for
+a Bill
+
+Interest Group
+Bill Position
+
+Sp
+
+r
+so
+
+on
+
+Legislator
+Co-sponsored the same bill
+
+Cosponsor
+
+Bill
+
+Legislator
+
+RA
+FT
+
+(Client)
+
+Previously worked
+together in Congress
+
+Related Bill
+
+Bill
+
+Lobbying Network
+
+Legislator
+
+Legislative Network
+
+Fig. 7. Graph Structure Overview of Lobbying and Legislative Networks. The lobbying network includes interest groups, registrants (such as lobbying firms), and lobbyists. The
+legislative network captures relationships among bills, sponsors, cosponsors, and lobbyists who have worked with specific legislators. These networks are used to infer interest
+group bill positions by leveraging their connections and interactions.
+
+D
+
+Human Annotation Guidelines for Bill Position Classification. To
+validate the LLM annotation, we established human annotation
+guidelines as shown in Table 5. The two authors, who thoroughly
+understand the bill position classification, followed these guidelines
+to annotate validation samples. In this guideline, when a lobbying
+description from a lobbying report clearly states one of the four
+bill positions (Support, Oppose, Amend, Monitor), it is classified
+under the corresponding category.
+
+2. GNN Annotation
+Graph Structure Overview: Lobbying and Legislative Networks.
+When the textual content of lobbying activity alone is not sufficient
+to fully capture the nuances of interest group bill positions, we
+enhance the classification by leveraging both the lobbying and
+legislative networks. As illustrated in Fig. 7, these networks
+consist of multiple types of entities. The lobbying network includes
+interest groups, registrants (e.g., lobbying firms) who register
+lobbying activities and reports on behalf of those interest groups,
+and lobbyists affiliated with those firms who lobby on specific
+bills. The legislative network captures relationships among bills,
+legislators who sponsor or cosponsor them, and includes additional
+connections between lobbyists and legislators when a lobbyist has
+previously worked with a specific member of the U.S. Congress.
+Additionally, we involve Related Bill edges in the graph to represent
+complex inter-bill relationships, such as overlapping content,21
+which provide important context for understanding the legislative
+process (32–34).
+21
+
+Related bill information from www.congress.gov. See https://www.congress.gov/help/related-bills
+
+Kim et al.
+
+Entity Features. Our graph is a heterogeneous structure that
+
+includes multiple entity types. Each entity type has different
+features, which are embedded as nodes. Table 6 provides the
+number of entities of each entity type in the overall graph, the
+total embedding size, the features included, the embedding size
+of each feature, and examples of the features. For features such
+as Industry, State & Territories, and Government, which are
+represented as binary or multi-class, embeddings are created using
+one-hot encoding. For text, features include company/lobbyist
+names, their brief descriptions, bill titles, and bill summaries.
+These texts are first stemmed (a process of reducing words to
+their root forms) using the Porter Stemmer,22 and then tf-idf
+(Term Frequency-Inverse Document Frequency), which captures
+the importance of key terms in the context of a document, is
+used to create a 64-dimensional embedding with a word dictionary,
+implemented via the TfidfVectorizer package.23 For more detailed
+information, please refer to our data.
+Entity Relations. From the overall graph illustrated in Fig. 7, we
+
+derive various graph configurations, as shown in Table 7. The
+first row represents the Base Graph, which includes only Interest
+Group and Bill nodes along with edges between them indicating
+the groups lobbying on the bill. The second row, labeled ‘Base
+Graph + sponsor’, adds legislator nodes who sponsor the bills and
+creates edges between bills and legislators. By adding new nodes
+and the corresponding new relations, we construct a total of 17
+different graphs. We aim to identify the best graph for our bill
+22
+
+See https://www.nltk.org/api/nltk.stem.porter.html#nltk.stem.porter.PorterStemmer
+
+23
+
+See
+https://scikit-learn.org/stable/modules/generated/sklearn.feature extraction.text.
+TfidfVectorizer.html
+
+PNAS
+
+—
+
+April 23, 2025
+
+—
+
+vol. XXX
+
+—
+
+no. XX
+
+—
+
+11
+
+Table 6. Node Features in Graph
+Entity Node
+
+The Number of Entity
+
+Emedding Size
+
+Interest Group
+
+16093
+
+557
+
+Industry
+State&Territories
+Government
+Industry Type
+Text (Name, Description)
+
+Feature Name
+
+Feature Size
+426
+59
+2
+6
+64
+
+Agriculture, Crop production & basic processing,...
+NY, AL, ... + U.S. territories (DC, PR, GU, ...)
+True, False
+org, com, edu, net, gov, others
+advocaci, allianc, america, health, manufactur, ..
+
+Example
+
+Bill
+
+57466
+
+114
+
+Subject
+Final State
+Party
+Bipartisan
+Same State
+Text (Title, Summary)
+
+34
+9
+3
+2
+2
+64
+
+Crime and law enforcement,,...
+ENACTED:SIGNED, FAIL, PASSED:BILL,...
+Democrat, Independent, Republican
+True, False
+True, False
+act, administr, care, develop, ...
+
+Legislator
+
+1084
+
+63
+
+Term
+Party
+State&Territories
+Gender
+
+2
+3
+56
+2
+
+Representative, Senate
+Democrat, Independent, Republican
+AK, AL, AR, ...
+Female, Male
+
+Registrant
+
+6589
+
+118
+
+State
+Text (Name, Description)
+
+54
+64
+
+AK, AL, AR, ...
+advoc, council, govern,
+
+Lobbyist
+
+25043
+
+22
+
+Ethnicity
+Party
+Gender
+
+13
+3
+6
+
+Asian/GreaterEastAsian/EastAsian,...
+Democrat, Independent, Republican
+Female, Male, Mostly Female, Mostly Male,...
+
+Table 7. Graph Node Configuration
+Bill
+
+Base Graph (Interest Group + Bill)
++ sponsor
++ legislator (sponsor + cosponsor)
++ registrant
++ lobbyist
++ relatedBill
++ legislator-registrant
++ legislator-lobbyist
++ legislator-relatedBill
++ registrant-lobbyist
++ registrant-relatedBill
++ lobbyist-relatedBill
++ legislator-registrant-lobbyist
++ legislator-registrant-relatedBill
++ legislator-lobbyist-relatedBill
++ registrant-lobbyist-relatedBill
++ legislator-registrant-lobbyist-relatedBill
+
+O
+O
+O
+O
+O
+O
+O
+O
+O
+O
+O
+O
+O
+O
+O
+O
+O
+
+O
+O
+O
+O
+O
+O
+O
+O
+O
+O
+O
+O
+O
+O
+O
+O
+O
+
+D
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+
+Interest Group
+
+Sponsor
+
+Legislator
+
+O
+O
+
+O
+
+RA
+FT
+
+Graph Configuration
+
+O
+O
+O
+
+O
+O
+O
+
+O
+O
+O
+
+O
+O
+O
+
+O
+
+O
+
+Registrant
+
+Lobbyist
+
+Related Bill
+
+O
+O
+O
+O
+O
+O
+O
+O
+O
+O
+O
+O
+
+O
+O
+O
+O
+O
+O
+
+O
+O
+O
+O
+O
+O
+
+position edge prediction task from these 17 graphs. The number of
+edges connecting nodes in the entire graph is provided in Table 8.
+Parameter Search. All input graphs use the fixed hyperparameters
+Table 8. Graph Edge Size
+
+12
+
+—
+
+Graph Edges
+
+Client
+
+Bill
+
+Legislator
+
+Registrant
+
+Client
+Bill
+Legislator
+Sponsor Only
+Registrant
+Lobbyist
+
+602952
+29123
+107457
+
+43712
+863369
+57466
+504056
+2062501
+
+341880
+5611
+
+31873
+
+www.pnas.org/cgi/doi/10.1073/pnas.XXXXXXXXXX
+
+for model configuration listed in Table 9, while the remaining GNN
+hyperparameters are optimized through a parameter search based
+on the values in Table 10. We run all hyperparameter combinations
+1 time, and Table 11 shows the best hyperparameter setting for
+each graph configuration.
+Best Parameter Result. For the optimal setting for each case, we
+
+run the model five times, with the results shown in Table 12.
+Comparing the results, we observe that adding more nodes and
+relations generally leads to increased overall accuracy and F1 scores.
+Regarding the bill position classes, the Support and Others classes
+reach F1 scores in the high 70s, while Oppose shows an F1 score in
+the 60s. Given that the Oppose class has a lower proportion in the
+data, this suggests that predicting it is a more challenging task for
+the GNN. To select the best GNN model, we choose the eighth
+model, ‘Base Graph + legislator-lobbyist,’ which has the highest
+overall F1 score of 74.65. This model also achieves the highest F1
+score of 64.06 for the Oppose class.
+Kim et al.
+
+Value
+
+Graph Model
+Number of Classes
+Hidden Channels
+Weight Decay
+Activation Function
+Dropout Rate
+Decoder Predictor Type
+Decoder Layers
+
+SAGE
+3
+90
+0.0
+ELU
+0.2
+Concat
+2
+
+Table 10. Parameter Search for GNN
+
+125
+100
+75
+50
+25
+0
+
+Value
+
+num bases
+use skip
+use decoder bn
+use bn
+num layers
+learning rate
+
+3, 4
+True, False
+True, False
+True, False
+2, 3
+0.0005, 0.001, 0.005
+
+Floor Debate
+
+Presidential Action
+
+Referred to Committee
+Passed
+Committee Reported Senate/House
+
+Passed
+
+Committee
+
+Floor Debate
+
+After Enacted
+Passed
+
+Presidential Action
+
+200
+
+Referred to Committee
+Passed Provisionally After Passed
+Committee Reported Senate/House Killed Provisionally
+Killed
+
+Support
+
+Oppose
+
+Amend
+
+Enacted
+
+Monitor
+
+Fig. 8. Frequency of interest group positions across different legislative stages in
+‘Passed’ and ‘Provisionally Killed’ (bills that failed to pass during floor debate) bills.
+For ‘Passed’ bills, there is little change in the distribution of Oppose and Amend.
+However, for ‘Provisionally Killed’ bills, the frequencies of Oppose and Amend rise
+sharply after passing one chamber (e.g., ‘Passed Senate/House’).
+
+net property, plant, and equipment (PPENT), and log of cost of
+goods sold (COGS). Both PPENT and COGS, along with the
+employment variable, are from the Compustat database.
+Table 19 and Table 20 present the same quantity of interest as
+shown in Fig. 3: the average difference in predicted probabilities of
+lobbying outcomes between firms at the 90th and 10th percentile
+of employment. In Table 19, the positive and significant effect of
+firm size on adopting a monitoring position is consistent across
+all model specifications. In addition, the negative effect of firm
+size on opposing positions is statistically significant in all but one
+model specification. Table 20 demonstrates that the positive effect
+of firm size on the decision to lobby remains consistent across all
+model specifications. These results support our main findings from
+Fig. 3: larger firms not only lobby more frequently but also tend
+to adopt monitoring positions more often, while smaller firms are
+more likely to take reactive and explicit positions.
+
+RA
+FT
+
+3. Analysis1: Analyzing Bill Positions at Different
+Stages
+
+Committee
+
+400
+
+0
+
+Parameter
+
+Passed Bill
+
+Provisionally Killed Bill
+
+600
+
+Lobbying Count
+
+Parameter
+
+Lobbying Count
+
+Table 9. GNN Configuration
+
+Input Data Statistics for Bill Stage Analysis. Table 13 presents the
+
+number of bills at each final status, along with the statistics of
+the interest groups that lobbied on these bills. These statistics
+are used for analyzing the bill positions of interest groups at the
+final stages, including ‘Enacted’ and ‘Vetoed’ bills. In addition
+to analyzing the patterns of ‘Enacted’ and ‘Vetoed’ bills, we also
+observe similar patterns in ‘Passed’ and ‘Provisionally Killed’ bills
+(those that failed to progress on the floor but were not passed).
+
+D
+
+Analysis of Interest Group Bill Positions Across Different Bill Stages.
+Table 14 and Table 15 show the number of bill positions lobbied
+at each bill stage for ‘Enacted’ and ‘Vetoed’ bills, respectively.
+Additionally, Tables 16 and 17 present the number of bill positions
+lobbied at each stage for bills that reached the final stage as
+‘Passed’ and ‘Provisionally Killed’. Similar patterns are observed
+in both ‘Enacted’ and ‘Vetoed’ bills, as well as in the ‘Passed’
+and ‘Provisionally Killed’ bills. The bill stage line plots in Fig. 8
+illustrate that ‘Passed’ bills consistently show low proportions
+of Oppose and Amend, with higher proportions of Support and
+Monitor. In contrast, ‘Provisionally Killed’ bills show an increase in
+Oppose and Amend. These findings suggest a correlation between
+the number of bill positions and whether a bill progresses to the
+next major stage across different bill statuses.
+
+4. Analysis 2: Bill Position for Firm Size Analysis
+Input Data Statistics for Firm Size Analysis. Table 18 presents the
+
+summary statistics of the firm-year dataset used for the firm size
+analysis. The dataset spans from 2009 to 2022, with observations
+ranging from 5,421 to 7,014 firms per year. For each year, the table
+reports the average proportions of different lobbying outcomes:
+whether firms lobbied at all (Lobby), and the specific lobbying
+positions employed (Support, Oppose, Amend, and Monitor).
+Standard deviations for each measure are presented in parentheses.
+The table also includes the log-transformed employment values,
+which serve as the key explanatory variable in our analysis of how
+firm size relates to lobbying behavior.
+Alternative Specifications for Firm Size and Lobbying Pattern
+Analysis. While Fig. 3 presents the logit and Dirichlet regression
+
+results with year fixed effects, we further explore alternative model
+specifications to examine how the regression results change as we
+add or remove additional controls. These controls include industry
+fixed effects (using the first two digits of NAICS code), log of
+Kim et al.
+
+5. Analysis 3: How Bill Positions Differ Across Subjects
+
+We provide further details on the bills, highlighting the differences
+in bill position ratios based on their subject, with high ratios of
+Support, Oppose, and Engage.
+Bills with a high Support ratio. We present additional details on the
+
+four bills with high Support ratios discussed in the main paper,
+with Fig. 9 illustrating these bills along with the distribution of
+bill positions by interest groups for each bill.
+S. 260 (115th) - Repeal of Independent Payment Advisory
+Board under the Affordable Care Act
+aims
+to
+reduce
+government intervention in healthcare by repealing the
+Independent Payment Advisory Board (IPAB) provisions of the
+Affordable Care Act. Support for this bill comes predominantly
+from medical and healthcare-related industries. Interest groups
+representing Health Professionals, Hospitals/Nursing Homes,
+Human Rights, and Pharmaceuticals/Health Products have
+actively lobbied in favor of this legislation, as shown in Fig. 6 (B).
+S. 1562 (114th) - Reform Taxation of Alcoholic Beverages
+addresses the reform of alcoholic beverage taxation. The support
+for this legislation comes primarily from industries related to
+alcohol production and distribution. As shown in Fig. 9, there
+is distinct lobbying from sectors such as Beer, Wine & Liquor,
+which directly benefit from the proposed tax reductions.
+S. 3612 (116th) - Small Business Expense Protection Act
+of 2020 provides tax deductions for small businesses, with
+broad support from industries benefiting from these financial
+PNAS
+
+—
+
+April 23, 2025
+
+—
+
+vol. XXX
+
+—
+
+no. XX
+
+—
+
+13
+
+Table 11. Best Parameter for each Graph Configuration
+Graph Configuration
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+
+num layers
+
+num bases
+
+lr
+
+use bn
+
+use skip
+
+use decoder bn
+
+3
+3
+3
+3
+3
+3
+3
+3
+3
+2
+3
+3
+3
+3
+3
+2
+3
+
+4
+4
+3
+4
+3
+3
+4
+3
+4
+4
+4
+4
+3
+4
+4
+3
+4
+
+0.005
+0.005
+0.005
+0.003
+0.005
+0.005
+0.005
+0.005
+0.003
+0.005
+0.005
+0.005
+0.005
+0.005
+0.003
+0.003
+0.003
+
+FALSE
+FALSE
+TRUE
+FALSE
+FALSE
+FALSE
+FALSE
+FALSE
+FALSE
+TRUE
+FALSE
+TRUE
+FALSE
+FALSE
+FALSE
+TRUE
+FALSE
+
+TRUE
+TRUE
+FALSE
+FALSE
+FALSE
+TRUE
+TRUE
+FALSE
+TRUE
+FALSE
+TRUE
+TRUE
+FALSE
+TRUE
+FALSE
+TRUE
+TRUE
+
+TRUE
+FALSE
+FALSE
+TRUE
+TRUE
+FALSE
+FALSE
+TRUE
+FALSE
+TRUE
+TRUE
+FALSE
+FALSE
+FALSE
+FALSE
+TRUE
+FALSE
+
+Base Graph (Client + Bill)
++ sponsor
++ legislator (sponsor + cosponsor)
++ registrant
++ lobbyist
++ relatedBill
++ legislator-registrant
++ legislator-lobbyist
++ legislator-relatedBill
++ registrant-lobbyist
++ registrant-relatedBill
++ lobbyist-relatedBill
++ legislator-registrant-lobbyist
++ legislator-registrant-relatedBill
++ legislator-lobbyist-relatedBill
++ registrant-lobbyist-relatedBill
++ legislator-registrant-lobbyist-relatedBill
+
+Table 12. Best Hyperparameter Result for each Configuration
+Graph Configuration
+
+Accuracy (Overall)
+
+F1 Score (Overall)
+
+F1 Score (Support)
+
+F1 Score (Oppose)
+
+F1 Score (Engage)
+
+76.07 ± 0.122
+76.82 ± 0.037
+77.46 ± 0.067
+76.22 ± 0.303
+77.15 ± 0.134
+76.30 ± 0.037
+78.00 ± 0.058
+78.51 ± 0.035
+77.49 ± 0.047
+76.54 ± 0.056
+76.60 ± 0.027
+77.63 ± 0.082
+78.16 ± 0.174
+77.95 ± 0.036
+78.52 ± 0.131
+76.95 ± 0.039
+78.32 ± 0.032
+
+71.70 ± 0.209
+72.31 ± 0.123
+73.41 ± 0.119
+71.14 ± 0.476
+72.14 ± 0.212
+71.60 ± 0.083
+73.97 ± 0.146
+74.65 ± 0.087
+73.64 ± 0.055
+71.88 ± 0.291
+71.69 ± 0.027
+72.97 ± 0.139
+74.02 ± 0.130
+73.87 ± 0.152
+74.19 ± 0.143
+72.62 ± 0.050
+74.21 ± 0.051
+
+77.04 ± 0.001
+77.70 ± 0.001
+78.37 ± 0.001
+76.32 ± 0.004
+77.87 ± 0.002
+77.14 ± 0.001
+78.84 ± 0.000
+79.19 ± 0.000
+78.48 ± 0.001
+77.02 ± 0.002
+77.18 ± 0.002
+78.12 ± 0.001
+79.01 ± 0.003
+78.67 ± 0.001
+79.44 ± 0.002
+77.54 ± 0.002
+79.07 ± 0.000
+
+59.46 ± 0.007
+60.06 ± 0.006
+62.29 ± 0.005
+57.65 ± 0.014
+58.56 ± 0.009
+58.64 ± 0.004
+62.97 ± 0.005
+64.06 ± 0.006
+63.18 ± 0.002
+59.08 ± 0.019
+58.33 ± 0.000
+60.36 ± 0.004
+62.76 ± 0.001
+62.79 ± 0.009
+62.44 ± 0.002
+60.63 ± 0.004
+63.11 ± 0.002
+
+78.60 ± 0.001
+79.15 ± 0.000
+79.57 ± 0.001
+79.44 ± 0.003
+79.99 ± 0.000
+79.03 ± 0.000
+80.09 ± 0.001
+80.70 ± 0.001
+79.28 ± 0.001
+79.53 ± 0.000
+79.54 ± 0.000
+80.44 ± 0.001
+80.29 ± 0.001
+80.15 ± 0.000
+80.68 ± 0.001
+79.70 ± 0.001
+80.45 ± 0.000
+
+RA
+FT
+
+Base Graph (Client + Bill)
++ sponsor
++ legislator (sponsor + cosponsor)
++ registrant
++ lobbyist
++ relatedBill
++ legislator-registrant
++ legislator-lobbyist
++ legislator-relatedBill
++ registrant-lobbyist
++ registrant-relatedBill
++ lobbyist-relatedBill
++ legislator-registrant-lobbyist
++ legislator-registrant-relatedBill
++ legislator-lobbyist-relatedBill
++ registrant-lobbyist-relatedBill
++ legislator-registrant-lobbyist-relatedBill
+
+D
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+
+Table 13. Statistics of Interest Groups and Bills at Final Bill Status
+Bill Final Status
+Enacted
+Vetoed
+Passed
+Provisionally Killed
+
+Bill
+
+Interest Group
+
+715
+3
+28
+74
+
+3640
+162
+128
+473
+
+incentives. Various sectors, including Miscellaneous Manufacturing
+& Distributing, Health Professionals, Commercial Banks, Oil &
+Gas, Real Estate, and Agricultural Services/Products, are actively
+involved in lobbying for this legislation. The figure highlights how
+these industries have aligned interests in supporting the bill’s
+provisions.
+H.R. 674 (112th) - Veterans’ Pensions and Compensation
+provides financial benefits to veterans, including exemptions
+from tax withholding and the introduction of veterans’ support
+programs. The broad scope of benefits has garnered support not
+only from veterans’ groups but also from industries that serve
+them. These industries, ranging from healthcare to financial
+services, demonstrate how targeted benefits to a specific group,
+like veterans, can lead to involvement from multiple sectors.
+Bills with a high Oppose ratio. For bills with high Oppose ratios, we
+
+provide further details, with Fig. 10.
+14
+
+—
+
+www.pnas.org/cgi/doi/10.1073/pnas.XXXXXXXXXX
+
+H.R. 3409 (112th) - Stop the War on Coal Act of 2012
+This bill aimed to deregulate the coal industry by limiting coal
+mining regulations, banning EPA greenhouse gas rules for climate
+change, and requiring transparent analysis of regulatory impacts.
+While the coal industry and commercial entities supported this
+bill, environmental groups strongly opposed it due to concerns
+about its potential harm to environmental protection and climate
+change mitigation efforts as shown in Fig. 6 (C).
+H.R. 806 (115th) - Ozone Standards Implementation Act of
+2017 This bill delays the 2015 ozone standards implementation
+and extends the review period to 10 years. It allows for
+revisions based on feasibility and exempts certain regions from
+penalties. The broad involvement of various industries, including
+environmental and energy sectors, results in a high Engage ratio,
+as diverse stakeholders engage in lobbying efforts to influence the
+bill’s provisions.
+S. 847 (112th) - Safe Chemicals Act of 2011 The
+Safe
+Chemicals Act aimed to strengthen the management of
+chemicals, especially in protecting vulnerable populations
+and the environment, by requiring the safety assessment of
+commercial chemicals, reducing the use of harmful substances,
+and mandating transparency in health and environmental impacts.
+While environmental interest groups strongly supported the bill,
+commercial industries opposed it due to its potential impact on
+the chemical industry’s regulatory burden and operations.
+Bills with a high Engage ratio. Additional details on bills with high
+Engage ratios are presented, with Fig. 11.
+Kim et al.
+
+Table 14. Enacted Bill
+Bill Stage
+
+Support
+
+Oppose
+
+Amend
+
+Monitor
+
+Sum
+
+Referred to Committee
+Committee Reported
+Passed Senate/House
+Passed
+Enacted
+After Enacted
+
+337
+253
+1193
+345
+3716
+3940
+
+18
+22
+118
+43
+505
+617
+
+40
+64
+378
+112
+925
+1156
+
+140
+206
+984
+229
+3708
+8718
+
+535
+545
+2673
+729
+8854
+14431
+
+Sum
+
+10449
+
+1495
+
+2956
+
+14863
+
+29763
+
+distribution with bill latent scores in Fig. 12. This figure clearly
+illustrates the polarized distribution between parties, with a clear
+mapping to the latent scores, where greater distances in the latent
+scores correspond to affiliation with different parties.
+
+Table 15. Vetoed Bill
+Support
+
+Oppose
+
+Amend
+
+Monitor
+
+Sum
+
+Referred to Committee
+Committee Reported
+Passed Senate/House
+Vetoed
+After Vetoed
+
+Bill Stage
+
+2
+14
+21
+26
+31
+
+0
+4
+3
+13
+18
+
+0
+9
+11
+48
+30
+
+5
+21
+25
+28
+31
+
+7
+48
+60
+115
+110
+
+Sum
+
+102
+
+42
+
+101
+
+119
+
+364
+
+Table 16. Passed Bill
+Bill Stage
+
+Oppose
+
+Amend
+
+Monitor
+
+Sum
+
+17
+6
+35
+30
+23
+
+7
+2
+1
+4
+2
+
+0
+3
+12
+8
+8
+
+2
+3
+16
+38
+75
+
+26
+14
+64
+80
+108
+
+Sum
+
+111
+
+16
+
+31
+
+134
+
+292
+
+RA
+FT
+
+Support
+
+Referred to Committee
+Committee Reported
+Passed Senate/House
+Passed
+After Passed
+
+Table 17. Provisionally Killed Bill
+Support
+
+Oppose
+
+Amend
+
+Monitor
+
+Sum
+
+Referred to Committee
+Committee Reported
+Passed Senate/House
+Temporarily Rejected
+After Temporarily Rejected
+
+Bill Stage
+
+0
+39
+41
+191
+217
+
+4
+14
+5
+75
+112
+
+0
+14
+9
+86
+83
+
+2
+44
+23
+293
+378
+
+6
+111
+78
+645
+790
+
+Sum
+
+488
+
+210
+
+192
+
+740
+
+1630
+
+D
+
+H.R. 8337 (116th) - Continuing Appropriations Act, 2021
+and Other Extensions Act
+This bill provides appropriations to
+federal agencies and extends expiring programs addressing health
+care, surface transportation, agriculture, veterans benefits, and
+other key areas. With its broad scope, it attracts wide support
+from various sectors, including healthcare, transportation, and
+defense industries. The bill’s diverse allocation of funds leads to
+a high Engage ratio, reflecting the wide range of stakeholders
+involved in lobbying efforts as shown in Fig. 6 (D).
+H.R. 3082 (111th) - Continuing Appropriations and Surface
+Transportation Extensions Act, 2011
+This
+legislation
+involves budget allocations for sectors like defense, small
+businesses, and transportation. Its impact on multiple industries
+leads to broad lobbying participation, contributing to a high
+Engage ratio due to the diverse interests involved.
+
+H.R. 133 (116th) - Consolidated Appropriations Act, 2021
+This bill includes appropriations for rural development, agriculture,
+science, defense, energy, finance, and environmental protection.
+Due to its comprehensive funding provisions, it engages multiple
+industries, from defense to environmental protection, resulting in
+a high Engage ratio as various sectors seek to influence policy and
+secure financial support for their interests.
+
+6. Analysis 4: How Interest Group Preferences Vary
+Across Industries
+Fig. 6 (A) shows bill position distributions across bill and interest
+groups. In this section, we further explain the sponsor’s party
+Kim et al.
+
+PNAS
+
+—
+
+April 23, 2025
+
+—
+
+vol. XXX
+
+—
+
+no. XX
+
+—
+
+15
+
+Table 18. Data Statistics for Firm Size Analysis
+Year
+
+Obs.
+
+Lobby
+
+Support
+
+Oppose
+
+Amend
+
+Monitor
+
+Log Employment
+
+2009
+2010
+2011
+2012
+2013
+2014
+2015
+2016
+2017
+2018
+2019
+2020
+2021
+2022
+
+7014
+6943
+6931
+7000
+6912
+6748
+6575
+6451
+6332
+6239
+6291
+6162
+5886
+5421
+
+0.086 (0.280)
+0.086 (0.280)
+0.074 (0.261)
+0.077 (0.267)
+0.071 (0.258)
+0.077 (0.267)
+0.073 (0.261)
+0.077 (0.266)
+0.072 (0.259)
+0.075 (0.263)
+0.070 (0.256)
+0.092 (0.290)
+0.099 (0.299)
+0.046 (0.211)
+
+0.198 (0.343)
+0.207 (0.343)
+0.252 (0.348)
+0.271 (0.381)
+0.245 (0.370)
+0.219 (0.357)
+0.241 (0.353)
+0.296 (0.390)
+0.245 (0.366)
+0.286 (0.411)
+0.293 (0.413)
+0.247 (0.386)
+0.219 (0.375)
+0.164 (0.329)
+
+0.036 (0.159)
+0.042 (0.174)
+0.037 (0.147)
+0.038 (0.165)
+0.041 (0.160)
+0.028 (0.118)
+0.025 (0.113)
+0.023 (0.113)
+0.027 (0.132)
+0.020 (0.115)
+0.031 (0.158)
+0.020 (0.107)
+0.013 (0.097)
+0.007 (0.056)
+
+0.246 (0.362)
+0.236 (0.365)
+0.201 (0.326)
+0.162 (0.312)
+0.154 (0.310)
+0.115 (0.272)
+0.153 (0.306)
+0.142 (0.283)
+0.165 (0.313)
+0.134 (0.282)
+0.155 (0.320)
+0.126 (0.297)
+0.107 (0.284)
+0.045 (0.180)
+
+0.519 (0.434)
+0.515 (0.435)
+0.510 (0.419)
+0.529 (0.435)
+0.560 (0.433)
+0.637 (0.422)
+0.582 (0.420)
+0.539 (0.428)
+0.563 (0.433)
+0.560 (0.445)
+0.521 (0.446)
+0.606 (0.444)
+0.661 (0.435)
+0.785 (0.361)
+
+6.315 (2.618)
+6.309 (2.654)
+6.300 (2.698)
+6.245 (2.748)
+6.262 (2.766)
+6.300 (2.772)
+6.318 (2.782)
+6.338 (2.791)
+6.357 (2.783)
+6.417 (2.766)
+6.393 (2.767)
+6.398 (2.759)
+6.508 (2.740)
+6.644 (2.714)
+
+Note: Values represent sample means; standard deviations are reported in parentheses.
+
+Table 19. Dirichlet Regression Results: Effect of Firm Size on Predicted Probability of Lobbying Position
+No Fixed Effects
+
+Year FE
+
+-0.014 (0.011)
+-0.017 (0.005)∗∗∗
+-0.014 (0.007)∗
+0.045 (0.020)∗∗
+
+-0.015 (0.012)
+-0.018 (0.005)∗∗∗
+-0.013 (0.007)∗
+0.045 (0.020)∗∗
+
+Year + NAICS FE
+
+Year FE + Log PPENT + Log COGS
+
+Year + NAICS FE + Log PPENT + Log COGS
+
+-0.024 (0.013)∗
+-0.025 (0.007)∗∗∗
+-0.011 (0.009)
+0.060 (0.023)∗∗
+
+-0.027 (0.019)
+-0.009 (0.009)
+-0.042 (0.014)∗∗∗
+0.078 (0.032)∗∗
+
+-0.043 (0.024)∗
+-0.020 (0.011)∗
+-0.014 (0.017)
+0.077 (0.042)∗
+
+RA
+FT
+
+Support
+Oppose
+Amend
+Monitor
+
+Note: Clustered standard errors are in parentheses. *p<0.1; **p<0.05; ***p<0.01.
+
+Table 20. Logistic Regression Results: Effect of Firm Size on Predicted Probability of Lobbying
+
+Lobby
+
+No Fixed Effects
+
+Year FE
+
+0.193 (0.008)∗∗∗
+
+0.195 (0.008)∗∗∗
+
+Year + NAICS FE
+
+Year FE + Log PPENT + Log COGS
+
+Year + NAICS FE + Log PPENT + Log COGS
+
+0.205 (0.009)∗∗∗
+
+0.053 (0.012)∗∗∗
+
+0.055 (0.015)∗∗∗
+
+D
+
+Note: Clustered standard errors are in parentheses. *p<0.1; **p<0.05; ***p<0.01.
+
+Table 21. Bill Position Ratio across Bill Subjects
+Bill Subject
+
+Unique Bills
+
+Taxation
+Health
+Transportation and public works
+Commerce
+Science, technology, communications
+Crime and law enforcement
+Immigration
+Energy
+Labor and employment
+Government operations and politics
+Finance and financial sector
+Public lands and natural resources
+Environmental protection
+Armed forces and national security
+Economics and public finance
+
+16
+
+—
+
+www.pnas.org/cgi/doi/10.1073/pnas.XXXXXXXXXX
+
+239
+342
+83
+74
+51
+86
+57
+72
+130
+129
+89
+51
+108
+78
+162
+
+Avg. Lobbying per Bill
+
+Support Ratio
+
+Oppose Ratio
+
+Engage Ratio
+
+27.590
+24.395
+38.880
+27.757
+28.255
+23.279
+23.211
+24.764
+23.892
+26.899
+23.225
+15.843
+26.898
+44.577
+73.691
+
+0.833
+0.789
+0.745
+0.725
+0.725
+0.724
+0.689
+0.661
+0.660
+0.630
+0.620
+0.557
+0.555
+0.533
+0.516
+
+0.043
+0.084
+0.073
+0.121
+0.079
+0.141
+0.213
+0.161
+0.220
+0.252
+0.187
+0.354
+0.280
+0.111
+0.063
+
+0.124
+0.127
+0.182
+0.154
+0.196
+0.134
+0.098
+0.178
+0.120
+0.118
+0.193
+0.089
+0.165
+0.357
+0.421
+
+Kim et al.
+
+H.R.674 (112th Congress)
+3% Withholding Repeal and Job Creation Act
+(Taxation)
+
+Misc Manufacturing & Distributing
+
+3
+
+2
+
+1
+
+0
+
+1
+
+2
+
+3
+
+Lobbying Position Score
+S.3612 (116th Congress)
+Small Business Expense Protection Act of 2020
+(Taxation)
+Business Associations
+Agricultural Services/Products
+Crop Production & Basic Processing
+Real Estate
+Oil & Gas
+Commercial Banks
+Health Professionals
+Misc Manufacturing & Distributing
+Business Services
+2
+
+1
+
+0
+
+1
+
+2
+
+Lobbying Position Score
+
+D
+
+3
+
+3
+
+Industry
+
+Beer, Wine & Liquor
+
+RA
+FT
+
+Industry
+
+Industry
+
+S.1562 (114th Congress)
+Craft Beverage Modernization and Tax Reform Act of 2015
+(Taxation)
+Commercial Banks
+
+Misc Business
+Food Processing & Sales
+Food & Beverage
+Telephone Utilities
+Credit Unions
+General Contractors
+Agricultural Services/Products
+Telecom Services
+Business Associations
+Mining
+Air Transport
+Building Materials & Equipment
+Oil & Gas
+Special Trade Contractors
+Insurance
+Electronics Mfg & Equip
+Defense Aerospace
+Misc Health
+Beer, Wine & Liquor
+Electric Utilities
+Construction Services
+Misc Finance
+Accountants
+Building Trade Unions
+Pharmaceuticals/Health Products
+Automotive
+Health Services/HMOs
+Misc Transport
+Real Estate
+Civil Servants/Public Officials
+Hospitals/Nursing Homes
+Education
+Non-Profit Institutions
+Misc Issues
+Other
+Health Professionals
+3
+
+2
+
+1
+
+0
+
+1
+
+2
+
+vol. XXX
+
+—
+
+no. XX
+
+Lobbying Position Score
+
+3
+
+Fig. 9. Bills with high Support ratios, illustrating bill positions across industries
+
+Kim et al.
+
+PNAS
+
+—
+
+April 23, 2025
+
+—
+
+—
+
+17
+
+H.R.806 (115th Congress)
+Ozone Standards Implementation Act of 2017
+(Environmental protection)
+Forestry & Forest Products
+Agricultural Services/Products
+Electric Utilities
+Automotive
+Misc Manufacturing & Distributing
+Chemical & Related Manufacturing
+Building Materials & Equipment
+Mining
+Oil & Gas
+Steel Production
+Real Estate
+Employer Listed/Category Unknown
+Civil Servants/Public Officials
+Misc Issues
+Environment
+Human Rights
+2
+
+1
+
+0
+
+1
+
+2
+
+Lobbying Position Score
+
+D
+
+3
+
+Mining
+Steel Production
+Agricultural Services/Products
+Building Materials & Equipment
+Defense Aerospace
+Chemical & Related Manufacturing
+Retail Sales
+Internet
+Electronics Mfg & Equip
+Automotive
+Misc Manufacturing & Distributing
+Electric Utilities
+Pharmaceuticals/Health Products
+Food Processing & Sales
+Oil & Gas
+Misc Issues
+Education
+Environment
+Hospitals/Nursing Homes
+Health Professionals
+
+3
+
+Industry
+
+RA
+FT
+
+Industry
+
+S.847 (112th Congress)
+Safe Chemicals Act of 2011
+(Environmental protection)
+
+3
+
+2
+
+1
+
+0
+
+1
+
+2
+
+Lobbying Position Score
+
+3
+
+Fig. 10. Bills with high Oppose ratios, illustrating bill positions across industries
+
+18
+
+—
+
+www.pnas.org/cgi/doi/10.1073/pnas.XXXXXXXXXX
+
+Kim et al.
+
+H.R.133 (116th Congress)
+ACCESS BROADBAND Act
+(Economics and public finance)
+
+Industry
+
+RA
+FT
+
+General Contractors
+Food Processing & Sales
+Telecom Services
+Telephone Utilities
+Abortion Policy/Anti-Abortion
+Securities & Investment
+Building Materials & Equipment
+Commercial Banks
+Electronics Mfg & Equip
+Republican/Conservative
+Defense Electronics
+Oil & Gas
+Automotive
+Misc Manufacturing & Distributing
+Insurance
+Special Trade Contractors
+Misc Health
+Electric Utilities
+Mining
+Defense Aerospace
+Business Associations
+Lodging/Tourism
+Chemical & Related Manufacturing
+Steel Production
+Printing & Publishing
+Accountants
+TV/Movies/Music
+Railroads
+Air Transport
+Livestock
+Pharmaceuticals/Health Products
+Sea Transport
+Misc Transport
+Non-Profit Institutions
+Casinos/Gambling
+Food & Beverage
+Building Trade Unions
+Agricultural Services/Products
+Misc Agriculture
+Lawyers/Law Firms
+Hospitals/Nursing Homes
+Health Professionals
+Civil Servants/Public Officials
+Health Services/HMOs
+Education
+Other
+Misc Energy
+Public Sector Unions
+Abortion Policy/Pro-Abortion Rights
+Human Rights
+Environment
+Misc Issues
+Democratic/Liberal
+Transportation Unions
+Women's Issues
+
+D
+
+Industry
+
+H.R.3082 (111th Congress)
+Continuing Appropriations and Surface
+Transportation Extensions Act, 2011
+(Armed forces and national security)
+
+General Contractors
+Food & Beverage
+Credit Unions
+Misc Business
+Livestock
+Telephone Utilities
+Forestry & Forest Products
+Business Associations
+Special Trade Contractors
+Defense Electronics
+Commercial Banks
+Automotive
+Dairy
+Electronics Mfg & Equip
+Internet
+Agricultural Services/Products
+Real Estate
+Crop Production & Basic Processing
+Lodging/Tourism
+Retail Sales
+Trucking
+Gun Rights
+Misc Health
+Telecom Services
+Securities & Investment
+Defense Aerospace
+Chemical & Related Manufacturing
+Food Processing & Sales
+Electric Utilities
+Oil & Gas
+Printing & Publishing
+Finance/Credit Companies
+Misc Manufacturing & Distributing
+Pharmaceuticals/Health Products
+Business Services
+Casinos/Gambling
+Building Materials & Equipment
+Insurance
+Sea Transport
+Mining
+Misc Finance
+Tobacco
+Air Transport
+Misc Transport
+TV/Movies/Music
+Beer, Wine & Liquor
+Railroads
+Renewable Energy
+Home Builders
+Misc Unions
+Employer Listed/Category Unknown
+Construction Services
+Health Services/HMOs
+For-Profit Education
+Textiles
+Other
+Misc Energy
+Misc Agriculture
+Transportation Unions
+Hospitals/Nursing Homes
+Non-Profit Institutions
+Industrial Unions
+Waste Management
+Civil Servants/Public Officials
+Building Trade Unions
+Education
+Health Professionals
+Misc Issues
+Abortion Policy/Pro-Abortion Rights
+Lawyers/Law Firms
+Human Rights
+Public Sector Unions
+Environment
+Women's Issues
+Clergy & Religious Organizations
+
+3
+
+2
+
+1
+
+0
+
+1
+
+Lobbying Position Score
+
+2
+
+3
+
+3
+
+2
+
+1
+
+0
+
+1
+
+Lobbying Position Score
+
+2
+
+3
+
+Fig. 11. Bills with high Engage ratios, illustrating bill positions across industries
+
+Kim et al.
+
+PNAS
+
+—
+
+April 23, 2025
+
+—
+
+vol. XXX
+
+—
+
+no. XX
+
+—
+
+19
+
+Distribution of Bill latent score by Sonspor's Party
+Party
+Democrat
+Republican
+Independent
+
+Count
+
+80
+
+60
+
+40
+
+20
+
+1.00
+
+0.75
+
+D
+
+0
+
+RA
+FT
+
+100
+
+0.50
+
+0.25
+
+0.00
+
+0.25
+
+Bill Latent Score
+
+0.50
+
+0.75
+
+1.00
+
+Fig. 12. Sponsor party’s distribution of the bill’s latent score.
+
+20
+
+—
+
+www.pnas.org/cgi/doi/10.1073/pnas.XXXXXXXXXX
+
+Kim et al.
+
+

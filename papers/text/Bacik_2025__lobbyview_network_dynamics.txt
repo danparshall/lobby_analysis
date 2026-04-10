@@ -1,0 +1,7183 @@
+Measuring the dynamical evolution of the United States lobbying network
+Karol A. Bacik,1 Jan Ondras,1 Aaron Rudkin,2 Jörn Dunkel,1 and In Song Kim2
+1
+
+arXiv:2503.11745v2 [physics.soc-ph] 5 Feb 2026
+
+Department of Mathematics, Massachusetts Institute of Technology,
+77 Massachusetts Avenue, Cambridge, MA 02142, USA
+2
+Department of Political Science, Massachusetts Institute of Technology,
+77 Massachusetts Avenue, Cambridge, MA 02142, USA
+(Dated: February 6, 2026)
+
+Lobbying networks constitute complex political systems that mobilize vast human and nancial resources to in uence governmental decisionmaking, often with profound national and global
+consequences [1–4].
+A comprehensive understanding of lobbying strategies and dynamics requires time-resolved, system-wide data, which
+are largely unavailable for most political systems [5, 6]. In the United States (U.S.), the
+Lobbying Disclosure Act (LDA) of 1995 mandates
+public reporting of all federal lobbying activities
+in detailed quarterly lings. However, extracting
+structured, quantitative information from these
+lings has remained technically challenging and
+labor-intensive. Here we present and analyze LobbyView [7], a relational database that integrates
+and disambiguates data from more than 1.6 million LDA reports. LobbyView provides access to
+detailed lobbying disclosures, reconciled corporate entities, and tools for linking LDA data to
+external legislative and corporate databases. We
+demonstrate the utility of LobbyView by examining both macro-level and highly granular lobbying dynamics. Speci cally, we reconstruct the
+connectivity patterns of the U.S. lobbying network, and we show how they evolve over time, we
+identify organizational principles such as the accumulation of professional contacts within a small
+set of rms, and reveal how lobbying activity is
+synchronized with electoral cycles. Moreover, we
+introduce a probabilistic framework for analyzing lobbying behavior at the scale of individual
+bills, issues, or rms. We envision LobbyView [7]
+as a resource not only for political scientists, but
+also for quantitative interdisciplinary research,
+enabling the application of methods from statistical physics, systems biology, and machine learning to the study of lobbying systems.
+Political networks [8–11] are complex dynamical systems that evolve and adapt in response to national and
+global events [12, 13]. A prime example is the U.S. lobbying system [1, 2], a self-organized multilayered network
+(Fig. 1A) that, fueled by billions of dollars annually [1],
+has signi cantly shaped the course of policymaking in the
+U.S. [14–16]. The interplay between lobbyists, rms, legislators, and agencies within the U.S. lobbying network
+has profound consequences for both national [17] and international [18] issues, including the economy [19], global
+
+climate [20, 21] and health [22] crises, and armed [23]
+con icts. Understanding these interactions is a central
+challenge in the social and political sciences: which political entities engage in lobbying and which strategies do
+they pursue [24]? What determines the scale of lobbying
+expenditures [25], and how do they a ect downstream
+policy decisions [16]? How does the lobbying network
+reorganize in response to disruptive events such as the
+2007–2008 nancial crisis or the COVID-19 pandemic?
+Despite the importance of a systemic understanding
+of these and other critical issues, and notwithstanding
+important methodological advances [5, 6, 26], a quantitative end-to-end analysis of the network of actors in
+lobbying and their interactions remains elusive. This
+gap primarily persists due to the absence of comprehensive, high- delity data that captures both the monetary
+and informational ows, as well as the intricate dynamics among the various components of the U.S. lobbying
+system. The availability of such data holds the key to
+substantial future progress as it opens the possibility of
+utilizing recently developed methods from network theory [27–31], applied mathematics [32, 33] and statistical
+physics [34, 35] to achieve a predictive understanding of
+political decision processes. In particular, such data will
+o er a chance to compare the evolution and adaptation
+within an in uential human interaction network with the
+emergent dynamical behaviors and scaling laws found in
+other complex social [36–38], biological [39–41], physical [42, 43], and information-processing [44, 45] network
+systems.
+In general, lobbying can take di erent forms (advertisements, donations, campaigning through political action committees (PACs), intervention in primary elections, federal policy advisory committees, etc.), some
+more elusive than others [46–50]. Nevertheless, critical
+insight into federal lobbying in the U.S. can be gained
+by analyzing the data from the Lobbying Disclosure
+Act (LDA) reports. Here we present and analyze LobbyView [7], a comprehensive database enabling quantitative analysis of all federal lobbying activities in the
+United States since 1999. Continuously expanded over
+the past decade and now made publicly available in complete form, LobbyView integrates more than 1.6 million
+lings, representing over 87 billion USD in lobbying expenditures. The records provide granular detail on each
+reported interaction among clients, lobbying rms, lobbyists, government entities, and politicians, with halfyearly—and more recently, quarterly—temporal resolu-
+
+2
+tion.
+To showcase the potential of LobbyView as a resource
+for interdisciplinary quantitative research, we use our
+data to characterize the complex dynamics of the lobbying network at di erent time scales. We nd that
+long-term evolution of professional connections is governed by features shared with other complex systems,
+such as preferential attachment; mid-term system dynamics track election cycles; and short-term perturbations in the network are often responses to critical global
+events, such as the global nancial crisis of 2008 or the
+COVID-19 pandemic. Importantly, LobbyView and the
+LDA data can also be used to estimate and compare the
+conditional probabilities of di erent lobbying strategies
+to reveal the lobbying behaviors of individual clients or
+sectors at increasing levels of resolution.
+THE LOBBYVIEW DATABASE
+
+Lobbying reports. The Lobbying Disclosure Act
+(LDA) of 1995, later amended by the Honest Leadership
+and Open Government Act (HLOGA) of 2007, mandates
+that federally registered lobbyists and lobbying rms
+(registrants) le quarterly reports [51]. These reports,
+known as LD-2 disclosure forms, detail their lobbying
+activities on behalf of their clients. The disclosures include the total lobbying expenditures and payments by
+the clients during the relevant period, along with a breakdown across 79 policy issues of concern, including taxation, international trade, healthcare, and more. For each
+issue area, registrants must provide detailed information
+about the speci c subjects of their lobbying, including
+any lobbied congressional bills or resolutions. These disclosures are unstructured text and require considerable
+e ort to extract and structure. Reports are additionally
+required to identify the federal agencies, departments,
+and chambers of Congress that were targeted for lobbying. The names of individual lobbyists involved and any
+past working relationships between these lobbyists and
+government o cials or legislators are also disclosed. We
+have collected and curated this data into the LobbyView
+database [7, 52], which is continuously updated with new
+records as they become available.
+Technical aspects. A substantial yet often underappreciated technical challenge is that the same lobbying
+actor (e.g., a lobbyist) may appear in LDA reports under
+multiple variations of their name (e.g., Joseph Smith,
+Joe Smith, J. Smith). Similarly, rms are frequently
+represented inconsistently, and when companies change
+names, merge, or are acquired, the raw report data typically lacks a reliable identi er to uniquely track them.
+To resolve these and other text disambiguation challenges
+and produce unique identi ers for every agent and rm in
+the database, we developed and implemented matching
+algorithms (see [52]), which make it possible not only to
+accurately infer the connectivity patterns of the lobbying network but also to interface unstructured LDA re-
+
+ports to major external databases, such as WRDS Compustat [53], BoardEx [54], Moody’s Orbis [55], NOMINATE/VoteView [56] congressional ideological scores, interest group scores of legislators, and personal political
+donation records. To enable future research, LobbyView
+provides access to the identi ers required to cross-link
+with external databases.
+
+RECONSTRUCTING THE LOBBYING
+NETWORK
+
+The disambiguated LobbyView data allow us to discern structural features of the complex lobbying network. To illustrate this, we elucidate the network dynamics and the statistical properties of interactions between di erent types of actors by adopting a meso-level
+approach that treats classes of actors as the relevant
+unit of analysis. Speci cally, we distinguish ve primary
+categories of lobbying actors: clients ( rms or interest
+groups initiating lobbying e orts), registrants (lobbying
+rms responsible for ling reports), lobbyists (individuals
+directly involved in lobbying activities), government entities (House(s) of Congress, and federal agencies and departments targeted by lobbyists), and legislators (members of the U.S. Congress). Accordingly, we visualize
+the lobbying network as a multipartite ve-layered graph
+(Fig. 1A) [57]. The rst (most upstream) layer of the
+network corresponds to clients (green), contracting registrants in the second layer (brown), who employ lobbyists
+in the third layer (gray). Registrants have two primary
+types: either In-House departments of the client rm, or
+external lobbying rms (often metonymically called KStreet rms, after the street in Washington, D.C. where
+many are headquartered). We assign connections between the rst three layers of the network by adding
+edges c → r and r → l if lobbyist l lobbied for client
+c through registrant r. The resulting representation is
+a trade-o : it is a useful rst-order approximation (see
+Sec. VI of [52]), even as it obscures the richer polyadic
+character of lobbying interactions [33, 58]. The remaining
+two downstream layers represent the targets of the lobbying e orts: government entities (turquoise) and legislators (members of Congress) (red/blue). The LDA does
+not require that registrants disclose direct contacts with
+legislators, so we infer these connections indirectly by
+leveraging past employment of lobbyists by legislators,
+which we make available through LobbyView. Over time,
+more and more lobbyists have documented these past
+connections. In 2023, 20% of lobbyists had a known connection to the government (Sec. III of [52]). Moreover,
+in recent years 80% of Senators and 60% of Representatives have at least one active lobbyist connected to them
+through past employment (Fig. S9 of [52]). This professional network is believed to play an important role in
+the lobbying process [59, 60], though, of course, lobbyists’
+contacts are not limited to their prior employers [61].
+
+3
+
+FIG. 1. Our LobbyView database comprises over 1.6 million public records, covering all federal U.S. lobbying
+since 1999, and enabling a time-resolved reconstruction of the multilayered architecture and scaling behaviors
+of the lobbying network. (A) The data processing from the Lobbying Disclosure Act (LDA) reports to lobbying network
+starts with the digitalized text of publicly available disclosures. The atomistic data is then compiled into a relational database,
+which can be interfaced with other political datasets. To correctly infer the statistics of lobbying activities and infer the lobbying
+network structure, we clean the data and disambiguate the lobbying actors. (B) Network representation of all U.S. federal
+lobbying activities during the year 2017. The rst layer comprises 10,694 clients initiating lobbying (green), and the second layer
+comprises 4,405 registrants (brown). The node size in these layers is proportional to the cumulative USD amount spent/received
+by each individual client/registrant (c.f. Sec. IV and V of [52]). The registrants are connected to 11,543 lobbyists they employ
+(third layer, gray). We also reconstructed historical associations of lobbyists with 128 speci c government agencies (turquoise)
+or current members of Congress (374 legislators; Democrats in blue and Republicans in red). The details of the visualization
+can be found in [52], Sec. VII.
+LONG-TERM DYNAMICAL EVOLUTION AND
+ACCUMULATED ADVANTAGE
+
+Ever-changing actors. The lobbying network is
+highly dynamic, demonstrating continual evolution and
+adaptation to changes in the national and geopolitical environment. Because our database encompasses lobbying
+
+reports from 1999 to present, it o ers a unique opportunity for longitudinal analysis of such processes [39, 62–
+64]. Focusing on the K-Street registrants ( rms that at
+least once lobbied on behalf of another client), we observe an annual in ux of 200–500 new registrants into
+the network, alongside a comparable number exiting ones
+(Fig. 2B). As the set of registrants regenerates and reju-
+
+Probability of registrant still
+operating after y years
+
+4
+
+2000
+
+0.8
+
+2020
+
+0.6
+
+0.4
+
+0.2
+0
+
+10
+20
+Years passed y
+
+100
+
+Cummm. pref. attachment
+
++
+
+(c)
+
+2010
+Year
+
+c2
+
+10 1
+
+10 2
+
+10 3
+
+10 4
+101
+Number of clients c
+
+100
+
+102
+
+% registrants with at least c clients
+
+Clients per K-Street registrant
+102
+
+101
+
+100
+
+10 1
+
+10 2
+100
+
+101
+102
+Number of clients c
+
+103
+
+FIG. 2. The lobbying network is evolving and adapting in response to political landscape and crisis events.
+(A) Attachment and detachment processes in a sample client-registrant-lobbyist (green-brown-gray) network component during
+2020–2023 (for selection methodology see Sec. VIII.D of [52]). (B) Number of active K-Street registrants per year (bars) and
+their yearly increments (circles) and decrements (triangles). The top horizontal bars show the party (Democratic in blue
+and Republican in red) of the Senate majority, House majority, and President by year. The nancial crisis (2007–2008) and
+COVID-19 pandemic (2019–2021) are shown by gray overlays. (C) Number of active clientships (client-registrant connections)
+per year (bars) and their yearly increments (circles) and decrements (triangles). (D) K-Street registrant survival probability.
+(E) Cumulative attachment function π + (c) in terms of K-Street registrant in-degree. The quadratic functional form implies
+that the probability that a new link ‘selects’ a registrant with c clients is proportional to c. (F) Complementary cumulative
+distribution (CCDF) of the number of clients per K-Street registrant (K-Street registrant in-degree), with a tted cut-o power
+law probability mass function p(c) ∝ c−d exp(c/c0 ), where d = 1.46 and c0 = 86 (white dashed line). Quantities in (D–F) are
+computed separately for each year and their precise mathematical de nitions can be found in [52], Sec. VIII.
+
+venates continuously, the network drifts over time. For
+instance, comparing the set of registrants in 2000 and
+2020, we nd that only 20% of the registrants from 2000
+are still active (Fig. 2C).
+Preferential attachment and detachment. Even registrants who remain in operation gain and lose clients
+
+(Fig. 2C). Every year, some clients leave the lobbying
+network, new clients join, and the remaining clients establish relations with new registrants. The scale of this
+rewiring process is quite substantial, as it involves up
+to a third of the clientship connections each year. The
+LobbyView data suggest that the rewiring does not oc-
+
+5
+cur at random, but instead the measured probability of
+a registrant attracting a new client is proportional to
+the number of its existing clients (Fig. 2E) [63–65]. In
+other words, we nd evidence of linear preferential attachment. Preferential attachment [66], also known as
+the Matthew principle [67], describes a network growth
+mechanism in which newly formed links are statistically
+more likely to attach to nodes with higher degree. It
+has been previously observed in other socio-economic networks [66, 68, 69], and is known to provide a mechanism
+for generating heavy-tailed degree distributions [66, 70–
+72]. Consistent with these ndings, the distribution of
+clients per K-Street registrant is also heavy-tailed, and
+it can be approximated by a power law with exponent
+d ≈ 1.5, and a cut-o c0 ≈ 85, (Figure 2F). Practically,
+the heavy tail distribution implies the existence of a small
+group of elite registrants dominating the lobbying market. Quantitatively, we nd that about 80% of K-Street
+income is generated by only 20% of registrants (Sec. V
+of [52]).
+In summary, by analyzing the dynamical evolution
+of the client-registrant ties, we found evidence of preferential attachment, which o ers a plausible explanation for the hierarchical structure of K-Street lobbying.
+We note, however, that preferential attachment is not
+the only principle governing the evolution of the lobbying network; for example, the detachment probability is also proportional to the number of existing clients
+(Fig. S24 of [52]). The preferential attachment and preferential detachment act as countervailing forces, which
+appear to stabilize the statistical equilibrium of the network [64, 73]. Indeed, despite signi cant churn in the
+membership of core political actors involved in lobbying,
+the global statistics of the lobbying network (layer-tolayer degree distributions) have not changed in any substantial way in the past 25 years.
+SHORT-TERM ADAPTATION DRIVEN BY THE
+POLITICAL LANDSCAPE
+
+The lobbying network is not a closed ecosystem, but it
+responds and adapts to national and geopolitical events
+and changes. For instance, Fig. 2B clearly shows a decline in the number of active lobbying rms after 2009,
+persistent for much of the subsequent decade. Plausible
+causes of the decline include the global nancial crisis
+of 2007–2008, and the enactment of HLOGA in 2007,
+which restricted certain forms of revolving–door lobbying [74, 75]. As expected, rms open, close, and adapt
+their activities in response to events. We now explore the
+general characteristics of these adaptations.
+Lobbying subnetworks: robust vs. volatile interests.
+The LDA requires that lobbying reports tie each activity
+to one of the 79 general issue areas [51]. Using this information, we can reconstruct issue subnetworks, di ering
+in size and connectivity. Issues representing core government activities, such as taxation and healthcare, are con-
+
+sistently lobbied by a large number of clients. Less popular issues uctuate in popularity according to the vicissitudes of current controversies or policy initiatives. For
+instance, we observe substantial spikes in lobbying activity concerning disaster planning and small businesses,
+ordinarily fairly uncommon lobbying issues, during the
+early period of the COVID-19 pandemic (Fig. 3A-B). In
+general, by comparing the size of interest groups across
+issues and years, we can quantify the evolution of the
+lobbying issue portfolio.
+Complementary information about the adaptations of
+the lobbying network can be obtained by analyzing target subnetworks and lobbying target portfolios. The targets in this case correspond to the various government
+agencies approached by lobbyists (Fig. 3C-D). Large federal executive departments, such as the Department of
+Health and Human Services, are consistently lobbied by
+many clients every year, so the size of the corresponding subnetwork remains relatively stable. In contrast,
+smaller target subnetworks experience substantial uctuations in size. Some entities, including the National Economic Council, display a periodic pattern, synchronized
+with the presidential election cycle, which economists call
+the political business cycle [76–78].
+Quantitatively, the lobbying issue portfolio and lobbying target portfolio can be represented as feature vectors: columns of the matrix in Fig. 3A and Fig. 3C,
+respectively. To characterize the issue/target adaptations in a systematic manner, we compute year-to-year
+Spearman correlation matrices. This analysis reveals
+that the lobbying issue portfolio is responsive to crisis
+events (Fig. 3E), and the lobbying target portfolio re ects
+changes in government (Fig. 3F). The issue portfolio underwent a major rearrangement following the 9/11 terrorist attacks and during the COVID-19 pandemic. On
+the other hand, the lobbying target correlation matrix
+exhibits a distinct block-diagonal structure, which synchronizes with the election cycle. Thus, it appears that
+lobbyists tend to approach the same entities with consistency during the course of a single presidential administration, but adapt their lobbying e orts quickly when
+changes in leadership occur. This adaptation underscores
+the lobbying network’s sensitivity to the di ering views
+of the two major political parties in the U.S regarding
+the scope and responsibilities of government departments
+and agencies.
+In sum, while the global structure of the lobbying network remains relatively stable, the content and routing
+of information ow can quickly adapt to new issues and
+political contexts. In the next section, we will show how
+the LobbyView data can be used to reveal and examine
+lobbying pathways at high resolution.
+
+6
+
+Average client
+group size
+
+Average client
+group size
+
+Client fraction / Average client fraction
+
+FIG. 3. Our data enables ne-grained analysis of the lobbying network adaptations. (A) Fraction of clients lobbying
+on a given issue, scaled by its average value in all years considered. Some of the spikes of interest can be easily associated with
+crisis events, such as the terrorist attacks of 9/11 or the COVID-19 pandemic. (B) Average number of clients lobbying on a
+given issue. (C) Fraction of clients approaching a given government entity in a given year, scaled by the average value in the
+period considered. The government entities are listed according to the average number of targeting clients. In this Figure, we
+present only the most-approached government entities; a more extensive list can be found in [52], Sec. XI. Some of them, such
+as “President of the United States” (direct lobby) and “Executive O ce of the President” (lobby with President’s sta ), are
+closely related. Nevertheless, we retain the reported format in order to preserve these subtle distinctions. (D) Average number
+of clients approaching di erent government entities. (E) Year-to-year correlation of the issue portfolio vectors (columns of the
+matrix in panel (A)). (F) Year-to-year correlation of the government approach portfolios presented as columns in panel (C).
+The correlation matrix has a manifest block-diagonal structure, synchronous with the presidential terms.
+UNCOVERING PROBABLE LOBBYING
+PATHWAYS
+
+Fundamentally, LobbyView de nes a joint probability
+distribution over a high-dimensional space, with each
+lobbying report corresponding to one elementary event.
+Graphically, each such elementary event can be represented as a pathway through the lobbying network linking all the agents involved in the report: client, registrant, lobbyists, government entities, and legislators (c.f.
+
+Fig. 1B), with additional information such as issue code
+or lobbied bills, provided in an annotation. Under a random null model, any pathway and any annotation would
+be equally likely, but the empirical lobbying network is
+markedly more structured.
+By comparing the empirical probability of di erent elementary pathways, we can conduct detailed case studies,
+e.g., tracking lobbying activities of a speci c company,
+or the career trajectory of a particular lobbyist. We can
+also aggregate elementary events into compound path-
+
+7
+Client
+Industry
+
+Gov. Entity
+Approached
+
+Registrant
+Proﬁle
+
+e
+tiv
+cu
+
+Oﬃ
+
+Legislator
+Association
+
+ce
+
+B
+Re
+ip
+pu
+ar
+bl
+ti
+ic
+sa
+an
+n
+
+A
+
+xe
+
+tE
+en
+id
+s
+e
+
+S (M
+
+ixed
+|
+
+m
+at
+io
+n
+
+S(Inf)
+
+ce
+er
+
+Pr
+
+Inf)
+....
+
+m
+
+om
+
+M
+
+oc
+ra
+tic
+
+k
+ar
+
+ce
+Oﬃ
+
+D
+em
+
+rtm
+pa
+
+De
+
+ix
+ed
+
+em
+ad
+
+Tr
+
+e
+ad
+Tr
+
+e
+tiv
+ta
+en
+es
+r
+p
+Re
+
+on
+e
+
+&
+nt
+
+te
+Pa
+
+N
+
+In
+fo
+r
+
+fC
+to
+en
+
+B
+OM
+
+Probability
+1
+
+ce
+Oﬃ
+ht
+g
+i
+yr
+op
+
+0.75
+
+0.5
+
+0.25
+
+0.05
+
+0.05
+
+C
+S.
+U.
+
+0.05
+
+IT)
+
+tis
+an
+Bi
+pa
+r
+oc
+ra
+t
+em
+D
+0.05
+S (Gov.
+
+0.05
+
+Agency IT)
+
+S (Portfolio
+
+IT)
+
+Co
+m
+
+pa
+ny
+
+S (Proﬁle
+
+U
+.S
+.C
+
+0.05
+
+on
+e
+
+M
+ix
+ed
+0.25
+
+N
+
+et
+KSt
+re
+ne
+O
+In
+-H
+ou
+se
+0.25
+
+(Sector SOPA)
+
+Pa
+Pr
+U
+.S
+es
+te
+.T
+id
+nt
+ra
+en
+&
+D
+de
+t
+ep
+Tr
+Ex
+ad
+Re
+op
+t
+ec
+of
+em
+pr
+yr
+ut
+Co
+es
+ig
+a
+iv
+ht
+rk
+en
+m
+e
+m
+O
+O
+O
+ta
+O
+er
+ﬃ
+ﬃ
+ﬃ
+tiv
+M
+ce
+ce
+c
+c
+B
+e
+e
+e
+
+M
+ul
+tip
+le
+
+KSt
+re
+
+et
+
+O
+th
+er IT
+0.25
+
+E
+Re
+pu
+bl
+ic
+an
+
+D
+
+C
+
+Ac
+co
+m
+
+M
+in
+m
+in
+o
+Ad
+M
+Tr
+g
+M
+a
+Co dat
+an
+& I
+m
+an
+R
+A
+H
+i
+Ex nfo nuf
+ns W on ea in
+ea S sp
+ag Ed gr
+h
+i
+tr o & l st
+er ort Ut tra rm Fin act
+l
+em O uc icu
+t
+E
+u
+l
+r
+a
+c e F s a R h v a il c a a u
+en the tio ltur Ar tio sa oo tat tiv eta car ice tio itie tio tio nc rin
+t r n e ts n le d e e il e s n s n n e g
+
+B
+
+SOPA clients vs. all clients
+
+IT sector SOPA clients vs. all SOPA clients
+
+FIG. 4. The LobbyView database enables granular analysis of the lobbying dynamics. As an example, in this gure,
+we analyze lobbying surrounding the Stop Online Piracy Act (SOPA). We restrict our attention to the lobbying strategies of the
+67 publicly-traded U.S. rms that lobbied on SOPA in the last quarter of 2011 when the bill was introduced. (A) Technically,
+our analysis amounts to evaluating the probability of di erent lobbying pathways. The pathway highlighted in this diagram
+corresponds to an information sector company, lobbying through both In-House and K-Street rms (mixed pro le), which
+approached the Executive O ce of the President (EOP), and whose lobbyists had connections to both of the major parties
+(bipartisan portfolio). More generally, this diagram can be understood as a coarse-grained version of the lobbying network
+in Fig. 1B, with nodes corresponding to di erent compound random variables. The node sizes represent di erent marginal
+probabilities, and the edge thickness represents conditional probabilities. (B) SOPA-speci c shifts in client sector probability.
+The sectors correspond to 2-digit NAICS codes. Positive probability shift (most prominent for the information sector, containing
+IT companies, as well as publishers, broadcasters and motion picture industry) indicates elevated interest in SOPA. (C) ITspeci c probability shifts in registrant pro le (in-house lobbying department only, both in-house and a K-Street rm (mixed),
+one K-Street rm, or multiple K-Street rms). (D) IT-speci c shifts in the probability of approaching di erent government
+entities. Note that multiple government entities can be approached at the same time, so the events in this layer are not mutually
+exclusive. For brevity, in this gure, we only show the 6 most often mentioned government entities. (E) IT-speci c shifts in the
+probability of having an association with the current legislator of a particular party (Democratic, Republican, both, or none).
+In panels C-E, we restrict our analysis to the SOPA lobby probability distribution PS . Full details of the probabilistic analysis
+are presented in the SI, Section XII.
+
+ways and investigate increasingly general aspects of the
+lobbying dynamics (Fig. 4A). We will now illustrate this
+approach through a case study on industry lobbying related to the Stop Online Piracy Act (SOPA) of 2011.
+SOPA was a bipartisan bill, introduced in the House
+
+of Representatives in October 2011, aimed at combating copyright infringement. It was broadly supported
+by entertainment and media companies, but equally opposed by information technology (IT) rms, who viewed
+the bill as exposing them to liability and chilling user
+
+8
+expressions of free speech. The bill’s eventual legislative failure was deemed by contemporary media analyses
+as surprising, and attributed to concerted e orts by information technology companies to lobby and generate
+public backlash [79]. Data from LobbyView con rms that
+IT companies indeed lobbied SOPA in a major way, and
+they allow us to investigate their lobbying strategies in
+depth.
+To quantify the involvement of di erent industry sectors in SOPA lobby, we analyze the probability space
+of lobbying pathways pursued by publicly-traded rms
+in the last quarter of 2011. We are able to assign
+clients to industry sectors because LobbyView provides
+bindings to S&P Compustat [53] – an external corporate database that contains information about the North
+American Industry Classi cation System (NAICS) code
+of corporate clients. If we randomly select a lobbying
+client C, the probability that C belongs to the IT sector
+P(C ∈ Inf) is about 0.1, re ecting the general structure
+of the lobbying market. However, the conditional probability that C belongs to the information sector, given
+that this client mentioned SOPA in one of their reports
+P(C ∈ IT | SOPA) is more than 0.4. The substantial
+probability shift
+∆P(IT | SOPA) = P(C ∈ IT | SOPA) − P(C ∈ IT)
+con rms that the information industry indeed took
+particular interest in SOPA when it was rst introduced (inset of Fig. 4B).
+This basic computation is a starting point for answering more detailed questions about lobbying strategies. Which registrants did the information companies
+hire? Which government entities or agencies did they approach? Do they rely on connections between lobbyists
+and legislators? All of these questions can be answered
+by computing appropriate information-speci c probability shifts. Thus, we discover that IT rms were more
+likely to hire multiple external K-street lobbying rms
+(Fig. 4C), more likely to contact the Executive O ce
+of the President (Fig. 4D), and more likely to assemble lobbying teams with pre-existing connections to both
+the Democratic and Republican parties (Fig. 4E). These
+ndings reveal that the IT industry rolled out a broader
+lobbying campaign compared to other companies interested in SOPA, supporting the hypothesis that a diverse
+lobbying portfolio can be conducive to legislative success.
+In SI Section XII, we apply the same Bayesian analysis
+to additional bill-lobbying case studies, demonstrating its
+potential to elucidate connections between lobbying and
+legislation. As the relational structure of the LobbyView
+database enables rapid calculation of lobbying pathway
+likelihood, similar probabilistic methodologies [80, 81]
+can be deployed to investigate a wide range of topics,
+
+[1] M. Bombardini and F. Trebbi, Empirical models of lobbying, Annual Review of Economics 12, 391 (2020).
+
+from partisan polarization [82] (c.f. Sec XIII of [52]) to
+revolving door e ects [74, 75] in lobbying, quantitatively.
+DISCUSSION
+
+We introduced LobbyView, a high-dimensional dataset
+that uses Lobbying Disclosure Act lings to construct
+a dynamical network enabling quantitative end-to-end
+analysis of the U.S. lobbying system. To understand the
+interactions between the various political stakeholders,
+we represented the lobbying system as a layered network
+that transforms competing interests (left-most layer) into
+lobbying pressure (subsequent layers). We illustrated the
+potential of LobbyView as a research resource that allows
+us to investigate lobbying dynamics at di erent levels of
+granularity. At the global level, we computed key characteristics of the lobbying network, including degree distributions, dynamic evolution patterns, and adaptations
+triggered by political events. Our analysis revealed that
+preferential attachment is a signi cant mechanism in the
+long-term evolution of connections, the dominant role of
+the election cycle for the selection of lobbying targets,
+and the adaptability of information ow in response to
+critical events. We also introduced a template for nescale probabilistic analysis of lobbying dynamics, using
+lobbying strategies for a speci c bill as an illustrative example. The probabilistic formulation provides a uni ed
+framework that can be used to explore di erent aspects
+of the lobbying dynamics. Interesting avenues for future
+research include also the role of higher-order (Sec. VI of
+the SI) and multilayer interactions [33, 57, 58], as well
+as the multiscale community structure of the lobbying
+network [83, 84]. LobbyView [7] is continuously updated,
+and we hope it will drive a comprehensive evidence-based
+re ection on interest politics that can increase public
+awareness and help improve the democratic process. A
+collective interdisciplinary e ort across and beyond the
+academic community will be essential for achieving this
+goal.
+
+ACKNOWLEDGMENTS
+
+This research received support through Schmidt Sciences, LLC (to J.D.), the MathWorks Professorship
+Fund (to J.D.), the National Science Foundation (SES1725235, SES-2017315) (to I.K.), and the Russell Sage
+Foundation (# 1908-17912) (to I.K.). I.K. and J.D. are
+grateful for seed grant support from the Social and Ethical Responsibilities of Computing (SERC) Initiative of
+the MIT Schwarzman College of Computing, and from
+the ICSR Seed Fund of the MIT Institute for Data, Systems, and Society.
+
+[2] J. M. D. Figueiredo and B. K. Richter, Advancing the
+empirical research on lobbying, Annual Review of Polit-
+
+9
+ical Science 17, 163 (2014).
+[3] R. L. Hall and A. V. Deardor , Lobbying as legislative subsidy, American Political Science Review 100, 69
+(2006).
+[4] F. R. Baumgartner, J. M. Berry, M. Hojnacki, B. L.
+Leech, and D. C. Kimball, Lobbying and policy change:
+Who wins, who loses, and why (University of Chicago
+Press, 2009).
+[5] D. M. J. Lazer, A. Pentland, D. J. Watts, S. Aral,
+S. Athey, N. Contractor, D. Freelon, S. Gonzalez-Bailon,
+G. King, H. Margetts, A. Nelson, M. J. Salganik,
+M. Strohmaier, A. Vespignani, and C. Wagner, Computational social science: Obstacles and opportunities,
+Science 369, 1060 (2020).
+[6] H. Y. You, Ex post lobbying, The Journal of Politics 79,
+1162 (2017).
+[7] LobbyView Database, https://www.lobbyview.org/
+(2024).
+[8] M. A. Porter, P. J. Mucha, M. E. J. Newman, and C. M.
+Warmbrand, A network analysis of committees in the
+U.S. House of Representatives, Proceedings of the National Academy of Sciences U.S.A. 102, 7057 (2005).
+[9] J. H. Fowler, Connecting the Congress: A study
+of cosponsorship networks, Political Analysis 14, 456
+(2006).
+[10] D. M. J. Lazer, Networks in political science: Back to the
+future, PS: Political Science and Politics 44, 61 (2011).
+[11] R. M. Bond, C. J. Fariss, J. J. Jones, A. D. I. Kramer,
+C. Marlow, J. E. Settle, and J. H. Fowler, A 61-millionperson experiment in social in uence and political mobilization, Nature 489, 295 (2012).
+[12] D. Igan, P. Mishra, and T. Tressel, A stful of dollars:
+Lobbying and the nancial crisis, NBER Macroeconomics
+Annual 26, 195 (2012).
+[13] J. J. V. Bavel et al., Using social and behavioural science to support COVID-19 pandemic response, Nature
+Human Behaviour 4, 460 (2020).
+[14] E. E. Schattschneider et al., Politics, Pressures and the
+Tari (Prentice Hall, 1935).
+[15] M. Tripathi, S. Ansolabehere, and J. M. Snyder, Are PAC
+contributions and lobbying linked? New evidence from
+the 1995 Lobby Disclosure Act, Business and Politics 4,
+131 (2002).
+[16] R. L. Hall and A. V. Deardor , Lobbying as legislative subsidy, American Political Science Review 100, 69
+(2006).
+[17] K. Kang, Policy in uence and private returns from lobbying in the energy sector, The Review of Economic Studies
+83, 269 (2016).
+[18] I. S. Kim and H. V. Milner, Global Goliaths: Multinational corporations in the 21st century economy, in in
+Multinational Corporations in a Changing Global Economy, edited by D. Wessel, J. Hines, and C. F. Foley
+(Brookings Institution, 2020).
+[19] I. S. Kim, Political cleavages within industry: Firm level
+lobbying for trade liberalization, American Political Science Review 111, 1 (2016).
+[20] R. J. Brulle, The climate lobby: a sectoral analysis of
+lobbying spending on climate change in the USA, 2000
+to 2016, Climatic Change 149, 289 (2018).
+[21] A. Kennard, The enemy of my enemy: When rms support climate change regulation, International Organization 74, 187 (2020).
+
+[22] R. Steinbrook, Lobbying, campaign contributions, and
+health care reform, New England Journal of Medicine
+361, e52 (2009).
+[23] H. V. Milner and D. Tingley, Sailing the water’s edge:
+The domestic politics of American foreign policy (Princeton University Press, 2015).
+[24] M. Bertrand, M. Bombardini, and F. Trebbi, Is it whom
+you know or what you know? An empirical assessment of
+the lobbying process, American Economic Review 104,
+3885 (2014).
+[25] S. Ansolabehere, J. M. De Figueiredo, and J. M. Snyder Jr, Why is there so little money in us politics?, Journal of Economic Perspectives 17, 105 (2003).
+[26] D. M. J. Lazer, A. Pentland, L. Adamic, S. Aral, A.L. Barabási, D. Brewer, N. Christakis, N. Contractor,
+J. Fowler, M. Gutmann, T. Jebara, G. King, M. Macy,
+D. Roy, and M. Van Alstyne, Computational social science, Science 323, 721 (2009).
+[27] A.-L. Barabási, Network Science (Cambridge University
+Press, 2016).
+[28] M. Newman, Networks (Oxford University Press, 2018).
+[29] S. Goyal, Networks, an economic approach (MIT Press,
+2023).
+[30] D. J. Watts, The “new” science of networks, Annual Review of Sociology 30, 243 (2004).
+[31] S. Boccaletti, V. Latora, Y. Moreno, M. Chavez, and
+D. U. Hwang, Complex networks: Structure and dynamics, Physics Reports 424, 175 (2006).
+[32] S. H. Strogatz, Exploring complex networks, Nature 410,
+268 (2001).
+[33] C. Bick, E. Gross, H. A. Harrington, and M. T. Schaub,
+What are higher-order networks?, SIAM Review 65, 686
+(2023).
+[34] R. Albert and A.-L. Barabási, Statistical mechanics of
+complex networks, Reviews of Modern Physics 74, 47
+(2002).
+[35] M. Bardoscia, P. Barucca, S. Battiston, F. Caccioli,
+G. Cimini, D. Garlaschelli, F. Saracco, T. Squartini, and
+G. Caldarelli, The physics of nancial networks, Nature
+Reviews Physics 3 (2021).
+[36] J. H. Fowler and N. A. Christakis, Cooperative behavior
+cascades in human social networks, Proceedings of the
+National Academy of Sciences U.S.A. 107, 5334 (2010).
+[37] M. Szell, R. Lambiotte, and S. Thurner, Multirelational
+organization of large-scale social networks in an online
+world, Proceedings of the National Academy of Sciences
+U.S.A. 107, 13636 (2010).
+[38] A. L. Traud, P. J. Mucha, and M. A. Porter, Social structure of Facebook networks, Physica A: Statistical Mechanics and its Applications 391, 4165 (2012).
+[39] H. Jeong, Z. Néda, and A.-L. Barabási, Measuring preferential attachment in evolving networks, Europhysics Letters 61, 567 (2003).
+[40] S. B. Rosenthal, C. R. Twomey, A. T. Hartnett, H. S.
+Wu, and I. D. Couzin, Revealing the hidden networks
+of interaction in mobile animal groups allows prediction
+of complex behavioral contagion, Proceedings of the National Academy of Sciences U.S.A. 112, 4690 (2015).
+[41] D. S. Bassett and O. Sporns, Network neuroscience, Nature Neuroscience 20, 353 (2017).
+[42] L. Papadopoulos, M. A. Porter, K. E. Daniels, and D. S.
+Bassett, Network analysis of particles and grains, Journal
+of Complex Networks 6, 485 (2018).
+
+10
+[43] M. Pósfai, B. Szegedy, I. Bačić, L. Blagojević, M. Abért,
+J. Kertész, L. Lovász, and A.-L. Barabási, Impact of
+physicality on network structure, Nature Physics 20, 142
+(2024).
+[44] H. Albert, R.and Jeong and A.-L. Barabási, Diameter of
+the world-wide web, Nature 401, 130 (1999).
+[45] A. Broder, R. Kumar, F. Maghoul, P. Raghavan, S. Rajagopalan, R. Stata, A. Tomkins, and J. Wiener, Graph
+structure in the web, Computer Networks 33, 309 (2000).
+[46] T. LaPira, Lobbying in the shadows: How private interests hide from public scrutiny, and why that matters, Cigler, Allan J, Burdett A. Loomis, and Anthony J.
+Nownes (2015).
+[47] A. C. Furnas, M. T. Heaney, and T. M. LaPira, The
+partisan ties of lobbying rms, Research & Politics 6,
+2053168019877039 (2019).
+[48] K. Bawn, M. Cohen, D. Karol, S. Masket, H. Noel, and
+J. Zaller, A theory of political parties: Groups, policy
+demands and nominations in american politics, Perspectives on Politics 10, 571 (2012).
+[49] J. L. Kalla and D. E. Broockman, Campaign contributions facilitate access to congressional o cials: A randomized eld experiment, American Journal of Political
+Science 60, 545 (2016).
+[50] M. Tripathi, S. Ansolabehere, and J. M. Snyder Jr, Are
+pac contributions and lobbying linked? new evidence
+from the 1995 lobby disclosure act, Business and politics 4, 131 (2002).
+[51] U.S. Senate O ce of Public Records, Lobbying Disclosure Act Guidance (2021),
+https://lobbyingdisclosure.house.gov/
+ldaguidance.pdf.
+[52] Supplementary Information.
+[53] S&P Global, Compustat North America Fundamentals Annual, https://wrds-www.wharton.upenn.edu/
+(2025), accessed via Wharton Research Data Services
+(WRDS).
+[54] Altrata, BoardEx, https://wrds-www.wharton.upenn.
+edu/ (2025), accessed via Wharton Research Data Services (WRDS).
+[55] Moody’s, Orbis, https://www.moodys.com/ (2025).
+[56] J. B. Lewis, K. Poole, H. Rosenthal, A. Boche, A. Rudkin, and L. Sonnet, Voteview: Congressional roll-call
+votes database, Tech. Rep. (University of California - Los
+Angeles, 2024).
+[57] M. Kivelä, A. Arenas, M. Barthelemy, J. P. Gleeson,
+Y. Moreno, and M. A. Porter, Multilayer networks, Journal of Complex Networks 2, 203 (2014).
+[58] F. Battiston, G. Cencetti, I. Iacopini, V. Latora, M. Lucas, A. Patania, J. G. Young, and G. Petri, Networks
+beyond pairwise interactions: Structure and dynamics,
+Physics Reports 874, 1 (2020).
+[59] J. Blanes i Vidal, M. Draca, and C. Fons-Rosen, Revolving door lobbyists, American Economic Review 102, 3731
+(2012).
+[60] M. E. Shepherd and H. Y. You, Exit strategy: career
+concerns and revolving doors in Congress, American Political Science Review 114, 270 (2020).
+[61] D. P. Carpenter, K. M. Esterling, and D. M. J. Lazer,
+The strength of weak ties in lobbying networks: Evidence
+from health-care politics in the united states, Journal of
+Theoretical Politics 10, 417 (1998).
+[62] G. Kossinets and D. J. Watts, Empirical analysis of an
+evolving social network, Science 311, 88 (2006).
+
+[63] M. E. J. Newman, Clustering and preferential attachment in growing networks, Physical Review E 64, 025102
+(2001).
+[64] J. Wang, Y. J. Zhang, C. Xu, J. Li, J. Sun, J. Xie,
+L. Feng, T. Zhou, and Y. Hu, Reconstructing the evolution history of networked complex systems, Nature Communications 15, 2849 (2024).
+[65] K. A. Eriksen and M. Hörnquist, Scale-free growing networks imply linear preferential attachment, Physical Review E 65, 017102 (2001).
+[66] A.-L. Barabási and R. Albert, Emergence of scaling in
+random networks, Science 286, 509 (1999).
+[67] D. D. S. Price, A general theory of bibliometric and other
+cumulative advantage processes, Journal of the American
+society for Information science 27, 292 (1976).
+[68] M. P. H. Stumpf and M. A. Porter, Critical truths about
+power laws, Science 335, 665 (2012).
+[69] F. Schweitzer, G. Fagiolo, D. Sornette, F. Vega-Redondo,
+A. Vespignani, and D. R. White, Economic networks:
+The new challenges, Science 325, 422 (2009).
+[70] G. Bianconi and A.-L. Barabási, Competition and multiscaling in evolving networks, Europhysics Letters 54,
+436 (2001).
+[71] O. T. Courtney and G. Bianconi, Dense power-law networks and simplicial complexes, Physical Review E 97,
+052303 (2018).
+[72] B. Bassetti, M. Zarei, M. C. Lagomarsino, and G. Bianconi, Statistical mechanics of the “Chinese restaurant
+process”: Lack of self-averaging, anomalous nite-size effects, and condensation, Physical Review E 80, 066118
+(2009).
+[73] S. Saavedra, F. Reed-Tsochas, and B. Uzzi, Asymmetric disassembly and robustness in declining networks,
+Proceedings of the National Academy of Sciences U.S.A.
+105, 16466 (2008).
+[74] J. R. Straus, Lobbying registration and disclosure: Before and after the enactment of The Honest Leadership
+and Open Government Act of 2007 (DIANE Publishing,
+2011).
+[75] J. B. i Vidal, M. Draca, and C. Fons-Rosen, Revolving door lobbyists, The American Economic Review 102,
+3731 (2012).
+[76] W. D. Nordhaus, The political business cycle, The Review of Economic Studies 42, 169 (1975).
+[77] A. Drazen, The political business cycle after 25 years,
+NBER Macroeconomics Annual 15, 75 (2000).
+[78] K. A. Schultz, The politics of the political business cycle,
+British journal of political science 25, 79 (1995).
+[79] J. Weisman, After an online restorm, congress shelves
+antipiracy bills, New York Times (2012).
+[80] J. Pearl, Probabilistic Reasoning in Intelligent Systems:
+Networks of Plausible Inference (Morgan Kaufmann Publishers Inc., San Francisco, CA, USA, 1988).
+[81] R. Kindermann and J. L. Snell, Markov Random Fields
+and Their Applications, Contemporary Mathematics
+(American Mathematical Society, 1980).
+[82] M. P. Fiorina, Unstable majorities: Polarization, party
+sorting, and political stalemate (Hoover Press, 2017).
+[83] J.-C. Delvenne, S. N. Yaliraki, and M. Barahona, Stability of graph communities across time scales, Proceedings
+of the National Academy of Sciences U.S.A. 107, 12755
+(2010).
+[84] P. J. Mucha, T. Richardson, K. Macon, M. A. Porter, and
+J.-P. Onnela, Community structure in time-dependent,
+
+11
+multiscale, and multiplex networks, Science 328, 876
+(2010).
+
+Supplementary Information for
+‘Measuring the dynamical evolution of the United States lobbying network’
+Karol A. Bacik, Jan Ondras, Aaron Rudkin, Jörn Dunkel, and In Song Kim
+
+Contents
+
+I. Data sources and processing
+A. Lobbying report structure
+B. LobbyView database
+C. Lobbying data
+D. Lobbyist association data
+E. Political data
+
+1
+1
+1
+2
+7
+8
+
+II. Lobbying network construction
+A. Nodes
+B. Edges
+C. Weights
+
+8
+8
+9
+10
+
+III. Order and size of the lobbying network
+
+10
+
+IV. Degree distributions
+A. Average degree
+B. Distribution inference
+C. Weighted degree
+D. Degree correlation
+
+10
+10
+10
+16
+16
+
+V. Concentration analysis
+A. Pareto charts
+B. Gini index
+
+17
+17
+19
+
+VI. Higher order interactions
+
+24
+
+VII. Lobbying network visualization
+A. Node placement
+B. Node size and color
+C. Final assembly
+
+24
+24
+25
+26
+
+VIII. Network evolution
+A. Rejuvenation
+B. Preferential attachment/detachment inference
+C. Registrant out-degree dynamics
+D. Small component example
+
+27
+28
+28
+30
+31
+
+IX. Further analysis of bipartite subgraphs
+A. Clustering coe cient
+B. Largest component
+
+33
+33
+34
+
+X. Registrant centrality
+
+34
+
+XI. Portfolio analysis
+A. Portfolio matrices
+B. Budget-based analysis
+C. Principal component analysis
+
+35
+35
+38
+38
+
+2
+XII. Probabilistic analysis of bill-related lobby
+A. Methodology
+B. Additional examples
+1. American Clean Energy and Security Act of 2009 (ACES)
+2. Coronavirus Aid, Relief, and Economic Security (CARES) Act of 2020
+
+42
+42
+43
+43
+45
+
+XIII. Polarization analysis
+A. Relation-based measures
+B. Reach-based measures
+
+47
+47
+48
+
+XIV. Data and code availability
+
+49
+
+References
+
+50
+
+1
+I. Data sources and processing
+
+In this Section, we describe the data processing procedure, from a lobbying disclosure report to the lobbying
+network. We start by describing the nature of the data and the general features of the LobbyView database, which
+contains plenty of additional data that we do not analyze here. We then specialize to the subset of data that we use
+in this article and describe its structure more formally.
+A. Lobbying report structure
+
+The origin of the lobbying disclosure data included in LobbyView [1] and referred to in this article are disclosures
+made by registrants, and legally required under the Lobbying Disclosure Act of 1995 [2]. Under current federal
+regulations, registrants le three standard disclosure forms to maintain compliance with the act, labeled LD-1, LD-2,
+and LD-203 [3]. Form LD-1 contains the initial registration of a registrant or the initial registration of a new client for
+the registrant. Form LD-2 is the standard periodic report that forms the basis for most of our analysis. Form LD-203
+discloses direct nancial contributions from registered lobbyists. LD-2 lings contain a variety of data, including the
+details of the registrant (including unique identi cation numbers for the U.S. House and U.S. Senate), the client’s
+name, general report metadata, and speci c lobbying income or expenses. Registrants are subsequently asked to
+report details of their activity. Each section of an LD-2 report reports activity for one of 79 “issue codes” during the
+report period. Registrants must identify the issue code, the government entities contacted, the speci c details of the
+lobbying activity, and the lobbyists assigned to this issue in the time period. The speci c details are provided as a
+free text block. There is no particular format for this text block, which means analyzing these records requires careful
+extraction and structuring of the text. The content of these records often includes a general description of the policy
+being lobbied (e.g., “Corporate Tax Reform”, “Accessibility”, “Open Internet”), and/or a list of speci c bills (e.g.,
+“S. 698 - Marketplace Fairness Act”, “H.R. 2315 Mobile Workforce State Income Tax Simpli cation Act”). Filings for
+2008–present are natively led digitally, so the information can be directly extracted as text. Filings from 1999–2007
+were led on paper, and in some cases handwritten, so extraction of data requires text recognition methods (OCR). To
+extract computerized text, we make use of regular expressions and other methods, which we describe further below.
+Lobbyists speci ed as part of an LD-2 section supply two pieces of information: their name, and if changed since last
+reporting, any prior employment connection they had to “covered entities” (executive or legislative branch entities).
+Below, in Fig. S1, we provide examples of individual pages taken from two real-world LDA lings. The leftmost
+page is a ling from Shell Oil for the rst half of 2004 (supplied as a digitized paper copy). This depicts the basic
+registrant, client, and ling data. Here, Shell is acting as an in-house registrant or self- ler (as opposed to a registrant
+representing an external client). The rightmost page is a ling from Boeing for the third quarter of 2022 (as we describe
+below, the ling requirements changed from being biannual to quarterly as the LDA was ultimately amended). This
+page depicts an issue disclosure: Boeing has lobbied a number of bills and general issues under the AER (Aerospace)
+issue code. The variation in textual representation and the presence of incomplete metadata (e.g., describing the
+annual NASA Authorization Act as ‘H.R. XXXX/S. XXXX’) depicts typical di culties associated with processing
+data – at the time the lobbying was occurring, Boeing did not have detailed information about what bill numbers
+would be assigned to recurring appropriation legislation in the given session. Boeing reports the names of many
+lobbyists who worked on this issue, none of whom have new covered position data to report.
+B. LobbyView database
+
+The LobbyView database is a large, frequently updated, relational database that consists of three major components:
+(1) all available lobbying reports, registrants, lobbyists (including lobbyist donation activity), and clients. For each
+of these groups, we retain raw data but also produce cleaned, de-duplicated, standardized versions of the data which
+add unique identi ers to lobbyist and client entities, as well as providing commonly used rm identi ers necessary
+for researchers to attach LobbyView data to external business datasets including S&P CompuStat [4] and Moody’s
+Orbis [5]; (2) all political donations made by members of the public, which can be linked to rms via rm-level
+identi ers and donation ‘employer’ elds (we omit a more detailed treatment of donation data because it is not
+discussed in this paper); and (3) a complete database of all U.S. Congress legislative activity, legislators, and committee
+assignments which can be linked to lobbying activity through bill identi ers and bill-committee assignments.
+In this section, we describe the general approach to gathering, ingesting, and storing this data. We provide more
+details about the ingestion and cleaning of speci c portions of the data as they are discussed below in the context of
+the data used in this paper.
+
+2
+
+4/3/24, 10:02 AM
+
+LD-2 Disclosure Form
+
+LOBBYING ACTIVITY. Select as many codes as necessary to reﬂect the general issue areas in which the registrant engaged in lobbying on behalf of
+the client during the reporting period. Using a separate page for each code, provide information as requested. Add additional page(s) as needed.
+15. General issue area code AER
+16. Speciﬁc lobbying issues
+Aeronautics.
+Acquisition Policy.
+Broadband Satellite.
+Commercial Space Launch.
+Space Flight/Programs.
+Satellite Servicing.
+Science Programs.
+Spectrum - to include 5G.
+S. 919 - Space Frontier Act
+Data Rights Issues.
+Fiscal Year 2023 Appropriations.
+H.R. XXXX /S XXXX - NASA Authorization Act, Fiscal Year 2023.
+H.R. 748 / S. 3548 - Coronavirus Aid, Relief, and Economic Security (CARES) Act.
+Federal Cybersecurity Policy.
+Unmanned Aerial Systems.
+Advanced Air Mobility and Emerging Technology.
+Civil Aviation Cybersecurity.
+Civil Aviation Research & Development.
+H.R. 5305 - Extending Government Funding and Delivering Emergency Assistant Act.
+H.R. 5376 - The Build Back Better Act.
+Subsonic Transport Technologies.
+H.R. 5781 - National Wildland Fire Risk Reduction Program Act.
+H.R. 4521 - America COMPETES Act of 2022.
+H.R. 6270 - The Advanced Aviation Infrastructure Modernization Act.
+17. House(s) of Congress and Federal agencies
+
+Check if None
+
+U.S. HOUSE OF REPRESENTATIVES, U.S. SENATE, Defense - Dept of (DOD)
+18. Name of each individual who acted as a lobbyist in this issue area
+First Name
+
+Last Name
+
+Kevin
+
+Rozelsky
+
+David A.
+
+Young
+
+Thomas
+
+Culligan
+
+Curt
+
+Beaulieu
+
+Tom
+
+McLemore
+
+Lynn
+
+Williams
+
+Veronica
+
+Daigle
+
+Christine
+
+Ramsdell
+
+Meredith
+
+Mellody
+
+Jenness
+
+Simler
+
+Dario J.
+
+Gomez
+
+Kevin P.
+
+Varney
+
+Ziad
+
+Ojakli
+
+Heath
+
+Bumgardner
+
+Matthew
+
+McCarthy
+
+Timothy
+
+Prince
+
+Steven E.
+
+Bachmann
+
+Sufﬁx
+
+19. Interest of each foreign entity in the speciﬁc issues listed on line 16 above
+
+Covered Ofﬁcial Position (if applicable)
+
+Check if None
+
+https://lda.senate.gov/ﬁlings/public/ﬁling/1c0477a4-f697-4904-9db3-0a580fbcc8f5/print/
+
+Filing #5c7366ee-1ce1-4e51-a50f-e0b117eacfca - Page 1 of 26
+
+Shell H1 2004
+
+New
+
+2/18
+
+Boeing Q3 2022
+
+Figure S1. Sample pages from LDA lings. (Left) Filing from Shell Oil for the H1 2004 period. It is a digitized paper copy
+and depicts the registrant and client information as well as the total monetary expenditure for the period. Shell is ling as a
+self- ler, reporting lobbying activity done by lobbyists directly employed by Shell on its behalf. (Right) The right page is a
+ling from Boeing for the Q3 2022 period. This page depicts disclosure for a particular issue: Boeing is lobbying Aerospace
+issues. This page also reports the names of Lobbyists employed by Boeing to lobby for Aerospace issues.
+
+LobbyView begins by gathering data from public and private sources. Lobbying data is gathered from the U.S. Senate Lobbying Disclosure website (lda.senate.gov). The U.S. Senate makes available a data API, which we query
+exhaustively before ingesting. Reports include unique identi ers for registrants, which we use internally. Because
+clients and lobbyists are identi ed only by a textual representation, we need to disambiguate (resolve) them to canonical entities. In the relevant sections below, we describe our e orts to disambiguate clients and lobbyists. We extract
+issue text descriptions from these lings using regular expressions in order to identify speci c legislative bills. We
+match registrants to associated private sector rms (using CompuStat and Orbis data). We then download relevant
+congressional data from the United States digital service [6], including a complete record of legislators who have served
+in the U.S. Congress, their committee assignments, bill sponsorship and cosponsorship data, and bill histories. Thus,
+we are able to link a corporate rm to a lobby registrant to an LDA report to a bill debated by Congress to the
+committee that debated it to the legislators on that committee at the time, allowing for some of the rich data ows
+illustrated in this paper. We use Python to automate downloading the data, which is ingested into a PostgreSQL
+relational database and indexed appropriately.
+The data in LobbyView are made available to researchers in a variety of forms – the access options are described in
+Section XIV.
+
+C.
+
+Lobbying data
+
+We will now describe more precisely the subset of the LobbyView data that we analyze in this study. Here, we use
+only the LD-2 reports (see Sec. I A), and we exclude the reports that indicate ’no lobbying activity’ in line 11, as well
+
+3
+as the reports that are superseded by updated lings, based on line 9 of LD-2 lings.1 Each lobbying report that we
+analyze is assigned a unique ling ID f , as well as nine other features of interest:
+1. Filing year y(f ) ∈ {1999, 2000, . . . , 2023},
+
+2. Self- ling ag s(f ) ∈ {True, False},
+
+3. Monetary amount m(f ) ∈ R+ ,
+4. Client ID c(f ) ∈ {c1 , c2 , . . . },
+
+5. Registrant ID r(f ) ∈ {r1 , r2 , . . . },
+
+6. Set of lobbyist IDs L(f ) ⊆ {l1 , l2 , . . . },
+
+7. Set of approached government entities (House(s) of Congress and Federal agencies) G(f ) ⊆ {g1 , g2 , . . . }
+
+8. Set of general issue areas A(f ) ⊆ {a1 , a2 , . . . , a79 } (c.f. Fig. 4 of the main text).
+
+9. Set of bills B(f )
+
+Combined into a tuple,
+LD(f ) = (f, y(f ), s(f ), m(f ), c(f ), r(f ), L(f ), G(f ), A(f )),
+
+(S.1)
+
+they form a lobbying datum, which is the smallest atom of our lobbying data. We will now describe the basic
+characteristics and technical challenges associated with each one of the eight features. The data provided to support
+replicating this study anonymizes ling IDs, client IDs, registrant IDs, and lobbyist IDs.
+Filing year
+
+Reports analyzed in this study cover the period 1999–2023. The LDA was signed into law on December 19, 1995, but
+rst came into force for the calendar year 1999. Figure S2 presents the number of reports considered in our analysis for
+each year y ∈ {1999, 2000, . . . , 2023}. We immediately notice an abrupt increase in the number of reports in 2008. In
+2007, Congress passed the Honest Leadership and Open Government Act [7], which, among other provisions, altered
+the mandatory reporting frequency provisions of the LDA 1995. Prior to 2008, reports were submitted biannually
+(twice a year). Since 2008, reports have been required each quarter. This is re ected in our data, where the number
+of reports doubled beginning in 2008. Filing and clerical errors (as well as late lings) during the transition period
+contribute to a small number of reports that have invalid ling period codes (e.g., reporting for Q2 in 2006 or for H2
+in 2009). In order to unify our data across this policy transition, we aggregate the periodic data into annualized data,
+thus discarding the exact ling code and considering only the reporting year y (line 8 of LD-2 form).
+
+Self-filer
+
+1999
+2000
+2001
+2002
+2003
+2004
+2005
+2006
+2007
+2008
+2009
+2010
+2011
+2012
+2013
+2014
+2015
+2016
+2017
+2018
+2019
+2020
+2021
+2022
+2023
+
+Number of reports
+
+70000
+60000
+50000
+40000
+30000
+20000
+10000
+0
+
+Figure S2. Number of lobbying reports used in our analysis. Most of the reports are led by lobbying rms lobbying on behalf
+of a client (as opposed to self- lers). Note that the quantity of lings before 2008 is not directly comparable to those since
+2008 due to a legislative change in reporting frequency. In total, we include in our analysis 1,277,411 lings.
+
+1 When we refer to speci
+
+c lines of the LD-2 form, the reader is welcome to consult Fig. S1.
+
+4
+Table S1. Lobbying activity minimum reporting amount in terms of the year and registrant type. Extracted from [2, 7–9].
+Reporting year y Not a self- ler Self- ler
+< 2008
+≥ 2008
+
+$5,000.00
+$3,000.00
+
+$10,000.00
+$5,000.00
+
+Self- ling
+
+Line 7 of LD-2 provides information on whether the ling pertains to an organization lobbying on its own behalf
+(self- ler ag s(f ) = True) or a lobbying rm lobbying on behalf of a di erent client (self- ler ag s(f ) = False).
+Figure S2 shows that most of the reports are led on behalf of someone else.
+Monetary amount
+
+If the lobbying costs exceed a certain threshold (Table S1), the lobbying report must report a dollar value (lines
+12 and 13 of LD-2 lings). This eld di ers depending on the identity of the ler. Registrants who are self- lers (for
+whom s(f ) = True) report the cost of their lobbying activities (line 13 of LD-2 lings), while registrants lobbying on
+behalf of a client (s(f ) = False) report the income they received for lobbying (line 12 of LD-2 lings). We expect that
+rms book income that meets or exceeds the actual costs of their activities. Additionally, self- lers are subject to a
+higher numeric threshold for reporting lobbying costs than non-self- lers are for reporting income (Tab. S1).
+To estimate the money ow in lobbying, we neglect some of these subtleties, and we attach a single monetary
+amount m(f ) to each ling. For most lings, m(f ) is simply the amount reported in either line 12 or line 13. If
+the amount is below the reporting threshold (listed in Table S1), we set m(f ) to this threshold value (for low-cost
+lobbying, this is an upper bound of the actual unknown value). Figure S3 compares the amount of this low-cost
+lobbying,
+∑
+1 [m(f ) bounded heuristically ∧ y(f ) = y] m(f )
+f
+
+3.5
+3.0
+2.5
+2.0
+1.5
+1.0
+0.5
+0.0
+
+Self-filer
+
+1999
+2000
+2001
+2002
+2003
+2004
+2005
+2006
+2007
+2008
+2009
+2010
+2011
+2012
+2013
+2014
+2015
+2016
+2017
+2018
+2019
+2020
+2021
+2022
+2023
+
+Amount in low-cost reports (%)
+
+to the total amount and shows that this lobbying accounts for a very small percentage of our data (in part because
+lobbying rms would prefer to only report when they are legally compelled to do so, and in part because lobbying is
+expensive). We do not believe that this heuristic adjustment has any material impact on our results. Fundamentally,
+there are two main cases where activity would not meet this threshold: the rst is that the activity is highly scopelimited or highly informal, or both. The LDA does not capture this type of advocacy, which is one of the scope
+conditions of our analysis. The second case is one where a registrant-client pair does have an ongoing, formal, and
+in-scope lobbying arrangement, but there was simply not enough business in a given time period. Once registered,
+registrants must report or terminate their registration, and we think the option of reporting (but checking “no activity”
+or “activity below reporting threshold” as appropriate) is more realistic than repeatedly terminating and re-registering
+according to ebbs in activity.
+
+Figure S3. The upper bound of the total monetary amount associated with the ‘low-cost reports’, i.e., the reports where the
+lobbying income/expenditure falls below the threshold value. Note a steady decrease in the proportion of the lobbying market
+taken by the low-cost activities.
+
+5
+
+3.0
+
+Self-filer
+
+Amount (billion $)
+
+2.5
+2.0
+1.5
+1.0
+0.0
+
+1999
+2000
+2001
+2002
+2003
+2004
+2005
+2006
+2007
+2008
+2009
+2010
+2011
+2012
+2013
+2014
+2015
+2016
+2017
+2018
+2019
+2020
+2021
+2022
+2023
+
+0.5
+
+Figure S4. Total lobbying amount for all the reports in a given year. Due to a di erent de nition of the lobbying amount, the
+gures for self- lers and not-self- lers are not exactly comparable. The total amount reported in these reports is $87.5 billion.
+
+In Fig. S4, we show the total annual amount associated with self-lobbying
+∑
+1 [s(f ) = True ∧ y(f ) = y] m(f )
+f
+
+and the total annual amount associated with third-party lobbying
+∑
+1 [s(f ) = False ∧ y(f ) = y] m(f ).
+f
+
+We note that the latter amount is often larger, even though third-party lobbying is responsible for a larger number
+of reports (Fig. S2). This di erence might be partly due to the di erences in ling requirements, but also due to
+structural di erences between externally lobbying rms and in-house lobbying departments.
+Client
+
+Each LD-2 ling discloses the name of the associated client in line 7. Clients include private rms, NGOs and
+interest groups, municipalities, and more. Because this is a free-form text label, it is non-trivial to isolate the exact
+real-world entity associated with a client name. The same rm might be a lobbying client on many lings under a
+variety of di erent representations. These issues range from minor (’APPLE, INC.’ and ’APPLE INC.’ are the same
+rm) to more complex (’APPLE COMPUTER’ and ’APPLE INC.’ are the same rm). When rms acquire, merge,
+or change names, variations can be much more extreme (e.g., ‘META PLATFORMS INC.’ and ‘FACEBOOK’ are
+the same rm). Clients are not assigned unique identi ers under the LDA because the LDA is intended to regulate
+lobbying rms, not interested clients. As a result, naively using the entity representations without resolving the
+underlying entities will lead to a failure to accurately assess each client’s expenditure or level of activity. We use a
+process which we call search-assisted disambiguation to solve the problem. In summary, using an online search engine,
+we perform a search for the representation of a client name. From the results, we identify the website that the search
+engine associates with the client name. When two di erent textual representations are attached to the same website,
+we consider them the same entity. This approach empirically performs very well for current entities, and perfectly for
+S&P 500 companies. E ectively, search engines are designed to perform disambiguation of ambiguous search queries,
+so this should not be a surprise. Although this approach has some limitations,2 It improves on rules-based approaches
+(e.g., string distance, cosine similarity, etc.) typically used in these settings.
+The total number of distinct clients that we identify in any given year will be presented in Fig. S6A, alongside other
+entities.
+
+2 Key limitations include the fact that long-bankrupt
+
+rms typically have very poor internet presence and that certain classes of nonpublic-facing rms are more likely to resolve to third-party directories and resources than to have their own internet presence. We take
+measures to mitigate these limitations: we attempt to use historical data taken from Wikipedia to identify cases where rms are defunct
+in order to identify the risk of a false positive, and we use a blocklist to remove a wide swath of online rm directories.
+
+6
+Registrant
+
+The lobbying report is submitted by the registrant r, which could be an organization, lobbying rm, or a selfemployed individual. Registrants are identi ed by unique U.S. Senate and U.S. House IDs, which must be disclosed
+on lines 5 and 6 of the LD-2 ling, and so no further disambiguation is required.3 Some registrants le only as
+self- lers. We call these registrants In-House registrants – as one example, consider industry-based interest groups
+such as the Chamber of Commerce of the United States of America, which has reported $1.73 billion in lobbying
+expenditures over the life of our dataset, all self- led; or larger corporate entities such as General Electric, which
+has reported $364 million in in-house lobbying expenditures over the life of our dataset. Other registrants le also
+on behalf of other (as non-self- les), in which case we call them K-Street registrants. We classify each registrant as
+In-House or K-Street, reviewing all the lobbying reports in the database, such that
+r ∈ In-House ⇔ ∀f : r(f )=r s(f ) = True,
+
+r ∈ K-Street ⇔ ∃f : r(f )=r s(f ) = False.
+
+(S.2)
+
+The evolution of the total number of registrants is presented in Fig. S6B, and an in-depth analysis of the dynamics
+of K-Street registrants is shown in Fig. 2B of the main article.
+Some K-street registrants also lobby on their own behalf and thus occasionally submit reports as self- lers, but
+Fig. S5 shows that such cases constitute only a modicum of all the lobbying data.
+0.5
+
+% K-Street reports
+
+A
+
+0.4
+0.3
+0.2
+
+0.0
+
+% self-filing total amount
+
+B
+
+1999
+2000
+2001
+2002
+2003
+2004
+2005
+2006
+2007
+2008
+2009
+2010
+2011
+2012
+2013
+2014
+2015
+2016
+2017
+2018
+2019
+2020
+2021
+2022
+2023
+
+0.1
+
+2.0
+1.5
+1.0
+
+0.0
+
+1999
+2000
+2001
+2002
+2003
+2004
+2005
+2006
+2007
+2008
+2009
+2010
+2011
+2012
+2013
+2014
+2015
+2016
+2017
+2018
+2019
+2020
+2021
+2022
+2023
+
+0.5
+
+Figure S5. (A) Percentage of lobbying reports submitted by K-Street registrants (according to de nition (S.2)) on their own
+behalf (as self- lers). (B) Percentage of the total self- ling amount generated by self-reports of K-street registrants decreases
+over time.
+
+Lobbyists
+
+In addition to client c and registrant r, the lobbying report also provides information about lobbyists L(f ) (line 18
+of LD-2 lings). Note that each report contains exactly one client and exactly one registrant, but there is no limit to
+the number of lobbyists, and some reports mention no lobbyists at all.
+3 As with clients, we are also able to connect registrants to external corporate identi
+
+ers by the same search engine-driven disambiguation
+method described above; although this is not directly relevant to this paper, we make linking identi ers available in our broader dataset.
+
+7
+Because lobbyists are identi ed uniquely by names, and not any other identi er, they also require disambiguation.
+If a lobbyist named Maria Gutierrez appears on multiple lings across multiple registrants, it may be the case that she
+is a single lobbyist who worked for multiple registrants. Or it may be the case that there are multiple lobbyists with
+the same name. Other cases are more complex: Are Jon Smith, John Smith, and Jonathan Smith the same lobbyist?
+Disambiguating individual names using our rm-name approach is currently infeasible, so we use a score-based entity
+resolution approach. We block on characteristics of lobbyists (name, past covered position history, registrants, years
+of operation) and agglomerate high-probability matches to yield distinct lobbyists from ambiguous name entries.
+Figure S6C shows how the total number of active lobbyists has been changing over time.
+Government entities
+
+A lobbying report provides information about the government entities (House(s) of Congress and Federal agencies)
+G(f ) (line 17) approached during the course of lobbying. Similarly to the set of lobbyists L(f ), the set of approached
+government entities can be empty or arbitrarily large. To be precise, a report can mention one government entity
+multiple times, in relation to di erent issues, but we disregard this multiplicity. In modern reports, entities are
+selected from a closed set; in earlier reports, entities are extracted and resolved from an open text submission. In
+general, because U.S. agencies are a closed set, the matching task is simpler than the previously described elds: we
+do so fairly directly using string distance methods. The set of entities includes a number of o ces that overlap (e.g.,
+the O ce of President vs. the President; the White House O ce vs. the Executive O ce of the President), so in some
+applications one may wish to consolidate the list of entities based on the speci c needs. We do that for example in
+Fig. 4 of the main text, where we consolidate White House O ce and the Executive O ce of the President (c.f. XII).
+The full set of government entities considered will be discussed in Sec. XI.
+General issue areas
+
+The set of general issue areas A(f ) is derived from their abbreviations/codes on line 15 of the Lobbying Disclosure
+Form. The issue areas come from a standardized list of 79 items. All of them can be found on the y-axis of Fig. 4A
+of the main article.
+Bills
+
+This set includes all the bills that the lobbyists reportedly lobbied on. The bills are referenced with their ID number,
+which allows us to relate the lobbying activity to the Congressional data. In this study, we use the bill data in the
+example of the probabilistic analysis XII).
+D. Lobbyist association data
+
+From mandatory disclosures made in LD-2 lings (line 18), we also gather association data, which describes the
+past professional relationships of registered lobbyists.
+When registering, a lobbyist discloses if they have a past history as a covered o cial, which is a legal term under
+the LDA that includes a variety of positions and o ces. In brief, covered o cials include all elected o cials in
+the federal government, their assistants and Chiefs of Sta , civil servants who are political appointees, executives of
+federal agencies or departments (this requirement is broad enough to cover U.S. Parole Commission commissioners,
+National Parks Service directors, and federally-operated regional electrical agencies), high-ranking military o cers,
+and more. The LDA requires that o cials disclose such past positions as part of the public interest in understanding
+“revolving-door” lobbying. Once disclosed in a ling, the positions need not be disclosed again. Thus, an individual
+lobbyist will typically disclose their past positions when they begin lobbying and never again, though some lobbyists
+do routinely re-report the same relationships with each ling. Should the lobbyist return to public service and serve
+in other covered positions, they are obligated to disclose if they subsequently lobby. The lobbyists do not need to
+provide detailed timeline information for covered positions, and so it is impossible to identify from the lings whether
+a lobbyist’s employment was recent or in the distant past. We apply text processing methods, including regular
+expressions, to identify the exact position from the free-form text and match the o cial to agencies, departments, or
+individual legislators.
+
+8
+We compile our ndings in a government association function g(l, y) and the political association function p(l, y),
+which take as an input lobbyist ID l and year y.
+The government association function outputs the set of government entities that the lobbyist worked for that have
+been mentioned in the LDA reports in year y or earlier. Controlling for the year, i.e., using g(l, y), instead of g(l),
+allows us to avoid using associations reported in the future to make conclusions about the past. By construction,
+y1 < y 2
+
+⇒
+
+g(l, y1 ) ⊆ g(l, y2 ).
+
+̸⇒
+
+p(l, y1 ) ⊆ p(l, y2 ),
+
+The political association function p(l, y) is an analogous set of all the present legislators (members of the Congress in
+year y) that lobbyist l reported working for (in year y or earlier). Note that this time
+y1 < y 2
+as the legislator might not be in o ce anymore.
+E.
+
+Political data
+
+Our data on legislators is sourced directly from the United States digital service congressional legislator database [6].
+We retrieve and ingest this political data for each legislator (politician) p, and we construct the a liation functions
+Party(p, y) and Chamber(p, y) providing information about the partisan a liation and Congress chamber of the
+legislator p in year y.
+Party a liations of the President, House majority, and Senate majority (shown in Fig. 2–4 of the main text) are
+taken from https://history.house.gov/Institution/Presidents-Coinciding/Party-Government/.
+II.
+
+Lobbying network construction
+
+After the initial processing described in Sec. I, we use the lobbying data (Sec. I C), a liation data (Sec. I D), and
+the political data (Sec. I E) to construct year-indexed multi-layer directed graphs G1999 , G2000 , . . . , G2023 , that we call
+lobbying networks. The nodes and edges of Gy are denoted by V (Gy ) and E(Gy ) respectively. The lobbying networks
+are constructed for each year separately. In this Section, we describe the details of their construction.
+A. Nodes
+
+The lobbying network Gy has 5 di erent sets of nodes, organized in layers:
+1. The rst (most upstream) layer of Gy corresponds to client nodes
+∪
+Clients(y) =
+c(f ).
+
+(S.3)
+
+f : y(f )=y
+
+2. The second layer of Gy comprises registrant nodes
+Registrants(y) =
+
+∪
+
+r(f )
+
+(S.4)
+
+f : y(f )=y
+
+which are further divided based on the registrant type (eq. (S.2)) into two disjoint subsets
+and
+
+In-House Registrants(y) = {r ∈ Registrants(y) : r ∈ In-House},
+
+(S.5)
+
+K-Street Registrants(y) = {r ∈ Registrants(y) : r ∈ K-Street}.
+
+(S.6)
+
+3. The third layer of Gy consists of lobbyist nodes
+Lobbyists(y) =
+
+∪
+
+L(f ).
+
+f : y(f )=y
+
+These rst three layers use only the lobbying data LD de ned in eq. (S.1).
+
+(S.7)
+
+9
+4. To construct the fourth layer of Gy representing government entity nodes, we also use the government association
+function g(l, y) de ned in Sec. I D. Thus,
+∪
+∪
+Government entities(y) =
+g(l, y),
+(S.8)
+f : y(f )=f
+
+l∈L(f )
+
+is the set of all the government entities with a historical employment link to at least one of the lobbyists, with
+the restriction that the connection must have been mentioned in year y or earlier.
+
+5. The fth layer of Gy corresponding to legislator nodes, is constructed similarly by using the political association
+function p(l, y) de ned in Sec. I D. Thus,
+∪
+∪
+Legislators(y) =
+p(l, y)
+(S.9)
+f : y(f )=f
+
+l∈L(f )
+
+is the set of all active legislators (present in Congress in year y) with a historical employment link to at least
+one of the lobbyists, with the restriction that the connection must have been mentioned in year y or earlier.
+B. Edges
+
+The lobbying network Gy has 5 di erent sets of edges:
+
+1. Clientships(y): connections between clients and registrants ( rst to second layer), such that a directed edge
+(c, r) linking client c and registrant r exists if and only if the registrant lobbied for the client, i.e.,
+(c, r) ∈ Clientships(y)
+
+∃f : y = y(f ) ∧ c = c(f ) ∧ r = r(f ).
+
+(S.10)
+
+In-House Clientships(y) = {(c, r) ∈ Clientships(y) : r ∈ In-House},
+
+(S.11)
+
+K-Street Clientships(y) = {(c, r) ∈ Clientships(y) : r ∈ K-Street}.
+
+(S.12)
+
+⇔
+
+which are further divided based on the registrant type (eq. (S.2)) into two disjoint subsets
+and
+
+2. Lobbyist contracts(y): connections between registrants and lobbyists (second to third layer), such that a directed
+edge (r, l) linking registrant r and lobbyist l exists if and only if the lobbyist was mentioned in a report led by
+the registrant, i.e.,
+(r, l) ∈ Lobbyist contracts(y)
+
+⇔
+
+∃f : y = y(f ) ∧ r = r(f ) ∧ l ∈ L(f ).
+
+(S.13)
+
+which are further divided based on the registrant type (eq. (S.2)) into two disjoint subsets
+and
+
+In-House Lobbyist contracts(y) = {(r, l) ∈ Lobbyist contracts(y) : r ∈ In-House},
+
+(S.14)
+
+K-Street Lobbyist contracts(y) = {(r, l) ∈ Lobbyist contracts(y) : r ∈ K-Street}.
+
+(S.15)
+
+3. Government associations(y): connections between lobbyists and government entities (third to fourth layer),
+such that a directed edge (l, g) linking lobbyist l and government entity g exists if and only if an employment
+connection between the two has been documented in year y or earlier, i.e.,
+(l, g) ∈ Government associations(y)
+
+⇔
+
+l ∈ Lobbyists(y) ∧ g ∈ g(l, y),
+
+(S.16)
+
+where g(l, y) is the government association function de ned in Sec. I D.
+
+4. Legislator associations(y): connections between lobbyists and legislators (third to fth layer), such that a directed edge (l, p) linking lobbyist l and legislator p exists if and only if an employment connection between the
+two has been documented in year y or earlier, and the legislator is a Congress member in year y, i.e.,
+(l, p) ∈ Legislator associations(y)
+
+⇔
+
+l ∈ Lobbyists(y) ∧ p ∈ p(l, y),
+
+where p(l, y) is the political association function de ned in Sec. I D.
+
+All the edges are directed and unweighted (c.f. Sec. II C), and we disregard any multi-edges.
+
+(S.17)
+
+10
+C. Weights
+
+Although by default our lobbying network is unweighted, we could attach weights w to the client-registrant connections by adding all the monetary values in corresponding lings:
+∑
+w[(c, r) ∈ E(Gy )] =
+1 [y(f ) = y ∧ c(f ) = c ∧ r(f ) = r] m(f ).
+(S.18)
+f
+
+III. Order and size of the lobbying network
+
+In this Section, we discuss the number of nodes (order) and the number of edges (size) of the lobbying network.
+The year-to-year evolutions of order and size are presented in Fig. S6 and Fig. S7, respectively.
+The number of clients (c.f. eq. (S.3)) steadily increases until the nancial crisis (2007–2008), after which it declines
+for about the next 7 years before the steady increase is recovered. A similar pattern can be observed for the total
+number of registrants and lobbyists (c.f. eq. (S.4) and (S.7)), as well as the number of connections between the three
+upstream layers (clientships and lobbyist contracts, c.f. eq. (S.10) and (S.13)).
+Note that the K-Street registrant count (c.f. eq. (S.6)) dominates in the early years while the In-House registrant
+count (c.f. eq. (S.5)) dominates in the more recent years. Moreover, the clientships involving K-Street registrants
+outnumber the clientships involving In-House registrants. Nevertheless, lobbyist contracts with In-House registrants
+slightly outnumber those with K-Street registrants, especially in the more recent years.
+The number of government entities (c.f. eq. (S.8)) included in the lobbying network, and the corresponding number
+of lobbyist-government associations (c.f. eq. (S.16)) grow steadily over time. In Fig. S8, we show which government
+entities have the best known ties to the lobbyists (highest in-degree) and how this quantity varies in time.
+The number of legislators (c.f. eq. (S.9)) and the lobbyist-legislator associations (c.f. eq. (S.17)) also steadily grow
+in time. In Fig. S9, we show that since 2008, around 80% of Senators and 50% of Representatives, from both the
+Democratic and Republican parties, are included in our lobbying network every year. By construction, the legislator
+is included if there is at least one active lobbyist who, according to our database, worked for this legislator in the
+past.
+IV. Degree distributions
+
+In a given year y, let the out-degree (the number of outgoing edges) of a node type i and the in-degree (the number
+of incoming edges) of a node type j be
+out-deg(i, y) = | {(i, j) ∈ E(Gy )} |,
+
+and in-deg(j, y) = | {(i, j) ∈ E(Gy )} |.
+
+(S.19)
+
+For client nodes, we can further distinguish their out-degree to K-Street and In-House registrants as
+out-degK (c, y) = | {(c, r) ∈ E(Gy ) : r ∈ K-Street} |,
+
+A.
+
+and out-degI (c, y) = | {(c, r) ∈ E(Gy ) : r ∈ In-House} |.
+(S.20)
+
+Average degree
+
+We begin by analyzing the average in- and out-degree of each network layer. These data are plotted in Fig. S10. The
+most dynamic series presented here is the average in-degree of government entities and registrants, indicating that, at
+least as far as our database is concerned, government entities become connected to increasingly more lobbyists and
+registrants to increasingly more clients. The average degrees for the remaining layer-to-layer connections are relatively
+constant over time.
+B. Distribution inference
+
+Following the methodology of Ref. [10], in this study, we characterize the degree distribution by computing the
+complementary cumulative distribution function (CCDF). For example, in Fig. 2F of the main article, we plot the
+
+11
+
+|Clients(y)|
+
+A 14000
+12000
+10000
+8000
+6000
+4000
+2000
+0
+
+B
+
+In-House
+
+|Registrants(y)|
+
+5000
+
+K-Street
+
+4000
+3000
+2000
+1000
+0
+
+|Lobbyists(y)|
+
+C
+
+15000
+12500
+10000
+7500
+5000
+2500
+0
+
+|Legislators(y)|
+
+E
+
+140
+120
+100
+80
+60
+40
+20
+0
+400
+300
+200
+100
+0
+
+1999
+2000
+2001
+2002
+2003
+2004
+2005
+2006
+2007
+2008
+2009
+2010
+2011
+2012
+2013
+2014
+2015
+2016
+2017
+2018
+2019
+2020
+2021
+2022
+2023
+
+|Government entities(y)|
+
+D
+
+Year y
+
+Figure S6. Order of the lobbying network each year. (A) The number of distinct clients in a given year. (B) The number
+of distinct K-Street and In-House registrants in a given year. (C) The number of distinct lobbyists in a given year. (D) The
+number of distinct government entities in a given year. (E) The number of distinct legislators in a given year. Note that the
+set of registrants is signi cantly smaller than the sets of clients and lobbyists, which are of comparable size.
+
+12
+
+|Clientships(y)|
+
+A
+
+25000
+
+In-House
+
+K-Street
+
+In-House
+
+K-Street
+
+20000
+15000
+10000
+5000
+0
+
+|Lobbying contracts(y)|
+
+B 17500
+15000
+12500
+10000
+7500
+5000
+2500
+0
+
+|Gov. associations(y)|
+
+C
+4000
+3000
+2000
+1000
+0
+2500
+2000
+1500
+1000
+
+2023
+
+2022
+
+2021
+
+2020
+
+2019
+
+2018
+
+2017
+
+2016
+
+2015
+
+2014
+
+Year y
+
+2013
+
+2012
+
+2011
+
+2010
+
+2009
+
+2008
+
+2007
+
+2006
+
+2005
+
+2004
+
+2003
+
+2002
+
+2001
+
+0
+
+2000
+
+500
+1999
+
+|Leg. associations(y)|
+
+D
+
+Figure S7. Size of the lobbying network each year. (A) The number of distinct clientships (client-registrant edges) in a given
+year. (B) The number of distinct lobbying contracts (registrant-lobbyist edges) in a given year. (C) The number of distinct
+government associations (lobbyist-government entity edges) in a given year. (D) The number of distinct legislator associations
+(lobbyist-legislator edges) in a given year.
+
+13
+
+Figure S8. In-degree (number of identi ed lobbyist associations) of speci c government entities. (A) By year. (B) Timeaveraged. The entities are sorted by the average government entity in-degree.
+
+14
+
+80
+60
+40
+
+House Democrat
+House Republican
+Senate Democrat
+Senate Republican
+
+20
+0
+
+1999
+2000
+2001
+2002
+2003
+2004
+2005
+2006
+2007
+2008
+2009
+2010
+2011
+2012
+2013
+2014
+2015
+2016
+2017
+2018
+2019
+2020
+2021
+2022
+2023
+
+% Legislators present in our network
+
+100
+
+Figure S9. Percentage of legislators included in the lobbying network, in terms of the legislator’s chamber and party a liations.
+
+Client out-degree
+out-degK(c, y)
+Registrant in-degree
+in-deg(r, y)
+Registrant out-degree
+out-deg(r, y)
+Lobbyist in-degree
+in-deg(l, y)
+Lobbyist out-degree
+out-deg(l, y)
+Gov. entity in-degree
+in-deg(g, y)
+Legislator in-degree
+in-deg(l, y)
+
+30
+
+Average degree
+
+25
+20
+15
+10
+5
+
+1999
+2000
+2001
+2002
+2003
+2004
+2005
+2006
+2007
+2008
+2009
+2010
+2011
+2012
+2013
+2014
+2015
+2016
+2017
+2018
+2019
+2020
+2021
+2022
+2023
+
+0
+
+Year
+
+Figure S10. Average in/out-degree of each lobbying network layer in years 1999–2023. The client out-degree, registrant indegree, and registrant out-degree are all computed for K-Street registrants.
+
+15
+CCDFs of in-deg(r, y) for r ∈ K-Street. To be precise, this CCDF ρ for this particular distribution is de ned as
+∑
+r∈K-Street Registrants(y) 1[in-deg(r) ≥ d]
+ρ(d, y) =
+.
+(S.21)
+|K-Street Registrants(y)|
+
+In a similar way, in Fig. S12 we plot the CCDFs of other degree distributions.
+Some of the distributions, e.g., the out-degree of clients (Fig. S12A) or registrants (Fig. S12B) can be classi ed as
+heavy-tail distributions with probability mass functions decaying slower than exponentially. To gain further insight
+into the problem, we can t one of the standard distributions. In Fig. S11, we show the results of the tting procedure
+for the distribution of clients per K-Street registrant (c.f. Fig. 2F of the manuscript). The three families of distributions
+we tested are:
+1. Augmented power-law distribution with exponent d, low-end saturation value csat and a high-end cut-o value
+ccut :
+(
+)
+c
+d
+p(c) ∝ (c + csat ) exp
+.
+ccut
+
+This customized distribution is recommended as particularly suitable for degree distributions in networks in
+Chapter 4 of Ref. [10].
+
+2. Log-normal distribution with shape parameter s
+p(c) = √
+3. Weibull distribution with shape parameter s
+
+)
+(
+1
+log2 (c)
+.
+exp −
+2s2
+2πsc
+
+p(c) = scs−1 exp(−cs ).
+All the parameter ts are based on maximum likelihood estimation (MLE); the less standard distribution (1) was
+tted by customized parameter sweeping, and the distributions (2) and (3) were tted using standard MLE routines.
+In Fig. 2F of the paper, we show the best t of the distribution (1), which, besides being the closest t to the
+CCDF, also gives us some interpretable insights. Even though we allowed a non-zero saturation, the optimal t has
+csat = 0, indicating no low-count saturation e ect. The cut-o value ccut = 86 unravels the characteristic size of
+a client base, beyond which the growth of a lobbying rm becomes limited. Finally, the tted exponent d = 1.54
+allows us to make comparisons with other distributions within the lobbying network, as well as distributions in other
+complex systems [10].
+For example, the best t of distribution (1) for client out-degree distribution (Fig. S12A) has the exponent d = 2.88.
+This value is on par with γ = 3 found for the Barabasi-Albert model [11], and in the range of real-world networks [10].
+We need to remember, however, that all the degree distributions we compute appear in the context of a multipartite
+graph, so the Barabasi-Albert model is not exactly applicable. The generative process of bipartite network connectivity
+might be more akin to the Pitman-Yor process [12, 13], which can yield exponents γ ∈ (1, 2]. Nevertheless, tting a
+network evolution model to our lobbying network is beyond the scope of this work.
+The heavy-tail degree distributions of clients and registrants are in stark contrast with the exponential distribution
+of contracts and associations among lobbyists. Most lobbyists work for only one registrant, and the number of lobbyists
+with multiple contracts decays exponentially with the number of contracts (Fig. S12C). In Sec. VI of [14], we show
+that the distribution of reports (jobs) among individual lobbyists in large lobbying rms is also exponential (except
+for a small set of ‘super-lobbyists’ who work with more than 200 clients). Furthermore, most lobbyists (ca. 90%) do
+not have any documented historical associations to government entities and legislators, and the number of lobbyists
+with a > 0 associations decays exponentially with a (Fig. S12D). Our results indicate, therefore, that the distribution
+of connections among individual lobbyists is more egalitarian than the distribution of in uence among the lobbying
+rms.
+The structural di erences between the registrant layer and the lobbyist layer are likely a consequence of distinct
+evolutionary principles, which govern the development of the lobbying network. Hierarchical degree distributions can
+spontaneously arise as a consequence of accumulated advantage (Matthew Principle) [13, 15, 16], and the exponential
+distribution is reminiscent of random Erdös-Renyi graphs, where each new link is added independently [17].
+For completeness, in (Fig. S12E-F) we show the in-degree distribution of government entities and legislators. The
+graph of the former has a characteristic kink indicating the possibility of two qualitatively di erent sets of government
+entities (large and small). The latter distribution can be well approximated by an exponential function in the entire
+range.
+
+16
+
+102
+
+Cut-off power-law
+Log-normal
+Weibull
+
+CCDF (%)
+
+101
+
+100
+
+10 1
+
+10 2
+
+100
+
+101
+
+in-degK(r, y)
+
+102
+
+103
+
+Figure S11. K-Street registrant in-degree distribution CCDF, overlaid with MLE ts of standard distributions: (red) augmented
+power law distribution with saturation value csat = 0, cut-o value ccut = 86, and exponent d = 1.54, (blue) log-normal
+distribution with shape parameter s = 0.18, and (gray) Weibull distribution with shape parameter s = 0.73. The ts were
+performed using aggregated data from all years between 1999 and 2023.
+C. Weighted degree
+
+As explained in Sec. II C, we can attach weights (monetary values) to the client-registrant edges (c, r). We thus
+de ne the weighted out-degree of a client c to K-Street and In-House registrants as
+∑
+∑
+w-out-degK (c, y) =
+w[(c, r)].
+and
+w-out-degI (c, y) =
+w[(c, r)].
+(S.22)
+(c,r)∈E(Gy ),
+r∈K-Street
+
+(c,r)∈E(Gy ),
+r∈In-House
+
+which represent the total lobbying expenses of the client c via K-Street and In-House registrants in year y. The overall
+weighted out-degree of a client c is then
+w-out-deg(c, y) = w-out-degK (c, y) + w-out-degI (c, y).
+Similarly, we let the weighted in-degree of a K-Street or In-House registrant r be
+∑
+w-in-deg(r, y) =
+w[(c, r)],
+
+(S.23)
+
+(S.24)
+
+(c,r)∈E(Gy )
+
+which represents the total monetary ow of the K-Street or In-House registrant r in year y.
+The CCDFs of the weighted degrees w-out-degK (c, y), w-out-degI (c, y), and w-in-deg(r, y) are shown in Fig. S13.
+The weighted in/out-degree distributions also follow heavy-tailed distributions, thereby corroborating the existence of
+’hyper-in uential’ clients and registrants (not only in terms of the number of connections but also in terms of money
+ow). Comparing the client lobbying expenses via K-Street vs. In-House registrants (Fig. S13A–B), it is evident that
+lobbying expenses via In-House registrants have higher monetary amounts, while there are almost 10 times more
+clients who lobby via K-Street registrants. We also observe interesting temporal trends, e.g., clients with the highest
+lobbying expenses via K-Street registrants have reduced their spending.
+D. Degree correlation
+
+For the lobbying network’s inner layers (K-Street registrants and lobbyists), we investigate the correlation between
+the in- and out-degrees of nodes of the same layer. We compute 2D histograms of K-Street registrant/lobbyist counts
+such that one datapoint corresponds to one registrant/lobbyist per year. Figure S14A shows that K-Street registrants
+
+17
+
+A K-Street registrants per client
+
+B Lobbyists per K-Street registrant
+
+C
+
+Registrants per lobbyist
+
+102
+
+CCDF (%)
+
+CCDF (%)
+
+CCDF (%)
+
+101
+100
+
+10 1
+100
+
+D
+
+102
+
+101
+
+102
+out-degK(c, y)
+
+103
+
+Associations per lobbyist
+
+101
+
+100
+
+102
+out-deg(r, y)
+
+10 2
+
+103
+
+E Lobbyists per government entity
+
+1
+
+F
+
+3
+
+in-deg(l, y)
+2000
+
+2010
+
+2020
+
+30
+
+40
+
+Year y
+
+CCDF (%)
+
+101
+
+100
+
+10 1
+10 2
+
+5
+
+101
+
+CCDF (%)
+
+CCDF (%)
+
+101
+100
+
+4
+
+Lobbyists per legislator
+
+102
+
+102
+
+2
+
+100
+1 2 3 4 5 6 7 8 9
+out-deg(l, y)
+
+101
+
+100
+
+102
+
+in-deg(g, y)
+
+103
+
+0
+
+10
+
+20
+
+in-deg(p, y)
+
+Figure S12. Complementary cumulative distributions (CCDFs) of node in/out-degrees. (A) CCDF of the client out-degree
+out-degK (c, y): % of clients with out-degK (c, y) or more K-Street registrants The blue dashed line is the MLE t of an
+augmented power-law distribution with saturation value rsat = 0, cut-o value rcut = 80, and exponent d = 2.88. (B) CCDF
+of K-Street registrant out-degree out-deg(r, y): % of K-street registrants with out-deg(r, y) or more lobbyists. The blue dashed
+line is the MLE t of an augmented power-law distribution with saturation value lsat = 1, cut-o value lcut = 84, and exponent
+d = 2.36. (C) CCDF of lobbyist in-degree in-deg(l, y): % of lobbyists employed by in-deg(l, y) or more registrants. (D) CCDF
+of lobbyist out-degree out-deg(l, y): % of lobbyists with out-deg(l, y) or more associations (government entities and legislators).
+(E) CCDF of the government entity in-degree in-deg(g, y): % of government entities with in-deg(g, y) or more lobbyists. (F)
+CCDF of the legislator in-degree in-deg(p, y): % of legislators with in-deg(p, y) or more lobbyists. All CCDFs are computed
+separately for each year in the range 1999–2023.
+
+with more clients tend to be connected to more lobbyists, supporting the notion of well-connected in uential K-Street
+registrants. By contrast, Fig. S14B shows that the lobbyists with a very large number of government and legislator
+associations (ca. more than 10) work for only one registrant.
+V. Concentration analysis
+
+One corollary of the hierarchical organization of a heavy-tail degree distribution is the Pareto X-Y (e.g., 80-20)
+rule. We can illustrate this property with a so-called Pareto chart, or quantify it with a Gini index.
+A.
+
+Pareto charts
+
+We will now introduce the Pareto chart (Lorentz curve) constructed by using the distribution of reports among
+clients in a given year as an example. First, we sort all the clients c by the number of led reports n(c) (from largest
+to smallest): n1 , . . . , nN . The Pareto chart is then obtained by plotting the normalized ranking score R(i) = i/N on
+the x-axis, against the cumulative number of reports
+∑i
+j=1 nj
+(S.25)
+C(i) = ∑N
+j=1 nj
+
+18
+
+A
+
+B
+
+Via K-Street registrants
+
+102
+
+Via In-House registrants
+
+102
+
+2000
+101
+
+CCDF (%)
+
+CCDF (%)
+
+101
+100
+
+10 1
+
+10 2
+
+10 2
+107
+
+106
+
+105
+
+w-out-deg (c, y) ($)
+K
+
+D
+
+K-Street registrants
+2
+
+10
+
+2
+
+10
+
+1
+
+10
+
+1
+
+10
+
+0
+
+10
+
+0
+
+1
+
+10
+
+10
+
+3
+
+10
+
+4
+
+10
+
+5
+
+10
+
+6
+
+10
+
+107
+
+108
+
+In-House registrants
+
+10
+
+10
+
+106
+
+w-out-deg (c, y) ($)
+I
+
+CCDF (%)
+
+CCDF (%)
+
+C
+
+2020
+
+100
+
+10 1
+
+105
+
+2010
+
+Year y
+
+7
+
+10
+
+8
+
+w-in-deg(r, y) ($)
+
+1
+
+10
+
+3
+
+10
+
+4
+
+10
+
+5
+
+10
+
+6
+
+10
+
+7
+
+10
+
+8
+
+w-in-deg(r, y) ($)
+
+Figure S13. Complementary cumulative distributions (CCDFs) of weighted node in/out-degrees. (A) CCDF of the weighted
+client out-degree w-out-degK (c, y): % of clients with lobbying expenses via K-Street registrants of w-out-degK (c, y) or more.
+(B) CCDF of the weighted client out-degree w-out-degI (c, y): % of clients with lobbying expenses via In-House registrants of
+w-out-degI (c, y) or more. (C) CCDF of the weighted K-Street registrant in-degree w-in-deg(r, y): % of K-Street registrants
+with monetary ow of w-in-deg(r, y) or more. (D) CCDF of the weighted In-House registrant in-degree w-in-deg(r, y): % of
+In-House registrants with monetary ow of w-in-deg(r, y) or more. All CCDFs are computed separately for each year in the
+range 1999–2023.
+
+on the y-axis. This speci c plot is shown in Fig. S15A.
+More relevant to the problem of disparity is Figure S15B, which shows the Pareto chart based on the total lobbying
+budget (monetary value of the associated reports). It con rms the hierarchical organization of the rst layer of the
+lobbying network, and displays almost exactly the archetypal 80-20 rule, where 80% of lobbying expenses are due to
+20% of clients. In Fig. S16, we perform an analogous analysis for registrants, based on the number of reports they
+le, their monetary ow, and their number of clients. In all cases, we nd a variant of the Pareto rule.
+In Fig. S17, we contrast the hierarchical organization of registrants with a random organization of lobbyists. While
+20% of K-Street registrants are responsible for more than 70% of the lobbyist contracts (registrant-lobbyist connection
+in the network), the connections are distributed among the lobbyists in an egalitarian fashion.
+
+19
+
+B
+
+Number of K-Street
+registrants
+2
+3
+
+100
+
+10
+
+101
+
+10
+
+105
+
+30
+
+104
+
+25
+
+104
+
+Lobbyist out-degree
+
+40
+35
+30
+25
+20
+15
+10
+5
+0
+
+Number of lobbyists
+
+A
+
+Registrant out-degree
+
+20
+
+103
+
+15
+
+102
+
+10
+
+101
+
+5
+
+10
+
+20
+
+30
+
+40
+
+50
+
+Registrant in-degree
+
+60
+
+70
+
+80
+
+0
+
+2.5 5.0 7.5
+
+100
+
+Lobbyist in-degree
+
+Figure S14. Correlation between in- and out-degrees of same-layer nodes for the lobbying network’s inner layers. (A) Number
+of K-Street registrants in terms of their in- and out-degrees. (B) Number of lobbyists in terms of their in- and out-degrees.
+The 2D histograms are computed such that one datapoint represents one K-Street registrant/lobbyist per year, spanning the
+years 1999–2023.
+
+A
+
+B
+
+100
+
+% of lobbying expenses
+
+100
+
+% of reports
+
+80
+60
+40
+20
+0
+
+80
+60
+2000 2005 2010 2015 2020
+Year y
+
+40
+20
+0
+
+0
+
+20
+
+40
+
+60
+
+% of clients
+
+80
+
+100
+
+0
+
+20
+
+40
+
+60
+
+% of clients
+
+80
+
+100
+
+Figure S15. Pareto charts for clients in 1999–2023. (A) The number of reports led by clients. The top quartile of clients les
+around half of the LDA reports. (B) The distribution of the lobbying expenses among clients follows the 80-20 rule.
+B. Gini index
+
+The shape of the Pareto chart is often characterized by a Gini index, a measure of disparity which can be computed
+by looking at the area under the Pareto curve. For the example of Fig. S17A introduced in the previous section,
+N
+
+2 ∑
+C(i) − R(i).
+Gini =
+N i=1
+
+(S.26)
+
+For a uniform distribution of reports per clients, C(i) = R(i), so the Gini index would be zero. As the disparity
+between large and small clients increases, the Gini index approaches 1.
+In Fig. S18, we show the monetary Gini indices quantifying the distribution of the lobbying budget. We nd that,
+over the last two decades, the cumulative Gini indices (based on lobbying activities across all issues and agencies) for
+both clients and K-street lobbying rms have remained approximately constant at a remarkably high value ∼ 0.8,
+indicating that lobbying activities have been persistently dominated by a uent clients and a few large external
+lobbying rms. The Gini index for lobbyists’ income is relatively lower (∼ 0.6) but still markedly higher than the
+Gini index for U.S. income distribution (∼ 0.4 according to the World Bank estimate). In other words, the lobbying
+industry appears to have a higher degree of wealth concentration than the U.S. society as a whole.
+In Fig. S19, we show all the Pareto curves that were used to calculate the Gini indices. One important technical
+remark is that the lobbyist income is computed by dividing the monetary value of a given ling equally among all the
+
+20
+
+A
+
+B
+
+100
+
+100
+
+% of clientships
+
+% of reports
+
+80
+60
+40
+20
+0
+
+0
+
+C
+
+20
+
+40
+
+60
+
+80
+
+% of K-Street registrants
+
+40
+20
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+D
+
+% of K-Street registrants
+
+100
+
+80
+
+% of monetary flow
+
+% of monetary flow
+
+60
+
+0
+
+100
+
+100
+
+60
+40
+20
+0
+
+80
+
+0
+
+20
+
+40
+
+60
+
+80
+
+% of K-Street registrants
+
+80
+60
+40
+20
+0
+
+100
+
+% of In-House registrants
+
+Figure S16. Pareto charts for registrants in 1999–2023. (A) The number of reports per K-Street registrant. (B) The number
+of clientships per K-Street registrant. (C) Monetary ow per K-Street registrant. (D) Monetary ow per In-House registrant.
+
+100
+
+% of lobbying contracts
+
+B
+
+100
+
+% of lobbying contracts
+
+A
+80
+60
+40
+20
+
+80
+60
+40
+20
+0
+
+0
+0
+
+20
+
+40
+
+60
+
+% of registrants
+
+80
+
+100
+
+0
+
+20
+
+40
+
+60
+
+% of lobbyists
+
+80
+
+100
+
+Figure S17. Pareto charts for registrant-lobbyist connections (lobbying contracts) in 1999–2023. (A) The distribution of
+lobbying contracts among registrants follows the Pareto rule (hierarchy). (B) The number of lobbying contracts among the
+lobbyists does not follow the Pareto rule (egalitarianism).
+
+lobbyists mentioned therein.
+It is also interesting to compute issue-speci c Gini indices (for clients and K-Street registrants) are computed by
+using only the lings f mentioning the given general issue area a (a ∈ A(f )). Fig. S22 shows K-Street registrant
+Pareto charts for three selected issue areas with di erent client group size. Generally, we nd that the larger the
+issue, the steeper the Pareto chart, and so the larger the registrant Gini index (Fig. S20). The size of the issue can
+be measured either by the client group size or the total budget, which are correlated (Fig. S21.
+The Gini Index and the lobbying network size are also correlated for randomly generated subnetworks (dashed
+line and shading in Fig. S20). For the Registrant Gini Index (Fig. S20B), we choose a random year and a random
+set of n clients connected to K-Street registrants. We then look at all their lings through K-Street registrants,
+and we use them to construct a partial budget distribution among K-Street registrants. This procedure is repeated
+100 times for each n ∈ {10, 20, 50, 100, 200, 300, 400, 500, 600, 1000, 1200, 2000, 3000, 6000}, and each time we use the
+partial distribution to compute the K-Street Registrant Gini Index. The dashed line and the shade in Fig. S20B
+report the mean and standard deviation of their values, respectively. In Fig. S20A, we use an analogous procedure to
+
+21
+0.85
+
+0.80
+
+Gini index
+
+0.75
+
+Clients
+K-Street Registrants
+Lobbyists
+
+0.70
+
+0.65
+
+0.60
+
+2023
+
+2021
+
+2019
+
+2017
+
+2015
+
+2013
+
+2011
+
+2009
+
+2007
+
+2005
+
+2003
+
+2001
+
+1999
+
+0.55
+
+Figure S18. Gini index evolution in time.
+
+% lobbying expenses
+
+A
+
+B
+
+C
+
+100
+
+100
+
+100
+
+80
+
+80
+
+80
+
+60
+
+60
+
+60
+
+40
+
+40
+
+40
+
+20
+
+20
+
+20
+
+0
+
+0
+0
+
+20
+
+40
+
+60
+
+% clients
+
+80
+
+100
+
+0
+0
+
+20
+
+40
+
+60
+
+80
+
+% K-Street registrants
+
+100
+
+0
+
+20
+
+40
+
+60
+
+% lobbyists
+
+80
+
+100
+
+Figure S19. Pareto charts for the budget distribution in 1999–2023. (A) The Pareto chart of the distribution of the total
+lobbying budget (monetary value of the lings) among the clients. (B) The Pareto chart of the distribution of the total
+lobbying budget among K-Street registrants. (C) The Pareto chart of the distribution of the total lobbying budget among the
+lobbyists.
+
+compute the Client Gini Index in a randomized sample. This time, we do not restrict our sample to K-Street Clients,
+but we use the same values of n. The relationship between the size of the subnetwork and the Gini Index underscores
+the importance of working with a complete dataset. Indeed, subsampling could introduce systematic biases.
+
+22
+A
+
+Travel/Tourism
+
+B
+
+Aerospace
+
+Taxation/Internal Revenue Code
+
+0.75
+
+District of Columbia
+
+Health Issues
+
+0.70
+
+Registrant Gini Index
+
+Client Gini Index
+
+0.8
+
+0.7
+
+0.6
+
+Urban Development/Municipalities
+
+0.65
+0.60
+0.55
+0.50
+Beverage Industry
+
+0.45
+
+0.5
+
+Unemployment
+0.40
+0.35
+101
+
+102
+
+101
+
+103
+
+102
+
+Av. Client Group Size
+
+103
+
+Av. Client Group Size
+
+Figure S20. Concentration in area-speci c subnetworks. (A) Client Gini Index. (B) Registrant Gini Index. The dashed line
+and the shaded region correspond to the randomized network with a given number of clients.
+
+Average Annual Budget ($)
+
+109
+
+108
+
+107
+
+102
+
+103
+
+Average Client Group Size
+
+Figure S21. Average value of the client group size interested in one of the standard issue areas in years 1999–2023 plotted
+against the average annual budget in this area.
+
+23
+
+Figure S22. Example Pareto charts for the area-speci c budget distribution among K-Street registrants in 1999–2023. (A)
+Health is an example of a popular (high-budget) issue area. The fact that the Pareto curve is steep indicates a high degree of
+concentration. (B) Travel/Tourism is an example of an average-sized issue area. Note that in response to the 9/11 crisis, the
+Pareto curve got steeper. (C) Beverage Industry is an example of a small issue area with a handful of interested clients. In
+such categories, the budget distributions tend to be most egalitarian.
+
+24
+VI. Higher order interactions
+
+So far, we have analyzed the ties between clients and registrants, as well as the ties between registrants and
+lobbyists. We can also more directly ask about the connections between clients and lobbyists by introducing the
+notion of client-registrant-lobbyist triads
+Lobbying triads(y) = {(c, r, l) : ∃f : y = y(f ) ∧ c = c(f ) ∧ r = r(f ) ∧ l ∈ L(f )}.
+
+(S.27)
+
+We will now use the notion of lobbying triads to answer questions about the distribution of jobs in a given lobbying
+rm. Speci cally, we can analyze the number n(r, l) of clients of registrant r that lobbyist l worked for, i.e., all the
+lobbying triads of the form (∗, l, r). By construction, n(r, l) cannot be larger than the number of clients of r (i.e.,
+in-deg(r)). In Fig. S23A, we show that the number of clients a given lobbyist works for almost never exceeds 100,
+even if the number of clients of a given registrant is much larger. Nevertheless, we also nd examples of lobbyists
+whose names appear on virtually all the reports of a given registrant, up to 300 clients per lobbyist. For most
+registrant-lobbyist pairs, the number of clients per lobbyist n(r, l) decays exponentially (Fig. S23B).
+On the one hand, this nding corroborates the general picture that the distribution of lobbying cases per individual
+lobbyist is more egalitarian than the distribution of lobbying cases per lobbying rms that have the capacity to
+accumulate advantage. On the other hand, we also nd a small number of super-lobbyists, who appear to be an
+exception to this rule. Further analysis of the pro les of individual lobbyists (generalists vs. specialists, etc.) can be
+the subject of an interesting future study.
+
+A
+
+B2
+10
+
+350
+
+104
+
+Number of lobbyists
+
+300
+
+103
+
+250
+200
+
+102
+
+150
+100
+
+101
+
+CCDF (%)
+
+Clients per lobbyist (through a given registrant)
+
+400
+
+100
+
+101
+
+50
+0
+
+0
+
+50
+
+100 150 200 250 300 350 400
+
+Clients of registrant
+
+100
+
+10 1
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+Clients per lobbyist (through a given registrant)
+
+Figure S23. Assignment of clients of a given registrant to their lobbyists. (A) The distribution of the number of clients of
+registrant r that lobbyist l worked for, as a function of the total number of clients of a given registrant. (B) The marginal
+distribution of the number of clients of registrant r that lobbyist l worked for, broken by year. Data from years 1999–2023.
+
+VII. Lobbying network visualization
+
+To visualize the entire network graph for one year (as shown in Fig.1A for 2017), we use a customized multilayer
+layout, with a particular embedding strategy for each set of nodes. We will now describe the placement of nodes in
+each layer separately, and then the way they are assembled together. The nal visualization is facilitated with the
+PyGraphistry library and its cloud-based visualization tool [18].
+A. Node placement
+
+The x-coordinate of a client node c represents its lobbying expenses in year y and is proportional to − log [w-out-deg(c, y)],
+where w-out-deg(c, y) has been de ned in eq. (S.23). The y-coordinate of node c is proportional to the client’s incli-
+
+25
+nation iC (c, y) to lobby through In-House registrants such that
+iC (c, y) =
+
+w-out-degI (c, y) − w-out-degK (c, y)
+.
+w-out-deg(c, y)
+
+The x-coordinate of a registrant node r represents its monetary ow in year y and is proportional to − log [w-in-deg(r, y)].
+The y-coordinate of node r represents its out-degree and is proportional to χ(r) log [out-deg(r, y)] where
+{
+1
+if r ∈ In-House
+χ(r) =
+−1 if r ∈ K-Street.
+The x-coordinate of a lobbyist node l represents its in-degree in year y and is proportional to −in-deg(l, y). The
+y-coordinate of node l is proportional to the lobbyist’s inclination iL (l, y) to lobby through In-House registrants such
+that
+∑
+(r,l)∈E(Gy ) χ(r)
+iL (l, y) =
+.
+in-deg(l, y)
+The x-coordinate of a government entity node g represents its monetary ow µ(g, y) in year y. Speci cally, it is a
+piece-wise linear, order-preserving transformation of − log [µ(g, y)], where
+µ(g, y) =
+
+∑
+f
+
+1 [y(f ) = y ∧ g ∈ G(f )] m(f ).
+
+The y-coordinate of node g re ects its similarity (measured by co-mention count in lings) to other government entity
+nodes. In particular, we construct virtual weighted edges between government entity nodes such that the edge weight
+is set to the normalized government entity co-mention count in lings, and the edges with a small co-mention count
+are removed. We then run the Fruchterman–Reingold force-directed algorithm [19] on the subgraph consisting of
+government entity nodes and their internal edges and use the obtained close-to-equilibrium node x-coordinates to set
+the y-coordinates of the government entity nodes. The two largest government entity nodes (Senate and House of
+Representatives) are positioned manually to align them with the corresponding division in the last (legislators) layer.
+The legislator nodes are arranged on semicircles with the radii highlighting the di erence in size between the Senate
+and House of Representatives. On each semicircle, the legislator nodes are spaced/distributed evenly, grouped by
+party a liation (such that Democrats have higher y-coordinates than Republicans), and ordered randomly within
+each group. In 2017, our data also contained one Independent Senator, but we neglected the corresponding node in
+the visualization.
+Except for the legislator nodes, we perturb all node positions with white noise for better node separation in graph
+visualization. The di erences between node placements without and with the white noise perturbation for all a ected
+types of nodes are shown in Fig. S24–S25. As we can see, the white noise perturbation reduces the overlapping of
+nodes, while minimally disturbing/violating the above-described node placement based on network graph measures.
+B.
+
+Node size and color
+
+The client node size is proportional to the client’s lobbying expenses w-out-deg(c, y). The registrant node size is
+proportional to the registrant’s monetary ow w-in-deg(r, y). The size of the government entity node g represents its
+total mention count n(g, y) in lings in year y and is proportional to log [n(g, y)], where
+n(g, y) =
+
+∑
+f
+
+1 [y(f ) = y ∧ g ∈ G(f )] .
+
+The lobbyist and legislator node sizes are xed. Note that the above-described node sizes are passed to the PyGraphistry library, where a further order-preserving transformation is applied [18].
+The color-coding of nodes is summarized in Tab. S2. The color of client and K-Street registrant nodes ranges
+between the speci ed minimum and maximum values in proportion to the corresponding scaling law. Speci cally,
+the client node color represents the client’s lobbying expenses, and the K-Street registrant node color re ects the
+registrant’s monetary ow. The colors of other node types are all xed.
+
+26
+
+A
+
+B
+
+Without noise
+
+With noise
+
+3
+107
+
+Client lobbying expenses ($)
+
+2
+
+106
+
+0
+1
+
+105
+
+2
+3
+
+104
+
+4
+8
+
+7
+
+6
+
+x
+
+5
+
+log [out-degw(c, y)]
+
+4
+
+3
+
+C
+
+8
+
+7
+
+x
+
+6
+
+5
+
+log [out-degw(c, y)]
+
+4
+
+3
+
+D
+107
+
+4
+
+106
+2
+
+105
+
+0
+
+y
+
+(r)log[out-deg(r, y)]
+
+6
+
+K-Street registrant monetary flow ($)
+
+y iC(c, y)
+
+1
+
+2
+
+In-House registrant
+8
+
+7
+
+6
+
+x
+
+5
+
+log[in-deg (r, y)]
+
+4
+
+8
+
+7
+
+6
+
+x
+
+w
+
+5
+
+log[in-deg (r, y)]
+
+104
+
+4
+
+w
+
+Figure S24. Node placement based on network graph measures without (left) and with (right) the white noise perturbation.
+Used to construct the whole lobbying network graph for the year 2017 in Fig. 1A. (A, B) Clients. (C, D) Registrants.
+Table S2. Lobbying network node colors. Used in Fig. 1A and Fig. 2B of the main text.
+Node type
+
+HEX color
+Min
+Max
+
+Scaling law
+
+Client
+#a1d99b #00441b log [w-out-deg(c, y)]
+K-Street registrant
+#fdae6b #a63603 log [w-in-deg(r, y)]
+In-House registrant
+#7f2704
+–
+#bababa
+–
+Lobbyist
+Government entity
+#1c9099
+–
+Democratic legislator
+#0015bc
+–
+# 0000
+–
+Republican legislator
+
+C. Final assembly
+
+We embed the above-described sets of nodes in a common 2D space using translation and scaling operations as
+needed for a reasonable layered network arrangement. The resulting (x, y)-coordinates, along with the color and size
+of all nodes, constitute the nal node data. We then construct unweighted edges as described in Sec. II B such that the
+
+27
+
+A
+
+B
+
+Without noise
+
+With noise
+
+2
+
+y iL(l, y)
+
+1
+
+0
+
+1
+
+2
+4.0
+
+3.5
+
+3.0
+x
+
+2.5
+
+2.0
+
+1.5
+
+in-deg(l, y)
+
+1.0
+
+0.5 0.0
+
+C
+
+4.0
+
+3.5
+
+3.0
+x
+
+2.5
+
+2.0
+
+1.5
+
+in-deg(l, y)
+
+1.0
+
+0.5 0.0
+
+D
+
+1.5
+
+1.0
+
+y
+
+0.5
+
+0.0
+
+0.5
+
+1.0
+
+1.5
+400
+
+350
+
+x
+
+300
+
+250
+
+g y)]
+
+200
+
+150
+
+400
+
+log [ ( ,
+
+350
+
+x
+
+300
+
+250
+
+g y)]
+
+200
+
+150
+
+log [ ( ,
+
+Figure S25. Node placement based on network graph measures without (left) and with (right) the white noise perturbation.
+Used to construct the whole lobbying network graph for the year 2017 in Fig. 1A. (A, B) Lobbyists. (C, D) Government
+entities: Panel (C) does not include the piece-wise linear, order-preserving transformation of x-coordinates nor the manual
+re-positioning of the two largest nodes (Senate and House of Representatives). For y-coordinate computation see Sec. VII A.
+
+obtained list of (source node, destination node) pairs forms edge data. We also specify the following global properties:
+node opacity = 100% (default), edge opacity = 5%, edge color interpolates the colors of the connecting nodes along
+the edge (default), edge size/width = 50 (default), and edge curvature = 20% (default).
+The node data, edge data, and global properties are fed to the PyGraphistry library to render the lobbying network
+visualization in the browser using the cloud-based visualization tool [18].
+
+VIII. Network evolution
+
+In this Section, we describe the technical aspects of our network evolution analysis.
+
+28
+A. Rejuvenation
+
+By comparing the nodes between the lobbying networks Gy1 and Gy2 in two di erent years y1 and y2 , we can quantify
+the degree to which the lobbying network refreshes and rejuvenates.
+In Fig. S26A-C, we estimate the empirical (frequentist) probability of a node remaining in the network after y years.
+For clients (Fig. S26A), this quantity is de ned as
+P [Client lobbying in year y0 remains in the network after y years] =
+
+|Clients(y0 ) ∩ Clients(y0 + y)|
+,
+|Clients(y0 )|
+
+(S.28)
+
+and the de nition is analogous for K-Street registrants (Fig. S26B, and Fig. 2 of the main text) and lobbyists
+(Fig. S26C). The di erent curves in this gure correspond to di erent starting years y0 ∈ {1999, 2000, . . . , 2022}. For
+clients, these curves do not collapse, most likely due to economical interruptions. For registrants and lobbyists, the
+decay of operation probability to rst approximation follows a universal law, but we also observe a steady increase in
+longevity in recent years.
+The probability of leaving the lobbying network is not the same for all the clients/registrants/lobbyists, but it
+depends on individual characteristics. One particularly interesting predictor of a node ceasing to operate is age,
+de ned as the maximum number of consecutive years for which node x was present in the network prior to year y,
+∑
+(S.29)
+1 [∀y′ ≤y′′ ≤y : x ∈ V (Gy′′ )] .
+Age(x, y) =
+y ′ <y
+
+Figure S26D shows that the conditional probability that a client c of a given age ceases lobbying in year y0 (i.e., y0
+is the last year the client is observed in the lobbying network) conditioned on its age y
+∑
+/ V (Gy0 +1 )]
+c∈V (Gy0 ) 1 [Age(c, y0 ) = y ∧ c ∈
+∑
+P [c ceases lobbying in year y0 |Age(c, y0 ) = y] =
+(S.30)
+c∈V (Gy ) 1 [Age(c, y0 ) = y]
+0
+
+is a decaying function of age. The same is true for an analogous quantity for K-Street registrants (Fig. S26E), and
+lobbyists (Fig. S26F). In other words, long-operating lobbying actors are less likely to leave the lobbying network.
+This trend over time may lead to ‘aging’ and accumulation of expertise. Interestingly, the aging curve has a similar
+shape for clients, K-street registrants, and lobbyists, with a characteristic timescale of approximately 10 years.
+B. Preferential attachment/detachment inference
+
+Following the works of Barabasi et al. [15], we analyze the dynamics of registrant connections through the lens
+of preferential attachment. In the main text, we present the results of this analysis for clientships (client-registrant
+connections) in Fig. 2E-F. The speci c quantity that we look at is de ned as follows. First, we identify K-Street
+registrants with a degree d in year y − 1:
+K-Street Registrantsin=d (y − 1) = {r ∈ K-Street Registrants(y − 1) : in-deg(r, y − 1) = d}.
+
+(S.31)
+
+Then, we nd all the new clientships that involve an existing registrant of in-degree d
+
+Attached clientships(y; d) = {(c, r) ∈ E(Gy ) \ E(Gy−1 ) : r ∈ K-Street ∧ r ∈ V (Gy−1 ) ∩ V (Gy ) ∧ in-deg(r, y − 1) = d}
+(S.32)
+and removed clientships
+Detached clientships(y; d) = {(c, r) ∈ E(Gy−1 ) \ E(Gy ) : r ∈ K-Street ∧ r ∈ V (Gy−1 ) ∩ V (Gy ) ∧ in-deg(r, y − 1) = d}
+(S.33)
+The absolute probability that one of the attached clientships involves an existing registrant of in-degree d is simply
+the ratio
+|Attached clientships(y; d)|
+.
+′
+d′ |Attached clientships(y; d )|
+
+(S.34)
+
+|Detached clientships(y; d)|
+.
+′
+d′ |Detached clientships(y; d )|
+
+(S.35)
+
+p+ (d, y) = ∑
+
+Analogously, the absolute probability that one of the detached clientships involves an existing registrant of in-degree
+d is
+p− (d, y) = ∑
+
+29
+
+Probability of remaining
+in the network after y years
+
+A
+
+B
+
+Clients
+
+0.9
+2000
+
+0.8
+
+2010
+
+2020
+
+Year
+
+0.7
+0.6
+0.5
+0.4
+
+C
+
+K-Street Registrants
+
+0.9
+
+0.9
+
+0.8
+
+0.8
+
+0.7
+
+0.7
+
+0.6
+
+0.6
+
+0.5
+
+0.5
+
+0.4
+
+0.4
+
+0.3
+
+0.3
+
+0.2
+
+0.2
+0.1
+
+0.1
+0
+
+5
+
+10
+
+15
+
+20
+
+25
+
+0
+
+5
+
+Probability of ceasing lobbying
+
+Years passed y
+
+10
+
+15
+
+20
+
+25
+
+0
+
+E
+
+F
+
+0.45
+
+0.45
+
+0.40
+
+0.40
+
+0.40
+
+0.35
+
+0.35
+
+0.35
+
+0.30
+
+0.30
+
+0.30
+
+0.25
+
+0.25
+
+0.25
+
+0.20
+
+0.20
+
+0.20
+
+0.15
+
+0.15
+
+0.15
+
+0.10
+
+0.10
+
+0.10
+
+0.05
+
+0.05
+
+0.05
+
+0.00
+
+0.00
+10
+
+15
+
+20
+
+Years in the network (age)
+
+10
+
+15
+
+20
+
+25
+
+Years passed y
+
+0.45
+
+5
+
+5
+
+Years passed y
+
+D
+
+0
+
+Lobbyists
+
+0.00
+0
+
+5
+
+10
+
+15
+
+20
+
+Years in the network (age)
+
+0
+
+5
+
+10
+
+15
+
+20
+
+Years in the network (age)
+
+Figure S26. Node removal probability. (A) Client retention probability. (B) K-Street registrant retention probability. (C)
+Lobbyist retention probability. (D) Probability of client ceasing lobbying conditioned on their ‘age’. (E) Probability of K-Street
+registrant ceasing lobbying conditioned on their ‘age’. (F) Probability of lobbyist ceasing lobbying conditioned on their ‘age’.
+
+Of more interest is the attachment function
+
++
+
+Π (d, y) =
+
+(
+
+|Attached clientships(y; d)|
+|K-Street Registrantsin=d (y − 1)|
+
+) (∑
+
+|Attached clientships(y; d′ )|
+|K-Street Registrantsin=d′ (y − 1)|
+
+)−1
+
+,
+
+(S.36)
+
+) (∑
+
+|Detached clientships(y; d′ )|
+|K-Street Registrantsin=d′ (y − 1)|
+
+)−1
+
+,
+
+(S.37)
+
+d′
+
+and the detachment function
+
+−
+
+Π (d, y) =
+
+(
+
+|Detached clientships(y; d)|
+|K-Street Registrantsin=d (y − 1)|
+
+d′
+
+which capture the preferential tendencies in network development. Figure S27A-B shows a direct evaluation of them
+for our lobbying network. As the attachment function may be noisy, in Fig. S27C-D we show the equivalent, but more
+robust to infer, cumulative attachment/detachment functions [10]
+π ± (d, y) =
+
+d
+∑
+
+Π± (k, y).
+
+(S.38)
+
+k=1
+
+Critically, functions Π+ (d, y) are independent of y and linear in d (equivalently, π + (d, y) ∼ d2 ), i.e., the clientship
+dynamics satisfy linear preferential attachment [15]. Interestingly, the detachment function Π− (d, y) is also linear in
+d, so we also nd linear preferential detachment.
+
+30
+
+10
+
+B 1
+
+10 2
+
+10 2
+
+10
+
+(d)
+
++ (d)
+
+A 1
+
+10 3
+10 4
+
+10 4
+
+10 5
+100
+
+101
+
+C100
+
+102
+
+10 5
+
+D100
+
+10 1
+
+10 1
+
+10 2
+
+10 2
+
+(d)
+
++ (d)
+
+10 3
+
+10 3
+
+10 3
+
+10 4
+
+10 4
+
+10 5
+
+101
+
+100
+
+10 5
+
+102
+
+Registrant in-degree d
+
+100
+
+100
+
+101
+
+102
+
+2000
+2015
+2020
+2
+101 2005 2010 10
+
+Year dy
+Registrant in-degree
+
+Figure S27. Clientship dynamics in terms of K-Street registrant in-degree in-deg(r, y). (A) Preferential attachment function
+Π+ (d, y). (B) Preferential detachment function Π− (d, y). (C) Cumulative preferential attachment function π + (d, y). (D)
+Cumulative preferential attachment function π − (d, y). For de nitions of attachment functions see eq. (S.36)–(S.38). All
+attachment functions are computed separately for each year in the range 1999–2023.
+C. Registrant out-degree dynamics
+
+It is interesting to ask whether the preferential attachment is also present in the lobbying contract dynamics of
+registrant-lobbyist connections. In Figures S28 and S29, which are analogous to Fig. 2 of the main text, we analyze
+the evolutionary dynamics of the lobbying contracts involving K-Street and In-House registrants, respectively.
+Panels A and C of Fig. S28 are identical to the respective panels of Fig. 2. Figure S28C, however, instead of
+focusing on registrants’ incoming edges (clientships), reports the number of their out-going edges (lobbying contracts).
+Figure S28D,E presents the preferential attachment/detachment analysis, analogous to the one outlined in Sec. VIII B.
+Speci cally, we de ne
+K-Street Registrantsout=d (y − 1) = {r ∈ K-Street Registrants(y − 1) : out-deg(r, y − 1) = d},
+
+(S.39)
+
+Attached lobbying contracts(y; d) = {(r, l) ∈ E(Gy ) \ E(Gy−1 ) : r ∈ K-Street∩ ∈ V (Gy−1 ) ∩ V (Gy ) ∧ out-deg(r, y − 1) = d},
+(S.40)
+Detached lobbying contracts(y; d) = {(r, l) ∈ E(Gy−1 ) \ E(Gy ) : r ∈ K-Street ∩ r ∈ V (Gy−1 ) ∩ V (Gy ) ∧ out-deg(r, y − 1) = d},
+(S.41)
+
+and compute the cumulative preferential attachment/detachment function analogous to eq. (S.38), except this time
++
+
+Π (d, y) =
+
+(
+
+|Attached lobbying contracts(y; d)|
+|K-Street Registrantsout=d (y − 1)|
+
+) (∑
+d′
+
+|Attached lobbying contracts(y; d′ )|
+|K-Street Registrantsout=d′ (y − 1)|
+
+)−1
+
+and
+−
+
+Π (d, y) =
+
+(
+
+|Detached lobbying contracts(y; = d)|
+|K-Street Registrantsout=d (y − 1)|
+
+) (∑
+d′
+
+|Detached lobbying contracts(y; d′ )|
+|K-Street Registrantsout=d′ (y − 1)|
+
+(S.42)
+
+,
+
+)−1
+
+.
+
+(S.43)
+
+31
+
+A
+
+Democratic
+Republican
+
+Financial crisis
+COVID-19 pandemic
+
+C
+
+Number of registrants
+
+Senate majority
+House majority
+Presidency
+
+2200
+
+Probability of registrant still
+operating after y years
+
+As π − (l) ∼ l2 , we conclude that, similarly to the result of Sec. VIII B, the registrant-lobbyist connections are removed
+according to linear preferential detachment. Nevertheless, this time the preferential attachment is sublinear, and the
+preference is more pronounced for larger (higher out-degree) registrants.
+Figure S29 presents analogous analysis for the registrant-lobbyist connections, where the registrant is In-House.
+The preferential attachment/detachment (approximately linear) is still at play, but we nd a di erent trend in the
+lobbying probability as a function of time (Fig. S29C). It appears that prior to the nancial crisis of 2007–08, In-House
+registrants were much more stable, and nowadays they follow a similar drop-out dynamics to K-Street registrants.
+
+2000
+
+0.8
+
+0.4
+
+0.2
+
+D
+
+10
+20
+Years passed y
+
+100
+
+1800
+10 1
+
+400
+
+(l)
+
+Added
+Removed
+
++
+
+Change
+
+2020
+
+0.6
+
+0
+
+2000
+
+2010
+Year
+
+200
+
+l2
+
+10 2
+l1
+
+10 3
+
+Number of
+lobbying contracts
+
+B
+10 4
+
+7000
+100
+
+E
+
+6000
+
+102
+
+100
+10 1
+
+5000
+Change
+
+101
+Number of lobbyists l
+
+l2
+
+2000
+
+(l)
+
+10 2
+
+Added
+Removed
+
+10 3
+l1
+10 4
+
+1000
+1999
+2000
+2001
+2002
+2003
+2004
+2005
+2006
+2007
+2008
+2009
+2010
+2011
+2012
+2013
+2014
+2015
+2016
+2017
+2018
+2019
+2020
+2021
+2022
+2023
+
+10 5
+
+Year
+
+100
+
+101
+Number of lobbyists l
+
+102
+
+Figure S28. Lobbying contract dynamics for K-Street registrants. (A) Number of active K-Street registrants per year (bars) and
+their yearly increments (circles) and decrements (triangles). The top horizontal bars show the party (Democratic in blue and
+Republican in red) of Senate majority, House majority, and President by year. The nancial crisis (2007–2008) and COVID-19
+pandemic (2019–2021) are shown by gray overlays. (B) Number of active lobbying contracts (registrant-lobbyist connections)
+per year (bars) and their yearly increments (circles) and decrements (triangles). (C) K-Street registrant ‘survival probability’.
+(D) Cumulative preferential attachment function π + (l) in terms of K-Street registrant out-degree. (E) Cumulative preferential
+detachment function π − (l). Quantities in (C–E) are computed separately for each year in the range 1999–2023.
+
+D. Small component example
+
+In Fig. 2A of the main text, we show the attachment and detachment processes in a sample client-registrant-lobbyist
+network component. We have selected this component through the following principled search algorithm:
+Given the graphs Gy for y ∈ {1999, 2000, . . . , 2023} constructed according to Sec. II, we rst remove all In-House
+
+32
+Democratic
+Republican
+
+Financial crisis
+COVID-19 pandemic
+
+C
+
+Number of registrants
+
+Senate majority
+House majority
+Presidency
+
+2500
+
+1.0
+Probability of registrant still
+operating after y years
+
+A
+
+2000
+
+2000
+
+0.8
+
+0.7
+
+0.6
+0
+
+D
+
+1500
+
+10
+20
+Years passed y
+
+100
+l2
+
+Added
+Removed
+
+300
+
+(l)
+
+200
+
+10 1
+
++
+
+Change
+
+1000
+
+100
+
+B
+
+10 2
+
+l1
+
+Number of
+lobbying contracts
+
+10 3
+
+9000
+10 4
+
+8000
+
+100
+
+E
+
+7000
+
+101
+Number of lobbyists l
+
+102
+
+100
+l2
+
+6000
+
+10 1
+
+5000
+
+10 2
+
+Added
+Removed
+
+3000
+
+(l)
+
+Change
+
+2020
+Year
+
+0.9
+
+10 3
+l1
+
+2000
+10 4
+
+1999
+2000
+2001
+2002
+2003
+2004
+2005
+2006
+2007
+2008
+2009
+2010
+2011
+2012
+2013
+2014
+2015
+2016
+2017
+2018
+2019
+2020
+2021
+2022
+2023
+
+1000
+
+Year
+
+10 5
+100
+
+101
+Number of lobbyists l
+
+102
+
+Figure S29. Lobbying contract dynamics for In-House registrants. (A) Number of active In-House registrants per year (bars)
+and their yearly increments (circles) and decrements (triangles). The top horizontal bars show the party (Democratic in
+blue and Republican in red) of Senate majority, House majority, and President by year. The nancial crisis (2007–2008) and
+COVID-19 pandemic (2019–2021) are shown by gray overlays. (B) Number of active lobbying contracts (registrant-lobbyist
+connections) per year (bars) and their yearly increments (circles) and decrements (triangles). (C) In-House registrant ‘survival
+probability’ is generally larger than the ‘survival probability’ of K-Street registrants (Fig. S29C). We also see a qualitative
+shift around the nancial crisis of 2007–08 to less stable In-House registrants (higher drop-out probability). (D) Cumulative
+preferential attachment function π + (l) in terms of In-House registrant out-degree. (E) Cumulative preferential detachment
+function π − (l). Quantities in (C–E) are computed separately for each year in the range 1999–2023.
+
+registrant, government entity, and legislator nodes along with their edges, obtaining the subgraphs
+(
+Gy∗ = V (Gy ) \ In-House Registrants(y) \ Government entities(y) \ Legislators(y),
+E(Gy ) \ In-House Clientships(y) \ In-House Lobbyist contracts(y)
+)
+\ Government associations(y) \ Legislator associations(y) .
+
+For technical reasons, we treat Gy∗ as undirected. For each year, we compute the set Wy of connected components
+of Gy∗ . We denote the number of registrants in a component C ∈ Wy by ν(C, y) = |{n ∈ V (C) : n ∈ Registrants(y)}|
+and select only the components that have ν(C, y) = 3 registrant nodes, creating a set of candidate components
+Cy = {C ∈ Wy : ν(C, y) = 3}. After sorting the components for a given year by the number of registrants ν(C, y) in
+descending order, we nd that for all years the largest ν(C, y) is of the order of 103 and the second-largest ν(C, y) ≤ 4
+(c.f. Sec. IX B). We choose candidate components with ν(C, y) = 3 as they illustrate the attachment and detachment
+processes better than those with ν(C, y) = 4 and still have a reasonable (not too small) size.
+
+33
+Next, we track the evolution of each component C ∈ Cy two years forward and two years backward (for years
+∗
+max(y − 2, 1999) ≤ y ′ ≤ min(y + 2, 2023)). In particular, rst, new client and lobbyist nodes from Gy±1
+are added
+∗
+to the component via existing registrant nodes, and new registrant nodes from Gy±1 are added to the component via
+∗
+existing client and lobbyist nodes. Crucially, the obtained set of nodes is then connected with the edges present Gy±1
+to remove any nodes no longer present in year y ± 1.
+This operation can be formalized by de ning a one-year forward/backward evolution map for vertices
+[
+]
+∗
+∗
+ϵ± (V (C), y) = V (Gy±1
+) ∩ V (C) ∪ N (V (Gy±1
+) ∩ V (C))
+where N (X, G) is the set of all the neighbors of nodes n ∈ X in graph G, and the evolution map for edges
+[
+]
+∗
+ϵ± (E(C), y) = E(Gy±1
+) ∩ (n1 , n2 ) : n1 , n2 ∈ ϵ± (V (C), y) .
+
+Thus, for each C ∈ Cy , we then compute a sequence of 5 graphs
+(
+)
+(
+) −
+(
+)
+− −
++
++ +
+E(C, y) = ϵ ϵ (C, y), y − 1 , ϵ (C, y), C, ϵ (C, y), ϵ ϵ (C, y), y + 1
+and we select one of them to illustrate the graph evolution with a real example.
+IX.
+
+Further analysis of bipartite subgraphs
+
+In this section, we present further analysis of the lobbying network topology. Speci cally, we look at various
+bipartite subgraphs of the network and compute their average clustering coe cient and the size of the largest connected
+component. The bipartite graphs that we consider are naturally constructed by restricting attention to two adjacent
+layers of the lobbying network Gy and the edges between them (c.f. Sec. II). All of the bipartite subgraphs are listed in
+Table S3, where we make a distinction between the upstream set and the downstream set. As the lobbying network is
+directed, the induced subgroups are also directed. Nevertheless, for notational simplicity, in this section, we will treat
+the bipartite graphs as undirected. We also exclude In-House Registrants, as by de nition their in-degree is xed to
+1.
+Table S3. Bipartite subgraphs of our lobbying network, excluding In-House registrants.
+Upstream Set
+
+Downstream Set
+
+Clients
+K-Street Registrants
+K-Street Registrants
+Lobbyists
+Lobbyists
+Government entities
+Lobbyists
+Legislators
+
+A. Clustering coe cient
+
+Let B be a bipartite graph with the upstream node-set U and the downstream node-set D. Without loss of generality,
+we will now consider a node in the upstream set u ∈ U . We de ne the set of its rst neighbors N (u) ⊆ D and the set
+of its second neighbors N (N (u)) ⊆ U . The clustering coe cient of node u is de ned as
+C(u) =
+
+1
+|N (N (u))|
+
+∑
+
+v∈N (N (u))
+
+|N (u) ∩ N (v)|
+,
+|N (u) ∪ N (v)|
+
+(S.44)
+
+and by averaging
+C(U ) =
+
+1 ∑
+C(u),
+|U |
+
+(S.45)
+
+u∈U
+
+we can compute the average clustering coe cient for the upstream set U in graph B. The clustering coe cient C(D)
+for the downstream set D is de ned analogously.
+
+34
+In Fig. S30 we report the average clustering coe cient for both the upstream set and the downstream set of B,
+where B is one of the subgraphs (c.f. Tab. S3) of the lobbying network Gy in year y. Two coe cients stand out
+due to their consistently high value: C(U ) for the Client–K-Street Registrant graph, and C(D) for the K-Street
+Registrant–Lobbyist graph (noting that by construction the clustering coe cient is bounded between 0 and 1). Both
+of them re ect the focusing characteristic of the registrant layer. Indeed, a typical registrant will have a cluster of
+clients and a cluster of lobbyists. We also note some slight temporal trends in the clustering coe cient (increasing
+for the upstream set), which might be related to the preferential attachment dynamics.
+The dashed lines in Fig. S30 correspond to the expected value of the corresponding coe cient in a bipartite
+con guration model, i.e., a randomized bipartite network with the same partition and degree sequence [20]. We
+generally nd a close match between this expected value and the empirically computed value.
+
+0.4
+0.2
+0.0
+
+Downstream set
+
+0.8
+
+K-Street Registrants
+Lobbyists
+Government Entities
+Legislators
+
+0.6
+0.4
+0.2
+0.0
+
+1999
+2000
+2001
+2002
+2003
+2004
+2005
+2006
+2007
+2008
+2009
+2010
+2011
+2012
+2013
+2014
+2015
+2016
+2017
+2018
+2019
+2020
+2021
+2022
+2023
+
+0.6
+
+B 1.0
+
+Average clustering coefficient C(D)
+
+0.8
+
+Upstream set
+Clients
+K-Street Registrants
+Lobbyists
+Lobbyists
+
+1999
+2000
+2001
+2002
+2003
+2004
+2005
+2006
+2007
+2008
+2009
+2010
+2011
+2012
+2013
+2014
+2015
+2016
+2017
+2018
+2019
+2020
+2021
+2022
+2023
+
+Average clustering coefficient C(U)
+
+A 1.0
+
+Figure S30. Clustering coe cient for bipartite subgraphs averaged over (A) the upstream set U and (B) the downstream set D.
+The solid line with circles denotes empirical measurements, and the dashed line denotes the expected value of the con guration
+model.
+
+B. Largest component
+
+Another question we can ask about a bipartite subgraph is the size of its largest connected component. Recall
+that we treat the subgraph as undirected; alternatively, in a directed graph, we would consider a weakly connected
+component.
+In Fig. S31, we analyze what fraction of each set (upstream and downstream) the largest connected component
+captures. For all subgraphs, the results are consistent with the prediction of the bipartite con guration model, but we
+nd that only the Client–K-Street Registrant subgraph possesses a large (giant) connected component at all times. For
+the Lobbyist–Government Entity and Lobbyist–Legislator subgraphs, we observe a transition with a large component
+starting to appear as the number of associations (edges) increases (c.f. Fig. S7C,D). The reader might notice these
+components contain almost all nodes in the downstream set (government entities or legislators), but only a minority
+of the nodes in the upstream set (lobbyists). This is because, even in recent years, only a minority of lobbyists have
+governmental or lobbyist associations disclosed via the covered position eld of LD-2 lings (c.f. Fig. S10).
+X. Registrant centrality
+
+In this section, we explain the methodology of generating Fig. 3D of the main text, which relates the total income
+of a K-Street registrant r (w-in-deg(r, y), as de ned in eq. (S.24)) to the number of reachable associations (government
+entities and legislators). This number of associations ρ(r, y) can be thought of as a centrality score of a registrant
+node r and is simply the total number of government entities and legislators that can be reached from r by a path
+in Gy . In Fig. 3D of the main text, we present a 2D histogram of ρ(r, y) (controlled for the weighted in-degree of
+the registrant w-in-deg(r, y)) combined for all years y and all K-Street Registrants(y) (c.f. eq. (S.6)). This plot is
+
+35
+
+B
+
+80
+Clients
+K-Street Registrants
+Lobbyists
+Lobbyists
+
+60
+
+40
+
+20
+
+0
+
+Downstream set
+
+100
+
+80
+
+60
+
+40
+K-Street Registrants
+Lobbyists
+Government Entities
+Legislators
+
+20
+
+0
+1999
+2000
+2001
+2002
+2003
+2004
+2005
+2006
+2007
+2008
+2009
+2010
+2011
+2012
+2013
+2014
+2015
+2016
+2017
+2018
+2019
+2020
+2021
+2022
+2023
+
+% of nodes in the largest component
+
+Upstream set
+
+100
+
+1999
+2000
+2001
+2002
+2003
+2004
+2005
+2006
+2007
+2008
+2009
+2010
+2011
+2012
+2013
+2014
+2015
+2016
+2017
+2018
+2019
+2020
+2021
+2022
+2023
+
+% of nodes in the largest component
+
+A
+
+Figure S31. Largest component analysis of bipartite subgraphs. (A) The fraction of the upstream set contained in the largest
+component. (B) The fraction of the downstream set contained in the largest component. The dashed line denotes the expected
+value in the bipartite con guration model.
+
+reproduced in Fig. S32C. In Fig. S32A, we present an analogous plot but only count the number of government entity
+associations, and in Fig. S32B, we consider only the number of legislator associations. The combined number of
+associations (Fig. S32C) is the sum of the two scores. Nevertheless, we nd that each of these scores in isolation
+(number of government associations and number of legislator associations) is a su cient condition for high registrant
+income in and of itself.
+
+106
+105
+104
+103
+0
+
+5
+
+10
+15
+20
+25
+Government associations
+
+30
+
+35
+
+107
+106
+105
+104
+103
+0
+
+5
+
+10
+15
+20
+25
+Legislator associations
+
+30
+
+35
+
+108
+
+101
+
+107
+
+100
+
+106
+10 1
+
+105
+104
+
+% registrants
+
+107
+
+C
+
+108
+
+Lobbying amount per annum ($)
+
+B
+
+108
+
+Lobbying amount per annum ($)
+
+Lobbying amount per annum ($)
+
+A
+
+10 2
+
+103
+0
+
+5
+
+10
+15
+20
+25
+Combined associations
+
+30
+
+35
+
+Figure S32. Total annual income of K-Street registrants in relation to their (A) number of government associations, (B) number
+of legislator associations, and (C) the total number of associations. The 2D histograms comprise all the data from 1999–2023,
+where one active registrant in one year contributes one data point.
+
+XI. Portfolio analysis
+
+In this section, we describe the methodology of lobbying issue portfolio and lobbying target portfolio analysis presented
+in Fig. 3 of the main text, respectively.
+A.
+
+Portfolio matrices
+
+We start the lobbying issue portfolio analysis by counting the number of clients who in year y lobbied on issue
+area a and combine these scores into a matrix M , such that
+May = | {c ∈ Clients(y) : ∃f c(f ) = c ∧ a ∈ A(f ) ∧ y(f ) = y} |.
+
+(S.46)
+
+36
+This data is presented in Fig. S33A. The number of clients lobbying on a given issue can also re ect the total number
+of clients lobbying in a given year (c.f. Fig. S6A). To discount potential spurious temporal trend, instead of looking
+at the number of clients, we compute the fraction of clients (Fig. S33B)
+M gy =
+
+Mgy
+.
+|Clients(y)|
+
+(S.47)
+
+Finally, to account for disparities in ‘popularity’ of di erent areas, we compute the issue portfolio matrix M by
+normalizing the matrix M row by row such that
+M gy =
+
+1
+Ny
+
+M gy
+,
+∑
+y M gy
+
+(S.48)
+
+where Ny = 25 is the number of years considered. If M gy > 1, it means that the fraction of reports mentioning entity
+g in year y is above the average for years 1999–2023.
+A
+
+B
+
+C
+
+Figure S33. Issue portfolio analysis. (A) The number of clients lobbying on issue area a in year y (May ). (B) The fraction
+of clients lobbying on issue area a in year y (M ay ). (B) Row-normalized fraction of clients lobbying on issue area a in year y
+(M ay ).
+
+The target portfolio analysis follows a very similar methodology, with the target portfolio matrix de ned as
+M gy =
+where
+I
+
+M ay =
+
+1
+Ny
+
+M gy
+,
+∑
+y M gy
+
+| {c ∈ Clients(y) : ∃f c(f ) = c ∧ g ∈ G(f ) ∧ y(f ) = y} |
+.
+|Clients(y)|
+
+(S.49)
+
+(S.50)
+
+37
+Figure 3 of the main text presents the target portfolios for the top 79 government entities, i.e., the entities with the
+largest average number of clients. In Figures S34, we show such scores for the next 79 entities in this ranking, as well
+as the corresponding year-to-year Spearman correlation matrix, which is somewhat di erent to the correlation matrix
+for the top 79 issues. Nevertheless, we note that many government entities in this range are approached by only a
+handful of clients, so the ranking can be sensitive to small variations. For this reason, we do not pursue the target
+portfolio analysis for all 250 government entities mentioned in the reports, but we focus on the most popular ones.
+A
+
+B
+
+A
+
+C
+
+0.0
+
+1.0
+
+2.0
+
+3.0
+
+Spearman correlation
+0.75
+
+1.00
+
+1999
+2000
+2001
+2002
+2003
+2004
+2005
+2006
+2007
+2008
+2009
+2010
+2011
+2012
+2013
+2014
+2015
+2016
+2017
+2018
+2019
+2020
+2021
+2022
+2023
+
+Financial
+
+COVID-19
+
+1999
+2000
+2001
+2002
+2003
+2004
+2005
+2006
+2007
+2008
+2009
+2010
+2011
+2012
+2013
+2014
+2015
+2016
+2017
+2018
+2019
+2020
+2021
+2022
+2023
+
+Crisis
+Senate majority
+House majority
+Presidency
+
+Figure S34. Target portfolio for less often mentioned government entities (80 – 159 in the ranking). (A) Portfolio matrix (M ).
+(B) Number of clients lobbying with di erent government entities (M ). (C) Spearman correlation matrix for these government
+entities.
+
+38
+B. Budget-based analysis
+
+Instead of client group size, the lobbying portfolios can also be de ned based on the lobbying budget, e.g., we could
+choose
+∑
+f 1[a ∈ A(f ) ∧ y(f ) = y ∧ r(f )]
+′
+∑
+.
+(S.51)
+M ay =
+f 1[y(f ) = y]
+
+This idea is pursued in Fig. S35, which can be directly compared with Fig. 3 of the main text. We nd that the
+correlation structure of the budget-based portfolios is less clear than for the client-group-based portfolios, e.g., the
+block-diagonal structure of Fig. S35F appears to be less apparent than the block-diagonal structure of Fig. 3F of the
+main text.
+C.
+
+Principal component analysis
+
+We can further analyze the similarity of annual portfolios by performing principal component analysis (PCA). For
+the issue portfolio, we normalize M ay de ned in eq. (S.48) one more time by column-wise subtraction of mean and
+division by standard deviation. Thus, we obtain the matrix M ay that we decompose as
+M ay =
+
+∑
+
+σ i ei u i ,
+
+(S.52)
+
+i
+
+where σ1 ≥ σ2 ≥ . . . are singular values, ei ∈ RNg ×1 are principal components, Na = 79 is the number of issue areas,
+ui ∈ R1×Ny are score vectors, and Ny = 25 is the number of analyzed years. Each entry of a principal component
+corresponds to one government entity, while each entry of a score vector corresponds to one year.
+Figure S36 shows the weights of the two highest-variance principal components e1 and e2 that explain more than
+48% and 13% of variance, respectively. The projection of the target portfolio onto the 2D space (e1 , e2 ) is shown
+in Fig. S37A. We can observe a steady evolution along the circle-like path from early years (top right) to recent
+years (top left). Also, note that the pairs of consecutive years (2007, 2008) and (2008, 2009) are considerably more
+dissimilar than others, suggesting signi cant changes in the target portfolio between the two years. These changes
+are coincident to two major external events: rst, the global nancial crisis; second, the adoption of reforms in the
+Honest Leadership and Open Government Act of 2007.
+Analogously, we normalize the target portfolio matrices M gy and apply PCA to the obtained normalized matrices
+M gy . Figure S37B shows that, similarly to the issue portfolio, e1 also co-evolves with time. For completeness, the
+weights of the rst two principal components e1 and e2 are shown in Fig. S38, but the interpretation of this result is
+beyond the scope of this study.
+
+39
+A
+
+B
+
+E
+
+C
+
+D
+
+Average
+annual
+budget
+
+F
+
+Average
+annual
+budget
+
+Normalized annual budget fraction
+0.0
+
+1.0
+
+2.0
+
+3.0
+
+Spearman correlation
+0.75
+
+1.00
+
+Figure S35. Lobbying portfolio analysis based on budget. (A) Fraction of the lobbying budget dedicated to a given
+issue, scaled by its average value in the period 1999–2023. (B) Average annual lobbying budget associated with a given issue.
+(C) Fraction of the lobbying budget that can be associated with lobbying a given government entity in a given year, scaled by
+the average value in the period 1999–2023. The government entities are listed according to the average annual budget. In this
+Figure, we present only the top approached government entities; note that the ranking may be di erent from that in Fig. 3.
+(D) Average annual lobbying budget dedicated to lobbying di erent government entities. (E) Year-to-year correlation of the
+issue portfolio vectors (columns of the matrix in panel (A)). (F) Year-to-year correlation of the government approach portfolios
+presented as columns in panel (C).
+
+40
+Religion
+Medical/Disease Research/Clinical Labs
+Postal
+Urban Development/Municipalities
+Welfare
+Roads/Highway
+Waste (hazardous/solid/interstate/nuclear)
+Pharmacy
+Intelligence
+Railroads
+Tariff (miscellaneous tariff bills)
+Food Industry (safety, labeling, etc.)
+Housing
+Sports/Athletics
+Labor Issues/Antitrust/Workplace
+Media (information/publishing)
+Veterans
+Clean Air and Water (quality)
+Government Issues
+Unemployment
+Medicare/Medicaid
+Environment/Superfund
+Family issues/Abortion/Adoption
+Immigration
+Trucking/Shipping
+Agriculture
+Financial Institutions/Investments/Securities
+Retirement
+Automotive Industry
+Economics/Economic Development
+Telecommunications
+Manufacturing
+Insurance
+Accounting
+Energy/Nuclear
+Transportation
+Bankruptcy
+Disaster Planning/Emergencies
+Constitution
+Science/Technology
+Arts/Entertainment
+Computer Industry
+Apparel/Clothing Industry/Textiles
+Commodities (big ticket)
+Small Business
+Tobacco
+Homeland Security
+Copyright/Patent/Trademark
+Trade (domestic/foreign)
+Law Enforcement/Crime/Criminal Justice
+Consumer Issues/Safety/Products
+Aviation/Airlines/Airports
+Defense
+Alcohol and Drug Abuse
+District of Columbia
+Natural Resources
+Fuel/Gas/Oil
+Beverage Industry
+Indian/Native American Affairs
+Aerospace
+Animals
+Torts
+Banking
+Foreign Relations
+Education
+Advertising
+Budget/Appropriations
+Gaming/Gambling/Casino
+Minting/Money/Gold Standard
+Marine/Maritime/Boating/Fisheries
+Utilities
+Communications/Broadcasting/Radio/TV
+Civil Rights/Civil Liberties
+Chemicals/Chemical Industry
+Health Issues
+Firearms/Guns/Ammunition
+Travel/Tourism
+Taxation/Internal Revenue Code
+Real Estate/Land Use/Conservation
+
+e1
+e2
+0.3
+
+0.2
+
+0.1 0.0
+
+0.1
+
+0.2
+
+0.3
+
+0.4
+
+Principal component weight
+
+Figure S36. Weights of the rst two principal components e1 and e2 of the issue portfolio matrix M ay . Components e1 and e2
+explain more than 38% and 13% of variance respectively. Issue areas are sorted by increasing e1 weight.
+
+A
+
+Issue portfolio
+
+8
+
+Target portfolio
+
+B 8
+2011
+
+6
+
+2008
+
+2
+
+2
+
+e2 score
+
+e2 score
+
+2014
+2013
+
+2005
+
+2001
+
+4
+
+2012
+
+2007
+2006
+
+0
+
+2015
+2004
+2003
+2000
+
+1999
+
+2016
+
+2017
+2020
+
+2002
+
+2021
+2023
+
+4
+
+2008
+
+2010
+
+4
+
+2
+
+2010
+
+6
+
+2009
+
+2012
+
+2006
+
+2013
+2014
+2015
+
+2005
+
+2016
+
+2007
+
+2004
+2003
+
+2009
+
+0
+2002
+
+2023
+
+2
+
+2019
+
+2022
+
+2018
+
+4
+
+2022
+
+6
+
+2001
+1999
+2000
+
+2021
+
+6
+2000
+
+2011
+
+2020
+
+Year 2020
+
+8
+
+2017
+2019
+2018
+
+8
+10.0
+
+7.5
+
+5.0
+
+2.5
+
+0.0
+
+e1 score
+
+2.5
+
+5.0
+
+7.5
+
+10.0
+
+10.0
+
+7.5
+
+5.0
+
+2.5
+
+0.0
+
+2.5
+
+5.0
+
+7.5
+
+10.0
+
+e1 score
+
+Figure S37. Projection of the annual portfolios onto 2D space spanned by the principal components e1 and e2 . (A) Issue
+portfolios. (B) Target portfolios (top 79 entities).
+
+41
+Corporation for Natl & Community Service
+Council on Environmental Quality
+Dept of Interior
+Natl Labor Relations Board
+Federal Trade Commission
+Defense Department Field Activities
+Dept of Agriculture
+Dept of Commerce
+Dept of Army
+Office of Administration
+Dept of State
+African Development Foundation
+U.S. Botanic Garden
+Office of the Secretary of Defense
+Occupational Safety & Health Review Commission
+Inter-American Foundation
+Dept of Air Force
+Federal Maritime Commission
+U.S. Trade Representative
+Mine Safety & Health Review Commission
+Farm Credit Administration
+Export-Import Bank of the United States
+Federal Deposit Insurance Corporation
+Dept of Defense
+Office of Natl Drug Control Policy
+Architect of the Capitol
+Federal Labor Relations Authority
+Natl Archives & Records Administration
+Federal Emergency Management Agency
+Office of the Vice President of the United States
+Federal Mediation & Conciliation Service
+Dept of Labor
+Natl Science Foundation
+Office of Science & Technology Policy
+Natl Mediation Board
+Federal Housing Finance Agency
+White House Office
+Federal Election Commission
+Vice President of the U.S.
+Joint Chiefs of Staff
+Dept of Health & Human Services
+Environmental Protection Agency
+Office of Government Ethics
+Office of Policy Development
+Equal Employment Opportunity Commission
+Natl Capital Planning Commission
+Executive Office of the President
+Office of Management & Budget
+Library of Congress
+President of the U.S.
+Consumer Product Safety Commission
+Congressional Budget Office
+General Services Administration
+Merit Systems Protection Board
+NASA
+Natl Transportation Safety Board
+CIA
+Dept of Veterans Affairs
+Government Printing Office
+Natl Foundation on the Arts & Humanities
+Natl Security Council
+Dept of Transportation
+Federal Reserve System
+Dept of Treasury
+Commodity Futures Trading Commission
+AMTRAK
+Dept of Housing & Urban Development
+Dept of Justice
+Office of Personnel Management
+Government Accountability Office
+Nuclear Regulatory Commission
+Federal Communications Commission
+Council of Economic Advisers
+Dept of Energy
+Dept of Navy
+Dept of Education
+Defense Nuclear Facilities Safety Board
+Natl Credit Union Administration
+Federal Retirement Thrift Investment Board
+
+e1
+e2
+0.4
+
+0.2
+
+0.0
+
+0.2
+
+Principal component weight
+
+0.4
+
+Figure S38. Weights of the rst two principal components e1 and e2 of the target portfolio matrix M gy . Components e1 and
+e2 explain more than 42% and 21% of variance respectively. Government entities are sorted by increasing e1 weight.
+
+42
+
+Number of clients lobbying on SOPA
+All
+With known NAICS code
+
+160
+140
+120
+Count
+
+100
+80
+60
+40
+20
+
+2014-Q4
+
+2014-Q3
+
+2014-Q2
+
+2014-Q1
+
+2013-Q4
+
+2013-Q3
+
+Period
+
+2013-Q2
+
+2013-Q1
+
+2012-Q4
+
+2012-Q3
+
+2012-Q2
+
+2012-Q1
+
+2011-Q4
+
+2011-Q3
+
+2011-Q2
+
+2011-Q1
+
+0
+
+Figure S39. Number of clients lobbying on the Stop Online Piracy Act (SOPA) in a given quarter.
+
+XII. Probabilistic analysis of bill-related lobby
+
+In Fig. 4 of the article, we present a probabilistic analysis of lobbying associated with the Stop Online Piracy Act
+(SOPA). Here, we provide additional methodological details of this analysis, and we include two additional examples
+of bill lobby analysis.
+A. Methodology
+
+Conceptually, the rst step of our analysis is to draw one of the clients C who lobbied in the last quarter of 2011,
+1
+uniformly at random. The probability of choosing a speci c client is simply |Clients(Q4
+2011)| (c.f. Sec. II A). As the
+database contains every LDA LD-2 ling, we can compute various empirical (frequentist) probabilities by ltering
+the database and counting. Thus, the probability that a randomly chosen client lobbied on a given bill is simply the
+fraction of clients that mentioned this bill in at least one ling. The number of clients lobbying on SOPA peaked in
+the fourth quarter of 2011 (Fig. S39), which is the focus period of our analysis. For about 40% of them, we can map
+the client to an industry by linking the client to the S&P Compustat database [4] and from there to the client’s North
+American Industry Classi cation System (NAICS) code. The remainder of our analysis is restricted to these clients.
+Compustat tracks all publicly traded North American headquartered rms; clients lacking Compustat entries (and
+thus lacking NAICS codes we can access) are either non-North American multinationals, private rms, or non- rm
+entities like interest groups or non-governmental organizations.
+NAICS codes are hierarchical six-digit numbers. Successive digits are increasingly more granular measures of
+industry. We take the rst two digits of the NAICS code, which allows us to assign clients to one of the 20 broad
+client sectors (Tab. S4). For the purposes of the probabilistic analysis, the sector assignment is treated as a random
+variable C, which can take one of the 20 values. The probability that a randomly selected client (with NAICS code)
+belongs to a given sector P(C ∈ Sector) measures the relative frequency of di erent industry sectors participating in
+lobbying in the given ling quarter. The conditional probability P(Sector|SOPA) is the relative frequency of di erent
+sectors lobbying on SOPA (Fig. S40A). The probability shift
+∆P(Sector | SOPA) = P(C ∈ Sector | SOPA) − P(C ∈ Sector)
+is presented in Fig. 4B of the main manuscript.
+To investigate more speci cally the lobbying strategies of the IT sector, we subdivide the Information industry
+sector (NAICS 2-digit code ‘51’) into ‘IT’ and ‘Other’ companies. To this end, we use the more ne-grained 4-digit
+NAICS code. Speci cally, in our analysis, the ‘Other’ companies comprise: ‘Motion Picture and Sound Recording
+Industries’ sector (code 512), ‘Newspaper, Periodical, Book, and Directory Publishers’ (code 5131), and ‘Broadcasting
+and Content Providers’ (code 516). All other companies with a NAICS code starting with ‘51’ are classi ed as ‘IT’.
+
+43
+In other words, in our analysis, the ‘IT’ sector is a subset of the ‘Information’ sector comprised of companies that are
+not explicitly related to content creation.
+Table S4. NAICS Two-Digit Sector Codes, Full Descriptions, and Abbreviated Names.
+NAICS Code Client Sector C
+11
+21
+22
+23
+31-33
+42
+44-45
+48-49
+51
+52
+53
+54
+55
+56
+61
+62
+71
+72
+81
+92
+
+Abbreviated Name
+
+Agriculture, Forestry, Fishing and Hunting
+Agriculture
+Mining, Quarrying, and Oil and Gas Extraction
+Mining & Extraction
+Utilities
+Utilities
+Construction
+Construction
+Manufacturing
+Manufacturing
+Wholesale Trade
+Wholesale
+Retail Trade
+Retail
+Transportation and Warehousing
+Transportation / Warehousing
+Information
+Information
+Finance and Insurance
+Finance
+Real Estate
+Real Estate and Rental and Leasing
+Professional, Scienti c, and Technical Services
+Services
+Management of Companies and Enterprises
+Company Management
+Administrative and Support and Waste Management and Remediation Services Administrative
+Educational Services
+Education
+Health Care and Social Assistance
+Healthcare
+Arts, Entertainment, and Recreation
+Arts
+Accommodation and Food Services
+Accommodation & Food
+Other Services (except Public Administration)
+Other
+Public Administration
+Public Administration
+
+As described in the nal section of the main manuscript, we can also use the probabilistic framework to analyze/infer
+lobbying strategies. First, we analyze the random variable that describes the registrant pro le hired by the randomly
+drawn client. The registrant pro le, or ’Pro le’ for short, is a random variable that can take one of four values:
+In-House (if the client lobbied on SOPA only through their own lobbying department), Mixed (if the client lobbied
+on SOPA both as a self- ler, and through at least one K-Street registrant), One K-Street (if the client lobbied on
+SOPA through one K-Street rm only), and Multiple K-Street (if the client lobbied on SOPA through more than one
+K-Street registrant, but not through an In-House lobbying department). In Fig. S40B, we compare the registrant
+pro le probability for information industry clients PS (Pro le | Inf), where PS indicates a restriction to the clients that
+lobbied on SOPA, to the same distribution for all the clients lobbying on SOPA PS (Pro le). The probability shift,
+which is the di erence of these two quantities, is presented in Fig. 4C of the main manuscript.
+Secondly, we look at the event of approaching di erent government entities (c.f. Sec. XI). The probability
+PS (Gov. entity) denotes the probability that a given government entity was mentioned in the same section as
+SOPA in∑
+one of the lobbying reports of the client (Fig. S40C). As each client can approach multiple government
+entities,
+Entities PS (Gov. entity) ̸= 1. For brevity, we present only the 6 most lobbied agencies (other than the
+Senate and House of Representatives, which are included in virtually all lobbying lings involving legislation). We
+also incorporate the entries that pointed to the White House O ce into the Executive O ce of the President.
+Finally, in Fig. S40D, we look at the probability that one of the lobbyists hired by the randomly selected client
+had a past professional association with a current legislator from one of the main parties (c.f. Fig. S9). The coarsegrained random variable that we name ‘Association’, can take one of the four mutually exclusive values: Republican
+(only), Democratic (only), Bipartisan (connections to both parties, possibly via di erent lobbyists), and None (no
+documented past a liation). The signi cance of bipartisan lobby is further investigated in Sec. XIII.
+
+B. Additional examples
+1. American Clean Energy and Security Act of 2009 (ACES)
+
+The American Clean Energy and Security Act of 2009 (ACES), also known as the Waxman‑Markey bill, is another
+example of a bill that attracted signi cant lobby, with more than 800 clients in the rst half of 2009 (Fig. S41).
+In Fig. S42A, we show the probability gain associated with the ACES lobbying, and in Fig. S42B-D we show the
+probability shifts that characterize the lobby of the Utilities sector (the most prominent ACES lobby based on
+
+44
+B
+
+C
+
+D
+
+0.3
+
+0.4
+
+In
+-H
+ou
+se
+
+Ac
+co
+m
+
+(Sector)
+(Sector|SOPA)
+
+0.5
+
+0.00
+
+0.25
+
+Re
+pu
+bl
+ic
+an
+tis
+an
+Bi
+pa
+r
+
+S (Association)
+
+0.0
+
+0.2
+
+0.00
+
+S (Association |IT)
+
+0.25
+
+Co
+m
+
+pa
+ny
+
+U
+.S
+.C
+
+0.0
+
+oc
+ra
+t
+
+0.2
+
+M
+ix
+ed
+
+0.1
+
+D
+em
+
+O
+IT
+0.0
+
+S (Gov. entity | IT)
+
+N
+on
+e
+
+S (Proﬁle | IT)
+
+ne
+
+O
+
+th
+er
+
+KSt
+re
+e
+
+t
+
+S (Proﬁle)
+
+Pa
+Pr
+U
+.S
+es
+te
+.T
+id
+nt
+ra
+en
+&
+D
+de
+t
+ep
+Tr
+Ex
+ad
+Re
+op
+t
+ec
+of
+em
+pr
+yr
+ut
+Co
+es
+ig
+a
+iv
+ht
+rk
+en
+m
+e
+m
+O
+O
+O
+t
+at
+O
+e
+ﬃ
+ﬃ
+ﬃ
+rc
+M
+iv
+ce
+ce
+c
+B
+e
+e
+e
+
+M
+ul
+tip
+le
+
+KSt
+re
+e
+
+t
+
+S (Gov. entity)
+
+m
+
+M
+in
+in
+od
+A
+M
+T
+g
+ra
+dm
+M
+a
+C
+a
+& I
+t
+an
+n
+o
+R
+A
+H
+i
+W
+Ex nfo nuf
+sp
+on ea in
+ns
+e
+ag Ed gr
+S
+ho & l is
+al e o U tr rm F ac
+t
+i
+u
+r
+c
+r
+t
+em O c u
+uc le F Es ra R th rv ta ti ac a ina tu
+a
+l
+en the tio ltur Ar tio sa oo tat tiv eta car ice tio itie tio tio nc rin
+ts n le d e e il e s n s n n e g
+n
+e
+t r
+
+A
+
+Figure S40. Unconditional and conditional probabilities for SOPA lobbying in the fourth quarter of 2011. (A) Probability that
+a random client belongs to a given NAICS sector P(Sector), compared to the conditional probability P(Sector|SOPA). The
+sectors are sorted by the value of P(Sector). The inset shows the Information sector subdivided into IT and non-IT companies.
+(B) Probability that a random client hires registrant(s) of a particular pro le: for all clients lobbying on SOPA PS (Pro le),
+and for those of them who belong to the Information industry PS (Pro le | Inf). (C) Probability that a random client lobbied
+with a particular government entity: for all clients lobbying on SOPA PS (Gov. Agency), and for those of them who belong to
+the Information industry PS (Gov. Agency | Inf). Note that multiple government entities can be approached at the same time.
+For brevity, in this layer, we only show the 6 government entities with the largest PS (Gov. Agency). (D) Probability that
+a random client hired a lobbyist with a documented association with a current legislator: for all clients lobbying on SOPA
+PS (Association), and for those of them who belong to the Information industry P PS (Association | Inf).
+
+Number of clients lobbying on ACES
+All
+With known NAICS code
+
+800
+
+Count
+
+600
+
+400
+
+200
+
+2007-Q4
+2008-Q1
+2008-Q2
+2008-Q3
+2008-Q4
+2009-Q1
+2009-Q2
+2009-Q3
+2009-Q4
+2010-Q1
+2010-Q2
+2010-Q3
+2010-Q4
+2011-Q1
+2011-Q2
+2011-Q3
+2011-Q4
+2012-Q1
+2012-Q2
+2012-Q3
+2012-Q4
+2013-Q1
+2013-Q2
+2013-Q3
+2013-Q4
+2014-Q1
+2014-Q2
+2014-Q3
+2014-Q4
+2015-Q1
+2015-Q2
+2015-Q3
+2015-Q4
+2016-Q1
+2016-Q2
+2016-Q3
+2016-Q4
+2017-Q1
+
+0
+
+Period
+
+Figure S41. Number of clients lobbying on the American Clean Energy and Security Act of 2009 (ACES) in a given quarter.
+
+∆P(Sector | ACES) ). One interesting feature is the Republican leaning of their lobby, which correlates with the fact
+that the ACES bill never passed the Senate due to expected Republican libuster.
+
+45
+
+C
+
+Bip
+art
+isa
+n
+
+EP
+A
+
+De
+pt
+o
+
+fA
+gri
+cu
+lt
+
+[Profile |Utl]
+
+mp
+an
+y
+
+A
+
+De
+pt
+o
+
+0.25 0.00 0.25
+
+ne
+
+De
+mo
+No
+
+ure
+
+us
+e
+
+cra
+t
+
+Pre
+sid
+en
+tE
+De
+xe
+pt
+cu
+of
+tiv
+Tre
+eO
+asu
+FE
+ffic
+RC
+ry
+e
+
+ree
+t
+K-S
+t
+Mix
+ed
+Ho
+In-
+
+Re
+pu
+bli
+ca
+n
+
+fE
+
+ree
+t
+ipl
+eK
+-St
+Mu
+lt
+On
+e
+0.1 0.0 0.1
+
+[Sector |ACES]
+
+D
+
+ne
+rgy
+
+B
+
+Ac
+co
+m
+
+Min
+mo
+ing
+A
+Ma
+T
+d
+r
+Ma
+C a d
+a
+na Ed Agr Whons tionmini Rea Heansp S & ExInfo nufa
+ge O uc icu ol tru & str l E R lth ort er Ut tra rm Fin ct
+me th ati A ltu esa cti Fo ati sta et ca ati vic ilit cti ati an uri
+nt er on rts re le on od ve te ail re on es ies on on ce ng
+
+A
+
+0.1 0.0 0.1
+
+A
+
+0.1 0.0 0.1
+
+[Gov. entity|Utl]
+
+A
+
+[Association|Utl]
+
+Co
+
+Figure S42. Probability shifts for ACES lobbying (analogous to Fig. 4A-D of the manuscript) in the rst half of 2009.
+(A) Probability that a random client belongs to a given NAICS sector P(Sector), compared to the conditional probability
+P P(Sector | ACES). The sectors are sorted by P(Sector). (B) Probability shift comparing the probability that a client from
+the Utilities sector (’Utl’) hired a registrant of a particular type, compared to the same quantity for all the clients lobbying
+on ACES with known NAICS sector. (C) Analogous quantity associated with the probability of approaching a particular
+government entity. (D) Analogous quantity associated with the probability of hiring a lobbyist with a documented association
+with a current legislator.
+
+Number of clients lobbying on CARES
+
+2000
+
+All
+With known NAICS code
+
+1750
+1500
+
+Count
+
+1250
+1000
+750
+500
+250
+
+2023-Q4
+
+2023-Q3
+
+2023-Q2
+
+2023-Q1
+
+2022-Q4
+
+2022-Q3
+
+2022-Q2
+
+2022-Q1
+
+Period
+
+2021-Q4
+
+2021-Q3
+
+2021-Q2
+
+2021-Q1
+
+2020-Q4
+
+2020-Q3
+
+2020-Q2
+
+2020-Q1
+
+2019-Q4
+
+2019-Q3
+
+2019-Q2
+
+2019-Q1
+
+0
+
+Figure S43. Number of clients lobbying on Coronavirus Aid, Relief, and Economic Security Act of 2020 (CARES) in a given
+quarter.
+2. Coronavirus Aid, Relief, and Economic Security (CARES) Act of 2020
+
+In contrast to the bills analyzed in the previous sections, the CARES Act has been signed into law. The number
+of interested clients was also larger by an order of magnitude (Fig. S43), re ecting the fact that the bill involved
+extremely broad-based government spending and income support that had implications for virtually all American
+rms. Clients from the nancial sector were among those interested in the bill (Fig. S44A). They were somewhat
+more likely to lobby through an In-House registrant than an average client (Fig. S44B), and more likely to lobby
+the Department of Treasury (Fig. S44C). Some di erences were observed between them and other clients in terms of
+known partisan leaning of the lobbyists (Fig. S44D), but they are smaller in magnitude than the ones we found in
+Fig. 4, or Fig. S42.
+
+46
+
+C
+
+D
+
+0.05
+
+Re
+pu
+bl
+ic
+an
+tis
+an
+Bi
+pa
+r
+on
+e
+
+of
+Ag
+ric
+ul
+FE
+tu
+RC
+re
+
+D
+0.05 0.00
+
+0.05
+
+0.2
+
+0.0
+
+0.2
+
+C [Gov. entity | Fin]
+
+0.025
+
+0.025
+
+C [Association | Fin]
+
+ny
+
+C [Proﬁle | Fin]
+
+N
+
+ep
+t
+
+In
+-H
+ou
+se
+
+Ac
+co
+m
+
+0.05
+
+[Sector | CARES]
+
+D
+
+em
+
+M
+ix
+ed
+
+oc
+ra
+t
+
+EP
+A
+
+ep
+t
+
+D
+
+O
+ne
+
+Pr
+es
+id
+en
+t
+
+KSt
+re
+et
+
+M
+ul
+tip
+le
+
+KSt
+re
+et
+
+D
+Ex
+ep
+ec
+t
+ut
+of
+of
+iv
+Tr
+e
+En
+ea
+O
+er
+ﬃ
+su
+gy
+ce
+ry
+
+B
+
+m
+
+M
+in
+in
+od A
+M
+T
+g
+r
+M
+Co
+at dm
+an
+&
+In anu
+an
+Ag E n
+H
+io in Re
+W
+E
+s
+f
+e
+ag
+ric du str
+ho n & is al
+al Se po U xtr F ormfac
+em O u c u
+le F tra Es R th rv rta til ac ina a tu
+a c
+en theltur tio tio Ar sa oo tiv tat eta car ice tio itie tio nc tio rin
+t r e n n ts le d e e il e s n s n e n g
+
+A
+
+Figure S44. Probability shifts for CARES lobbying (analogous to Fig. 4A-D of the manuscript, and Fig. S42) for the rst
+quarter of 2020. (A) Probability that a random client belongs to a given NAICS sector P(Sector), compared to the conditional
+probability P P(Sector | CARES). The sectors are sorted by P(Sector). (B) Probability gain comparing the probability that a
+client from the Finance sector (‘Fin’) hired a registrant of a particular type, compared to the same quantity for all the clients
+lobbying on CARES with known NAICS sector. (C) Analogous quantity associated with the probability of approaching a
+particular government entity. (D) Analogous quantity associated with the probability of hiring a lobbyist with a documented
+association with a current legislator.
+
+47
+XIII.
+
+Polarization analysis
+
+To get more insights into political trends in lobbying, we can use our data to quantify political polarization in more
+depth. Our analysis is exploratory in nature. Here, we explain its methodology.
+A. Relation-based measures
+
+In order to compare the polarization of lobbyists (trend unknown) to the polarization of lawmakers (polarization
+known to progress), we need a methodology that could be applied to both. In Fig. 4D, we used a simple network-based
+measure that can be applied to any set of entities S subdivided into two subsets S∞ , S∈ , which are joined by some
+kind of relational ties.
+In case of legislators, S1 , S2 correspond to representatives/senators who belong to one of the two main political
+parties, e.g., we can take
+S1 (y) := Democratic Senators(y) = {p : Party(p, y) = Democratic, Chamber(p, y) = Senate},
+S2 (y) := Republican Senators(y) = {p : Party(p, y) = Republican, Chamber(p, y) = Senate},
+and the superset is simply
+S = S1 (y) ∪ S2 (y).
+Thus, we neglect here the independent legislators, but their number is small, and it is not always straightforward to
+de ne how they might contribute to polarization.
+The relations between legislators can be de ned in all sorts of ways. Here, we focus on bill cosponsoring. We can
+envisage the legislators as nodes in the multigraph, and we add one edge (p1 , p2 ) between any pair of politicians for
+each bill they co-sponsored together. We treat each chamber separately, neglect resolutions, and treat sponsors and
+cosponsors in the same way.
+The edges can connect members of the same party or members of two parties. To evaluate the degree of polarization,
+we look at the number of bipartisan cosponsorships. Speci cally, we compute
+Legislator Bipartisan Index(y) =
+
+|(p1 , p2 ) : p1 ∈ S1 , p2 ∈ S2 |
+.
+|(p1 , p2 ) : p1 , p2 ∈ S|
+
+(S.53)
+
+We compute the bipartisan index for House and Senate separately, and we report it in Fig. 4D of the main paper.
+The fact that it has been consistently decreasing throughout the 21st century can be interpreted as a symptom of
+Congress polarization.
+Crucially, we can use a very similar measure to assess polarization among the lobbyists. Now, we de ne
+S1 (y) := {l ∈ Lobbyists(y) : p(l, y) ∩ Democratic Legislators(y) ̸= ∅, p(l, y) ∩ Republican Legislators(y) = ∅},
+S2 (y) := {l ∈ Lobbyists(y) : p(l, y) ∩ Republican Legislators(y) ̸= ∅, p(l, y) ∩ Democratic Legislators(y) = ∅},
+where
+Democratic Legislators(y) = {p : Party(p, y) = Democratic},
+Republican Legislators(y) = {p : Party(p, y) = Republican}.
+Again, we neglect lobbyists associated with independent legislators, and lobbyists associated with legislators from
+both of the major parties, but such cases are rare (c.f. Sec. I D).
+As before, S = S1 (y) ∪ S2 (y) and we want to treat the lobbyists as nodes of a graph, with links representing some
+kind of ties. In our analysis, we considered two di erent kinds of links. First, we constructed the graph based on
+professional lings, i.e., we add a link (l1 , l2 ) for every ling where the two lobbyists featured together. This led to
+the collaboration-based bipartisan index. As an alternative, we consider a graph where an edge is added for every bill
+
+48
+
+A
+
+B
+
+Clients
+
+6000
+
+500
+
+4000
+
+K-Street Registrants
+
+400
+
+600
+
+5000
+
+300
+
+400
+
+3000
+
+200
+
+300
+
+2000
+
+200
+
+1000
+0
+
+C
+
+In-House Registrants
+
+700
+
+100
+
+100
+0
+
+5
+
+10
+
+15
+
+20
+
+25
+
+0
+
+0
+
+5
+
+10
+
+15
+
+20
+
+25
+
+0
+
+0
+
+5
+
+10
+
+15
+
+20
+
+25
+
+Figure S45. Reach-based polarization analysis. (A) The number of clients with a democratic pro le (blue), a bipartisan pro le
+(black), and a republican pro le (red). (B) Analogous plot for In-House registrants. (C) Analogous plot for K-Street registrants.
+In all cases, the relative number of the bipartisan pro le agents increases in time, which could be indicative of depolarization.
+
+that the two lobbyists lobbied on together (potentially for di erent clients). This lead to the bipartisan index based
+on legislative interest. Both of these indices are computed with the same formula
+Lobbyist Bipartisan Index(y) =
+
+|(l1 , l2 ) : l1 ∈ S1 , l2 ∈ S2 |
+,
+|(l1 , l2 ) : l1 , l2 ∈ S|
+
+(S.54)
+
+which is exactly analogous to (S.53), except the edges are constructed based on a di erent notion of a relationship.
+The lobbyists bipartisan indices do not seem to decrease in the same way they do for legislators. Thus, as far as this
+simple measure is concerned, we do not nd symptoms of increasing polarization in the lobbying industry.
+B. Reach-based measures
+
+We can also introduce a complementary measure of polarization in lobbying, focused on registrants and clients
+We employ here the notion of reach introduced in Sec. X. For example, we say that an agent (registrant or client)
+can ‘reach’ the Democratic Party, if it employs a lobbyist with a historical association to a Democratic legislator.
+Based on this idea, we divide clients and registrants into four categories: those who are not connected to any
+political party, agents with documented connections to the Democratic Party only (democratic pro le), agents with
+documented connections to the Republican Party only (republican pro le), and agents connected to both Democrats
+and Republicans (bipartisan pro le). We neglect the rst group, and the sizes of the other three groups across the
+years are shown in Fig S45.
+The relative size of the bipartisan set can be used as a measure of polarization, e.g., for clients, we compute
+|Bipartisan pro le clients|
+.
+|Bipartisan pro le clients| + |Democratic pro le clients| + |Republican pro le clients|
+We note that these measures increase for all the agent types, which indicates that polarization in lobbying might even
+be decreasing.
+In Fig. S46, we compare the polarization of lobbyists and legislators. Perhaps unsurprisingly, our data analysis
+reveals strong evidence for an increasing polarization among the legislators, highlighted by the fact that the rate of
+bipartisan co-sponsorship of bills in the U.S. Senate has dropped by about 40% over the last 25 years. Nevertheless,
+a similar trend towards polarization has not occurred within the lobbying industry. The number of instances when
+the lobbyists of opposite political leaning work together or lobby on the same bill has remained relatively stable
+(Fig. S46A). Moreover, the proportion of clients and registrants that employ a bipartisan team of lobbyists is weakly
+increasing, suggesting that both clients and registrants recognize a need to build connections with both parties to
+maximize impact (Fig. S46B). The incentive on the registrant side is clear: bipartisan teams of lobbyists generate
+more income (Fig. S46C). Thus, our data support the hypothesis that lobbying is a strategic, rather than ideological
+activity.
+
+49
+A
+
+B
+
+C
+
+35
+
+3.0
+2.5
+2.0
+1.5
+
+2023
+
+2021
+
+2019
+
+2017
+
+2015
+
+2013
+
+2011
+
+2009
+
+2007
+
+1999
+
+2005
+
+1.0
+
+2023
+
+2021
+
+2013
+
+2011
+
+2009
+
+2007
+
+2005
+
+2003
+
+2001
+
+1999
+
+2023
+
+2021
+
+2019
+
+2019
+
+Client
+In-House Registrant
+K-Street Registrant
+
+5
+
+3.5
+
+2003
+
+10
+
+4.0
+
+2001
+
+15
+
+Median income per lobbyist (million $)
+
+20
+
+0
+2017
+
+2015
+
+2013
+
+2011
+
+2009
+
+2007
+
+2001
+
+1999
+
+10
+
+2005
+
+Lobbyists (legislative cointerest)
+Lobbyists (collaboration)
+Representatives (cosponsorship)
+Senators (cosponsorship)
+
+15
+
+25
+
+2017
+
+20
+
+30
+
+2015
+
+Agents with bipartizan proﬁle (%)
+
+25
+
+2003
+
+Bipartizan relationships (%)
+
+30
+
+Republican proﬁle registrant
+Democratic proﬁle registrant
+Bipartisan proﬁle registrant
+
+4.5
+
+35
+
+Figure S46. (A) The share of bipartisan professional relationships can be used to evaluate the degree of polarization. Our
+analysis suggests that, unlike the polarization of the lawmakers, the polarization of the lobbying industry is not increasing. (B)
+Our data indicates that the share of lobbying agents (clients and registrants) with bipartisan pro les increases. (C) Registrants
+employing lobbyists with known historical connections to both of the major political parties, on average, generate higher income
+per lobbyist.
+
+Lobbyists (legislative cointerest)
+0.25
+
+Lobbyists (collaboration)
+Senators (cosponsorship)
+Representatives (cosponsorship)
+
+Modularity
+
+0.20
+
+0.15
+
+0.10
+
+0.05
+
+0.00
+
+0.05
+
+2000
+
+2005
+
+2010
+
+2015
+
+2020
+
+Figure S47. Modularity of the cross-partisan collaboration graphs - an analogue of Fig. S46A with a di erent measure.
+Modularity
+
+As an alternative to the bipartisan index, we could also take the modularity of the relationship graph [20], partitioned
+into S1 (y) and S2 (y). Let Aij be the number of bills co-sponsored by legislators pi and pj (edge weight), ki be the
+total number of co-sponsorship ties of legislator i (node degree), and m be the total number of edges. The modularity
+is de ned as
+1 ∑
+ki kj
+Q(y) =
+[Aij −
+]1[Party(p1 , y) = Party(p2 , y)],
+2m i,j
+2m
+and analogously for the lobbyists.
+The results are shown in Fig. S47. For lobbyists, the modularity is close to zero, which indicates a lack of polarization.
+For legislators, we nd consistently higher values of modularity, and in the case of senators, we observe a marked
+increase in modularity over time.
+XIV. Data and code availability
+
+Anonymized relational data, su cient to reproduce the results of this paper, as well as the code used to analyze the
+data and produce the gures, can be accessed at https://osf.io/y2hnm/?view_only=9a14b7896f834c6c9290eee85dde5bb7.
+
+50
+Researchers who are interested in interfacing with the broader LobbyView database can do so by visiting our website,
+lobbyview.org. Registration is free and instant, and allows access to the CSV data downloads and query API for
+report, client, bill, issue, and lobbyist-level data, as well as issue text and client-politician connection dyad data.
+Researchers who require access to more detailed or granular data or elds not exposed in the CSVs or API are invited
+to contact the authors for access as necessary.
+
+[1] LobbyView Database, https://www.lobbyview.org/ (2024).
+[2] U.S. Congress, Lobbying Disclosure Act of 1995 (1995). Public Law No: 104-65, 109 Stat. 691.
+[3] U.S. Senate O ce of Public Records, Lobbying Disclosure Act Guidance (2021).
+https://lobbyingdisclosure.house.gov/ldaguidance.pdf.
+[4] S&P Global, Compustat North America Fundamentals Annual, https://wrds-www.wharton.upenn.edu/ (2025). Accessed
+via Wharton Research Data Services (WRDS).
+[5] Moody’s, Orbis, https://www.moodys.com/ (2025).
+[6] United States Digital Service, U.S. Digital Service GitHub Repository: Congress (2024).
+https://github.com/unitedstates/congress/.
+[7] U.S. Congress, Honest Leadership and Open Government Act of 2007 (2007).
+https://www.govinfo.gov/content/pkg/PLAW-110publ81/pdf/PLAW-110publ81.pdf.
+[8] U.S. Congress, Lobbying Disclosure Technical Amendments Act (1998).
+https://lobbyingdisclosure.house.gov/lda_technical.html.
+[9] U.S. Congress, Lobbying Disclosure Act Guidance (2008).
+https://lobbyingdisclosure.house.gov/amended_lda_guide.html.
+[10] A.-L. Barabási, Network Science (Cambridge University Press, 2016).
+[11] A.-L. Barabási, R. Albert, H. Jeong, Physica A: statistical mechanics and its applications 281, 69 (2000).
+[12] O. T. Courtney, G. Bianconi, Physical Review E 97, 052303 (2018).
+[13] B. Bassetti, M. Zarei, M. C. Lagomarsino, G. Bianconi, Physical Review E 80, 066118 (2009).
+[14] Supplementary Information.
+[15] A.-L. Barabási, R. Albert, Science 286, 509 (1999).
+[16] G. Bianconi, A.-L. Barabási, Europhysics Letters 54, 436 (2001).
+[17] P. Erdős, A. Rényi, Publications of the Mathematical Institute of the Hungarian Academy of Sciences 5, 17 (1960).
+[18] Graphistry, Inc., PyGraphistry: Dataframe-native Python visual graph AI library (Version 0.31.1). (2024).
+https://github.com/graphistry/pygraphistry.
+[19] T. M. J. Fruchterman, E. M. Reingold, Software: Practice and experience 21, 1129 (1991).
+[20] M. Newman, Networks (Oxford University Press, 2018).
+
+
