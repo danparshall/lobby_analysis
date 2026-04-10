@@ -8,7 +8,7 @@ description: End a research session — runs update-docs to checkpoint all progr
 
 1. Run the update-docs skill first.
 
-Read and follow `/Users/dan/.claude/skills/update-docs/SKILL.md`. This creates/updates the convo summary, saves results with provenance links, and updates RESEARCH_LOG.md and STATUS.md.
+Read and follow `skills/update-docs/SKILL.md`. This creates/updates the convo summary, saves results with provenance links, and updates RESEARCH_LOG.md and STATUS.md.
 
 2. If the session produced something ready to implement:
 
