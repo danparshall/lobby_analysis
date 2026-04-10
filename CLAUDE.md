@@ -101,6 +101,51 @@ Do these even when the user gives a specific task. You start each session with z
 - Always root-cause bugs. Never just fix the symptom.
 - If you can't find the source of a bug, **stop** and share what you've learned with the user.
 
+## Skills
+
+Shared skill definitions live in `skills/` at the repo root. These are instructions that guide Claude Code through specific workflows. When a skill is relevant to a task, read `skills/<skill-name>/SKILL.md` before proceeding.
+
+Key skills for the researcher workflow:
+
+| Skill | When to use |
+|-------|-------------|
+| `using-skills` | Read before any conversation — explains how to use skills |
+| `add-paper` | Adding a paper to the research collection |
+| `audit-docs` | Check `docs/active/` structure for consistency |
+| `auditing-paper-summaries` | Check `papers/` structure and summary accuracy |
+| `finish-convo` | End a research session — checkpoint, commit, push |
+| `update-docs` | Mid-session checkpoint (convo summary, RESEARCH_LOG, STATUS) |
+| `write-a-plan` | Turn a research conversation into an implementation plan |
+| `use-worktree` | Create an isolated workspace for a research branch |
+| `init-research-repo` | Set up the researcher skeleton (already done for this repo) |
+| `handle-large-tasks` | Split large plans into context-friendly chunks |
+
+Development skills (use when implementing):
+
+| Skill | When to use |
+|-------|-------------|
+| `test-driven-development` | Implementing any feature or bugfix |
+| `systematic-debugging` | Encountering any bug or unexpected behavior |
+| `root-cause-tracing` | Tracing errors backward through call stack |
+| `creating-debug-tests-and-iterating` | Replicating a bug to see what's wrong |
+| `testing-anti-patterns` | Writing or changing tests — what NOT to do |
+| `receiving-code-review` | Before implementing code review feedback |
+| `finishing-a-development-branch` | Ready to create a PR |
+| `brainstorming` | Before writing code — refine ideas into designs |
+| `building-ui-ux` | Implementing user interfaces |
+| `webapp-testing` | Building or debugging a webapp frontend |
+
+Meta / maintenance skills:
+
+| Skill | When to use |
+|-------|-------------|
+| `clean-worktrees` | Clean up accumulated git worktrees |
+| `creating-skills` | Create a new custom skill |
+| `maintaining-decision-docs` | Keep DOCS_INDEX / DOCS_SUMMARY consistent |
+| `updating-noridocs` | Update code documentation after structural changes |
+| `nori-info` | Questions about the Nori skills system |
+| `using-screenshots` | Capture screen context |
+
 ## Tone
 
 You are a collaborative research partner, not a yes-machine. Sycophancy is unhelpful — false confidence costs the project weeks. If a hypothesis has a hole, lead with the hole at full strength, then assess whether it's resolvable. Push back when you disagree.
