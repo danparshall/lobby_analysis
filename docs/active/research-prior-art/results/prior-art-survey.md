@@ -84,7 +84,7 @@ The most directly applicable validation for the LLM-extraction approach. Details
 
 ### Ornstein 2025 — fuzzylink (Probabilistic Record Linkage Using Pretrained Text Embeddings)
 
-**Correction:** I had previously cited this as "Libgober & Rashin" in earlier verbal notes. The actual author is **Joe Ornstein** (2025), *Political Analysis*. Libgober has a different 2024 paper with Jerzak ("Linking Datasets on Organizations Using Half A Billion Open Collaborated Records," *PSRM*) that is arguably more relevant for our organization-linkage use case — worth prioritizing that one as a separate follow-up.
+**Correction:** I had previously cited this as "Libgober & Rashin" in earlier verbal notes. The actual author is **Joe Ornstein** (2025), *Political Analysis*. Libgober has a different 2024 paper with Jerzak ("Linking Datasets on Organizations Using Half-a-Billion Open-Collaborated Records," *PSRM*; arXiv:2302.02533, open PDF at https://arxiv.org/pdf/2302.02533) that is more directly relevant for our use case — its first empirical application matches ~700 lobbying-record organizations to ~7,000 listed US companies, which is structurally the same as our state-lobbying-client → SEC EDGAR matching problem. **Bumped to first priority for the next paper-ingestion pass.**
 
 Ornstein's method uses pretrained text embeddings combined with zero-shot LLM prompting in an iterative Adaptive Fuzzy String Matching loop. In a voter file application it achieves 95.8% precision and recall versus fastLink's 93.3% / 63.1% (Ornstein's reported numbers). The recall gain is largely from handling nicknames and abbreviations (Trish↔Patricia, United States Telecom Association↔US Telephone Association). R package on CRAN; not a Python-native tool.
 
@@ -95,7 +95,7 @@ Classical Fellegi-Sunter probabilistic record linkage with a scalable EM impleme
 ### Open questions in the academic literature
 
 - How well does LLM-based bill-position extraction generalize from federal LDA to heterogeneous state formats?
-- Which entity-resolution approach (classical Fellegi-Sunter via fastLink, LLM-embedding via fuzzylink, or collaborative-records via Libgober-Jerzak) is best suited to corporate-name matching in lobbying data?
+- Which entity-resolution approach (classical Fellegi-Sunter via fastLink, LLM-embedding via fuzzylink, or LinkedIn-corpus-trained organization linkage via Libgober-Jerzak) is best suited to corporate-name matching in lobbying data? Libgober-Jerzak is the most directly applicable on paper because its primary application is the same matching problem we have, but it has not been benchmarked against the other two on a common test set.
 - No paper we found applies these methods to itemized state lobbying data specifically. The project's empirical contribution would be to answer these questions.
 
 ## Commercial Tools
@@ -117,6 +117,6 @@ The commercial tools serve a different customer (lobbyists needing situational a
 Errors in my earlier (unpublished) verbal prior-art survey that this file corrects:
 
 1. **"Drutman, Grossmann, LaPira — The LDA at 25 (2020)"** — wrong authorship. Actual: **LaPira & Thomas 2020**.
-2. **"Libgober & Rashin — fuzzylink"** — wrong author. Actual: **Joe Ornstein 2025**. Separate paper by Libgober & Jerzak 2024 (organization linkage, *PSRM*) is a different paper that is arguably more relevant for our use case.
+2. **"Libgober & Rashin — fuzzylink"** — wrong author. Actual: **Joe Ornstein 2025**. Separate paper by **Libgober & Jerzak 2024** ("Linking Datasets on Organizations Using Half-a-Billion Open-Collaborated Records," *PSRM*; arXiv:2302.02533, https://arxiv.org/pdf/2302.02533) is a different paper, more directly applicable to our corporate-entity-matching use case, and now bumped to first priority for next paper ingestion.
 3. **"Kim 2018 LobbyView working paper" as the canonical reference** — superseded. The current canonical LobbyView reference is **Bacik et al. 2025** (arXiv:2503.11745). The 2018 paper is still useful as a reference for the original bill-ID regex methodology.
 4. **Federal LDA compliance numbers** — I had been working from older GAO audit numbers. **GAO-25-107523 (April 2025)** is the current reference: 3,566 referrals 2015–2024, ~63% unresolved as of December 2024.
