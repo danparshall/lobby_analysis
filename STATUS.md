@@ -24,5 +24,6 @@ Lines moved to `docs/historical/` — not currently active, but available for re
 
 (One-line session summaries, newest first)
 
+- **2026-04-12** — [research-prior-art] Paper-fetch retry (Libgober-Jerzak ingested via arXiv; Ornstein still unreachable), merged main into branch (brought in 7 papers from other agent's pull), read Libgober-Jerzak Tasks 1+2 and Lacy-Nichols FOCAL framework table, consolidated four-rubric landscape (PRI 2010 + FOCAL 2024 + F Minus + GAO-25-107523) into scoring-rubric-landscape.md as planning-agent handoff. Key finding: PRI + FOCAL compose cleanly, F Minus not yet trusted, highest-leverage next task is 2026 re-scoring of PRI's 22 accessibility criteria.
 - **2026-04-10** — [research-prior-art] Scoping kickoff: verified the prior-art gap, profiled state infrastructure tiers (8-state shortlist: CA/CO/NY/WA/TX/WI/IL/FL), analyzed OCDEP 5/6 + withdrawn Disclosures + draft Campaign Finance Filings proposals, decided to depend on Open States, drafted schema-design questions, ingested Bacik 2025 + Kim 2025 as the first two papers, deferred 5 more papers to follow-up. Added `COLLABORATOR_PROJECT_INSTRUCTIONS.md` for fellow onboarding.
 - **2026-04-09** — Repo initialized with research-first scaffolding (CLAUDE.md, STATUS.md, PAPER_INDEX.md, PAPER_SUMMARIES.md, papers/, docs/active/, docs/historical/).
