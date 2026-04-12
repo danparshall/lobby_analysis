@@ -5,6 +5,28 @@
 
 ---
 
+## Session: 2026-04-12 (planning continuation) — PRI + FOCAL implementation plans
+
+### Topics Explored
+- Blindspot review of prior session's three self-flagged caveats (shortlist vs PRI, unread papers, F Minus methodology).
+- Viability check that PRI's 22 accessibility items and FOCAL's 50 indicators are enumerable from ingested PDFs. Both confirmed. Corrected an earlier overclaim about FOCAL's Table 2 providing indicator-level framework attribution — it's framework-level summary only.
+- Plan authoring for two workstreams: PRI 2026 re-score (scoring all 50 states against PRI's 22 accessibility + 37 disclosure-law items, 59 items total, using Sonnet subagents) and FOCAL indicator extraction (Table 3 into machine-readable form, scoring deferred).
+- Sycophancy check that led to reframing the PRI plan's quality gate: the rubric — not the human scorer — is the source of truth.
+
+### Provisional Findings
+- Both rubrics can be operationalized into a scoring pipeline. The leverage point is rubric sharpness, not scorer agreement.
+- Lacy-Nichols Supplementary File 1 is database search strategies only, not the indicator table. Transcription from the main paper's Table 3 remains the source.
+
+### Results
+- `plans/20260412_pri_2026_accessibility_rescore.md` — 7-phase implementation plan for the PRI 2026 re-score (all 50 states, both rubrics, LLM-assisted scoring with subagent parallelization).
+- `plans/20260412_focal_indicator_extraction.md` — 3-phase extraction plan for FOCAL's 50 indicators. Scoring deferred.
+
+### Next Steps
+- Merge research-prior-art to main, archive `docs/active/research-prior-art/` → `docs/historical/research-prior-art/`, cut `pri-2026-rescore` branch from updated main and begin Phase 1 of the PRI plan.
+- FOCAL extraction branch to follow; timing depends on implementation capacity.
+
+---
+
 ## Session: 2026-04-10 — scoping-kickoff
 
 ### Topics Explored

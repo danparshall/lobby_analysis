@@ -233,3 +233,38 @@ Key findings:
 - FOCAL's 8 categories: Scope, Timeliness, Openness, Descriptors, Revolving Door, Relationships, Financials, Contact Log. First two assessed from legislation/regulations; remaining six from the register itself.
 
 Relevance: FOCAL provides the most directly applicable disclosure rubric for grading US state lobbying data quality: its 50 indicators map onto the fields an LLM extraction pipeline should populate (lobbyist names, client/employer, targets contacted, date, form of contact, topics, outcomes sought, financial amounts) and its Openness category directly informs how to score state-level data accessibility.
+
+---
+
+### State-Level Lobbying and Taxpayers: How Much Do We Really Know? Assessing State Lobbying Disclosure Laws and Accessibility
+
+- Authors: Jason Clemens, Julie Kaszton, Karrie Rufer, Laura Sucheski (Pacific Research Institute)
+- Date: March 2010
+- File: `papers/PRI_2010__state_lobbying_disclosure.pdf`
+- Extracted text: `papers/text/PRI_2010__state_lobbying_disclosure.txt`
+- Source: https://www.pacificresearch.org/wp-content/uploads/2017/06/TPFL_NoApp.pdf
+
+Summary: A free-market think tank report that constructs two parallel scoring rubrics — one for state lobbying disclosure laws (37 binary criteria) and one for data accessibility (22 criteria) — and applies them to all 50 states, producing ranked scores and a combined overall ranking. The report also uses California as a case study to estimate taxpayer-funded (government-to-government) lobbying as a share of total state lobbying. Note: the ideological framing (opposition to taxpayer-funded lobbying) does not undermine the scoring rubrics, which are the document's primary research contribution.
+
+Key findings:
+
+**Disclosure Law Scores (out of 37; 5 components):**
+- Top: Montana 31/37 (83.8%), Arizona 30/37 (81.1%), South Carolina and Texas tied 29/37 (78.4%)
+- Bottom: West Virginia and Nevada tied 11/37 (29.7%), New Hampshire 12/37 (32.4%), Maryland 13/37 (35.1%)
+- Average: 21.9/37 (59.3%); 11 states scored below 50%
+- 5 sub-components: (A) Registration (0–11): who must register — only 17 states require volunteer lobbyists, 24 require principals, 17 require lobbying firms, only 6 require government agencies to register. (B) Government exemptions (0–4): 44 states provide explicit exemptions for public agencies. (C) Definition of public entity (0–1): only 6 states define it. (D) Materiality test (0–1): 32 states include exemptions for small/incidental lobbying. (E) Information Disclosure (0–20): Alaska, Montana, NY, Texas tied at top with 18/20; Wyoming/Oklahoma worst at 5/20.
+
+**Accessibility Scores (out of 22; 8 categories):**
+- Top: Connecticut 17.3/22 (78.5%), North Carolina 14.3/22 (64.8%), Washington 14.3/22 (64.8%)
+- Bottom: Vermont and Wyoming tied 5/22 (22.7%), New Hampshire 6/22 (27.3%)
+- Average: 9.6/22 (43.6%); 32 states (64%) scored below 50%
+- 8 categories: (1) Data availability, (2) Website existence, (3) Website identification, (4) Current data availability, (5) Historical data availability — 13 states lack it, (6) Data format — only 17/50 provide machine-readable downloads, (7) Sorting data — average 4.4/15 sort variables supported, (8) Simultaneous sorting — average 1.7/15 variables
+- Notable discrepancy: South Carolina ranked 3rd on disclosure laws but 46th on accessibility. Connecticut ranked 18th on laws but 1st on accessibility.
+
+**Combined Overall Rankings:**
+- Top 6: Connecticut 71.7%, Indiana 68.0%, Texas 67.1%, Washington 66.2%, Maine 65.3%, Montana 65.2%
+- Bottom 5: New Hampshire 29.9%, Wyoming 30.3%, West Virginia 30.8%, Nevada 35.3%, Maryland 38.5%
+
+**California Case Study:** Total CA lobbying 2007–08 was $552.6M; government category was $92.6M (16.8%) officially, rising to $131.4M (23.8%) after reclassifying taxpayer-funded entities from Education, Public Employees, and Labor Unions.
+
+Relevance: The 37 disclosure law criteria and 22 accessibility criteria are a directly usable framework for grading state data quality in a pipeline feasibility assessment. The accessibility rubric maps cleanly onto whether a state's data can be programmatically ingested (machine-readable format, sortability, historical availability). The 2010 rankings give a vintage baseline — Connecticut, Indiana, Texas, and Washington as better starting points; New Hampshire, Wyoming, and West Virginia as likely data dead-ends. Caveat: this is 16 years old; many states have overhauled their portals since, so rankings should be re-verified against current infrastructure before making pipeline decisions.

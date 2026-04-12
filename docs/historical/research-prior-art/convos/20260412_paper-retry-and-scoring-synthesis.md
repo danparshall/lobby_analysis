@@ -82,3 +82,59 @@ Merged in from main (not written by me but worth noting for the planning agent):
 - **Will PRI's 2010 rubric still be meaningful after the 2026 re-scoring, or will some criteria be obsolete?** "Website existence" is now trivially universal, for instance. The re-scoring task is also implicitly a rubric-modernization task, and the output should include notes on which criteria were dropped, added, or modified.
 - **What's the right treatment of enforcement signal in the composite score?** The scoring-rubric-landscape file argues for keeping it as a separate axis (following FOCAL's scope choice), but there's a defensible alternative of including it as a weighted input to a unified score. This decision affects both the schema (whether Violation/Referral/Penalty are first-class entities or a derived view) and the downstream usability.
 - **How should we handle the F Minus methodology verification?** Minimum-cost path is to email the authors and ask for the indicator list. That's a 5-minute task but requires Dan to do it, not me.
+
+---
+
+## Planning session continuation — later 2026-04-12
+
+Picked up by a second agent (the "planning agent") to convert the rubric-landscape synthesis into concrete implementation plans. Session also covered blindspot review, plan authoring, a sycophancy-check on an over-engineered calibration gate, and the decision to merge this branch to main.
+
+### Blindspot review (prior session's self-flagged caveats)
+
+Prior agent surfaced three caveats at handoff. Checked each against the planning task:
+
+1. **Shortlist vs PRI rankings inconsistency** — deferral to the 2026 re-score is correct; revising the shortlist against stale 2010 scores would trade one stale rubric for another. Not a planning blocker — it becomes *motivation* for Phase 7 of the PRI plan.
+2. **Unread papers (Enamorado, Ornstein, LaPira-Thomas, Kim 2018, GAO-25-107523)** — none are load-bearing for the PRI or FOCAL grabs. They bear on entity-resolution methodology and federal enforcement, which are separate workstreams. Not a planning blocker.
+3. **F Minus methodology** — not load-bearing for PRI/FOCAL grabs. The rubric-landscape doc already sets it aside. Verification can live as a separate scoped task.
+
+Additional miss surfaced during review: STATUS.md line 13 still says "paper ingestion partially complete (2 of 7 candidates); 5 deferred" post-merge. That's stale — all 7 papers from the main-merge plus Libgober-Jerzak are now ingested. Worth a one-line fix during finish-convo.
+
+### Viability check on the two rubrics
+
+Spot-checked that both rubrics are actually enumerable from the ingested PDFs before committing to plans:
+
+- **PRI 22 accessibility items**: 8 categories visible at PRI text lines 1474–1520; per-state scoring in Appendices. Enumerable.
+- **FOCAL 50 indicators**: 8 categories at Lacy-Nichols lines 919–1068; **Table 3 at line 946** is the canonical source. Enumerable, though pdftotext mangles some table layout — Phase 1 must read the PDF directly, not rely on extracted text.
+
+Secondary confirmation: **Table 1** is inclusion/exclusion criteria, **Table 2** is the 15-framework summary (framework-level, not indicator-level attribution), **Table 3** is FOCAL itself. Corrected an earlier overclaim in the FOCAL plan that Table 2 provided indicator-level provenance to source frameworks.
+
+### Plan authoring
+
+Two plan docs created in `docs/active/research-prior-art/plans/`:
+
+- **`20260412_pri_2026_accessibility_rescore.md`** — 7 phases: rubric transcription (22 accessibility + 37 disclosure-law, 59 items total) → 2010 baseline transcription → 2026 modernization → scoring pipeline build → pilot run → full 50-state scoring → deliverable synthesis. Uses Sonnet for per-state scoring with Agent-tool subagent parallelization; Phase 3 rubric-lock and Phase 5 pilot are the hard gates. Scoring scope is all 50 states and both rubrics (user call).
+- **`20260412_focal_indicator_extraction.md`** — 3 phases: extraction from Table 3 → methodology note → handoff. Scoring deferred to a separate plan written after the PRI re-score produces shortlist evidence. Supplementary File 1 from the journal was confirmed to contain only database search strategies, not the indicator table — transcription from the main paper's Table 3 remains the source.
+
+Plans both target all 50 states eventually. Deliverable is repo-internal for now; external publication TBD.
+
+### Sycophancy check on my own plan
+
+Initial draft of the PRI plan included a heavy "human calibration gate" (≥90% item-level agreement between a human-scored 5-state set and Sonnet) as the quality mechanism. Dan pushed back: "we'll compare what the original rubric says" — meaning the rubric itself is the ground truth, not the human scorer. If the rubric is sharp, Sonnet's score is correct by construction; if two readers disagree, that's a rubric defect.
+
+Revised: dropped the 90% agreement gate, reframed Phase 5 as a lightweight pilot (3 states, self-consistency check across 3 temp-0 runs, user skims evidence quotes), and moved the quality burden back to the Phase 3 rubric-review gate. The guiding principle is now explicit in the plan: **"The rubric, not the scorer, is the source of truth — any failure mode resolves by sharpening the rubric."**
+
+This was an honest over-engineering miss on my part. The original framing treated the human scorer as ground truth when really the rubric is.
+
+### Branch lifecycle decision
+
+Research-prior-art is a scoping branch. The PRI re-score is an ~8-week data-collection + code project and belongs on its own branch. Decided: merge research-prior-art to main, archive `docs/active/research-prior-art/` → `docs/historical/`, cut a new `pri-2026-rescore` branch (and later a `focal-extraction` branch) from the updated main.
+
+### Process miss
+
+Claimed the convo file didn't exist when it in fact had been pushed to `origin/research-prior-art` as commit 653085b — I had run `git fetch` at session start but not pulled when checking for the file. Lesson: when a user says a file exists and it doesn't appear locally, pull from remote before declaring a conflict.
+
+### Plan doc open questions (unresolved, carried forward)
+
+- **PRI**: portal snapshot publication policy, subagent-vs-SDK implementation choice, self-consistency abort threshold (10% proposed).
+- **FOCAL**: verbatim vs. adapted indicators for US-state application (resolved by default to verbatim extraction with adaptation happening in a later scoring-application plan), indicator-level provenance if the paper supplies it.
+
