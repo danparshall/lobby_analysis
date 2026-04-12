@@ -79,3 +79,60 @@ Errors in my earlier verbal prior-art survey (not yet committed anywhere) that n
 - **Splink** (Python/DuckDB Fellegi-Sunter record linkage, from the UK Ministry of Justice) — confirmed to exist; worth benchmarking against fastLink and Libgober-Jerzak in the entity-resolution empirical pass. Not a paper, so not a candidate for add-paper, but should be noted in schema-design-questions.md as a candidate implementation.
 
 **Updated "right size" for the working set:** 5 → 6 load-bearing papers. Add Libgober-Jerzak (ingested), keep the Ornstein/Enamorado pending for context on the ER decision, and promote Lacy-Nichols FOCAL from reference-useful to load-bearing because it's the closest thing to a state-level data-access paper in the set. State-level data papers and heterogeneous-form extraction papers remain genuine gaps — worth a dedicated follow-up search session with better query terms.
+
+---
+
+## Mid-session update: 2026-04-12 (continued) — reading notes on Libgober-Jerzak and Lacy-Nichols
+
+Read the two highest-leverage papers from the newly-merged set (not the full seven). Deferring Enamorado, Ornstein, LaPira-Thomas, Kim 2018, and GAO 2025 to follow-up sessions — they don't change pending decisions, just confirm triangulations.
+
+### Libgober & Jerzak 2024 — key findings from the reading
+
+**Task 1 (our problem, literally):** Matching ~700 organization names from regulator meeting logs to ~7,000 US public companies, using Libgober 2020's hand-coded matches as ground truth. Best F2 score across all methods is just over 0.6 — the best performer is "Bipartite-ML" (bipartite network representation combined with ML distance measure). LinkedIn-assisted approaches beat fuzzy string matching across the full range of acceptance thresholds.
+
+**Concrete failure case worth remembering:** Fuzzy matching fails to link "HSBC Holdings PLC" to "HSBC" because their string distance (0.57) is worse than the fuzzy match "HSBC Holdings PLC" → "AMC Entertainment Holdings, Inc." (0.13). LinkedIn's alias directory has an exact match and rescues the pair. This is exactly the corporate-hierarchy failure mode we'd see in state lobbying data at scale.
+
+**Runtime numbers matter for our scale.** On 2024 hardware for the 700 × 7,000 task:
+- Fuzzy matching: 0.27 min
+- Machine learning (no network): 1.63 min
+- Bipartite network only: 13.12 min
+- **Bipartite-ML (best performer): 251.38 min (~4 hours)**
+- Markov-ML: 113 min
+
+Back-of-envelope: a 10,000 × 10,000 match with Bipartite-ML would take 2–3 days. A 100,000 × 100,000 would take ~255 days without optimization. The paper flags locality-sensitive hashing and parallelization as mitigations. For our project, a full federal LobbyView × state pipeline match would be in the 100k × 100k range — **we cannot just adopt Bipartite-ML uncritically; scaling is a real concern.**
+
+**Task 2 (also substantively important):** Matching Fortune 1000 companies to OpenSecrets lobbying expenditures 2013–2018. The human-matched ground-truth coefficient for log(assets) → log(lobbying) is about 2.5. **Fuzzy matching underestimates this coefficient by about half** (attenuation bias from noise). LinkedIn-assisted methods recover a coefficient within the 95% CI of the ground truth; fuzzy and DeezyMatch do not. **This is direct evidence that ER quality materially changes substantive findings in lobbying research** — not just a methods-paper abstract concern.
+
+**Training corpus note:** The LinkedIn data is from 2017. The paper flags this as a limitation for out-of-sample organizations (Task 3: matching YCombinator startups and PPP loan recipients, which didn't exist or weren't well-represented in the 2017 scrape). For state lobbying data where many regional entities (local trade associations, family-owned firms, state-specific LLCs) may not have LinkedIn pages, this is a real concern. **State-level performance remains empirically untested.**
+
+### Lacy-Nichols et al. 2024 FOCAL — key findings from the reading
+
+**FOCAL synthesizes 15 frameworks.** Of these, **four are specifically US-state-focused** and I had not previously identified them. This closes part of the "state-level lobbying data paper" gap I was searching for last session:
+
+| Framework | Year | Items | US state-specific? |
+|---|---|---|---|
+| Opheim — Index of state lobbying regulation law | 1991 | 22 | Partly |
+| Newmark — Index to measuring state lobbying regulation | 2005 | 18 | Partly |
+| Center for Public Integrity — "Hired Guns" state rankings | 2007 | 48 | Partly |
+| Pacific Research Institute — State disclosure law criteria | 2010 | 47 + 22 | Yes (fully) |
+
+**Pacific Research Institute 2010 is the most directly applicable** — it has explicit separate "State disclosure law criteria" (47 items) and "State lobbying information accessibility criteria" (22 items, 8 categories: data availability, website existence, website identification, current data availability, historical data availability, data format, sorting data, simultaneous sorting). That "information accessibility" dimension is exactly our compliance-layer rubric.
+
+**FOCAL's own 8 categories (50 indicators):** scope, timeliness, openness, descriptors, revolving door, relationships, financials, contact log. This is also directly usable as a compliance-layer rubric — arguably better than my earlier schema-design-questions.md Q2 thinking because it separates "what is disclosed" from "how accessible the disclosure is."
+
+**Important scope caveat:** FOCAL *excludes* enforcement, sanctions, ethics, and whistleblower protections "for feasibility." So if we want a compliance layer that includes enforcement signal (referrals, penalties, violations), FOCAL gives us the disclosure-quality half of the rubric but not the enforcement half. The enforcement half has to come from GAO-25-107523 and state-level enforcement records directly.
+
+### What this reading changes
+
+1. **The "state-level lobbying data paper" gap is partially closed.** Opheim 1991, Newmark 2005, CPI 2007, and especially **Pacific Research Institute 2010** are prior art I should have found earlier. PRI 2010 in particular should be tracked down and ingested — it's the most direct methodological predecessor to what we're building. **New follow-up: find PRI 2010 (likely a policy report, not a peer-reviewed paper; PRI is a free-market think tank so this is a hypothesis-generator not a ground truth).**
+2. **The entity-resolution decision has a more concrete answer.** Libgober-Jerzak's Bipartite-ML is the best performer on the most relevant benchmark, but runtime concerns make it non-trivial to adopt at our scale. **Practical direction: benchmark Bipartite-ML, fastLink, and Splink on a 500-row labeled subset of state lobbying clients vs. SEC EDGAR before committing.** The benchmark design matters more than the methodology choice.
+3. **The compliance-layer rubric now has two candidate templates:** FOCAL (8 cat × 50 ind, disclosure-quality focus) and PRI 2010 (8 cat × 22 ind, accessibility focus). These should be reconciled with each other and with the GAO/enforcement-gap evidence into a single state-compliance scoring rubric. **New follow-up: draft a compliance-rubric synthesis document.**
+
+### Not read this session (and why)
+
+- **Enamorado (fastLink)** — I have the full text in context from last session's web_fetch; reading the committed PDF adds nothing.
+- **Ornstein (fuzzylink)** — would confirm triangulation on ER methodology, but Libgober-Jerzak's Bipartite-ML already dominates the benchmark we care about.
+- **LaPira & Thomas 2020** — historical context for federal compliance gaps; GAO-25-107523 covers the current state.
+- **Kim 2018** — fully superseded by Bacik 2025.
+- **GAO-25-107523** — key numbers already extracted last session (3,566 referrals, 63% unresolved).
+- **Lacy-Nichols full paper** — read only the framework table and category summary; did not read the full methods section or the 50-indicator detail. Worth a fuller read when designing the compliance rubric.
