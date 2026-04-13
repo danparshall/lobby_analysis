@@ -1,0 +1,19 @@
+# Research Log: focal-extraction
+
+Created: 2026-04-13
+Purpose: Extract FOCAL 2024's 8 categories × 50 indicators (Lacy-Nichols et al.) from Table 3 of the paper into a machine-readable CSV, with a methodology note. Scoring against US states is explicitly deferred to a later plan.
+
+Originating convo: `docs/historical/research-prior-art/convos/20260412_paper-retry-and-scoring-synthesis.md`
+Plan: `plans/20260412_focal_indicator_extraction.md` (copied from historical branch)
+Upstream synthesis: `docs/historical/research-prior-art/results/scoring-rubric-landscape.md`
+
+## Sessions
+
+(Newest first)
+
+- **2026-04-13** — [convos/20260413_focal_indicator_extraction.md](convos/20260413_focal_indicator_extraction.md) — Executed the FOCAL extraction plan end-to-end in one session. CSV of 50 indicators across 8 categories produced, all three validation spot-checks passed, methodology note written. Mid-session correction of the PRI–FOCAL framing (two-dimensional overlap, not edge overlap). Decision: score both rubrics in parallel and defer composite design to collaborator review post-data. Next: design FOCAL scoring plan, decide whether to reuse the PRI pipeline infrastructure.
+
+## Deliverables
+
+- `results/focal_2024_indicators.csv` — 50 FOCAL indicators (8 categories × 50), verbatim from Lacy-Nichols et al. 2024 Table 3, with operationalization caveats in `measurement_guidance` column.
+- `results/focal_2024_methodology.md` — extraction method, validation, PRI–FOCAL overlap table, 7 open questions for the FOCAL scoring plan.
