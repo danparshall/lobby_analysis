@@ -7,6 +7,11 @@ Originating convo: `docs/historical/research-prior-art/convos/20260412_paper-ret
 Plan: `plans/20260412_focal_indicator_extraction.md` (copied from historical branch)
 Upstream synthesis: `docs/historical/research-prior-art/results/scoring-rubric-landscape.md`
 
+## Plans
+
+- [`plans/20260412_focal_indicator_extraction.md`](plans/20260412_focal_indicator_extraction.md) — Extraction (complete, shipped 2026-04-13).
+- [`plans/20260413_focal_50_state_scoring.md`](plans/20260413_focal_50_state_scoring.md) — 50-state scoring against locked FOCAL rubric, reusing PRI's snapshot infrastructure (drafted 2026-04-13, awaiting kickoff).
+
 ## Sessions
 
 (Newest first)
