@@ -40,6 +40,19 @@ Per user direction, the CSVs capture every sub-item atomically with a `data_type
 - `results/pri_2010_disclosure_law_rubric.csv` — 61 atomic items
 - `results/pri_2010_accessibility_scores.csv` — 50 states × Q1–Q8 + total
 - `results/pri_2010_disclosure_law_scores.csv` — 50 states × A/B/C/D/E + total
+- `results/pri_2026_accessibility_rubric.csv` — 59 items (22 retained + 37 new: Q9×15, Q10 bulk, Q11 API, Q12 auth-reverse, Q13×15 data dictionary, Q14 URLs, Q15 raw filings, Q16a/b freshness)
+- `results/pri_2026_disclosure_law_rubric.csv` — 61 items (unchanged from 2010, added scoring_direction column marking B1/B2 reverse per footnotes 85/86)
+- `results/pri_2026_methodology.md` — additions rationale, reverse-scoring documentation, scoring normalization intent, open items
+
+## Phase 3 decisions (added mid-session)
+
+- Disclosure-law: no items modernized. All 61 retained verbatim.
+- Accessibility Q9: new 15-sub-item mirror of Q7, captures "can filtered results be downloaded?" — 2026 portals often allow filter-to-view but block export.
+- Q13: data-dictionary fractional-score cluster over the PRI E1/E2 field union (14 fields + machine-readable record ID). Raw 0–15, normalize to 2.5 points at scoring time.
+- Q16: two items — timestamp presence + observed freshness — because "claims fresh but isn't" is a distinct failure mode from silence.
+- B1/B2 reverse-scoring made explicit per PRI footnotes 85/86.
+- Scoring weights and aggregation are deferred; rubrics are raw-collection definitions.
+- Q3, Q5, Q8 carry sharpened 2026 scoring guidance where PRI 2010 was undefined.
 
 ## Open Questions
 

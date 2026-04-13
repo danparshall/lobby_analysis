@@ -29,7 +29,14 @@
 - `results/pri_2010_accessibility_scores.csv` (50 states)
 - `results/pri_2010_disclosure_law_scores.csv` (50 states)
 
+### Phase 3 (added same session)
+- Built `pri_2026_accessibility_rubric.csv` (59 items) and `pri_2026_disclosure_law_rubric.csv` (61 items) with `source` and `scoring_direction` columns.
+- Added 37 new accessibility items: Q9 download-per-sort-criterion (15), Q10 bulk download, Q11 open API, Q12 auth barrier (reverse), Q13 data dictionary per PRI E-union fields (15 including record ID), Q14 persistent URLs, Q15 raw filings, Q16a/b timestamp+freshness.
+- Disclosure-law: no modernizations; B1/B2 reverse-scoring made explicit.
+- `pri_2026_methodology.md` written with rationale and open items.
+- User reviewed and signed off on both 2026 rubrics. Phase 3 gate passed.
+
 ### Next Steps
-- Phase 3: 2026 rubric modernization. Decide keep/modernize/obsolete per item, propose additions (API, bulk download, auth barriers, data dictionaries), resolve open questions on B1 polarity, Q8 scoring, E-aggregation structure, frequency-scoring rule. Gate: user sign-off before Phase 4.
+- Phase 4: scoring pipeline build. Decide keep/modernize/obsolete per item, propose additions (API, bulk download, auth barriers, data dictionaries), resolve open questions on B1 polarity, Q8 scoring, E-aggregation structure, frequency-scoring rule. Gate: user sign-off before Phase 4.
 
 ---
