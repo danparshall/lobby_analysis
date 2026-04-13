@@ -1,0 +1,62 @@
+item_id,sub_component,item_text,data_type,pri_notes
+A1,A. Who is required to register,Lobbyists.,binary,"PRI 2010 §III.A. Per paper: all 50 states require lobbyists to register."
+A2,A. Who is required to register,Volunteer lobbyists.,binary,"PRI 2010 §III.A. Per paper: 17 states required as of 2010."
+A3,A. Who is required to register,Principals who employ a lobbyist.,binary,"PRI 2010 §III.A. Per paper: 24 states required as of 2010."
+A4,A. Who is required to register,Lobbying firms.,binary,"PRI 2010 §III.A. Per paper: 17 states required as of 2010."
+A5,A. Who is required to register,Governor's office.,binary,PRI 2010 §III.A.
+A6,A. Who is required to register,Executive branch agencies.,binary,PRI 2010 §III.A.
+A7,A. Who is required to register,Legislative branch.,binary,PRI 2010 §III.A.
+A8,A. Who is required to register,Independent agencies.,binary,PRI 2010 §III.A.
+A9,A. Who is required to register,Local governments.,binary,PRI 2010 §III.A.
+A10,A. Who is required to register,Government agencies who lobby other agencies.,binary,PRI 2010 §III.A.
+A11,A. Who is required to register,"Public entities, other than government agencies.",binary,PRI 2010 §III.A.
+B1,B. Government exemptions,Is there an exemption for government agencies and/or public officials acting within their official capacity?,binary,"PRI 2010 §III.B. Footnote 85 in source. Note: ""exemption exists"" reduces transparency; whether this counts positively or negatively in the score is not stated explicitly — flag for Phase 3."
+B2,B. Government exemptions,Are government agencies relieved and/or exempted (partially) from the regulations imposed on non-government organizations and individuals?,binary,PRI 2010 §III.B. Footnote 86 in source.
+B3,B. Government exemptions,Are government agencies subject to the same disclosure requirements as lobbyists?,binary,PRI 2010 §III.B.
+B4,B. Government exemptions,Are government agencies subject to the same disclosure requirements as principals?,binary,PRI 2010 §III.B.
+C0,C. Definition of public entity,"Does the law include a definition of ""public entity""?",binary,"PRI 2010 §III.C. Gate question — Table 5 reports C as 0/1 only, suggesting the published score reflected only this question. Sub-criteria C1–C3 below are described in the paper but their scoring contribution is not specified — flag for Phase 3."
+C1,C. Definition of public entity,Definition relies on Ownership.,binary,"PRI 2010 §III.C. Sub-criterion of C0; only meaningful if C0=1."
+C2,C. Definition of public entity,Definition relies on Structure or composition of revenue.,binary,"PRI 2010 §III.C. Sub-criterion of C0; only meaningful if C0=1."
+C3,C. Definition of public entity,Definition relies on Public charter or special government protection.,binary,"PRI 2010 §III.C. Sub-criterion of C0; only meaningful if C0=1."
+D0,D. Materiality test,Does the law include a materiality test (ability to exempt) for coverage in disclosure regulations?,binary,"PRI 2010 §III.D. Gate question — Table 5 reports D as 0/1 only."
+D1_present,D. Materiality test,Financial threshold exists: if expenses are less than some dollar threshold the entity is exempted from filing disclosure.,binary,"PRI 2010 §III.D. Sub-criterion of D0."
+D1_value,D. Materiality test,Dollar threshold value (USD) for financial-threshold exemption.,numeric_usd_or_null,"PRI 2010 §III.D. Capture raw value; null if no threshold."
+D2_present,D. Materiality test,Time threshold exists: if amount of time devoted to lobbying is less than a threshold percentage of an individual's compensated time the individual or entity is exempted from filing disclosure.,binary,PRI 2010 §III.D. Sub-criterion of D0.
+D2_value,D. Materiality test,Percentage threshold value for time-threshold exemption.,numeric_percent_or_null,"PRI 2010 §III.D. Capture raw value; null if no threshold."
+E1a,E1. Principal Reports,Are principals required to disclose?,binary,PRI 2010 §III.E1. Gate question for the rest of E1.
+E1b,E1. Principal Reports,Are principals required to disclose their address and phone number?,binary,PRI 2010 §III.E1.
+E1c,E1. Principal Reports,Are principals required to disclose the names of all the lobbyists representing them?,binary,PRI 2010 §III.E1.
+E1d,E1. Principal Reports,Are principals required to disclose the address and phone number of contracted lobbyists?,binary,PRI 2010 §III.E1.
+E1e,E1. Principal Reports,Are principals required to disclose the nature of the business (public or private)?,binary,PRI 2010 §III.E1.
+E1f_i,E1. Principal Reports,Required component of disclosure report: Direct lobbying costs (compensation).,binary,PRI 2010 §III.E1.f.
+E1f_ii,E1. Principal Reports,Required component of disclosure report: Indirect lobbying costs (non-compensation).,binary,PRI 2010 §III.E1.f.
+E1f_iii,E1. Principal Reports,"Required component of disclosure report: Other costs such as gifts, entertainment, transportation, and lodging.",binary,PRI 2010 §III.E1.f.
+E1f_iv,E1. Principal Reports,Is the information disclosed in an itemized format (as opposed to an aggregated or lump-sum amount)?,binary,PRI 2010 §III.E1.f.
+E1g_i,E1. Principal Reports,Are principals required to disclose information on the issue lobbied by the general issues lobbied?,binary,PRI 2010 §III.E1.g.
+E1g_ii,E1. Principal Reports,Are principals required to disclose information on the issue lobbied by the specific bill number or legislation ID?,binary,PRI 2010 §III.E1.g.
+E1h_i,E1. Principal Reports,Reporting frequency option: Monthly.,binary,"PRI 2010 §III.E1.h. Capture each frequency option as a separate item; downstream scoring per PRI footnote 89 awards ""1 point for reporting … less than three times a year"" (paper wording is ambiguous) — defer scoring rule to Phase 3."
+E1h_ii,E1. Principal Reports,Reporting frequency option: Quarterly.,binary,PRI 2010 §III.E1.h.
+E1h_iii,E1. Principal Reports,Reporting frequency option: Tri-annually (linked with legislative calendar).,binary,PRI 2010 §III.E1.h.
+E1h_iv,E1. Principal Reports,Reporting frequency option: Semi-annually.,binary,PRI 2010 §III.E1.h.
+E1h_v,E1. Principal Reports,Reporting frequency option: Annually.,binary,PRI 2010 §III.E1.h.
+E1h_vi,E1. Principal Reports,Reporting frequency option: Other (free-text).,text,PRI 2010 §III.E1.h.
+E1i,E1. Principal Reports,Are principals required to disclose contacts?,binary,PRI 2010 §III.E1.i. Footnote 90 in source.
+E1j,E1. Principal Reports,Are principals required to disclose major financial contributors?,binary,"PRI 2010 §III.E1.j. Per paper §III.E intro: scored independently of the rest of E (this is ""question J"" referenced in the text)."
+E2a,E2. Lobbyist Disclosure,Are lobbyists required to disclose?,binary,PRI 2010 §III.E2. Gate question for the rest of E2.
+E2b,E2. Lobbyist Disclosure,Are lobbyists required to disclose their address and phone number?,binary,PRI 2010 §III.E2.
+E2c,E2. Lobbyist Disclosure,Are lobbyists required to disclose the names of all the principals represented?,binary,PRI 2010 §III.E2.
+E2d,E2. Lobbyist Disclosure,Are lobbyists required to disclose the address and phone number of the principals represented?,binary,PRI 2010 §III.E2.
+E2e,E2. Lobbyist Disclosure,Are lobbyists required to disclose the nature of the principal's business (public or private)?,binary,PRI 2010 §III.E2.
+E2f_i,E2. Lobbyist Disclosure,Required component of disclosure report: Direct lobbying costs (compensation).,binary,PRI 2010 §III.E2.f.
+E2f_ii,E2. Lobbyist Disclosure,Required component of disclosure report: Indirect lobbying costs (non-compensation).,binary,PRI 2010 §III.E2.f.
+E2f_iii,E2. Lobbyist Disclosure,"Required component of disclosure report: Other costs such as gifts, entertainment, transportation, and lodging.",binary,PRI 2010 §III.E2.f.
+E2f_iv,E2. Lobbyist Disclosure,Is the information disclosed in an itemized format (as opposed to an aggregated or lump-sum amount)?,binary,PRI 2010 §III.E2.f.
+E2g_i,E2. Lobbyist Disclosure,Are lobbyists required to disclose information on the issue lobbied by the general issues lobbied?,binary,PRI 2010 §III.E2.g.
+E2g_ii,E2. Lobbyist Disclosure,Are lobbyists required to disclose information on the issue lobbied by the specific bill number or legislation ID?,binary,PRI 2010 §III.E2.g.
+E2h_i,E2. Lobbyist Disclosure,Reporting frequency option: Monthly.,binary,PRI 2010 §III.E2.h.
+E2h_ii,E2. Lobbyist Disclosure,Reporting frequency option: Quarterly.,binary,PRI 2010 §III.E2.h.
+E2h_iii,E2. Lobbyist Disclosure,Reporting frequency option: Tri-annually (linked with legislative calendar).,binary,PRI 2010 §III.E2.h.
+E2h_iv,E2. Lobbyist Disclosure,Reporting frequency option: Semi-annually.,binary,PRI 2010 §III.E2.h.
+E2h_v,E2. Lobbyist Disclosure,Reporting frequency option: Annually.,binary,PRI 2010 §III.E2.h.
+E2h_vi,E2. Lobbyist Disclosure,Reporting frequency option: Other (free-text).,text,PRI 2010 §III.E2.h.
+E2i,E2. Lobbyist Disclosure,Are lobbyists required to disclose contacts?,binary,PRI 2010 §III.E2.i. Footnote 91 in source.
