@@ -1,16 +1,17 @@
 # STATUS — lobby_analysis
 
-Last updated: 2026-04-12
+Last updated: 2026-04-13
 
 ## Current Focus
 
-Transitioning from scoping to implementation. The `research-prior-art` branch has produced the scoring-rubric landscape, schema-design questions, state-infrastructure tiers, and two implementation plans (PRI 2026 accessibility re-score; FOCAL indicator extraction). Merging to main and archiving. Next branches: `pri-2026-rescore` (starting now) and `focal-extraction` (to follow).
+Two parallel scoring lines active. `pri-2026-rescore` runs PRI's 59-item rubric against current state portals; `focal-extraction` has just completed the FOCAL indicator extraction (50 indicators from Lacy-Nichols et al. 2024) and will follow with a FOCAL scoring plan running in parallel to PRI. **Explicit project decision (2026-04-13):** collect data under both scoring schemas independently, then make the composite-rubric choice as a collaborator review after both 50-state scorings complete. No pre-scoring reconciliation.
 
 ## Active Research Lines
 
 | Branch | Started | Focus | Status |
 |--------|---------|-------|--------|
 | pri-2026-rescore | 2026-04-12 | Re-score all 50 state lobbying portals against PRI's 22 accessibility + 37 disclosure-law criteria (2026 vintage) using a Sonnet-subagent scoring pipeline | Kicking off — plan at `docs/historical/research-prior-art/plans/20260412_pri_2026_accessibility_rescore.md` |
+| focal-extraction | 2026-04-13 | Extract FOCAL 2024's 50 indicators into machine-readable form, then score all 50 states against FOCAL in parallel with PRI | Extraction phase complete (CSV + methodology note shipped). Next: scoring plan and pipeline. |
 
 ## Archived Research Lines
 
@@ -24,6 +25,7 @@ Lines moved to `docs/historical/` — not currently active, but available for re
 
 (One-line session summaries, newest first)
 
+- **2026-04-13** — [focal-extraction] Created `focal-extraction` branch. Executed the FOCAL extraction plan end-to-end: transcribed Lacy-Nichols Table 3 into `focal_2024_indicators.csv` (50 indicators × 8 categories, all three validation spot-checks passed), wrote methodology note. Mid-session correction: PRI–FOCAL overlap is two-dimensional (both rubrics span statutory-content and portal-accessibility halves), not edge-level. Project decision: score both rubrics independently, defer composite to collaborator review post-data. Next session: design FOCAL scoring pipeline, decide on reuse of PRI's Sonnet-subagent infrastructure.
 - **2026-04-12 (pm)** — [research-prior-art] Planning-agent session: reviewed prior session's blindspots, authored PRI 2026 re-score plan (7 phases, all 50 states, both accessibility + disclosure-law rubrics, Sonnet-subagent scoring) and FOCAL extraction plan (3 phases, scoring deferred). Reframed PRI quality gate after user pushback — rubric is source of truth, not human scorer. Merged branch to main; cut `pri-2026-rescore`.
 - **2026-04-12** — [research-prior-art] Paper-fetch retry (Libgober-Jerzak ingested via arXiv; Ornstein still unreachable), merged main into branch (brought in 7 papers from other agent's pull), read Libgober-Jerzak Tasks 1+2 and Lacy-Nichols FOCAL framework table, consolidated four-rubric landscape (PRI 2010 + FOCAL 2024 + F Minus + GAO-25-107523) into scoring-rubric-landscape.md as planning-agent handoff. Key finding: PRI + FOCAL compose cleanly, F Minus not yet trusted, highest-leverage next task is 2026 re-scoring of PRI's 22 accessibility criteria.
 - **2026-04-10** — [research-prior-art] Scoping kickoff: verified the prior-art gap, profiled state infrastructure tiers (8-state shortlist: CA/CO/NY/WA/TX/WI/IL/FL), analyzed OCDEP 5/6 + withdrawn Disclosures + draft Campaign Finance Filings proposals, decided to depend on Open States, drafted schema-design questions, ingested Bacik 2025 + Kim 2025 as the first two papers, deferred 5 more papers to follow-up. Added `COLLABORATOR_PROJECT_INSTRUCTIONS.md` for fellow onboarding.
