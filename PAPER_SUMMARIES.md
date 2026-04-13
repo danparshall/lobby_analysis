@@ -222,15 +222,17 @@ Relevance: Federal compliance appears high on surface metrics (97% filing rate) 
 - File: `papers/Lacy_Nichols_2024__focal_scoping_review.pdf`
 - Extracted text: `papers/text/Lacy_Nichols_2024__focal_scoping_review.txt`
 - Source: https://www.ijhpm.com/article_4651_43e3b5f9020f5754cb8e9fe5529287b8.pdf
+- Supplementary: `papers/Lacy-Nichols-Supple-File-1-IJHPM.pdf` (4 pages documenting the scoping review's search-term methodology; no text extraction — not research-relevant content)
 
 Summary: Systematic scoping review of 1,911 records yielding 15 lobbying transparency frameworks (1991–2022). Thematically coded 248 items to synthesize FOCAL (Framework fOr Comprehensive and Accessible Lobbying) — an 8-category, 50-indicator rubric for evaluating what governments disclose about lobbying and how accessible those disclosures are. Designed to assess both lobbyist registers and open/ministerial diaries.
 
 Key findings:
-- Of 15 frameworks, financials appeared in 14/15; scope in 13/15; contact log in 13/15; openness/data accessibility in 9/15.
+- Of 15 frameworks, financials appeared in 14/15; scope in 13/15; openness/data accessibility in 9/15. (The paper does not state a count for contact log; earlier versions of this summary that cited "13/15 contact log" were duplicating the scope figure.)
 - Only 19 of 109 countries surveyed by the 2021 Global Data Barometer had a lobbyist register available online.
-- Weighted frameworks gave highest scores to timeliness, online availability/format, financial disclosures, and enforcement/sanctions.
-- Scope and contact logs identified as the two highest-priority categories: narrow scope definitions (e.g., UK/Australia limiting to third-party lobbyists) exclude the bulk of in-house lobbyists; contact logs capture who was contacted, whose interests were represented, and the purpose of the meeting.
+- Only 3 of the 15 frameworks applied weighted indicators; of those, the categories receiving highest weights were timeliness, online availability/format, financial disclosures, and enforcement/sanctions. FOCAL itself is unweighted by design and the authors flag this as a limitation.
+- Scope and contact logs identified as the two highest-priority categories: narrow scope definitions (e.g., UK/Australia limiting to third-party lobbyists) exclude the bulk of in-house lobbyists; contact logs capture who was contacted, whose interests were represented, and the purpose of the meeting. Chile is cited as an exemplary model for contact log disclosure.
 - FOCAL's 8 categories: Scope, Timeliness, Openness, Descriptors, Revolving Door, Relationships, Financials, Contact Log. First two assessed from legislation/regulations; remaining six from the register itself.
+- Deliberate exclusions from FOCAL (present in 11/15 and 6/15 prior frameworks respectively): enforcement/accountability mechanisms and integrity/codes-of-conduct. FOCAL is explicitly disclosure-focused; enforcement and ethics belong in a separate compliance-layer rubric (e.g., GAO-25-107523).
 
 Relevance: FOCAL provides the most directly applicable disclosure rubric for grading US state lobbying data quality: its 50 indicators map onto the fields an LLM extraction pipeline should populate (lobbyist names, client/employer, targets contacted, date, form of contact, topics, outcomes sought, financial amounts) and its Openness category directly informs how to score state-level data accessibility.
 
@@ -244,7 +246,7 @@ Relevance: FOCAL provides the most directly applicable disclosure rubric for gra
 - Extracted text: `papers/text/PRI_2010__state_lobbying_disclosure.txt`
 - Source: https://www.pacificresearch.org/wp-content/uploads/2017/06/TPFL_NoApp.pdf
 
-Summary: A free-market think tank report that constructs two parallel scoring rubrics — one for state lobbying disclosure laws (37 binary criteria) and one for data accessibility (22 criteria) — and applies them to all 50 states, producing ranked scores and a combined overall ranking. The report also uses California as a case study to estimate taxpayer-funded (government-to-government) lobbying as a share of total state lobbying. Note: the ideological framing (opposition to taxpayer-funded lobbying) does not undermine the scoring rubrics, which are the document's primary research contribution.
+Summary: A free-market think tank report that constructs two parallel scoring rubrics and applies them to all 50 states, producing ranked scores and a combined overall ranking. **Disclosure-law rubric:** 37-point composite across 5 sub-components (A: registration, 11 binary items; B: government exemptions, 4 binary items with B1/B2 reverse-scored per footnotes 85/86; C: public-entity definition, 0/1 gate with 3 described sub-criteria; D: materiality test, 0/1 gate with 2 described sub-criteria; E: information disclosed, 20-point aggregate using "higher of E1/E2 + F/G double-count when both principal and lobbyist report + separate J for financial contributors"). **Accessibility rubric:** 8 questions totaling 22 scorable points (Q1–Q6 binary, Q7 with 15 sort-criterion sub-items scored 0–15, Q8 simultaneous-sorting scored 0–15 then divided by 15 → 0–1). The report also uses California as a case study to estimate taxpayer-funded (government-to-government) lobbying as a share of total state lobbying. Note: the ideological framing (opposition to taxpayer-funded lobbying) does not undermine the scoring rubrics, which are the document's primary research contribution.
 
 Key findings:
 
