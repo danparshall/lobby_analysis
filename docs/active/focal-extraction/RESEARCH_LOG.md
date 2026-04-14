@@ -17,6 +17,12 @@ Upstream synthesis: `docs/historical/research-prior-art/results/scoring-rubric-l
 - [`results/focal_2024_indicators.csv`](results/focal_2024_indicators.csv) — 50 FOCAL indicators, 8 categories, verbatim from Lacy-Nichols Table 3.
 - [`results/focal_2024_methodology.md`](results/focal_2024_methodology.md) — Extraction methodology, PRI–FOCAL overlap table, open operationalization questions.
 - [`results/20260413_snapshot_sufficiency_audit.md`](results/20260413_snapshot_sufficiency_audit.md) — Cross-rubric audit of PRI Stage-1/Stage-2 portal snapshots. Conclusion: sufficient to begin pipeline build and pilot on clean-capture states; Playwright supplementation for SPA/WAF states as a parallel workstream.
+- [`results/focal_2026_scoring_rubric.csv`](results/focal_2026_scoring_rubric.csv) — Locked operationalized scoring rubric. 54 rows (50 − 1 compound + 5 decomposed). Schema matches PRI rubrics for unified-pipeline consumption.
+- [`results/focal_2026_methodology.md`](results/focal_2026_methodology.md) — Operationalization decisions: 3.3 decomposition, Westminster→US role translation, ministerial-diary→executive-calendar rename, 1.2 federal-LDA threshold benchmark, scoring scale binary.
+
+## Handoff
+
+- [`plans/20260414_scoring_branch_handoff.md`](plans/20260414_scoring_branch_handoff.md) — Handoff to the `scoring` branch. All three rubrics ready, snapshots frozen at 2026-04-13, unified pipeline architecture decided, 5-phase plan for the scoring workstream.
 
 ## Sessions
 
