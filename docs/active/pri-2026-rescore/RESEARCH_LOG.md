@@ -9,6 +9,40 @@
 
 ---
 
+## Session: 2026-04-13 — pri_phase4_data_collection_prep
+
+### Topics Explored
+- Scoping "data-collection pipeline" to snapshots-first, Sonnet-directed URL discovery, browser-UA curl for raw capture.
+- Architectural pivot: Claude Code subagents over Python/Anthropic SDK pipeline (plan's Q3 default). Tore down scaffold; saved feedback memory.
+- Role-vocabulary discipline during discovery; WAF/SPA behavior during snapshotting; `suspicious_challenge_stub` flag for HTML <2KB.
+- Policy-gap framing: WAF + no-API + no-bulk is a real configuration the PRI 2026 rubric should penalize — not a pipeline bug.
+
+### Provisional Findings
+- Stage 1 complete: 50/50 states have a seed URL JSON in `data/portal_urls/`, zero fabricated URLs, 15 states with flagged seeds catalogued in `_flagged.md`.
+- Stage 2 complete: 50/50 states have a snapshot manifest; 981 artifacts, ~350 MB on disk, 17 `suspicious_challenge_stub` flags, 54 honest skips.
+- Coverage tiers: 40 states cleanly captured; 8 partial (WAF/SPA on subset); 2 near-empty (AZ, VT — 100% WAF-blocked).
+- Subagent tool-loading is probabilistic — 2/50 Stage 1 dispatches needed retry with explicit tool-availability hint.
+- SPA coverage gap is real: ~12 states' public portals serve byte-identical JS shells to curl. Playwright follow-up needed for rubric-UX items.
+
+### Results
+- `data/portal_urls/*.json` — 50 seed URL JSONs (not in docs; lives in `data/`).
+- `data/portal_urls/_flagged.md` — 15 states with flagged seed URLs for collaborator re-verification.
+- `data/portal_snapshots/<STATE>/2026-04-13/` — 50 per-state snapshot directories + manifests.
+- [`results/20260413_stage1_stage2_collection_summary.md`](results/20260413_stage1_stage2_collection_summary.md) — aggregate + per-state table, coverage tiers, findings.
+
+### Next Steps
+- Collaborator pass: manually verify WAF'd / DNS-failed / SPA-only URLs in `_flagged.md`; update seed JSONs.
+- Playwright supplement for ~10 SPA/WAF'd states (AZ, VT, MA, NH, ID, ND, SC, GA, NM, ME).
+- Phase 5: build Sonnet scoring function, pilot on CA/CO/WY, iterate rubric if disagreements surface.
+
+### 2026-04-14 addendum — handoff to unified PRI+FOCAL scoring chain
+- **Decision:** PRI and FOCAL rubrics will be scored against the same snapshot corpus in a single chained scoring pass per state (not two independent passes). Rationale: shared evidence, cross-rubric consistency, per-project decision to defer composite-rubric choice to post-data collaborator review.
+- **Handoff doc:** [`plans/20260414_pri_focal_unified_scoring_handoff.md`](plans/20260414_pri_focal_unified_scoring_handoff.md) — captures current state, reproducibility commitments, recommended next steps, known issues. Next agent should read this before starting Phase 5.
+- **Reproducibility commitments locked:** versioned scorer prompt, provenance stamping per score row, 3× temp-0 runs per state, raw outputs retained alongside adjudicated scores. Honest note: Stages 1+2 are not reproducible (LLM-chosen search terms + link selections); the frozen snapshot bytes are the reproducibility anchor, not the assembly pipeline.
+- **Next session:** other agent takes over from this handoff. Likely first task: branch strategy decision (merge focal-extraction into pri-2026-rescore, or both into a new `scoring` branch).
+
+---
+
 ## Session: 2026-04-13 — pri_phase1_phase2_transcription
 
 ### Topics Explored
