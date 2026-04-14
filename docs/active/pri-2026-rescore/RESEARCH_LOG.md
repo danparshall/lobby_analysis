@@ -35,6 +35,12 @@
 - Playwright supplement for ~10 SPA/WAF'd states (AZ, VT, MA, NH, ID, ND, SC, GA, NM, ME).
 - Phase 5: build Sonnet scoring function, pilot on CA/CO/WY, iterate rubric if disagreements surface.
 
+### 2026-04-14 addendum — handoff to unified PRI+FOCAL scoring chain
+- **Decision:** PRI and FOCAL rubrics will be scored against the same snapshot corpus in a single chained scoring pass per state (not two independent passes). Rationale: shared evidence, cross-rubric consistency, per-project decision to defer composite-rubric choice to post-data collaborator review.
+- **Handoff doc:** [`plans/20260414_pri_focal_unified_scoring_handoff.md`](plans/20260414_pri_focal_unified_scoring_handoff.md) — captures current state, reproducibility commitments, recommended next steps, known issues. Next agent should read this before starting Phase 5.
+- **Reproducibility commitments locked:** versioned scorer prompt, provenance stamping per score row, 3× temp-0 runs per state, raw outputs retained alongside adjudicated scores. Honest note: Stages 1+2 are not reproducible (LLM-chosen search terms + link selections); the frozen snapshot bytes are the reproducibility anchor, not the assembly pipeline.
+- **Next session:** other agent takes over from this handoff. Likely first task: branch strategy decision (merge focal-extraction into pri-2026-rescore, or both into a new `scoring` branch).
+
 ---
 
 ## Session: 2026-04-13 — pri_phase1_phase2_transcription
