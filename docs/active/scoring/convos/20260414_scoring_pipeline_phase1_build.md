@@ -33,6 +33,19 @@ Downside acknowledged: subagent output isn't schema-enforced by tool-use. Mitiga
 
 Stop at end of Phase 2 for user review before pilot.
 
+## Outcome
+
+- Phase 1 done. 9 tests pass. Committed.
+- Phase 2 done. CA run_id `bc11ca624efc`. 174 rows scored, all schema-valid, all provenance-stamped. Detail: `results/20260414_ca_dry_run.md`.
+- Mid-session correction: hatchling needed `[tool.hatch.build.targets.wheel.sources]` mapping for the `src/scoring → scoring` rename. Pydantic Literal on `data_type` was too strict (rubrics carry author-defined enums like `ordinal_0_to_15`, `numeric_percent_or_null`); relaxed to `str`.
+- User pushed back on dispatching all three subagents simultaneously ("all *THREE* rubrics?"); after clarification that PRI is two rubrics + FOCAL = three (per the locked rubric set), proceeded.
+
+## Open for user review before Phase 3
+
+1. Sanity-check the 12 scored PRI accessibility items + 42 scored disclosure-law items against your read of the snapshot.
+2. Decide: proceed to Phase 3 (CA/CO/WY × 3 runs each) on the same pipeline, or sharpen any rubric items first?
+3. AZ/VT (inaccessible tier): score now from statute-only with high null rate, or defer until Playwright supplements?
+
 ## Open questions to revisit during build
 
 - Coverage-tier column: plan step recommends adding `coverage_tier` to output CSV. Implementing as a join against a state→tier mapping derived from snapshot-sufficiency audit.
