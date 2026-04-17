@@ -7,6 +7,7 @@ Purpose: Build a unified PRI + FOCAL scoring pipeline that evaluates all three l
 
 Newest first.
 
+- **2026-04-17 — Data inventory (desktop).** Checked out scoring branch on desktop machine; discovered `data/` (snapshots + CA scores) only exists on laptop. Decision: continue scoring work on laptop where data lives. No code changes. Cross-machine data sync deferred. Detail: `convos/20260417_scoring_data_inventory.md`.
 - **2026-04-14 — Phase 2 CA dry-run successful.** Pipeline end-to-end validated against real CA snapshot. 174 rows produced (PRI accessibility 59, PRI disclosure-law 61, FOCAL 54), all pydantic-validated on first attempt, all provenance-stamped. unable_to_evaluate rate: 80% PRI accessibility (Imperva blocks cal-access search UI — the rubric signal), 31% PRI disclosure-law, 2% FOCAL. Subagents honestly flagged WAF stubs rather than guessing. Detail: `results/20260414_ca_dry_run.md`.
 - **2026-04-14 — Phase 1 pipeline build.** `src/scoring/` Python package (uv + pydantic, no anthropic SDK), locked scorer prompt at v1, snapshot/rubric loaders, output writer with provenance stamping, two-stage `prepare`/`finalize` orchestrator CLI. 9 pipeline tests pass against real rubric CSVs and CA snapshot manifest. Architecture: subagent-only (Agent tool) — confirmed by user; resolves the handoff plan's `anthropic + pydantic` vs. "Agent tool not SDK" contradiction in favor of the latter.
 
@@ -18,6 +19,7 @@ Newest first.
 
 ## Convos
 
+- 2026-04-17 — `convos/20260417_scoring_data_inventory.md` — Brief desktop session. Data inventory: snapshots + CA scores live on laptop only. Decision to continue there.
 - 2026-04-14 — `convos/20260414_scoring_pipeline_phase1_build.md` — Phase 1 pipeline build + Phase 2 CA dry-run. Architecture confirmed: subagent-only (Agent tool), no anthropic SDK. Deps: uv + pydantic.
 
 ## Results
