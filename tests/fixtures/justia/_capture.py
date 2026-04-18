@@ -23,6 +23,10 @@ UA = (
 
 
 def capture(url: str, out_name: str, page) -> None:
+    out = FIXTURES_DIR / out_name
+    if out.exists():
+        print(f"skip (exists): {out.name}")
+        return
     print(f"fetching {url} ...")
     resp = page.goto(url, wait_until="domcontentloaded", timeout=60_000)
     status = resp.status if resp else 0
@@ -36,11 +40,10 @@ def capture(url: str, out_name: str, page) -> None:
         print(f"  !! challenge did not clear for {url}")
     title = page.title()
     body = page.content()
-    out = FIXTURES_DIR / out_name
     out.write_text(body, encoding="utf-8")
     blocked = "Just a moment" in body or "Attention Required" in body
     print(f"  -> {out.name} ({len(body):,} bytes, HTTP {status}, title={title!r}, blocked={blocked})")
-    time.sleep(5.0)  # courtesy rate-limit
+    time.sleep(2.0)  # courtesy rate-limit
 
 
 def main() -> None:
@@ -64,6 +67,40 @@ def main() -> None:
         (
             "https://law.justia.com/codes/california/2010/gov/86100-86118.html",
             "california_2010_gov_sections_86100_86118.html",
+        ),
+        # --- TX bootstrap: year-index + 2009 title-index, to learn slug structure
+        # before fetching the Government Code Ch. 305 pages.
+        # TX has biennial Justia coverage (2005, 2009, 2011, 2013, ...); 2010 is not
+        # hosted. Phase 1 audit correctly picked 2009 as the nearest within ±2 tolerance.
+        # Note: TX uses directory-style title URLs (`/codes/texas/2009/government-code/`)
+        # rather than CA's `.html`-suffixed form — parser must handle both.
+        ("https://law.justia.com/codes/texas/", "texas_index.html"),
+        ("https://law.justia.com/codes/texas/2009/", "texas_2009_index.html"),
+        # TX Government Code title page. Chapter 305 = Registration of Lobbyists
+        # (TX's counterpart to CA Political Reform Act Ch. 6).
+        (
+            "https://law.justia.com/codes/texas/2009/government-code/",
+            "texas_2009_government_code_title.html",
+        ),
+        # TX Gov Code Title 5 (Open Government; Ethics) — kept for reference; it holds
+        # the Texas Ethics Commission (Ch. 571) + related ethics/disclosure chapters,
+        # but NOT Ch. 305 (Lobbyists). Ch. 305 lives under Title 3.
+        (
+            "https://law.justia.com/codes/texas/2009/government-code/title-5-open-government-ethics/",
+            "texas_2009_gov_title5.html",
+        ),
+        # TX Gov Code Title 3 (Legislative Branch) — houses Ch. 305 (Registration of
+        # Lobbyists). Subtitle A covers the legislature; Ch. 305 is the lobby-disclosure
+        # statute equivalent to CA Political Reform Act.
+        (
+            "https://law.justia.com/codes/texas/2009/government-code/title-3-legislative-branch/",
+            "texas_2009_gov_title3.html",
+        ),
+        # TX Gov Code Ch. 305 (Registration of Lobbyists) — the core lobby-disclosure
+        # statute leaf. May list sections (deeper navigation) or contain statute text.
+        (
+            "https://law.justia.com/codes/texas/2009/government-code/title-3-legislative-branch/chapter-305-registration-of-lobbyists/",
+            "texas_2009_gov_title3_chapter305.html",
         ),
     ]
 
