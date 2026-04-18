@@ -102,6 +102,34 @@ def main() -> None:
             "https://law.justia.com/codes/texas/2009/government-code/title-3-legislative-branch/chapter-305-registration-of-lobbyists/",
             "texas_2009_gov_title3_chapter305.html",
         ),
+        # --- WY / NY / WI year-index pages for curation of the lobbying_statute_urls
+        # config. Fixtures kept for reference; parser tests don't strictly require
+        # them but they document the URL hierarchy we navigated.
+        ("https://law.justia.com/codes/wyoming/2010/", "wyoming_2010_index.html"),
+        ("https://law.justia.com/codes/new-york/2010/", "new_york_2010_index.html"),
+        ("https://law.justia.com/codes/wisconsin/2010/", "wisconsin_2010_index.html"),
+        # NY "Regulation of Lobbying Act 1040/81" — standalone code slug (not under
+        # Legislative Law). Likely the single-URL statute body for NY lobby law.
+        (
+            "https://law.justia.com/codes/new-york/2010/rla/",
+            "new_york_2010_rla.html",
+        ),
+        # WI Ch. 13 (Legislative Branch) — contains Subch. III Lobbying Regulation
+        # (§§13.61-13.795). Fetching the chapter page to see sub-structure.
+        (
+            "https://law.justia.com/codes/wisconsin/2010/13/13.html",
+            "wisconsin_2010_chapter13.html",
+        ),
+        # WY Title 28 (Legislature) — contains Ch. 7 Lobbying (§§28-7-101 et seq.).
+        (
+            "https://law.justia.com/codes/wyoming/2010/Title28/Title28.html",
+            "wyoming_2010_title28.html",
+        ),
+        # WY Title 28 Ch. 7 (Lobbyists) — statute leaf.
+        (
+            "https://law.justia.com/codes/wyoming/2010/Title28/chapter7.html",
+            "wyoming_2010_title28_chapter7.html",
+        ),
     ]
 
     with sync_playwright() as p:
