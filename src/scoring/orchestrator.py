@@ -53,6 +53,7 @@ from scoring.provenance import (
 )
 from scoring.rubric_loader import load_all_rubrics, load_rubric
 from scoring.snapshot_loader import SNAPSHOT_DATE_DEFAULT, load_snapshot
+from scoring.statute_retrieval import USPS_TO_JUSTIA_SLUG, run_audit_to_csv
 
 RUBRIC_NAMES = ["pri_accessibility", "pri_disclosure_law", "focal_indicators"]
 
@@ -295,6 +296,29 @@ def cmd_analyze_consistency(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_audit_statutes(args: argparse.Namespace) -> int:
+    """Audit Justia year-availability for a list of states (default: all 50)."""
+    from scoring.justia_client import PlaywrightClient
+
+    states = args.states or sorted(USPS_TO_JUSTIA_SLUG.keys())
+    out_path = Path(args.output_csv)
+    client = PlaywrightClient(rate_limit_seconds=args.rate_limit_seconds)
+    results = run_audit_to_csv(
+        client=client,
+        states=states,
+        target_year=args.target_year,
+        tolerance=args.tolerance,
+        out_path=out_path,
+    )
+    print(json.dumps({
+        "audited": len(results),
+        "eligible_for_calibration": sum(1 for r in results if r.eligible_for_calibration),
+        "eligible_for_2026_scoring": sum(1 for r in results if r.eligible_for_2026_scoring),
+        "output_csv": str(out_path),
+    }, indent=2))
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(prog="scoring-orchestrator")
     parser.add_argument("--repo-root", default=".", help="repo root (worktree path)")
@@ -352,6 +376,27 @@ def main() -> int:
     p_cons.add_argument("--run-ids", nargs="+", required=True)
     p_cons.add_argument("--output", default=None, help="optional markdown output path")
     p_cons.set_defaults(func=cmd_analyze_consistency)
+
+    p_audit = sub.add_parser(
+        "audit-statutes",
+        help="audit Justia year-availability across states; emit eligibility CSV",
+    )
+    p_audit.add_argument(
+        "--states",
+        nargs="*",
+        default=None,
+        help="USPS state codes to audit (default: all 50)",
+    )
+    p_audit.add_argument("--target-year", type=int, default=2010)
+    p_audit.add_argument("--tolerance", type=int, default=2)
+    p_audit.add_argument("--output-csv", required=True)
+    p_audit.add_argument(
+        "--rate-limit-seconds",
+        type=float,
+        default=5.0,
+        help="courtesy delay between state fetches",
+    )
+    p_audit.set_defaults(func=cmd_audit_statutes)
 
     args = parser.parse_args()
     return args.func(args)
