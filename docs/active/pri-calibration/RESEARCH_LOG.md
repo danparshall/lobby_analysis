@@ -11,17 +11,19 @@ Originating discussion: `docs/active/scoring/convos/20260417_pilot_and_calibrati
 
 Newest first.
 
-- **2026-04-17 — Branch kickoff, retrieval architecture decided.** Read the pri-ground-truth-calibration plan. Audited the PRI 2010 methodology: **no published inter-rater reliability** — PRI used single-coder preliminary analysis + state-official review (34/50 responded; 31 confirmed or corrected; 16 never validated externally). Implication: the plan's "match PRI IRR" convergence target doesn't exist and has to be set by discussion. Retrieval architecture simplified: **Justia serves both 2010 and current statutes** via `/codes/<state>/<year>/` stable URLs, unifying historical + current retrieval into one pipeline. Coverage is uneven across states (e.g., Colorado's earliest Justia year is 2016 — which, per Dan's Wayback check, actually reflects that CO didn't have the whole code up in 2010, not a Justia gap). Calibration-eligible states will be those with Justia coverage within ±2 years of 2010; asymmetric vintage delta is logged so we can distinguish "pre-2010 (may miss late-2009 changes)" from "post-2010 (may include reforms PRI didn't see)." Detail: `convos/20260417_calibration_kickoff.md`.
+- **2026-04-17/18 — Phase 1 complete: Justia retrieval audit, 49/50 states eligible for 2010 calibration.** Session opened with a Phase 0 methodology audit of PRI 2010 (no published IRR — single-coder + state-official review; convergence target to be set post-baseline), pivoted the retrieval architecture from Wayback-primary to **Justia-unified** (stable `/codes/<state>/<year>/` URLs serve both 2010 and 2026 vintage). Cloudflare's JS challenge blocks curl + WebFetch + subagent dispatch; added Playwright with **fresh browser per request** as the working path (long-lived contexts get progressively challenged and never clear). TDD'd the Justia client + audit module + orchestrator `audit-statutes` subcommand — 26 new tests red-then-green, 35 total passing. Ran the 50-state audit: **49 eligible for 2010 calibration, CO the only exclusion** (earliest Justia year = 2016, out of ±2 tolerance), all 50 eligible for 2026-scoring; 34 states at exact 2010, 15 at 2009 (pre-preferred tie-break used, delta=-1), 0 post-2010. Responder overlap: 33 of 34 PRI responders eligible. Validates the plan's Phase 1 go-gate (>=40) by a wide margin — no Wayback / HeinOnline fallback needed. Phase 2 handoff plan at `plans/20260418_phase2_statute_retrieval_and_baseline.md`. Detail: `convos/20260417_calibration_kickoff.md`.
 
 ## Plans
 
 - `plans/20260417_pri_ground_truth_calibration.md` — master calibration plan (7 phases). Carried from `scoring` branch; amended with the no-IRR finding, Justia-unified retrieval architecture, ±2 year vintage tolerance, and chapter-level availability check.
-- `plans/20260417_statute_retrieval_module.md` — scoped sub-plan for the retrieval module + 50-state audit (execution slice for the master plan's Phase 1). TDD'd.
+- `plans/20260417_statute_retrieval_module.md` — scoped sub-plan for the Phase 1 retrieval module + 50-state audit. **Complete** — TDD'd and executed 2026-04-17/18.
+- `plans/20260418_phase2_statute_retrieval_and_baseline.md` — **next action.** Handoff for the next agent: Phase 3 calibration-subset selection, Phase 2 statute-text retrieval, and baseline scoring run. Originating convo: `convos/20260417_calibration_kickoff.md`.
 
 ## Convos
 
-- 2026-04-17 — `convos/20260417_calibration_kickoff.md` — Branch kickoff. Key decisions: no-IRR target (PRI didn't publish one; will be set by discussion); Justia-unified retrieval; ±2 year symmetric tolerance with asymmetric direction logging; chapter-level availability check; branch cut from `scoring`, not `main`.
+- 2026-04-17 — `convos/20260417_calibration_kickoff.md` — Branch kickoff + Phase 1 execution. Key decisions: no-IRR target (will be set post-baseline by discussion); Justia-unified retrieval; ±2 year symmetric tolerance with asymmetric direction logging; branch cut from `scoring`, not `main`; Playwright with fresh-browser-per-request clears Cloudflare. Phase 1 result: 49/50 states eligible for calibration; CO excluded.
 
 ## Results
 
-(None yet. First artifact will be the 50-state Justia audit CSV + methodology note from Phase 1.)
+- 2026-04-18 — `results/20260418_justia_retrieval_audit.csv` — one row per state with target-year eligibility + Justia vintage coverage.
+- 2026-04-18 — `results/20260418_justia_retrieval_audit.md` — methodology note, summary statistics, CO exclusion analysis, CSV schema reference.
