@@ -59,3 +59,30 @@ None yet in `results/`. First artifact is the 50-state Justia audit CSV produced
 2. TDD-implement `justia_client.py`, `statute_retrieval.py`, `statute_loader.py`, and the two orchestrator subcommands per the sub-plan. Write tests first, capture Justia HTML fixtures, implement until green.
 3. Run `audit-statutes` across all 50 states; commit CSV + methodology note.
 4. Decision point: is the eligible calibration pool big enough to proceed?
+
+## Session outcome (Phase 1 complete)
+
+Executed steps 1–3 end-to-end in-session. Phase 1 decision (step 4): the calibration pool is **vastly bigger than anticipated**, so we proceed unconstrained.
+
+**What got built:**
+- `tests/fixtures/justia/` — 5 real Justia HTML pages captured via Playwright (CA year index, CA 2010 title index, CA 2010 Gov Code title page, CA Gov §§86100–86118 section-range leaf, CO year index as the no-2010 negative case). Discovered that Justia uses section-range URLs (`/gov/86100-86118.html`), not per-section URLs — corrected the fixture.
+- `src/scoring/justia_client.py` — `parse_state_year_index`, `parse_year_title_index` parsers + `PlaywrightClient` live fetcher (fresh browser per request clears Cloudflare's JS challenge).
+- `src/scoring/statute_retrieval.py` — `pick_year_within_tolerance` (±2 with pre-preferred tie-break), `PRI_RESPONDER_STATES` (34 states per paper footnote 80), `USPS_TO_JUSTIA_SLUG` mapping, `audit_state`, `run_audit_to_csv`.
+- `src/scoring/orchestrator.py` — new `audit-statutes` subcommand.
+- 26 new tests (all TDD'd red-green), 35 total tests passing.
+
+**Cloudflare blocker + resolution:** curl and WebFetch both hit Cloudflare's "Just a moment..." challenge. Added Playwright (with explicit user approval — not in the default "obvious" dep tier). A long-lived Playwright browser context gets progressively challenged after the first request and the challenge never clears; **fresh browser per request** clears the challenge reliably. This is the path the production client takes.
+
+**Dependency-approval rule refined:** Dan pushed back on being asked to approve obviously-fine libraries (`requests`, `beautifulsoup4`). Saved a new feedback memory (`feedback_dep_approval.md`) with a four-filter test for when to auto-add vs. ask.
+
+**Audit result (2026-04-18):** 49 of 50 states eligible for 2010 calibration; only **Colorado** excluded (earliest Justia year = 2016, 6 years outside ±2 tolerance). All 50 eligible for 2026-vintage scoring. Vintage distribution: 34 exact-2010, 15 pre-2010 (2009). Responder overlap: 33 of 34 PRI responders eligible (CO the loss); all 16 non-responders eligible.
+
+See [`results/20260418_justia_retrieval_audit.csv`](../results/20260418_justia_retrieval_audit.csv) + [`results/20260418_justia_retrieval_audit.md`](../results/20260418_justia_retrieval_audit.md).
+
+**What the next session will pick up:**
+
+Handoff plan at [`plans/20260418_phase2_statute_retrieval_and_baseline.md`](../plans/20260418_phase2_statute_retrieval_and_baseline.md). Scope:
+1. Phase 3 calibration-subset selection (5 states spanning PRI distribution, responder-weighted).
+2. Phase 2 statute-text retrieval — fetch title pages + section-range leaves for the 5, build statute bundles.
+3. Baseline run — 3 temp-0 runs × 5 states × 2 PRI rubrics vs PRI 2010 ground truth.
+4. Convergence target set (discussion-based, not inherited from PRI).
