@@ -58,10 +58,12 @@ def main() -> None:
             "https://law.justia.com/codes/california/2010/gov.html",
             "california_2010_gov_title.html",
         ),
-        # One section leaf: a specific Political Reform Act section.
+        # One section-range leaf (Political Reform Act §§ 86100-86118 = definitions
+        # in the lobbying-disclosure article). Justia's actual leaf format is range-pages,
+        # not individual-section pages.
         (
-            "https://law.justia.com/codes/california/2010/gov/title-9/chapter-6/article-1/section-86100/",
-            "california_2010_gov_section_86100.html",
+            "https://law.justia.com/codes/california/2010/gov/86100-86118.html",
+            "california_2010_gov_sections_86100_86118.html",
         ),
     ]
 
