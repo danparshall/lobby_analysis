@@ -199,6 +199,52 @@ _JUSTIA_CODES_URL_RE = re.compile(
 )
 
 
+def _direction_from_delta(delta: int) -> Literal["exact", "pre", "post"]:
+    if delta == 0:
+        return "exact"
+    return "pre" if delta < 0 else "post"
+
+
+def retrieve_bundles_for_states(
+    client: Client,
+    *,
+    targets: list[tuple[str, int]],
+    dest_root: Path,
+    target_year: int = 2010,
+) -> list[Path]:
+    """Retrieve statute bundles for each (state_abbr, vintage_year) pair in targets.
+
+    Looks up URLs in `lobbying_statute_urls.LOBBYING_STATUTE_URLS`, derives
+    direction/year_delta from `vintage_year - target_year`, and writes each
+    bundle to `dest_root/<STATE>/<YEAR>/`. Returns the list of manifest paths.
+
+    Raises KeyError if no URLs are curated for a requested (state, vintage) pair.
+    """
+    from scoring.lobbying_statute_urls import LOBBYING_STATUTE_URLS
+
+    manifest_paths: list[Path] = []
+    for state_abbr, vintage_year in targets:
+        urls = LOBBYING_STATUTE_URLS.get((state_abbr, vintage_year))
+        if not urls:
+            raise KeyError(
+                f"no curated lobby-statute URLs for ({state_abbr}, {vintage_year})"
+            )
+        delta = vintage_year - target_year
+        bundle_dir = dest_root / state_abbr / str(vintage_year)
+        manifest_path = retrieve_statute_bundle(
+            client,
+            state_abbr=state_abbr,
+            vintage_year=vintage_year,
+            urls=urls,
+            dest_dir=bundle_dir,
+            year_delta=delta,
+            direction=_direction_from_delta(delta),
+            pri_state_reviewed=state_abbr in PRI_RESPONDER_STATES,
+        )
+        manifest_paths.append(manifest_path)
+    return manifest_paths
+
+
 def _filename_from_url(url: str) -> str:
     """Derive a sections/*.txt filename from a Justia statute URL.
 

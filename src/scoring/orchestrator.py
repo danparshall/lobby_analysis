@@ -53,7 +53,11 @@ from scoring.provenance import (
 )
 from scoring.rubric_loader import load_all_rubrics, load_rubric
 from scoring.snapshot_loader import SNAPSHOT_DATE_DEFAULT, load_snapshot
-from scoring.statute_retrieval import USPS_TO_JUSTIA_SLUG, run_audit_to_csv
+from scoring.statute_retrieval import (
+    USPS_TO_JUSTIA_SLUG,
+    retrieve_bundles_for_states,
+    run_audit_to_csv,
+)
 
 RUBRIC_NAMES = ["pri_accessibility", "pri_disclosure_law", "focal_indicators"]
 
@@ -319,6 +323,55 @@ def cmd_audit_statutes(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_retrieve_statutes(args: argparse.Namespace) -> int:
+    """Retrieve statute bundles from Justia for (state, vintage) targets.
+
+    Three invocation modes:
+      --state CA --vintage 2010       one pair
+      --calibration-subset            all 5 pairs in CALIBRATION_SUBSET
+      (otherwise error)
+    """
+    from scoring.justia_client import PlaywrightClient
+    from scoring.lobbying_statute_urls import (
+        CALIBRATION_SUBSET,
+        LOBBYING_STATUTE_URLS,
+    )
+
+    repo_root = Path(args.repo_root).resolve()
+    dest_root = Path(args.output_dir) if args.output_dir else repo_root / "data" / "statutes"
+
+    if args.calibration_subset:
+        targets = list(CALIBRATION_SUBSET)
+    elif args.state and args.vintage is not None:
+        state = args.state.upper()
+        if (state, args.vintage) not in LOBBYING_STATUTE_URLS:
+            print(json.dumps({
+                "error": f"no curated URLs for ({state}, {args.vintage})",
+                "available": sorted(str(k) for k in LOBBYING_STATUTE_URLS),
+            }))
+            return 2
+        targets = [(state, args.vintage)]
+    else:
+        print(json.dumps({
+            "error": "must supply --calibration-subset or both --state and --vintage",
+        }))
+        return 2
+
+    client = PlaywrightClient(rate_limit_seconds=args.rate_limit_seconds)
+    manifest_paths = retrieve_bundles_for_states(
+        client=client,
+        targets=targets,
+        dest_root=dest_root,
+        target_year=args.target_year,
+    )
+    print(json.dumps({
+        "retrieved": len(manifest_paths),
+        "manifests": [str(p) for p in manifest_paths],
+        "dest_root": str(dest_root),
+    }, indent=2))
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(prog="scoring-orchestrator")
     parser.add_argument("--repo-root", default=".", help="repo root (worktree path)")
@@ -397,6 +450,38 @@ def main() -> int:
         help="courtesy delay between state fetches",
     )
     p_audit.set_defaults(func=cmd_audit_statutes)
+
+    p_retrieve = sub.add_parser(
+        "retrieve-statutes",
+        help="retrieve curated lobby-statute URL lists from Justia per state/vintage",
+    )
+    p_retrieve.add_argument("--state", default=None, help="USPS state code (e.g. CA)")
+    p_retrieve.add_argument(
+        "--vintage", type=int, default=None, help="vintage year (e.g. 2010)"
+    )
+    p_retrieve.add_argument(
+        "--calibration-subset",
+        action="store_true",
+        help="retrieve all 5 (state, vintage) pairs in CALIBRATION_SUBSET",
+    )
+    p_retrieve.add_argument(
+        "--output-dir",
+        default=None,
+        help="destination root (default: <repo_root>/data/statutes)",
+    )
+    p_retrieve.add_argument(
+        "--target-year",
+        type=int,
+        default=2010,
+        help="for year_delta/direction computation; default 2010 (calibration)",
+    )
+    p_retrieve.add_argument(
+        "--rate-limit-seconds",
+        type=float,
+        default=2.0,
+        help="courtesy delay between Justia fetches (see Phase 2 A4 decision)",
+    )
+    p_retrieve.set_defaults(func=cmd_retrieve_statutes)
 
     args = parser.parse_args()
     return args.func(args)
