@@ -11,11 +11,15 @@ Phase 2 and are out of scope here.
 from __future__ import annotations
 
 import csv
+import hashlib
+import json
+import re
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable, Literal
 
-from scoring.justia_client import Client, parse_state_year_index
+from scoring.justia_client import Client, parse_state_year_index, parse_statute_text
 
 # Footnote 80 of Clemens et al. (PRI 2010): the 34 states that responded to
 # PRI's review email (31 with confirmations/corrections, 3 declined-for-time).
@@ -188,6 +192,87 @@ def run_audit_to_csv(
             writer.writerow(_audit_to_row(audit))
             results.append(audit)
     return results
+
+
+_JUSTIA_CODES_URL_RE = re.compile(
+    r"^https?://law\.justia\.com/codes/[a-z-]+/\d{4}/(.+)$"
+)
+
+
+def _filename_from_url(url: str) -> str:
+    """Derive a sections/*.txt filename from a Justia statute URL.
+
+    Strategy: take the path segments after `/codes/STATE/YEAR/`, strip trailing
+    `/` and `.html`, flatten remaining `/` into `-`, append `.txt`. Produces
+    collision-free filenames across all 4 Justia URL conventions in the
+    calibration subset.
+    """
+    m = _JUSTIA_CODES_URL_RE.match(url)
+    if not m:
+        raise ValueError(f"URL not in /codes/STATE/YEAR/ namespace: {url}")
+    tail = m.group(1).rstrip("/").removesuffix(".html")
+    return tail.replace("/", "-") + ".txt"
+
+
+def retrieve_statute_bundle(
+    client: Client,
+    *,
+    state_abbr: str,
+    vintage_year: int,
+    urls: list[str],
+    dest_dir: Path,
+    year_delta: int = 0,
+    direction: Literal["exact", "pre", "post"] = "exact",
+    pri_state_reviewed: bool = False,
+) -> Path:
+    """Fetch each URL, parse statute text, write section files + manifest.
+
+    Writes:
+      - `<dest_dir>/sections/<filename>.txt` per URL
+      - `<dest_dir>/manifest.json` describing the bundle
+
+    Returns the path to the manifest. Raises ValueError on an empty `urls` list
+    so we fail loudly rather than produce an empty bundle that quietly
+    mis-represents a state's statute corpus.
+    """
+    if not urls:
+        raise ValueError("urls list is empty — cannot retrieve an empty bundle")
+
+    sections_dir = dest_dir / "sections"
+    sections_dir.mkdir(parents=True, exist_ok=True)
+
+    artifacts: list[dict] = []
+    for url in urls:
+        html = client.fetch_page(url)
+        text = parse_statute_text(html)
+        filename = _filename_from_url(url)
+        path = sections_dir / filename
+        path.write_text(text, encoding="utf-8")
+        raw = path.read_bytes()
+        artifacts.append(
+            {
+                "url": url,
+                "role": "statute",
+                "sha256": hashlib.sha256(raw).hexdigest(),
+                "bytes": len(raw),
+                "local_path": f"sections/{filename}",
+            }
+        )
+
+    manifest = {
+        "state_abbr": state_abbr,
+        "vintage_year": vintage_year,
+        "year_delta": year_delta,
+        "direction": direction,
+        "pri_state_reviewed": pri_state_reviewed,
+        "retrieved_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "artifacts": artifacts,
+    }
+    manifest_path = dest_dir / "manifest.json"
+    manifest_path.write_text(
+        json.dumps(manifest, indent=2) + "\n", encoding="utf-8"
+    )
+    return manifest_path
 
 
 def _audit_to_row(audit: StateAudit) -> dict[str, str]:
