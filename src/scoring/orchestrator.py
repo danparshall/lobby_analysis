@@ -323,6 +323,42 @@ def cmd_audit_statutes(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_export_statute_manifests(args: argparse.Namespace) -> int:
+    """Copy statute-bundle manifests from data/statutes/ to a committable path.
+
+    data/ is gitignored across the project (it's a symlink in worktrees). For
+    git-tracked provenance, small manifest files belong under docs/active/<branch>/results/.
+    This subcommand mirrors `data/statutes/<STATE>/<YEAR>/manifest.json` to
+    `<dest>/<STATE>/<YEAR>/manifest.json` without touching the bulk section text.
+    """
+    from shutil import copy2
+
+    repo_root = Path(args.repo_root).resolve()
+    source_root = Path(args.source) if args.source else repo_root / "data" / "statutes"
+    dest_root = Path(args.dest).resolve()
+
+    if not source_root.exists():
+        print(json.dumps({"error": f"source not found: {source_root}"}))
+        return 2
+
+    copied: list[str] = []
+    for manifest in sorted(source_root.glob("*/*/manifest.json")):
+        state = manifest.parent.parent.name
+        year = manifest.parent.name
+        target = dest_root / state / year / "manifest.json"
+        target.parent.mkdir(parents=True, exist_ok=True)
+        copy2(manifest, target)
+        try:
+            rel = target.relative_to(repo_root)
+        except ValueError:
+            rel = target
+        copied.append(str(rel))
+    print(json.dumps(
+        {"copied": len(copied), "targets": copied, "dest": str(dest_root)}, indent=2
+    ))
+    return 0
+
+
 def cmd_retrieve_statutes(args: argparse.Namespace) -> int:
     """Retrieve statute bundles from Justia for (state, vintage) targets.
 
@@ -482,6 +518,22 @@ def main() -> int:
         help="courtesy delay between Justia fetches (see Phase 2 A4 decision)",
     )
     p_retrieve.set_defaults(func=cmd_retrieve_statutes)
+
+    p_export = sub.add_parser(
+        "export-statute-manifests",
+        help="copy statute-bundle manifests from data/statutes/ to a committable path",
+    )
+    p_export.add_argument(
+        "--source",
+        default=None,
+        help="source root (default: <repo_root>/data/statutes)",
+    )
+    p_export.add_argument(
+        "--dest",
+        required=True,
+        help="destination root, typically docs/active/<branch>/results/statute_manifests",
+    )
+    p_export.set_defaults(func=cmd_export_statute_manifests)
 
     args = parser.parse_args()
     return args.func(args)
