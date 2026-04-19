@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from scoring.bundle import build_statute_subagent_brief
-from scoring.models import Rubric, RubricItem, StatuteArtifact, StatuteBundle
+from scoring.models import StatuteArtifact, StatuteBundle
 from scoring.provenance import PROMPT_PATH
 from scoring.rubric_loader import load_rubric
 
