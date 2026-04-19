@@ -41,11 +41,14 @@ from scoring.calibration import (
     load_atomic_scores_from_csv,
     load_pri_reference_scores,
     render_agreement_markdown,
+    render_multi_run_agreement_markdown,
 )
 from scoring.consistency import (
     ConsistencyReport,
     compute_consistency,
+    csv_path as portal_csv_path,
     render_markdown,
+    statute_csv_path,
 )
 from scoring.coverage import coverage_tier_for
 from scoring.output_writer import parse_and_validate, write_scored_csv
@@ -304,14 +307,36 @@ def cmd_analyze_consistency(args: argparse.Namespace) -> int:
     rubrics = [args.rubric] if args.rubric else RUBRIC_NAMES
     reports: list[ConsistencyReport] = []
     for rubric_name in rubrics:
+        paths = {
+            rid: portal_csv_path(repo_root, state, args.snapshot_date, rid, rubric_name)
+            for rid in args.run_ids
+        }
         reports.append(
-            compute_consistency(
-                repo_root=repo_root,
-                state=state,
-                rubric=rubric_name,
-                run_ids=list(args.run_ids),
-                snapshot_date=args.snapshot_date,
-            )
+            compute_consistency(state=state, rubric=rubric_name, csv_paths_by_run_id=paths)
+        )
+    print(render_markdown(reports))
+    if args.output:
+        out = Path(args.output)
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(render_markdown(reports))
+        print(f"\nReport written: {out}", flush=True)
+    return 0
+
+
+def cmd_calibrate_analyze_consistency(args: argparse.Namespace) -> int:
+    """Compute inter-run disagreement for a statute-based calibration (state, rubric[s])."""
+    repo_root = Path(args.repo_root).resolve()
+    state = args.state.upper()
+    vintage = int(args.vintage)
+    rubrics = [args.rubric] if args.rubric else CALIBRATION_RUBRIC_NAMES
+    reports: list[ConsistencyReport] = []
+    for rubric_name in rubrics:
+        paths = {
+            rid: statute_csv_path(repo_root, state, vintage, rid, rubric_name)
+            for rid in args.run_ids
+        }
+        reports.append(
+            compute_consistency(state=state, rubric=rubric_name, csv_paths_by_run_id=paths)
         )
     print(render_markdown(reports))
     if args.output:
@@ -530,12 +555,14 @@ def cmd_calibrate_finalize_run(args: argparse.Namespace) -> int:
 
 
 def cmd_calibrate(args: argparse.Namespace) -> int:
-    """Compute agreement between an LLM-scored statute run and PRI 2010 reference scores.
+    """Compute agreement between N LLM-scored statute runs and PRI 2010 reference scores.
 
-    Reads scored CSVs from data/scores/<STATE>/statute/<vintage>/<run_id>/<rubric>.csv,
-    loads PRI's published sub-aggregates, applies the rollup spec'd in
-    docs/active/pri-calibration/results/20260419_pri_rollup_rule_spec.md, and
-    emits a markdown agreement report.
+    Reads scored CSVs from data/scores/<STATE>/statute/<vintage>/<run_id>/<rubric>.csv
+    for every (state, run_id) in the subset × --run-id list, applies the rollup
+    spec'd in docs/active/pri-calibration/results/20260419_pri_rollup_rule_spec.md,
+    and emits a markdown report. For N>1 runs, the report includes per-run
+    agreement sections plus a cross-run variance table so reviewers can tell
+    stable-disagreement (rubric/prompt issue) from scorer-noise (self-consistency).
     """
     repo_root = Path(args.repo_root).resolve()
     states = [s.strip().upper() for s in args.state_subset.split(",") if s.strip()]
@@ -543,23 +570,13 @@ def cmd_calibrate(args: argparse.Namespace) -> int:
         print(json.dumps({"error": "--state-subset must list at least one USPS code"}))
         return 2
 
-    ours_atomic_by_state: dict[str, dict[str, object]] = {}
-    for state in states:
-        csv_path = (
-            repo_root / "data" / "scores" / state / "statute" / str(args.vintage)
-            / args.run_id / f"{args.rubric}.csv"
-        )
-        if not csv_path.exists():
-            print(json.dumps({
-                "error": "scored CSV not found",
-                "state": state,
-                "expected_path": str(csv_path),
-            }))
-            return 2
-        ours_atomic_by_state[state] = load_atomic_scores_from_csv(csv_path)
+    run_ids: list[str] = list(args.run_ids)
+    if not run_ids:
+        print(json.dumps({"error": "--run-id must list at least one run_id"}))
+        return 2
 
     pri_by_state = load_pri_reference_scores(args.rubric, repo_root)
-    missing_from_pri = set(ours_atomic_by_state) - set(pri_by_state)
+    missing_from_pri = set(states) - set(pri_by_state)
     if missing_from_pri:
         print(json.dumps({
             "error": "state(s) have no PRI 2010 reference",
@@ -567,22 +584,43 @@ def cmd_calibrate(args: argparse.Namespace) -> int:
         }))
         return 2
 
-    report = compute_agreement(
-        ours_atomic_by_state=ours_atomic_by_state,
-        pri_by_state={s: pri_by_state[s] for s in states},
-        rubric=args.rubric,
-        trust_partition=PRI_RESPONDER_STATES,
-        trust_partition_label="PRI 2010 responders",
-    )
+    reports: list = []
+    for run_id in run_ids:
+        ours_atomic_by_state: dict[str, dict[str, object]] = {}
+        for state in states:
+            csv_path = (
+                repo_root / "data" / "scores" / state / "statute" / str(args.vintage)
+                / run_id / f"{args.rubric}.csv"
+            )
+            if not csv_path.exists():
+                print(json.dumps({
+                    "error": "scored CSV not found",
+                    "state": state,
+                    "run_id": run_id,
+                    "expected_path": str(csv_path),
+                }))
+                return 2
+            ours_atomic_by_state[state] = load_atomic_scores_from_csv(csv_path)
+        reports.append(compute_agreement(
+            ours_atomic_by_state=ours_atomic_by_state,
+            pri_by_state={s: pri_by_state[s] for s in states},
+            rubric=args.rubric,
+            trust_partition=PRI_RESPONDER_STATES,
+            trust_partition_label="PRI 2010 responders",
+        ))
 
-    markdown = render_agreement_markdown(report)
+    if len(reports) == 1:
+        markdown = render_agreement_markdown(reports[0])
+    else:
+        markdown = render_multi_run_agreement_markdown(reports, run_ids=run_ids)
+
     if args.output:
         out = Path(args.output)
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(markdown, encoding="utf-8")
         print(json.dumps({
             "rubric": args.rubric,
-            "run_id": args.run_id,
+            "run_ids": run_ids,
             "vintage": args.vintage,
             "states": states,
             "output": str(out),
@@ -775,6 +813,22 @@ def main() -> int:
     )
     p_cal_fin.set_defaults(func=cmd_calibrate_finalize_run)
 
+    p_cal_cons = sub.add_parser(
+        "calibrate-analyze-consistency",
+        help="inter-run disagreement across statute-based calibration runs",
+    )
+    p_cal_cons.add_argument("--state", required=True)
+    p_cal_cons.add_argument("--vintage", type=int, required=True)
+    p_cal_cons.add_argument(
+        "--rubric",
+        choices=CALIBRATION_RUBRIC_NAMES,
+        default=None,
+        help="omit to analyze both PRI rubrics",
+    )
+    p_cal_cons.add_argument("--run-ids", nargs="+", required=True)
+    p_cal_cons.add_argument("--output", default=None)
+    p_cal_cons.set_defaults(func=cmd_calibrate_analyze_consistency)
+
     p_cal = sub.add_parser(
         "calibrate",
         help="compare LLM scored statute run against PRI 2010 published sub-aggregates",
@@ -782,7 +836,13 @@ def main() -> int:
     p_cal.add_argument(
         "--rubric", required=True, choices=["pri_disclosure_law", "pri_accessibility"]
     )
-    p_cal.add_argument("--run-id", required=True)
+    p_cal.add_argument(
+        "--run-id",
+        dest="run_ids",
+        nargs="+",
+        required=True,
+        help="one or more run_ids; with N>1, report includes cross-run variance",
+    )
     p_cal.add_argument(
         "--vintage",
         type=int,

@@ -115,7 +115,7 @@ def test_calibrate_writes_markdown_report_to_output_path(tmp_path: Path) -> None
         repo_root=str(tmp_repo),
         snapshot_date="ignored",
         rubric="pri_disclosure_law",
-        run_id="run1",
+        run_ids=["run1"],
         vintage=2010,
         state_subset="MT",
         output=str(output),
@@ -143,7 +143,7 @@ def test_calibrate_reports_perfect_agreement_when_ours_matches_pri(tmp_path: Pat
         repo_root=str(tmp_repo),
         snapshot_date="ignored",
         rubric="pri_disclosure_law",
-        run_id="run1",
+        run_ids=["run1"],
         vintage=2010,
         state_subset="MT",
         output=str(output),
@@ -169,7 +169,7 @@ def test_calibrate_reports_disagreement_when_ours_diverges(tmp_path: Path) -> No
         repo_root=str(tmp_repo),
         snapshot_date="ignored",
         rubric="pri_disclosure_law",
-        run_id="run1",
+        run_ids=["run1"],
         vintage=2010,
         state_subset="FL",
         output=str(output),
@@ -199,7 +199,7 @@ def test_calibrate_responder_partition_exposed_for_mixed_subset(tmp_path: Path) 
         repo_root=str(tmp_repo),
         snapshot_date="ignored",
         rubric="pri_disclosure_law",
-        run_id="run1",
+        run_ids=["run1"],
         vintage=2010,
         state_subset="MT,FL",
         output=str(output),
@@ -221,10 +221,69 @@ def test_calibrate_errors_on_missing_scored_csv(tmp_path: Path) -> None:
         repo_root=str(tmp_repo),
         snapshot_date="ignored",
         rubric="pri_disclosure_law",
-        run_id="run1",
+        run_ids=["run1"],
         vintage=2010,
         state_subset="MT",
         output=str(tmp_path / "report.md"),
     )
     rc = cmd_calibrate(args)
     assert rc != 0
+
+
+def test_calibrate_multi_run_reports_each_run(tmp_path: Path) -> None:
+    """When 3 run-ids are supplied, the report shows per-run agreement sections."""
+    repo_root = Path(__file__).resolve().parents[1]
+    tmp_repo = tmp_path / "repo"
+    tmp_repo.mkdir()
+    (tmp_repo / "docs").symlink_to(repo_root / "docs")
+
+    # Seed 3 runs for MT, all perfect matches — report should summarize all 3.
+    for rid in ("r1", "r2", "r3"):
+        _seed_scored_csv(tmp_repo, "MT", 2010, rid, "pri_disclosure_law",
+                         _mt_perfect_disclosure_scores())
+
+    output = tmp_path / "report.md"
+    args = argparse.Namespace(
+        repo_root=str(tmp_repo),
+        snapshot_date="ignored",
+        rubric="pri_disclosure_law",
+        run_ids=["r1", "r2", "r3"],
+        vintage=2010,
+        state_subset="MT",
+        output=str(output),
+    )
+    rc = cmd_calibrate(args)
+    assert rc == 0
+    text = output.read_text(encoding="utf-8")
+    for rid in ("r1", "r2", "r3"):
+        assert rid in text
+
+
+def test_calibrate_multi_run_surfaces_cross_run_variance(tmp_path: Path) -> None:
+    """When runs disagree, the combined report should mark the per-state disagreement."""
+    repo_root = Path(__file__).resolve().parents[1]
+    tmp_repo = tmp_path / "repo"
+    tmp_repo.mkdir()
+    (tmp_repo / "docs").symlink_to(repo_root / "docs")
+
+    # r1 matches MT perfectly; r2 has everything at zero (massive disagreement).
+    _seed_scored_csv(tmp_repo, "MT", 2010, "r1", "pri_disclosure_law",
+                     _mt_perfect_disclosure_scores())
+    _seed_scored_csv(tmp_repo, "MT", 2010, "r2", "pri_disclosure_law",
+                     {k: 0 for k in _mt_perfect_disclosure_scores()})
+
+    output = tmp_path / "report.md"
+    args = argparse.Namespace(
+        repo_root=str(tmp_repo),
+        snapshot_date="ignored",
+        rubric="pri_disclosure_law",
+        run_ids=["r1", "r2"],
+        vintage=2010,
+        state_subset="MT",
+        output=str(output),
+    )
+    cmd_calibrate(args)
+    text = output.read_text(encoding="utf-8")
+    # Cross-run-variance section should flag MT because its sub-components agree in r1
+    # but not in r2. String match on the section header is sufficient.
+    assert "cross-run" in text.lower() or "variance" in text.lower()

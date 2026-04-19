@@ -7,7 +7,6 @@ import hashlib
 import json
 from pathlib import Path
 
-import pytest
 
 from scoring.orchestrator import cmd_export_statute_manifests
 

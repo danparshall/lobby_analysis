@@ -418,6 +418,73 @@ def load_atomic_scores_from_csv(csv_path: Path) -> dict[str, object]:
     return atomic
 
 
+def render_multi_run_agreement_markdown(
+    reports: list[AgreementReport], run_ids: Optional[list[str]] = None
+) -> str:
+    """Render N per-run AgreementReports as a combined markdown doc.
+
+    Each run gets a full per-run section. A cross-run variance section at the
+    end tallies, for each (state, sub-component), how many of the N runs matched
+    PRI — so reviewers can see whether disagreement with PRI is stable (all
+    runs miss consistently = prompt miscalibration) or noisy (runs disagree with
+    each other = self-consistency issue).
+    """
+    if not reports:
+        return "# Calibration report\n\n(no runs)\n"
+
+    rubric = reports[0].rubric
+    labels = run_ids if run_ids and len(run_ids) == len(reports) else [f"#{i+1}" for i in range(len(reports))]
+
+    lines: list[str] = [
+        f"# Calibration report — {rubric}",
+        "",
+        f"Number of runs: {len(reports)}",
+        f"Run IDs: {', '.join(labels)}",
+        "",
+    ]
+
+    # Per-run sections
+    for report, label in zip(reports, labels, strict=True):
+        lines.append(f"## Run `{label}`")
+        lines.append("")
+        lines.append(render_agreement_markdown(report))
+        lines.append("")
+
+    # Cross-run variance
+    lines.append("## Cross-run variance")
+    lines.append("")
+    lines.append(
+        "For each (state, sub-component), the count of runs (of "
+        f"{len(reports)}) whose rollup matched PRI's published value. "
+        "A value of 0 or N means consistent (across-run-stable); "
+        "intermediate values indicate scorer-noise between runs."
+    )
+    lines.append("")
+    sub_components = _sub_components_for(rubric)
+    states = sorted({s for r in reports for s in r.per_state})
+    header_cols = ["state", *sub_components, "total"]
+    lines.append("| " + " | ".join(header_cols) + " |")
+    lines.append("|" + "|".join(["---"] * len(header_cols)) + "|")
+    for state in states:
+        cells: list[str] = [state]
+        for sc in sub_components:
+            hits = sum(
+                1 for r in reports
+                if state in r.per_state and r.per_state[state].per_sub_component[sc]
+            )
+            runs_with_state = sum(1 for r in reports if state in r.per_state)
+            cells.append(f"{hits}/{runs_with_state}")
+        total_hits = sum(
+            1 for r in reports
+            if state in r.per_state and r.per_state[state].total_match
+        )
+        runs_with_state = sum(1 for r in reports if state in r.per_state)
+        cells.append(f"{total_hits}/{runs_with_state}")
+        lines.append("| " + " | ".join(cells) + " |")
+
+    return "\n".join(lines) + "\n"
+
+
 def render_agreement_markdown(report: AgreementReport) -> str:
     """Render an AgreementReport as a human-readable markdown document."""
     lines: list[str] = []
