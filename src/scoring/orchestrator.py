@@ -35,7 +35,7 @@ import argparse
 import json
 from pathlib import Path
 
-from scoring.bundle import build_subagent_brief
+from scoring.bundle import build_statute_subagent_brief, build_subagent_brief
 from scoring.calibration import (
     compute_agreement,
     load_atomic_scores_from_csv,
@@ -57,8 +57,10 @@ from scoring.provenance import (
     stamp_rows,
     utc_now,
 )
+from scoring.models import StatuteRunMetadata
 from scoring.rubric_loader import load_all_rubrics, load_rubric
 from scoring.snapshot_loader import SNAPSHOT_DATE_DEFAULT, load_snapshot
+from scoring.statute_loader import load_statute_bundle
 from scoring.statute_retrieval import (
     PRI_RESPONDER_STATES,
     USPS_TO_JUSTIA_SLUG,
@@ -68,9 +70,22 @@ from scoring.statute_retrieval import (
 
 RUBRIC_NAMES = ["pri_accessibility", "pri_disclosure_law", "focal_indicators"]
 
+# Calibration runs score only the two PRI rubrics (no 2010 FOCAL reference exists).
+CALIBRATION_RUBRIC_NAMES = ["pri_accessibility", "pri_disclosure_law"]
+
 
 def run_dir(repo_root: Path, state: str, snapshot_date: str, run_id: str) -> Path:
     return repo_root / "data" / "scores" / state / snapshot_date / run_id
+
+
+def statute_run_dir(
+    repo_root: Path, state: str, vintage_year: int, run_id: str
+) -> Path:
+    return repo_root / "data" / "scores" / state / "statute" / str(vintage_year) / run_id
+
+
+def statute_bundle_dir(repo_root: Path, state: str, vintage_year: int) -> Path:
+    return repo_root / "data" / "statutes" / state / str(vintage_year)
 
 
 def brief_path(run_dir_: Path, rubric: str) -> Path:
@@ -366,6 +381,154 @@ def cmd_export_statute_manifests(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_calibrate_prepare_run(args: argparse.Namespace) -> int:
+    """Prepare subagent briefs for a statute-based calibration run.
+
+    Two rubrics: pri_accessibility + pri_disclosure_law. focal_indicators is
+    skipped (no 2010 FOCAL reference). Briefs land at
+    data/scores/<STATE>/statute/<vintage>/<run_id>/briefs/<rubric>.brief.md.
+    """
+    repo_root = Path(args.repo_root).resolve()
+    state = args.state.upper()
+    vintage = int(args.vintage)
+    bundle_dir = statute_bundle_dir(repo_root, state, vintage)
+    if not (bundle_dir / "manifest.json").exists():
+        print(json.dumps({
+            "error": "statute bundle not found",
+            "state": state,
+            "vintage": vintage,
+            "expected_path": str(bundle_dir / "manifest.json"),
+        }))
+        return 2
+
+    statute = load_statute_bundle(bundle_dir)
+    run_id = args.run_id or new_run_id()
+    rd = statute_run_dir(repo_root, state, vintage, run_id)
+    (rd / "briefs").mkdir(parents=True, exist_ok=True)
+    (rd / "raw").mkdir(parents=True, exist_ok=True)
+
+    results = []
+    for rubric_name in CALIBRATION_RUBRIC_NAMES:
+        rubric = load_rubric(rubric_name, repo_root)
+        brief = build_statute_subagent_brief(
+            state=state,
+            rubric=rubric,
+            statute=statute,
+            repo_root=repo_root,
+            scorer_prompt_path=repo_root / PROMPT_PATH,
+            output_json_path=raw_output_path(rd, rubric_name),
+        )
+        bp = brief_path(rd, rubric_name)
+        bp.write_text(brief, encoding="utf-8")
+        results.append({
+            "rubric": rubric_name,
+            "brief_path": str(bp),
+            "expected_output_path": str(raw_output_path(rd, rubric_name)),
+            "item_count": len(rubric.items),
+        })
+    print(json.dumps({
+        "run_id": run_id,
+        "state": state,
+        "vintage_year": vintage,
+        "year_delta": statute.year_delta,
+        "direction": statute.direction,
+        "rubrics": results,
+    }, indent=2))
+    return 0
+
+
+def cmd_calibrate_finalize_run(args: argparse.Namespace) -> int:
+    """Finalize a statute-based calibration run: validate raw JSON, write CSVs + metadata.
+
+    Writes a StatuteRunMetadata (not RunMetadata) to run_metadata.json so downstream
+    analysis can cleanly distinguish statute vs snapshot runs.
+    """
+    repo_root = Path(args.repo_root).resolve()
+    state = args.state.upper()
+    vintage = int(args.vintage)
+
+    bundle_dir = statute_bundle_dir(repo_root, state, vintage)
+    if not (bundle_dir / "manifest.json").exists():
+        print(json.dumps({
+            "error": "statute bundle not found",
+            "state": state,
+            "vintage": vintage,
+            "expected_path": str(bundle_dir / "manifest.json"),
+        }))
+        return 2
+    statute = load_statute_bundle(bundle_dir)
+    rd = statute_run_dir(repo_root, state, vintage, args.run_id)
+
+    psha = prompt_sha(repo_root)
+    run_ts = utc_now()
+    rubrics_loaded = {n: load_rubric(n, repo_root) for n in CALIBRATION_RUBRIC_NAMES}
+
+    per_rubric_status: list[dict] = []
+    all_finalized = True
+    for rubric_name in CALIBRATION_RUBRIC_NAMES:
+        raw_path = raw_output_path(rd, rubric_name)
+        out_csv = csv_output_path(rd, rubric_name)
+        if out_csv.exists():
+            per_rubric_status.append({"rubric": rubric_name, "status": "already"})
+            continue
+        if not raw_path.exists():
+            all_finalized = False
+            per_rubric_status.append({"rubric": rubric_name, "status": "missing_raw"})
+            if args.skip_missing:
+                continue
+            print(json.dumps({"error": f"missing raw JSON for {rubric_name}", "path": str(raw_path)}))
+            return 2
+        rubric = rubrics_loaded[rubric_name]
+        scored_items = parse_and_validate(raw_path, rubric)
+        rows = stamp_rows(
+            scored_items,
+            state=state,
+            rubric=rubric,
+            coverage_tier="clean",  # statute runs have no WAF/SPA semantics
+            prompt_sha_hex=psha,
+            snapshot_manifest_sha=statute.manifest_sha,  # re-used column for corpus sha
+            run_id=args.run_id,
+            run_timestamp=run_ts,
+        )
+        write_scored_csv(rows, out_csv)
+        per_rubric_status.append({
+            "rubric": rubric_name,
+            "status": "finalized",
+            "rows": len(rows),
+            "unable_to_evaluate_count": sum(1 for r in rows if r.unable_to_evaluate),
+        })
+
+    wrote_metadata = False
+    if all_finalized:
+        meta = StatuteRunMetadata(
+            state=state,
+            run_id=args.run_id,
+            run_timestamp=run_ts,
+            vintage_year=statute.vintage_year,
+            year_delta=statute.year_delta,
+            direction=statute.direction,
+            pri_state_reviewed=statute.pri_state_reviewed,
+            statute_manifest_sha=statute.manifest_sha,
+            prompt_sha=psha,
+            prompt_path=str(PROMPT_PATH),
+            model_version="claude-sonnet-4-6",
+            rubric_shas={n: r.sha for n, r in rubrics_loaded.items()},
+        )
+        (rd / "run_metadata.json").write_text(
+            meta.model_dump_json(indent=2), encoding="utf-8"
+        )
+        wrote_metadata = True
+
+    print(json.dumps({
+        "state": state,
+        "run_id": args.run_id,
+        "vintage_year": vintage,
+        "per_rubric": per_rubric_status,
+        "wrote_metadata": wrote_metadata,
+    }, indent=2))
+    return 0
+
+
 def cmd_calibrate(args: argparse.Namespace) -> int:
     """Compute agreement between an LLM-scored statute run and PRI 2010 reference scores.
 
@@ -588,6 +751,29 @@ def main() -> int:
         help="courtesy delay between Justia fetches (see Phase 2 A4 decision)",
     )
     p_retrieve.set_defaults(func=cmd_retrieve_statutes)
+
+    p_cal_prep = sub.add_parser(
+        "calibrate-prepare-run",
+        help="prepare briefs for 2 PRI rubrics against a statute bundle (calibration run)",
+    )
+    p_cal_prep.add_argument("--state", required=True)
+    p_cal_prep.add_argument("--vintage", type=int, required=True)
+    p_cal_prep.add_argument("--run-id", default=None)
+    p_cal_prep.set_defaults(func=cmd_calibrate_prepare_run)
+
+    p_cal_fin = sub.add_parser(
+        "calibrate-finalize-run",
+        help="finalize a statute calibration run: validate raw JSON, write CSVs + metadata",
+    )
+    p_cal_fin.add_argument("--state", required=True)
+    p_cal_fin.add_argument("--vintage", type=int, required=True)
+    p_cal_fin.add_argument("--run-id", required=True)
+    p_cal_fin.add_argument(
+        "--skip-missing",
+        action="store_true",
+        help="finalize whichever rubrics have raw JSON; skip the rest without erroring",
+    )
+    p_cal_fin.set_defaults(func=cmd_calibrate_finalize_run)
 
     p_cal = sub.add_parser(
         "calibrate",

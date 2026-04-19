@@ -141,3 +141,27 @@ class RunMetadata(BaseModel):
     rubric_shas: dict[str, str]
     coverage_tier: CoverageTier
     temperature: float = 0.0
+
+
+class StatuteRunMetadata(BaseModel):
+    """Metadata for a statute-based (calibration) scoring run.
+
+    Separate model from RunMetadata because the corpus is fundamentally different
+    (Justia statute text vs portal snapshot), and downstream analysis needs a
+    clean type distinction. Written to `run_metadata.json` in the statute run
+    directory at `data/scores/<STATE>/statute/<vintage>/<run_id>/`.
+    """
+
+    state: str
+    run_id: str
+    run_timestamp: str
+    vintage_year: int
+    year_delta: int
+    direction: Literal["exact", "pre", "post"]
+    pri_state_reviewed: bool
+    statute_manifest_sha: str
+    prompt_sha: str
+    prompt_path: str
+    model_version: str
+    rubric_shas: dict[str, str]
+    temperature: float = 0.0
