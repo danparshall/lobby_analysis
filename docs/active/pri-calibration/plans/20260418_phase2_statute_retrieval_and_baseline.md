@@ -8,6 +8,44 @@
 
 **Previous phase:** Phase 1 Justia audit complete (2026-04-18). 49/50 states eligible for 2010 calibration. See [`results/20260418_justia_retrieval_audit.{csv,md}`](../results/20260418_justia_retrieval_audit.md).
 
+---
+
+## Execution notes — Phase 2a complete (2026-04-18)
+
+Phase 2a landed with an architectural redesign. Full context in
+[`convos/20260418_phase2_kickoff_and_subset_selection.md`](../convos/20260418_phase2_kickoff_and_subset_selection.md). Summary for a next-session agent:
+
+**Decisions locked (Q1–Q4 from the original plan):**
+
+- **Q1 — Calibration subset:** `CA/TX/WY/NY/WI` approved. All 5 are PRI responders. Vintages: CA/NY/WI/WY at 2010 (exact); TX at 2009 (-1, "pre" — 2010 not hosted on Justia). Config lives in `src/scoring/lobbying_statute_urls.CALIBRATION_SUBSET`.
+- **Q2 — Manifest commit policy:** yes, commit manifest.json files. **Location corrected:** project convention is `data/` stays blanket-gitignored across worktrees (it's a symlink in non-main worktrees). Small committable artifacts belong under `docs/active/<branch>/results/`. The 5 live manifests are committed at `docs/active/pri-calibration/results/statute_manifests/<STATE>/<YEAR>/manifest.json`.
+- **Q3 — Statute source flag:** yes. Implemented as `build_statute_subagent_brief` (a **separate function** in `bundle.py`, not a union-typed parameter on `build_subagent_brief`). The snapshot brief is completely untouched — preserves apples-to-apples against the scoring-branch portal runs. The statute brief carries the one-line header: *"The artifacts below are state statute text (not portal content). Score the rubric against the statute text as written — this tells you what the law requires, not what any portal happens to expose."*
+- **Q4 — Rate limits (split):** **Justia retrieval** Playwright courtesy delay dropped 5s→2s, implemented in `PlaywrightClient` default and the `retrieve-statutes --rate-limit-seconds` default. **Scoring subagent dispatch** stays on Claude Code subagents (no SDK switch in Phase 3); batches of 4–10 concurrent, not 4. SDK reconsideration deferred to post-Phase-3 baseline. Logged design factor: SDK is more reproducible (determinism at temp=0, prompt caching, structured output) — real reason for the switch if/when it happens.
+
+**Architectural redesign vs. the plan-as-written:**
+
+Phase 2a fixture capture surfaced 5 distinct Justia URL conventions across the 5-state subset (CA `.html`-suffixed flat / TX 4-level trailing-slash / WY double-path capitalized / NY 3-letter flat / WI per-section flat). The original plan's `lobbying_titles.py` (per-state title-slug dict) was too coarse. Redesign:
+
+| Planned | Actual |
+|---|---|
+| `lobbying_titles.py` `{state: [title_slug]}` | `lobbying_statute_urls.py` `{(state, year): [full_url]}` — per-(state, vintage) curated URL list |
+| `parse_title_page(html)` + `parse_section_range(html)` | `parse_statute_text(html) -> str` (single extractor; works on all 5 URL conventions via `#main-content`) + `parse_children_list(html, parent_url) -> list[str]` (curation-only discovery helper) |
+| `retrieve_statute_bundle(client, state, year, title_slug, dest_dir)` | `retrieve_statute_bundle(client, *, state_abbr, vintage_year, urls, dest_dir, year_delta, direction, pri_state_reviewed)` + convenience `retrieve_bundles_for_states` that looks up URLs from `LOBBYING_STATUTE_URLS` |
+| `orchestrator calibrate` (one subcommand) | `orchestrator retrieve-statutes` + `orchestrator export-statute-manifests` (Phase 2a); `calibrate` still TBD for Phase 2b |
+| `build_subagent_brief` extended (union-typed) for `role=statute` | `build_statute_subagent_brief` (new, separate function). Snapshot path untouched per A3. |
+| `parse_year_title_index` for per-state retrieval | Kept CA-only; docstring marks it legacy. New code uses `LOBBYING_STATUTE_URLS` instead. |
+
+**What's on disk after Phase 2a:**
+
+- `data/statutes/{CA/2010, TX/2009, NY/2010, WI/2010, WY/2010}/manifest.json + sections/*.txt` — 21 section files, ~260KB statute text. Gitignored (lives under the `data/` symlink).
+- `docs/active/pri-calibration/results/statute_manifests/…/manifest.json` — committed provenance record (via `orchestrator export-statute-manifests`).
+
+**Test state:** 75/75 passing across 6 test files. Full regression must stay green.
+
+**R1 materialized early** (first non-CA state exposed URL variation). Handled by redesigning to curated URLs. **R2** (live-run half-day if parser surprises) didn't bite — retrieval completed cleanly. **R3** (one-line brief header *is* a prompt change) is logged; the separate commit (`1daafde`) is the audit trail.
+
+---
+
 **Context:** The `scoring` branch pilot found that PRI disclosure-law inter-run disagreement is driven by ambiguity between `unable_to_evaluate` and `score=0` when the snapshot corpus only captures portal *summaries* of the law, not the law itself. This branch responds by retrieving the actual statutes and scoring against them. The calibration target — how close our LLM scores need to come to PRI 2010 — is deferred to post-baseline (Phase 3) because PRI did not publish an IRR and we need empirical numbers before setting a threshold.
 
 **Confidence:** Medium. Phase 1 validated the Justia retrieval approach at year-index granularity. Title-page + section-range parsing is a reasonable extension but untested; live section-range pages may have structural variations across states. Expect at least one state-specific parsing surprise.
@@ -92,6 +130,8 @@ NOTE: I will write *all* unit/integration tests before I add any implementation 
 ---
 
 ## Phase 2a — Statute retrieval pipeline (~1 day, TDD)
+
+> **✅ COMPLETE (2026-04-18).** See Execution Notes above for the redesigned shape. Task list below preserved as historical intent — the *actual* module/function names differ. Key commits: `52d82fd` (fixtures), `beaea65` (lobbying_statute_urls), `66b4768` (parsers), `2358c09` (retrieve_statute_bundle), `b094e56` (statute_loader), `1daafde` (statute brief), `f7d216b` (retrieve-statutes subcommand), `71d656b` (export-statute-manifests + committed live manifests).
 
 ### Task list (bite-sized)
 
@@ -200,10 +240,13 @@ NOTE: I will write *all* unit/integration tests before I add any implementation 
 
 ### Task list
 
-1. For each of the 5 calibration states, dispatch 3 temp-0 runs × 2 PRI rubrics using the **current unchanged** `scorer_prompt.md` against the statute bundle (not portal snapshots). That's 5 × 2 × 3 = 30 subagent dispatches. Batches of 4 per rate-limit lessons.
-2. Use `orchestrator prepare-run` / `finalize-run` with a new `--source statute` flag (or similar — extend `bundle.py` to route on bundle type). The 3-run self-consistency pattern from the pilot still applies.
-3. Each scored CSV lands under `data/scores/<STATE>/<vintage_year>/<run_id>/`.
-4. Run `orchestrator calibrate --rubric pri_disclosure_law --state-subset CA,TX,WY,NY,WI --run-id <merged>` and same for `pri_accessibility`. Output: `results/<date>_calibration_baseline.md`.
+1. For each of the 5 calibration states, dispatch 3 temp-0 runs × 2 PRI rubrics using the **current unchanged** `scorer_prompt.md` against the statute bundle (not portal snapshots). That's 5 × 2 × 3 = 30 subagent dispatches. Batches of 4–10 concurrent per A4 (not 4; revisit if rate-limited). Scoring layer stays on Claude Code subagents — no SDK switch in Phase 3.
+2. **[Phase 2a did NOT wire the statute path into `prepare-run`/`finalize-run`.]** Concrete next-agent work:
+    - Option A (preferred): add new subcommands `calibrate-prepare-run` and `calibrate-finalize-run` that mirror `prepare-run`/`finalize-run` but call `statute_loader.load_statute_bundle` instead of `snapshot_loader.load_snapshot` and `build_statute_subagent_brief` instead of `build_subagent_brief`. Two PRI rubrics only (skip `focal_indicators` — no 2010 reference scores). Run-dir layout: `data/scores/<STATE>/statute/<vintage_year>/<run_id>/` to disambiguate from portal runs.
+    - Option B: thread a `--source {snapshot,statute}` flag through the existing `prepare-run`/`finalize-run` and branch on bundle type. Lower ceremony but mixes concerns in the orchestrator.
+    - Both require a new `RunMetadata` field (or new enum case) distinguishing statute vs. snapshot runs so later analysis can filter.
+3. Each scored CSV lands under `data/scores/<STATE>/statute/<vintage_year>/<run_id>/`.
+4. Run `orchestrator calibrate --rubric pri_disclosure_law --state-subset CA,TX,WY,NY,WI --run-id <merged>` and same for `pri_accessibility`. Output: `docs/active/pri-calibration/results/<date>_calibration_baseline.md`.
 5. Write up findings:
    - Per-state + per-rubric agreement numbers.
    - Responder-partition breakdown (should be N/A here since all 5 are responders under suggested subset — but the machinery should exist for when non-responders are added in held-out validation).
@@ -241,8 +284,8 @@ Do NOT proceed to Phase 4 (prompt iteration) without an explicit target.
 - Extended modules: `src/scoring/justia_client.py` (parsers), `src/scoring/statute_retrieval.py` (retrieve function), `src/scoring/bundle.py` (statute bundles), `src/scoring/orchestrator.py` (2 new subcommands), `src/scoring/models.py` (StatuteArtifact, StatuteBundle, SectionRangeEntry, SectionRangeText).
 - New pydantic models match the shapes of existing SnapshotArtifact / SnapshotBundle for consistency.
 - Statute data layout: `data/statutes/<STATE>/<YEAR>/manifest.json` + `sections/<range>.txt`.
-- Rate-limit: ~5s courtesy delay; fresh Playwright browser per request (established in Phase 1).
-- Subagent dispatch in batches of 4; prompts must say "Read tool only; no subprocess/shell/pdftotext/unzip."
+- Rate-limit: 2s Justia courtesy delay (dropped from 5s per A4); fresh Playwright browser per request (established in Phase 1).
+- Subagent dispatch in batches of 4–10 (per A4; start at the low end, expand if not rate-limited); prompts must say "Read tool only; no subprocess/shell/pdftotext/unzip."
 - Commit after each TDD cycle (not once at the end).
 
 **What could change:**
@@ -253,11 +296,11 @@ Do NOT proceed to Phase 4 (prompt iteration) without an explicit target.
 - If Justia's section-range HTML format turns out to have dramatic variation across states, consider a per-state parser dispatch (`parse_section_range_by_state`) — but only if needed.
 - The convergence-target value can't be set until after Phase 3. Bake a stopping point at that decision.
 
-**Questions:**
+**Questions (all resolved 2026-04-18 — full context in the kickoff convo):**
 
-1. **Calibration subset selection** — the suggested set (CA/TX/WY/NY + one median responder) is illustrative. Dan's call on the specific 5.
-2. **Statute-bundle commit policy** — full statute text bundles under `data/statutes/` are gitignored (follows `data/portal_snapshots/` pattern). Should we commit the manifest.json files for provenance? Propose: yes (they're small), confirm with Dan.
-3. **Scorer prompt source flag** — should the prompt include explicit "this is statute text, not portal guidance" framing? Proposal: yes, add a single sentence to the brief header; the prompt body stays unchanged. Surface this as a minimal scorer-prompt change and commit it separately from any later calibration-iteration changes.
-4. **Dispatch architecture** — Phase 3 reuses the scoring branch's subagent-dispatch pattern. No change proposed. If rate-limit reality differs now (2026-04-18+), surface and adjust batch size.
+1. **Calibration subset selection** — ✅ Resolved: `CA/TX/WY/NY/WI`. All PRI responders. See `CALIBRATION_SUBSET` in `lobbying_statute_urls.py`.
+2. **Statute-bundle commit policy** — ✅ Resolved: yes, commit manifest files, but **at `docs/active/<branch>/results/statute_manifests/<STATE>/<YEAR>/manifest.json`** (not under `data/`, which is always gitignored per project convention). `orchestrator export-statute-manifests --dest <path>` does the mirror.
+3. **Scorer prompt source flag** — ✅ Resolved: yes, implemented as `build_statute_subagent_brief` (separate function, not a flag). Snapshot brief untouched. The one-line header change is isolated in commit `1daafde`.
+4. **Dispatch architecture** — ✅ Resolved: subagents for Phase 3 (no SDK switch), batches of 4–10 concurrent. Justia retrieval courtesy delay 2s (down from 5s).
 
 ---
