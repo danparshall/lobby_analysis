@@ -36,6 +36,12 @@ import json
 from pathlib import Path
 
 from scoring.bundle import build_subagent_brief
+from scoring.calibration import (
+    compute_agreement,
+    load_atomic_scores_from_csv,
+    load_pri_reference_scores,
+    render_agreement_markdown,
+)
 from scoring.consistency import (
     ConsistencyReport,
     compute_consistency,
@@ -54,6 +60,7 @@ from scoring.provenance import (
 from scoring.rubric_loader import load_all_rubrics, load_rubric
 from scoring.snapshot_loader import SNAPSHOT_DATE_DEFAULT, load_snapshot
 from scoring.statute_retrieval import (
+    PRI_RESPONDER_STATES,
     USPS_TO_JUSTIA_SLUG,
     retrieve_bundles_for_states,
     run_audit_to_csv,
@@ -359,6 +366,69 @@ def cmd_export_statute_manifests(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_calibrate(args: argparse.Namespace) -> int:
+    """Compute agreement between an LLM-scored statute run and PRI 2010 reference scores.
+
+    Reads scored CSVs from data/scores/<STATE>/statute/<vintage>/<run_id>/<rubric>.csv,
+    loads PRI's published sub-aggregates, applies the rollup spec'd in
+    docs/active/pri-calibration/results/20260419_pri_rollup_rule_spec.md, and
+    emits a markdown agreement report.
+    """
+    repo_root = Path(args.repo_root).resolve()
+    states = [s.strip().upper() for s in args.state_subset.split(",") if s.strip()]
+    if not states:
+        print(json.dumps({"error": "--state-subset must list at least one USPS code"}))
+        return 2
+
+    ours_atomic_by_state: dict[str, dict[str, object]] = {}
+    for state in states:
+        csv_path = (
+            repo_root / "data" / "scores" / state / "statute" / str(args.vintage)
+            / args.run_id / f"{args.rubric}.csv"
+        )
+        if not csv_path.exists():
+            print(json.dumps({
+                "error": "scored CSV not found",
+                "state": state,
+                "expected_path": str(csv_path),
+            }))
+            return 2
+        ours_atomic_by_state[state] = load_atomic_scores_from_csv(csv_path)
+
+    pri_by_state = load_pri_reference_scores(args.rubric, repo_root)
+    missing_from_pri = set(ours_atomic_by_state) - set(pri_by_state)
+    if missing_from_pri:
+        print(json.dumps({
+            "error": "state(s) have no PRI 2010 reference",
+            "states": sorted(missing_from_pri),
+        }))
+        return 2
+
+    report = compute_agreement(
+        ours_atomic_by_state=ours_atomic_by_state,
+        pri_by_state={s: pri_by_state[s] for s in states},
+        rubric=args.rubric,
+        trust_partition=PRI_RESPONDER_STATES,
+        trust_partition_label="PRI 2010 responders",
+    )
+
+    markdown = render_agreement_markdown(report)
+    if args.output:
+        out = Path(args.output)
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(markdown, encoding="utf-8")
+        print(json.dumps({
+            "rubric": args.rubric,
+            "run_id": args.run_id,
+            "vintage": args.vintage,
+            "states": states,
+            "output": str(out),
+        }, indent=2))
+    else:
+        print(markdown)
+    return 0
+
+
 def cmd_retrieve_statutes(args: argparse.Namespace) -> int:
     """Retrieve statute bundles from Justia for (state, vintage) targets.
 
@@ -518,6 +588,32 @@ def main() -> int:
         help="courtesy delay between Justia fetches (see Phase 2 A4 decision)",
     )
     p_retrieve.set_defaults(func=cmd_retrieve_statutes)
+
+    p_cal = sub.add_parser(
+        "calibrate",
+        help="compare LLM scored statute run against PRI 2010 published sub-aggregates",
+    )
+    p_cal.add_argument(
+        "--rubric", required=True, choices=["pri_disclosure_law", "pri_accessibility"]
+    )
+    p_cal.add_argument("--run-id", required=True)
+    p_cal.add_argument(
+        "--vintage",
+        type=int,
+        default=2010,
+        help="statute vintage year (selects subdir under data/scores/<STATE>/statute/)",
+    )
+    p_cal.add_argument(
+        "--state-subset",
+        required=True,
+        help="comma-separated USPS codes (e.g. CA,TX,WY,NY,WI)",
+    )
+    p_cal.add_argument(
+        "--output",
+        default=None,
+        help="markdown output path; stdout if omitted",
+    )
+    p_cal.set_defaults(func=cmd_calibrate)
 
     p_export = sub.add_parser(
         "export-statute-manifests",
