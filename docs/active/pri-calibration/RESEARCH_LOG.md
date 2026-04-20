@@ -29,6 +29,7 @@ Newest first.
 
 ## Results
 
+- 2026-04-20 — `results/20260420_ecosystem_notes.md` — civic-tech ecosystem reconnaissance (OpenStates scrapers/spatula/core, Free Law Project). No adoption decisions; notes for future per-state-scraping + entity-resolution work.
 - 2026-04-19 — `results/20260419_pri_rollup_rule_spec.md` — line-cited PRI 2010 sub-aggregate rollup rule for disclosure law + accessibility. 9 methodology differences from PRI's original protocol documented. Authoritative for both `pri-calibration` agreement checks and `pri-2026-rescore`'s eventual 50-state reporting.
 - 2026-04-18 — `results/20260418_justia_retrieval_audit.csv` — one row per state with target-year eligibility + Justia vintage coverage.
 - 2026-04-18 — `results/20260418_justia_retrieval_audit.md` — methodology note, summary statistics, CO exclusion analysis, CSV schema reference.
