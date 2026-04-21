@@ -426,7 +426,7 @@ def cmd_calibrate_prepare_run(args: argparse.Namespace) -> int:
         }))
         return 2
 
-    statute = load_statute_bundle(bundle_dir)
+    statute = load_statute_bundle(bundle_dir, repo_root)
     run_id = args.run_id or new_run_id()
     rd = statute_run_dir(repo_root, state, vintage, run_id)
     (rd / "briefs").mkdir(parents=True, exist_ok=True)
@@ -481,7 +481,7 @@ def cmd_calibrate_finalize_run(args: argparse.Namespace) -> int:
             "expected_path": str(bundle_dir / "manifest.json"),
         }))
         return 2
-    statute = load_statute_bundle(bundle_dir)
+    statute = load_statute_bundle(bundle_dir, repo_root)
     rd = statute_run_dir(repo_root, state, vintage, args.run_id)
 
     psha = prompt_sha(repo_root)
