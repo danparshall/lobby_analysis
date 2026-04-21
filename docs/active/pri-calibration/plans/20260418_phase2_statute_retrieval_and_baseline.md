@@ -238,7 +238,177 @@ NOTE: I will write *all* unit/integration tests before I add any implementation 
 
 ## Phase 3 — Baseline scoring run (~1 day, exploration)
 
-### Task list
+### Execution notes — Phase 3 scaffolding complete (2026-04-19/20), ready to run
+
+Full context in [`convos/20260419_phase2b_phase3_scaffolding.md`](../convos/20260419_phase2b_phase3_scaffolding.md).
+
+**Task 2 of the original plan is done.** Option A shipped: new subcommands
+`calibrate-prepare-run`, `calibrate-finalize-run`, `calibrate-analyze-consistency`,
+and multi-run-aware `calibrate` now live in `scoring.orchestrator`. A new
+`StatuteRunMetadata` pydantic model is the separate-from-`RunMetadata` shape.
+Run layout is `data/scores/<STATE>/statute/<vintage>/<run_id>/`. Two PRI
+rubrics only (FOCAL skipped — no 2010 reference). 130/130 tests green.
+
+**What's left of Phase 3 is the live exploratory dispatch.** No new code
+needed; the scaffolding runs end-to-end. The next agent executes this
+sequence and writes up findings.
+
+### Ready-to-run invocation sequence
+
+The 5 calibration states + their vintages (from `scoring.lobbying_statute_urls.CALIBRATION_SUBSET`):
+CA/2010, TX/**2009** (note: TX uses 2009, the only non-2010 vintage — delta -1, direction "pre"), WY/2010, NY/2010, WI/2010.
+
+Worktree: `/Users/dan/code/lobby_analysis/.worktrees/pri-calibration/`. Run
+everything from there. `uv run --active python -m scoring.orchestrator …`
+is the standard invocation; memory rule requires `--active`, not the
+`.venv/bin/python` path.
+
+Step 1 — Prepare 15 run directories (5 states × 3 run-ids):
+
+```bash
+# Pick 3 deterministic run ids so finalize + consistency + calibrate can reference them.
+# Example: r1, r2, r3. (new_run_id() would auto-generate but committing known ids is cleaner.)
+for state in CA WY NY WI; do
+  for rid in r1 r2 r3; do
+    uv run --active python -m scoring.orchestrator \
+      calibrate-prepare-run --state $state --vintage 2010 --run-id $rid
+  done
+done
+# TX is at vintage 2009, not 2010:
+for rid in r1 r2 r3; do
+  uv run --active python -m scoring.orchestrator \
+    calibrate-prepare-run --state TX --vintage 2009 --run-id $rid
+done
+```
+
+Each invocation writes:
+`data/scores/<STATE>/statute/<vintage>/<rid>/briefs/pri_accessibility.brief.md`
+and `.../pri_disclosure_law.brief.md`. 30 briefs total.
+
+Step 2 — Dispatch subagents (the actual scoring, done in-agent via the
+Agent tool, NOT a CLI). For each brief file, spawn a Claude Code subagent
+whose prompt IS the brief contents. The brief instructs the subagent to
+read the locked `scorer_prompt.md`, read the statute bundle artifacts via
+the Read tool, and write its JSON output to the path the brief names
+(`data/scores/<STATE>/statute/<vintage>/<rid>/raw/<rubric>.json`).
+
+Dispatch discipline (load-bearing, from 2026-04-17 scoring-branch lesson):
+
+- **Batch size ≈ 4 concurrent.** 21 concurrent triggered Anthropic org-level
+  rate limit and killed 20 of 21 subagents. Start at 4, raise only if
+  visibly headroom. 30 briefs ÷ 4 ≈ 8 batches ≈ 15–25 min wall time.
+- **Subagent prompt must forbid shelling out.** The brief already includes
+  "use Read tool; do NOT subprocess/shell/pdftotext/unzip." Do not re-wrap
+  the brief in a subagent prompt that relaxes this constraint.
+- **Temperature 0** (Claude Code subagents default to this; no special
+  flag needed).
+
+Step 3 — Finalize each run (writes scored CSVs + StatuteRunMetadata):
+
+```bash
+for state in CA WY NY WI; do
+  for rid in r1 r2 r3; do
+    uv run --active python -m scoring.orchestrator \
+      calibrate-finalize-run --state $state --vintage 2010 --run-id $rid
+  done
+done
+for rid in r1 r2 r3; do
+  uv run --active python -m scoring.orchestrator \
+    calibrate-finalize-run --state TX --vintage 2009 --run-id $rid
+done
+```
+
+If a subagent failed mid-run (raw JSON missing), use
+`calibrate-finalize-run --skip-missing`. Re-dispatch the specific failed
+rubric/run afterward and re-finalize.
+
+Step 4 — Inter-run self-consistency (flags rubrics with > 10% disagreement):
+
+```bash
+for state in CA WY NY WI; do
+  uv run --active python -m scoring.orchestrator \
+    calibrate-analyze-consistency --state $state --vintage 2010 \
+    --run-ids r1 r2 r3 \
+    --output docs/active/pri-calibration/results/20260420_consistency_${state}.md
+done
+uv run --active python -m scoring.orchestrator \
+  calibrate-analyze-consistency --state TX --vintage 2009 \
+  --run-ids r1 r2 r3 \
+  --output docs/active/pri-calibration/results/20260420_consistency_TX.md
+```
+
+Step 5 — Agreement against PRI 2010 (per-run + cross-run variance):
+
+```bash
+# Disclosure law (all 5 states are 2010-vintage except TX which uses 2009; calibrate
+# reads each state's scored CSV under its own vintage subdir — but the CLI currently
+# takes a single --vintage arg, so run TX separately).
+uv run --active python -m scoring.orchestrator calibrate \
+  --rubric pri_disclosure_law --state-subset CA,WY,NY,WI --vintage 2010 \
+  --run-id r1 r2 r3 \
+  --output docs/active/pri-calibration/results/20260420_baseline_disclosure_law_4states.md
+
+uv run --active python -m scoring.orchestrator calibrate \
+  --rubric pri_disclosure_law --state-subset TX --vintage 2009 \
+  --run-id r1 r2 r3 \
+  --output docs/active/pri-calibration/results/20260420_baseline_disclosure_law_TX.md
+
+# Same for accessibility.
+uv run --active python -m scoring.orchestrator calibrate \
+  --rubric pri_accessibility --state-subset CA,WY,NY,WI --vintage 2010 \
+  --run-id r1 r2 r3 \
+  --output docs/active/pri-calibration/results/20260420_baseline_accessibility_4states.md
+
+uv run --active python -m scoring.orchestrator calibrate \
+  --rubric pri_accessibility --state-subset TX --vintage 2009 \
+  --run-id r1 r2 r3 \
+  --output docs/active/pri-calibration/results/20260420_baseline_accessibility_TX.md
+```
+
+(If the 4-vs-1 split becomes annoying, `calibrate` could be extended to
+accept a `--state-vintage CA:2010 TX:2009 ...` arg. YAGNI unless this
+friction actually bites.)
+
+Step 6 — Write up:
+
+Create `docs/active/pri-calibration/results/20260420_calibration_baseline.md`
+(one consolidated doc, not per-rubric) covering:
+
+- Per-state + per-rubric agreement rates (from the `calibrate` outputs).
+- Responder-partition breakdown (all 5 calibration states are PRI
+  responders, so `in_partition` = full set — the `out_of_partition`
+  section will be empty for this subset; that's expected).
+- Which sub-aggregates show max disagreement (read the "Per-state detail"
+  table in the agreement report).
+- Inter-run disagreement rate from the consistency reports. Hypothesis:
+  lower than the 2026-portal pilot (~37% on CA disclosure law). If NOT
+  lower, pause and surface — the calibration pivot's premise is weak.
+- Items that triggered `unable_to_evaluate` across all 3 runs for a
+  state-rubric — these are "scorer gave up", distinct from "scorer
+  disagreed with PRI."
+
+### Subagent dispatch template (for the in-agent loop)
+
+When dispatching each subagent, the Agent-tool call should be roughly:
+
+- `subagent_type`: `general-purpose`
+- `description`: 3–5 words, e.g. "Score CA disclosure r1"
+- `prompt`: the full contents of the brief file (read it first, then pass the text). Do NOT summarize or modify the brief.
+
+The subagent will write its output to the path the brief specifies. Return
+value from the subagent should just be the `DONE <n>` line per the brief's
+Step 4. If the subagent refuses or errors, re-dispatch with the same brief
+— the brief is reentrant (writing the same output path overwrites).
+
+### Stopping point before Phase 4 (already in original plan)
+
+See "Stopping point before Phase 4" below — the convergence target must
+be decided with Dan before any prompt iteration begins. Do NOT start
+Phase 4 from this execution block; hand back for that decision.
+
+---
+
+### Original task list
 
 1. For each of the 5 calibration states, dispatch 3 temp-0 runs × 2 PRI rubrics using the **current unchanged** `scorer_prompt.md` against the statute bundle (not portal snapshots). That's 5 × 2 × 3 = 30 subagent dispatches. Batches of 4–10 concurrent per A4 (not 4; revisit if rate-limited). Scoring layer stays on Claude Code subagents — no SDK switch in Phase 3.
 2. **[Phase 2a did NOT wire the statute path into `prepare-run`/`finalize-run`.]** Concrete next-agent work:
