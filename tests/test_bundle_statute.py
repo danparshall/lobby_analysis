@@ -2,12 +2,15 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
 from pathlib import Path
 
 from scoring.bundle import build_statute_subagent_brief
 from scoring.models import StatuteArtifact, StatuteBundle
 from scoring.provenance import PROMPT_PATH
 from scoring.rubric_loader import load_rubric
+from scoring.statute_loader import load_statute_bundle
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
@@ -116,3 +119,58 @@ def test_statute_brief_references_locked_prompt_and_output_path() -> None:
     )
     assert str(PROMPT_PATH) in brief or "scorer_prompt.md" in brief
     assert str(out_path) in brief
+
+
+def test_statute_brief_paths_resolve_against_repo_root(tmp_path: Path) -> None:
+    """Dispatch contract: prepending repo_root to each artifact's local_path
+    must yield an existing readable file. This is the contract the brief
+    instructs the subagent to follow — if it's not true, every Read in the
+    subagent will fail."""
+    repo_root = tmp_path / "repo"
+    repo_root.mkdir()
+    (repo_root / "docs").symlink_to(REPO_ROOT / "docs", target_is_directory=True)
+
+    bundle_dir = repo_root / "data" / "statutes" / "CA" / "2010"
+    sections = bundle_dir / "sections"
+    sections.mkdir(parents=True)
+    section_file = sections / "gov-86100-86118.txt"
+    section_file.write_text("§86100. Definitions. As used in this chapter…", encoding="utf-8")
+    raw = section_file.read_bytes()
+    manifest = {
+        "state_abbr": "CA",
+        "vintage_year": 2010,
+        "year_delta": 0,
+        "direction": "exact",
+        "pri_state_reviewed": True,
+        "retrieved_at": "2026-04-18T18:00:00+00:00",
+        "artifacts": [
+            {
+                "url": "https://law.justia.com/codes/california/2010/gov/86100-86118.html",
+                "role": "statute",
+                "sha256": hashlib.sha256(raw).hexdigest(),
+                "bytes": len(raw),
+                "local_path": "sections/gov-86100-86118.txt",
+            }
+        ],
+    }
+    (bundle_dir / "manifest.json").write_text(
+        json.dumps(manifest, indent=2), encoding="utf-8"
+    )
+
+    statute = load_statute_bundle(bundle_dir, repo_root=repo_root)
+    rubric = load_rubric("pri_disclosure_law", repo_root)
+    build_statute_subagent_brief(
+        state="CA",
+        rubric=rubric,
+        statute=statute,
+        repo_root=repo_root,
+        scorer_prompt_path=repo_root / PROMPT_PATH,
+        output_json_path=repo_root / "data/scores/CA/statute/2010/r1/raw/pri_disclosure_law.json",
+    )
+    for artifact in statute.artifacts:
+        resolved = repo_root / artifact.local_path
+        assert resolved.exists(), (
+            f"brief contract broken: repo_root / {artifact.local_path!r} "
+            f"should resolve to an existing file, but {resolved} does not exist"
+        )
+        assert resolved.read_bytes(), f"{resolved} is empty"
