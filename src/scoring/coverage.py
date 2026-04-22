@@ -1,8 +1,8 @@
 """Coverage-tier mapping per the 2026-04-13 snapshot sufficiency audit.
 
 Sources:
-- docs/active/pri-2026-rescore/results/20260413_stage1_stage2_collection_summary.md
-- docs/active/focal-extraction/results/20260413_snapshot_sufficiency_audit.md
+- docs/historical/pri-2026-rescore/results/20260413_stage1_stage2_collection_summary.md
+- docs/historical/focal-extraction/results/20260413_snapshot_sufficiency_audit.md
 """
 
 from __future__ import annotations

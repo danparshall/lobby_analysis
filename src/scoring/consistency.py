@@ -49,7 +49,18 @@ class ConsistencyReport:
 
 
 def csv_path(repo_root: Path, state: str, snapshot_date: str, run_id: str, rubric: str) -> Path:
+    """Portal-run CSV path: data/scores/<state>/<snapshot_date>/<run_id>/<rubric>.csv."""
     return repo_root / "data" / "scores" / state / snapshot_date / run_id / f"{rubric}.csv"
+
+
+def statute_csv_path(
+    repo_root: Path, state: str, vintage_year: int, run_id: str, rubric: str
+) -> Path:
+    """Statute-run CSV path: data/scores/<state>/statute/<vintage>/<run_id>/<rubric>.csv."""
+    return (
+        repo_root / "data" / "scores" / state / "statute" / str(vintage_year)
+        / run_id / f"{rubric}.csv"
+    )
 
 
 def _norm(row: dict) -> tuple[str, str]:
@@ -67,15 +78,20 @@ def _load_rows(path: Path) -> list[dict]:
 
 
 def compute_consistency(
-    repo_root: Path,
     state: str,
     rubric: str,
-    run_ids: list[str],
-    snapshot_date: str,
+    csv_paths_by_run_id: dict[str, Path],
 ) -> ConsistencyReport:
+    """Compute inter-run disagreement across N scored CSVs for one (state, rubric).
+
+    Decoupled from path convention: callers build the csv-path-per-run-id dict
+    themselves so portal runs (<snapshot_date>) and statute runs (statute/<vintage>)
+    can both use this function. See `csv_path` (portal) and `statute_csv_path`
+    (statute) helpers for the standard path shapes.
+    """
     rows_by_run: dict[str, list[dict]] = {}
-    for rid in run_ids:
-        rows = _load_rows(csv_path(repo_root, state, snapshot_date, rid, rubric))
+    for rid, path in csv_paths_by_run_id.items():
+        rows = _load_rows(path)
         if rows:
             rows_by_run[rid] = rows
     available = list(rows_by_run.keys())
@@ -107,7 +123,6 @@ def compute_consistency(
         unable_vals = [k[0] for k in keys]
         score_vals = [k[1] for k in keys]
         unable_disagree = len(set(unable_vals)) > 1
-        score_disagree = len(set(score_vals)) > 1 and not unable_disagree
         unanimous = not unable_disagree and len(set(score_vals)) == 1
         per_item.append(
             ItemAgreement(

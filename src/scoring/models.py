@@ -60,6 +60,34 @@ class SnapshotBundle(BaseModel):
     skipped: list[dict] = Field(default_factory=list)
 
 
+class StatuteArtifact(BaseModel):
+    """One retrieved statute-text file in a state's statute bundle."""
+
+    url: str
+    role: Literal["statute"] = "statute"
+    sha256: str
+    bytes: int
+    local_path: str  # relative to the bundle directory, e.g. "sections/gov-86100-86118.txt"
+
+
+class StatuteBundle(BaseModel):
+    """A state's retrieved statute-text corpus for a given vintage year.
+
+    Written under `data/statutes/<STATE>/<YEAR>/` alongside `manifest.json`.
+    Consumed by the scorer via `statute_loader.load_statute_bundle` and fed to
+    `bundle.build_subagent_brief` with role=statute.
+    """
+
+    state_abbr: str
+    vintage_year: int
+    year_delta: int  # 0 if exact, negative for pre-target, positive for post-target
+    direction: Literal["exact", "pre", "post"]
+    pri_state_reviewed: bool
+    retrieved_at: str  # ISO-8601 UTC timestamp
+    artifacts: list[StatuteArtifact]
+    manifest_sha: str = ""  # sha256 of manifest.json bytes; populated by loader
+
+
 class ScoredItem(BaseModel):
     """Raw output from the scorer subagent for a single rubric item."""
 
@@ -112,4 +140,28 @@ class RunMetadata(BaseModel):
     model_version: str
     rubric_shas: dict[str, str]
     coverage_tier: CoverageTier
+    temperature: float = 0.0
+
+
+class StatuteRunMetadata(BaseModel):
+    """Metadata for a statute-based (calibration) scoring run.
+
+    Separate model from RunMetadata because the corpus is fundamentally different
+    (Justia statute text vs portal snapshot), and downstream analysis needs a
+    clean type distinction. Written to `run_metadata.json` in the statute run
+    directory at `data/scores/<STATE>/statute/<vintage>/<run_id>/`.
+    """
+
+    state: str
+    run_id: str
+    run_timestamp: str
+    vintage_year: int
+    year_delta: int
+    direction: Literal["exact", "pre", "post"]
+    pri_state_reviewed: bool
+    statute_manifest_sha: str
+    prompt_sha: str
+    prompt_path: str
+    model_version: str
+    rubric_shas: dict[str, str]
     temperature: float = 0.0
