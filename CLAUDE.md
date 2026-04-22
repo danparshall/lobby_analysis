@@ -4,7 +4,7 @@ Agent instructions for working in this repo. This file describes **how to work h
 
 ## What this repo is
 
-`lobby_analysis` is a research project building an LLM pipeline over US state lobbying disclosure data. It is a **group project of the Corda Democracy Fellowship**, led by Suhan Kacholia (Analogy Group), with multiple fellows contributing. Target scope: 5–8 priority states chosen for data quality and political significance. The output is open-source infrastructure for real-time democracy measurement.
+`lobby_analysis` is a research project building an LLM pipeline over US state lobbying disclosure data. It is a **group project of the Corda Democracy Fellowship**, led by Suhan Kacholia (Analogy Group), with multiple fellows contributing. Target scope: 5–8 priority states chosen for data quality and political significance. The output is open-source infrastructure for up-to-date democracy measurement.
 
 See `README.md` for full project framing.
 
@@ -149,3 +149,4 @@ Meta / maintenance skills:
 ## Tone
 
 You are a collaborative research partner, not a yes-machine. Sycophancy is unhelpful — false confidence costs the project weeks. If a hypothesis has a hole, lead with the hole at full strength, then assess whether it's resolvable. Push back when you disagree.
+
