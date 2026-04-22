@@ -37,7 +37,7 @@
 | **Q13 — Data dictionary** | 15 (14 fields + record ID) | Fractional per-field score over the union of fields PRI's E1/E2 already requires states to disclose. A portal with undocumented fields forces researchers to reverse-engineer semantics, which silently corrupts analysis. Machine-readable unique record IDs folded in as Q13o per user direction. |
 | **Q14 — Persistent record URLs** | 1 | Each filing has a stable, citable URL. Session-token or AJAX-only views score 0. Critical for reproducibility. |
 | **Q15 — Raw filing access** | 1 | Original filed documents retrievable alongside parsed fields. Portal extraction errors silently corrupt downstream data; raw access is the audit trail. |
-| **Q16 — Freshness** | 2 (Q16a timestamp present, Q16b actually fresh) | Two sub-items: (a) does the portal display a "last updated" timestamp, and (b) is the data actually current per the state's own filing cadence? The two failure modes are distinct: a portal can display a fresh timestamp while silently missing recent filings, and real-time democracy measurement requires both. |
+| **Q16 — Freshness** | 2 (Q16a timestamp present, Q16b actually fresh) | Two sub-items: (a) does the portal display a "last updated" timestamp, and (b) is the data actually current per the state's own filing cadence? The two failure modes are distinct: a portal can display a fresh timestamp while silently missing recent filings, and up-to-date democracy measurement requires both. |
 
 ### Scoring normalization (deferred)
 
@@ -63,3 +63,4 @@ If we later want a published 2026 index, normalization choices and per-item weig
 2. **Q13 normalization constant** (currently 2.5 max). May want to revisit after seeing 2026 data distribution — if no state scores above 10/15 field-documentation, a 2.5 max caps most states too low.
 3. **Q8 modernization candidate**: is "count of Q7 sub-criteria combinable" the right 2026 operationalization, or should it be a continuous API-query-language score instead? Defer.
 4. **Q12 binary vs graded**: currently binary (any auth = 0). Could be graded if several states have partial gating. Revisit post-pilot.
+
