@@ -9,6 +9,7 @@ from lobby_analysis.models import (
     BillReference,
     ContactDetail,
     FieldRequirement,
+    FrameworkReference,
     Gift,
     Identifier,
     LobbyingEngagement,
@@ -349,13 +350,31 @@ class TestStateMasterRecord:
             last_updated=date(2026, 4, 17),
             registration_requirements=[
                 RegistrationRequirement(
-                    role="lobbyist", required=True, pri_item_id="A1"
+                    role="lobbyist",
+                    required=True,
+                    framework_references=[
+                        FrameworkReference(
+                            framework="pri_2010_disclosure", item_id="A1"
+                        ),
+                    ],
                 ),
                 RegistrationRequirement(
-                    role="principal", required=True, pri_item_id="A3"
+                    role="principal",
+                    required=True,
+                    framework_references=[
+                        FrameworkReference(
+                            framework="pri_2010_disclosure", item_id="A3"
+                        ),
+                    ],
                 ),
                 RegistrationRequirement(
-                    role="volunteer_lobbyist", required=False, pri_item_id="A2"
+                    role="volunteer_lobbyist",
+                    required=False,
+                    framework_references=[
+                        FrameworkReference(
+                            framework="pri_2010_disclosure", item_id="A2"
+                        ),
+                    ],
                 ),
             ],
             de_minimis_financial_threshold=2000.0,
@@ -379,13 +398,21 @@ class TestStateMasterRecord:
                     field_path="total_compensation",
                     reporting_party="lobbyist",
                     status="required",
-                    pri_item_id="E2f_i",
+                    framework_references=[
+                        FrameworkReference(
+                            framework="pri_2010_disclosure", item_id="E2f_i"
+                        ),
+                    ],
                 ),
                 FieldRequirement(
                     field_path="positions[].bill_reference",
                     reporting_party="lobbyist",
                     status="required",
-                    pri_item_id="E2g_ii",
+                    framework_references=[
+                        FrameworkReference(
+                            framework="pri_2010_disclosure", item_id="E2g_ii"
+                        ),
+                    ],
                 ),
                 FieldRequirement(
                     field_path="engagements[].official_contacted",
@@ -422,7 +449,11 @@ class TestStateMasterRecord:
                     field_path="total_compensation",
                     reporting_party="lobbyist",
                     status="required",
-                    pri_item_id="E2f_i",
+                    framework_references=[
+                        FrameworkReference(
+                            framework="pri_2010_disclosure", item_id="E2f_i"
+                        ),
+                    ],
                 ),
             ],
         )
@@ -455,7 +486,13 @@ class TestStateMasterRecord:
             last_updated=date(2026, 4, 17),
             registration_requirements=[
                 RegistrationRequirement(
-                    role="lobbyist", required=True, pri_item_id="A1"
+                    role="lobbyist",
+                    required=True,
+                    framework_references=[
+                        FrameworkReference(
+                            framework="pri_2010_disclosure", item_id="A1"
+                        ),
+                    ],
                 ),
             ],
         )
