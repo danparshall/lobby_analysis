@@ -1,6 +1,6 @@
 # STATUS — lobby_analysis
 
-Last updated: 2026-04-17
+Last updated: 2026-04-21
 
 ## Current Focus
 
@@ -20,12 +20,14 @@ Lines moved to `docs/historical/` — not currently active, but available for re
 
 | Branch | Summary | Archived | Material |
 |--------|---------|----------|----------|
+| lobbying-data-model | Universal output schema for state extraction pipelines: 18 pydantic models across entities, filings, provenance, state-master modules. v0.1 shipped 2026-04-17 with 4-day feedback window; no changes requested; accepted as v1.0 on 2026-04-21. Schema is the contract for the 3-fellow × ~17-state extraction rollout. Lives in `src/lobby_analysis/models/` + 24-test validation suite. Future changes require a new branch with migration plan. | 2026-04-21 | `docs/historical/lobbying-data-model/` |
 | research-prior-art | Scoping phase 1 — prior-art survey, state infrastructure tiers, OCD schema analysis, scoring-rubric landscape (PRI + FOCAL + F Minus + GAO), PRI and FOCAL implementation plans. Decision: depend on Open States (don't fork); adopt Popolo via OCDEP 5; score all 50 states on both PRI rubrics in a follow-up branch. | 2026-04-12 | `docs/historical/research-prior-art/` |
 
 ## Recent Sessions
 
 (One-line session summaries, newest first)
 
+- **2026-04-21** — [lobbying-data-model] v1.0 accepted (no changes requested from v0.1 review). Schema archived to `docs/historical/lobbying-data-model/`; pydantic models remain in `src/lobby_analysis/models/` as the extraction-pipeline contract. `scoring` + `lobbying-data-model` branches merged into main in the same session.
 - **2026-04-17 (pm)** — [scoring] Executed Phase 3 pilot (CA/CO/WY × 3 temp-0 runs × 3 rubrics = 27 cells + the 2026-04-14 CA dry-run as CA's 3rd run). Inter-run disagreement flags: PRI disclosure-law flagged on all 3 states (CA 37.7%, CO 11.5%, WY 11.5%); CO focal flagged at 13.0%; PRI accessibility stable on CO+WY, flagged on CA (11.9%) via WAF-stub variance. Root cause for disclosure-law: snapshot same-host capture excludes state code — subagents disagree on whether portal silence means `unable_to_evaluate` or `score=0`. Pivoted to PRI 2010 ground-truth calibration (new plan: `docs/active/scoring/plans/20260417_pri_ground_truth_calibration.md`). Phase 4 paused. Also extended `scoring.orchestrator` with `prepare-run` / `finalize-run` / `analyze-consistency` subcommands; added `src/scoring/consistency.py`. Lessons: 21 concurrent subagents triggered org-level Anthropic API rate-limit and killed 20 of 21; safe batch size ≈ 4. Subagents must be dispatched with explicit Read-tool-only constraint (they otherwise try to shell out to pdftotext / unzip).
 - **2026-04-17 (am)** — [scoring] Brief desktop-side inventory: confirmed `data/` (snapshots + CA dry-run scores) lives only on laptop. Decision: continue scoring on laptop. Created gitignored `data/` placeholder on desktop; no code changes.
 - **2026-04-13 (eve)** — [pri-2026-rescore] Phase 4 data-collection: 50/50 states discovered via Stage 1 subagents (role-labeled URL JSONs, zero fabricated URLs, 15 states with flagged seeds) and snapshotted via Stage 2 subagents (curl + Chrome UA, 981 artifacts, ~350 MB, 17 `suspicious_challenge_stub` flags, 54 honest skips). Architectural pivot mid-session from Python SDK pipeline to native Claude Code subagents (plan's Q3 default). Coverage tiers: 40 clean, 8 partial WAF/SPA, 2 near-empty (AZ, VT). Policy-gap finding: WAF + no-API + no-bulk is a real pattern the rubric should penalize, not a pipeline bug.
