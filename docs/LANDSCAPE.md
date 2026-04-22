@@ -140,7 +140,7 @@ Our pydantic data model (`src/lobby_analysis/models/`) is the bridge between the
 - We keep our models parseable into Popolo/OCD-shaped records where possible.
 - We add lobbying-specific models (`LobbyingFiling` and friends) to fill the OCDEP gap.
 
-Version 1.0 of our data model was accepted 2026-04-21 and archived; a v1.1 update is in flight on the `data-model-v1.1` branch, adding availability-axis fields, framework-agnostic rubric traceability, and per-state pipeline-capability metadata. See `docs/historical/lobbying-data-model/results/lobbying_data_model_spec.md` and `docs/active/data-model-v1.1/plans/20260422_v1.1_gap_closures.md`.
+Version 1.0 of our data model was accepted 2026-04-21 and archived. **Version 1.1 shipped 2026-04-22**, adding generic `FrameworkReference` replacing hardcoded rubric IDs (one reference structure spans PRI 2010 × 2, FOCAL 2024/2026, Hired Guns, Newmark 2005/2017, Opheim, Sunlight, OpenSecrets, and LDA), `legal_availability` × `practical_availability` axes plus `EvidenceSource` on `FieldRequirement`, first-class `CompendiumItem` and `MatrixCell` models (the N in the N × 50 × 2 matrix), and `ExtractionCapability` as per-state pipeline-capability companion. Full test suite 128/128 green at merge. See `docs/historical/lobbying-data-model/` (v1.0) and `docs/historical/data-model-v1.1/` (v1.1 gap closures, plans, and convos).
 
 ## 5. Layer 2: The legal-review framework landscape
 
@@ -162,7 +162,9 @@ Center for Public Integrity's 48-question, 100-point, **weighted** state lobbyin
 
 ### PRI / Clemens et al. (2010)
 
-The Center for Public Integrity's *State Lobbying Disclosure Report* — 61-item disclosure-law rubric plus 22-item data-accessibility rubric, scored across all 50 states by human raters. **PRI's per-state scores are the only 50-state human-coded lobbying disclosure dataset that exists.** This gives them disproportionate weight as ground truth for calibrating our LLM-assisted statute-reading pipeline, even though PRI's rubric is structurally one frame among several (see the correlation discussion below). The `pri-calibration` branch is doing this calibration work now.
+The Center for Public Integrity's *State Lobbying Disclosure Report* — 61-item disclosure-law rubric plus 22-item data-accessibility rubric, scored across all 50 states by human raters. **PRI's per-state scores are the only 50-state human-coded lobbying disclosure dataset that exists.** This gives them disproportionate weight as ground truth for calibrating our LLM-assisted statute-reading pipeline, even though PRI's rubric is structurally one frame among several (see the correlation discussion below).
+
+The `pri-calibration` branch (archived 2026-04-22, at `docs/historical/pri-calibration/`) built the calibration infrastructure — Justia-unified statute retrieval (49 of 50 states eligible at ±2yr tolerance; CO excluded, earliest Justia year 2016), bundle construction, and consistency metrics — and ran a 5-state × 3-runs × 2-rubric baseline (30 subagents). **Baseline result: 0% exact-match agreement vs PRI 2010 on disclosure-law.** A TX walkthrough confirmed hypothesis H1 (bundle scope too narrow): state lobbying chapters routinely under-specify definitions that live in cross-referenced support chapters — e.g. TX §311.005(2)'s "person includes government or governmental subdivision or agency" sits in the Code Construction chapter, not the lobbying chapter. A 2026-04-22 pm reflection reframed the branch charter: calibration's stable role is internal LLM statute-reading QA (not public rubric output), and the charter became multi-rubric (PRI + CPI Hired Guns + Sunlight + Newmark + optional OpenSecrets) per Newmark 2017's r=0.04 finding — single-rubric agreement could mask frame overfitting. The retrieval/bundle/consistency infrastructure is framework-agnostic and carries forward to Track A — the "verify lobbying laws" successor line; `STATUS.md` on main is the current source of truth for fellow-to-track assignments.
 
 ### Sunlight Foundation (2015)
 
@@ -313,10 +315,12 @@ Quick reference for acronyms and domain terms used in this document:
 
 - **2026-04-22** — Initial version. Drafted as output of the 2026-04-22 landscape brainstorm on `pri-calibration` branch; committed separately on `docs-landscape` branch for clean scoping.
 - **2026-04-22 (polish pass)** — Verified Layer 1 claims against upstream sources. Corrections: OCDEP 5 title expanded to include Posts and Memberships; OCDEP 6 corrected to "Bills only" (previously conflated with OCDEP 4 Events and OCDEP 7 Votes, both also adopted — now listed separately); Open States framing corrected (project still named Open States, operated under the Plural brand since Civic Eagle's Feb 2023 rebrand and the July 2023 URL redirect — previous "rebranded Plural Open Data" phrasing removed). Added Layer 1 architecture diagram. Named fellows (Amina Rakhimbergenova, Gowrav Mannem) in §1. Expanded §7 MultiState entry to cover the broader commercial tier (FiscalNote, Quorum, Bloomberg Government) and note the one-time-commercial-subscription validation option.
+- **2026-04-22 (reconciliation)** — Pulled main into `docs-landscape` and reconciled two stale claims against the day's merges: §4 "Where we fit" updated from "v1.1 in flight" to v1.1 shipped 2026-04-22 with the five concrete capabilities (`FrameworkReference`, availability axes + `EvidenceSource`, `CompendiumItem`, `MatrixCell`, `ExtractionCapability`) and 128/128 tests green; §5 PRI subsection updated from "pri-calibration doing calibration now" to pri-calibration archived at `docs/historical/pri-calibration/` with its baseline result (0% exact-match vs PRI 2010 on disclosure-law), the H1 bundle-scope confirmation (TX §311.005(2) walkthrough), the multi-rubric charter reframe, and the infrastructure carrying forward to Track A.
 
 ## How this document should be used
 
 - **Fellows onboarding:** read this document plus `README.md` plus `CLAUDE.md` first. Skip the Layer 1 section if already familiar with Popolo/OCD/Open States; skip Layer 2 if already familiar with the academic literature on state lobbying disclosure.
 - **Future Claude instances:** this is project-level reference material. It is not branch-scoped. When revisiting, check the changelog to see if the landscape has shifted since last update.
 - **External readers:** this is a snapshot of the project's architectural self-understanding. The actual deliverables live in `src/`, the actual data in `data/` (gitignored), the matrix exports at the project's eventual public URL (TBD).
+
 
