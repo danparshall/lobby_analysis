@@ -238,6 +238,170 @@ Relevance: FOCAL provides the most directly applicable disclosure rubric for gra
 
 ---
 
+### Explaining the Differences in State Lobby Regulation
+
+- Authors: Cynthia Opheim (Southwest Texas State University — now Texas State)
+- Date: 1991 (Western Political Quarterly 44(2): 405–421)
+- File: `papers/Opheim_1991__state_lobby_regulation.pdf`
+- Extracted text: `papers/text/Opheim_1991__state_lobby_regulation.txt`
+- Source: DOI 10.1177/106591299104400209 (SAGE)
+- Cited by FOCAL (Lacy-Nichols 2024) as ref #30.
+
+Summary: The foundational state-lobbying-regulation index. Constructs a 22-item, 0–18-point index across three dimensions — statutory definition of "lobbyist" (7 items), frequency and quality of disclosure (8 items), oversight and enforcement (7 items) — applied to 47 states (MT, SD, VA data unavailable). Uses OLS regression to test predictors of regulatory stringency: legislative professionalism (staff, pay, session length), political culture (Elazar/Sharkansky scale), tax capacity, urbanization, and Ranney party competition.
+
+Key findings:
+- Multivariate model explains 58% of variance in regulatory stringency (F=8.84, p<.0001).
+- **Political culture** is the strongest predictor (t=4.85, p<.0001); moralistic states regulate most stringently, traditionalistic least.
+- **Legislative staff support** is significant in the definitions and disclosure categories (p<.05) but not for oversight/enforcement.
+- **Pay and session length** are tied to oversight/enforcement rigor but not to definitions or disclosure rigor.
+- **Party competition** is *negatively* associated with regulation in the full model (counterintuitive; attributed to intra-party factional dynamics in one-party states).
+- Lobbyist-definition components: 7 binary items covering whether a state defines legislative lobbying, administrative-agency lobbying, elected officials as lobbyists, public employees as lobbyists, and includes compensation / expenditure / time standards in the definition.
+- Disclosure components (8 items, mostly binary except frequency of reporting): total spending, spending by category, expenditures benefitting public employees, gifts, legislation approved/opposed, sources of income, total income, and other influence-peddling activities.
+- Oversight / enforcement components (7 items, binary): thoroughness of report review, plus six enforcement-authority items (subpoena witnesses, subpoena records, administrative hearings, administrative fines, administrative penalties, independent court actions).
+
+Relevance: Opheim's 22-item index is the earliest item-level precursor to PRI 2010's 59-item rubric. The three-dimension structure (definitions / disclosure / enforcement) is the conceptual scaffolding that Newmark 2005/2017 and CPI Hired Guns both extended. For the rubric-unification work, Opheim's category-level architecture is useful context — but her items are subsumed by PRI 2010 (which carries more granular disclosure items) and FOCAL 2024 (which explicitly excludes enforcement for feasibility). Historically important; not a separate independent rubric source for the unification pass.
+
+---
+
+### Measuring State Legislative Lobbying Regulation, 1990–2003
+
+- Authors: Adam J. Newmark (Appalachian State University)
+- Date: 2005 (State Politics and Policy Quarterly 5(2): 182–191)
+- File: `papers/Newmark_2005__state_lobbying_regulation_measure.pdf`
+- Extracted text: `papers/text/Newmark_2005__state_lobbying_regulation_measure.txt`
+- Source: DOI 10.1177/153244000500500205 (SAGE)
+- Cited by FOCAL (Lacy-Nichols 2024) as ref #28.
+
+Summary: Updates and extends Opheim 1991's approach into a time-series measure. Uses Council of State Governments' *The Book of the States* as the underlying data source (published biennially), constructing a replicable 17-binary-item, 0–18-point index covering six time periods: 1990–91, 1994–95, 1996–97, 2000–01, 2002, 2003. Supplements with a 1–4 penalty-severity score (based on direct statute review) for the 2003 cross-section. Does *not* include Opheim's oversight/enforcement items; focuses on statutory definition, prohibited activities, and disclosure requirements.
+
+Key findings:
+- **Validated against Opheim (1991)** at r=0.84 (p<.01) at the 1990–91 time point.
+- Cross-time correlation: 1990–91 vs. 2003 r=0.46 (p<.01), reflecting meaningful change in state regulation over the decade.
+- **Cronbach's alpha 0.71** for the 17-component 2003 measure — indicates acceptable internal reliability.
+- **Mean state regulation rose from 6.54 (1990–91) to 10.34 (2003)**, standard deviation stable at ~3.1–3.6.
+- **Largest gains:** South Carolina +750% (rose 42 spots, from 43rd to 1st); Georgia +700%; South Dakota +600%; Kentucky +367% (up 32 spots to 6th); Vermont and Ohio +267%.
+- **Declines:** North Dakota −75%; Virginia −40% (dropped from 8th to 44th); Indiana −27% (5th to 37th).
+- **Correlates with Newmark 2003** (a parallel NCSL+statute-based measure used in his dissertation) at r=0.70 (p<.01).
+- **Index structure:** 7 definitional items (legislative / administrative / elected / employee lobbyist, compensation / expenditure / time standards), plus reporting-frequency item, plus prohibited-activities items (campaign contributions any time / during session / expenditures over threshold / solicitation), plus 6 disclosure-requirement items (seeking to influence legislation, expenditures benefitting officials, compensation by employer, total compensation, categories of expenditures, total expenditures). One definitional component was dropped due to zero variance.
+- **Penalty supplement:** Separately coded felony-vs-misdemeanor classification, plus penalties for failure to file / register / filing false statement; scored 1–4 on severity. Data available for 47 of 50 states (CO, TN, WV excluded).
+
+Relevance: Useful time-series validation of the *direction* of state regulatory change (states broadly got stricter 1990–2003), but **the index items are a proper subset of PRI 2010's** — PRI captures essentially all of Newmark's definitional and disclosure items and adds sub-aggregates on government exemptions, public-entity definition, materiality, and information-disclosed granularity. For rubric-unification purposes, Newmark 2005 contributes no item-level indicators that PRI does not already have. The validation-against-Opheim correlation (r=0.84) is evidence that PRI 2010 (which subsumes Opheim) should also correlate highly with Newmark's 2005 measure.
+
+---
+
+### Hired Guns Methodology (CPI)
+
+- Author: Center for Public Integrity
+- Date: December 2007 (web-only series)
+- File: `papers/CPI_2007__hired_guns_methodology.pdf` (17-page PDF printed from the live web page on 2026-04-22; CPI never published a canonical PDF)
+- Extracted text: `papers/text/CPI_2007__hired_guns_methodology.txt` (full 48-question text with point weights)
+- Raw HTML backup: `papers/CPI_2007__hired_guns_methodology.html`
+- Source: https://publicintegrity.org/politics/state-politics/influence/hired-guns/methodology-5/
+- Cited by FOCAL (Lacy-Nichols 2024) as ref #33.
+
+Summary: A 48-question, 100-point survey applied to all 50 states, designed to rank state lobby disclosure regimes. Researchers reviewed statutes and interviewed officials from each state's lobbying oversight agency. Scoring is weighted — the weights themselves encode CPI's view of what matters most in disclosure law.
+
+Key findings:
+- **Top state:** Washington at 87/100. No state scored 80 or above except Washington.
+- **Score bands:** 70+ "relatively satisfactory"; 60–69 "marginal"; below 60 "failing."
+- **8 category weights (summing to 100):**
+  - Definition of Lobbyist — **7 pts** (executive-branch recognition, monetary thresholds)
+  - Individual Registration — **19 pts** (filing mandates, timeframes, bill/subject specificity, frequency, photos, employer, compensated/non-compensated classification)
+  - Individual Spending Disclosure — **29 pts** (largest weight; filing frequency, compensation, categorized summaries, itemization thresholds, recipient ID, dates, household-member spending, business associations, gifts, campaign contributions, no-activity reporting)
+  - Employer Spending Disclosure — **5 pts**
+  - Electronic Filing — **3 pts** (online registration, online report submission, training)
+  - Public Access — **20 pts** (directory formats, report accessibility, copy costs, sample forms, aggregate totals, update frequency)
+  - Enforcement — **15 pts** (auditing authority, mandatory review, late-filing penalties, incomplete-filing penalties, penalty history, delinquent-filer publication)
+  - Revolving Door Provision — **2 pts** (cooling-off period only)
+
+Relevance: **CPI Hired Guns is the only pre-FOCAL state framework that explicitly weights categories** — its weighting (Individual Spending Disclosure 29%, Public Access 20%, Individual Registration 19%, Enforcement 15%) is a useful reference for any future decision about weighting the unified rubric (which is currently unweighted, matching both PRI 2010 and FOCAL 2024). Its "Public Access" category is a proto-FOCAL-Openness; its "Individual Spending Disclosure" + "Employer Spending Disclosure" map onto PRI E-subsection and FOCAL Financials (cat 7). The **Enforcement category has no counterpart** in PRI 2010 or FOCAL 2024 — both explicitly exclude enforcement for feasibility/scope reasons — so Hired Guns is a reminder that the unified-rubric decision to exclude enforcement is a deliberate project choice, not a natural absence. Its web-only publication format is a cautionary note for data provenance: no canonical DOI, source only preserved via live URL + Wayback.
+
+---
+
+### Lobbying Regulation in the States Revisited
+
+- Authors: Adam J. Newmark (Appalachian State University)
+- Date: 2017 (Interest Groups & Advocacy 6(3): 215–230)
+- File: `papers/Newmark_2017__lobbying_regulation_revisited.pdf`
+- Extracted text: `papers/text/Newmark_2017__lobbying_regulation_revisited.txt`
+- Source: DOI 10.1057/s41309-017-0023-z (Springer)
+- Cited by FOCAL (Lacy-Nichols 2024) as ref #29.
+
+Summary: Updates Newmark 2005's measure to 2015 data. Because *The Book of the States* stopped publishing lobbying data after 2005, the author shifted methodology to direct review of state statutes, constitutional provisions, and information from Secretaries of State / Ethics Commissions — reviewing 50 states in 2015. Constructs a 19-item, 0–19-point index across three categories: definitions (7 items), prohibited activities (5 items), disclosure/reporting (7 items). Explicitly benchmarks the new measure against contemporaneous alternatives — Sunlight Foundation letter grades, Center for Public Integrity (CPI), and PRI 2010 (both accessibility and disclosure indices).
+
+Key findings:
+- **Index range 7–19**, mean 12.96, SD 2.63. Cronbach's alpha = 0.67 (lower than 2005's 0.71; author flags as "less than ideal").
+- **Top states 2015:** Kentucky (19), Colorado (18), California (17), Arizona / Maine / Massachusetts / Wisconsin (16). **Bottom:** Wyoming (7), North Dakota (7), Nevada (8), South Dakota (9), Florida (9).
+- **Correlations with other measures:**
+  - New index ↔ Newmark 2003 (BOS data): **r=0.54** — 12-year drift plus methodological shift.
+  - New index ↔ Sunlight Foundation: **r=0.40**
+  - New index ↔ CPI: **r=0.52**
+  - New index ↔ PRI accessibility: **r=0.27**
+  - New index ↔ PRI disclosure: **essentially zero** (the paper says "it is generally unrelated to the PRI disclosure index")
+  - **CPI ↔ PRI disclosure: r=0.04** — two disclosure indices that should theoretically measure overlapping constructs are in fact nearly orthogonal.
+- **Factor analysis of the 19 items reveals 4–6 factors** (depending on eigenvalue cut), not 3 clean dimensions matching the category labels. Factors do not neatly align with "definitions / prohibitions / disclosure" — instead mix disclosure items with definition items, suggesting states make bundled design choices rather than independent decisions per category.
+- **Substantive claim:** "Different measures, by design, measure different things. ... Scholars should not blindly incorporate measures of lobbying regulation without first considering the theoretical justification for a given restriction or set of restrictions."
+- **Movers:** Arizona moved from low (6 in 2003) to high (16 in 2015) — but author notes Arizona's disclosure has gaps in recipient identification despite high item-level scores. Virginia, Illinois, North Carolina also moved up notably.
+
+Relevance: **This paper is the single most important piece of evidence for the rubric-unification project's core decision.** The r=0.04 CPI-vs-PRI-disclosure correlation, and the r=0.27 Newmark-vs-PRI-accessibility correlation, are empirical proof that different scoring rubrics labeled "disclosure" or "accessibility" can measure near-orthogonal constructs. This directly supports the pri-calibration finding (0% exact-match agreement on PRI 2010 alone) and strengthens the case for a carefully-designed unified rubric over independent parallel scoring. The item list (7+5+7) is again a subset of PRI 2010's 61 disclosure-law items; Newmark 2017 contributes no new item-level indicators for unification but contributes the *validity warning* — rubrics that look similar can score states very differently. The author's own conclusion ("consider theoretical justification for each restriction") is the methodological posture this project should adopt going into Phase 2 of the unification plan.
+
+---
+
+### Lobbying in the Shadows: A Comparative Analysis of Government Lobbyist Registers
+
+- Authors: Jennifer Lacy-Nichols, Hedeeyeh Baradar (University of Melbourne); Eric Crosbie (University of Nevada Reno); Katherine Cullerton (University of Queensland)
+- Date: 2025 (Milbank Quarterly 103(3): 857–882)
+- File: `papers/Lacy_Nichols_2025__lobbying_in_the_shadows.pdf`
+- Extracted text: `papers/text/Lacy_Nichols_2025__lobbying_in_the_shadows.txt`
+- Source: https://onlinelibrary.wiley.com/doi/10.1111/1468-0009.70033 (open access, CC-BY-NC)
+
+Summary: The FOCAL application paper — companion to Lacy-Nichols 2024 (which built the framework). Identifies 28 countries with online lobbyist registers (from 128 surveyed via the Global Data Barometer, French HATVP 2020/2023, and OECD's *Lobbying in the 21st Century*), then scores each country against FOCAL's 50 indicators with a weighted 0/1/2 scheme (no/partly/yes), mapped to indicator-specific weights for a 182-point total. Includes a tobacco-industry-lobbying case study tracking Philip Morris International and British American Tobacco across all 28 registers. This is the first empirical application of FOCAL end-to-end.
+
+Key findings:
+
+**Benchmarking results (28 countries):**
+- **No country fulfilled all 50 indicators.** Top performer (Canada) scored 49% / 89 of 182 points. The paper calls this "immensely telling."
+- **Top 7:** Canada 49%, Chile 48%, United States 45%, Ireland 43%, France 43%, Scotland 40%, Finland 38%.
+- **Bottom:** Netherlands 9%, Israel 11%, Georgia 12%, Poland 16%, Mexico 16%.
+- **Category performance:** "Scope" scored highest across countries; **"Revolving door" and "Financials" scored lowest**. Contact logs are rare (only a small subset of the 28 provide them).
+- **Ministerial-diary countries (4 of 28):** Chile, Estonia, Romania, United Kingdom.
+- **Exemplars:** Canada (best-designed register, downloadable CSV with unique IDs, data-linkage friendly); Chile, Ireland, and Scotland (best contact logs with detailed topic/purpose disclosure).
+
+**US-specific observations:**
+- Scored as a **single country**, not state-by-state. US = federal LDA scope + House and Senate registers separately.
+- US is the **only country imposing time AND money qualifiers** on lobbyist registration (20% of 3-month period + $3k individual / $13k org).
+- US **excludes the executive branch** from disclosure requirements.
+- US is one of only 2 countries (with France) providing detailed lobbying financial data.
+- Multiple registers (House + Senate) create fragmentation — paper cites this as a design flaw.
+- **Authors explicitly call out US-state application as future work:** *"researchers could apply the FOCAL to state governments in the United States, as many have more detailed disclosures than those required by the federal government."* (p. 875)
+
+**Tobacco case study (Stage 2):**
+- Evidence of PMI / BAT / subsidiary lobbying found in 14 of 28 countries with registers.
+- 193 tobacco-industry meetings documented in the Chile / Scotland / Ireland contact logs alone.
+- Striking strategic divergence by jurisdiction: Scotland's PMI/BAT lobbying focused on "reduced-risk tobacco products" (vapes); Chile's focused on "smuggling" — maps onto then-pending legislation in each country.
+- Null result in Colombia (no tobacco industry entries in register) contradicted by independent document-based studies — demonstrates register under-reporting.
+
+**Methodology details:**
+- Weighted scoring: each indicator's 0/1/2 scale is multiplied by an indicator-specific weight (published as Supplementary File 1 Table 3) to produce the 182-point total. Three pre-existing weighted frameworks informed the weights (referenced to Supplementary File 1 Table 4).
+- For registers in non-English languages, used Google Translate (with Spanish-native co-author reviewing Chilean registers).
+- Sampled first 3 pages / 10 entries when reviewing variable-by-entry indicators.
+
+### Relevance for `lobby_analysis`:
+
+1. **Direct endorsement of this project's premise.** The paper explicitly frames applying FOCAL to US states as the obvious future-research follow-on. We are building what the FOCAL authors have publicly asked for.
+
+2. **Published weights are a critical input to the rubric-unification decision.** The pri-calibration plan and the Phase-1 overlap-map plan currently assume an unweighted unified rubric (matching both PRI 2010 and the `focal_2026_scoring_rubric.csv`). This paper is the first to publish indicator-level weights for FOCAL, validated empirically against 28 countries. We should decide consciously whether to (a) adopt these weights, (b) use different weights (e.g., CPI Hired Guns', which are more US-state-disclosure-oriented), or (c) stay unweighted. **This should be surfaced in the Phase-1 open-questions list.**
+
+3. **"Scope scores highest, revolving door + financials lowest" — calibration expectation for US states.** If our 50-state scoring comes back with a similar pattern (states broadly get definitions right but fail on revolving-door and financial disclosure), that's consistent with the international baseline. If it diverges sharply, we should understand why.
+
+4. **Canada is the reference for register design.** Canada's combination of downloadable CSV, unique IDs enabling joins across lobbyist/client/meeting tables, and contact-log structure is what the `StateMasterRecord` + filing-model schema is heading toward. Canada's 49% score is the benchmark we should actually be able to beat for any state with a decent portal.
+
+5. **The FOCAL weighting is category-level, not item-level equal.** Some indicators carry 2-point max, others 6-point max, reflecting the authors' view of relative importance. Cross-check when reading the methodology CSV: the scoring-direction column in `focal_2026_scoring_rubric.csv` currently treats all indicators as binary 0/1 — this diverges from Lacy-Nichols 2025's 0/1/2 with weights. Either the 2026 rubric needs updating to the published weights, or the project should document why it's deliberately using a simpler scheme.
+
+6. **Contact-log category finding validates the FOCAL decision to decompose it into 11 indicators.** The paper shows how much richness exists in Chile / Ireland / Scotland's contact logs (topic, purpose, attendees, date, form, location, materials) and argues contact logs are "one of the most imperative features of disclosure." The unified rubric should preserve FOCAL's 11-indicator contact-log granularity rather than collapsing toward PRI's briefer E1i/E2i treatment.
+
+---
+
 ### State-Level Lobbying and Taxpayers: How Much Do We Really Know? Assessing State Lobbying Disclosure Laws and Accessibility
 
 - Authors: Jason Clemens, Julie Kaszton, Karrie Rufer, Laura Sucheski (Pacific Research Institute)
