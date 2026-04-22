@@ -318,6 +318,67 @@ Relevance: **CPI Hired Guns is the only pre-FOCAL state framework that explicitl
 
 ---
 
+### How Transparent Is Your State's Lobbying Disclosure? (Sunlight Foundation)
+
+- Author: Jonah Hahn
+- Date: 2015-08-12 (updates 8/13/15 and 8/19/15 for Oregon and New Hampshire corrections)
+- File: `papers/Sunlight_2015__state_lobbying_disclosure_scorecard.pdf` (web page printed as PDF — Sunlight never published a canonical PDF)
+- Structured data: `papers/Sunlight_2015__state_lobbying_disclosure_scorecard_data.csv` (50 states × all 5 category scores + letter grade + total + links to state statutes and portals)
+- Extracted text: `papers/text/Sunlight_2015__state_lobbying_disclosure_scorecard.txt`
+- Source: https://sunlightfoundation.com/blog/2015/08/12/how-transparent-is-your-states-lobbying-disclosure/
+- Status: Sunlight Foundation shut down September 2020; scorecard was never updated. Direct successor: OpenSecrets 2022 (see separate entry below).
+
+Summary: A 5-category state lobbying disclosure scorecard, extending 2011 Sunlight work by Schuman, Buck, and Dunn. Every state graded on five criteria, with each category scored on a variable −2 to +2 scale. Scores summed to a raw total (can be negative), then mapped to A–F letter grades. Methodology is a blend of legal-statute review + actual state-website inspection. Explicit sibling project to State Integrity Investigation and National Institute on Money in State Politics, which supplied informational support.
+
+Key findings:
+
+**Methodology — 5 categories, variable point scales:**
+
+1. **Lobbyist Activity** (−1 to +2): What level of legislative/action specificity is required in lobbyist reports?
+   - +2: bill/action discussed AND position taken
+   - +1: bill/action discussed
+   - 0: general subjects only
+   - −1: no activity reporting
+2. **Expenditure Transparency** (−1 to +2): Granularity of expenditure reporting.
+   - +2: itemized with dates and descriptions
+   - +1: categorized totals (food/travel/etc.)
+   - 0: lump total
+   - −1: no reporting
+3. **Expenditure Reporting Thresholds** (−1 to 0): Is all spending disclosed or only above a threshold?
+   - 0: all expenditures disclosed
+   - −1: threshold exemption applies
+4. **Form Accessibility** (−2 to +2): Can the public access registration and expenditure forms?
+   - +2: digital forms publicly available
+   - +1: forms findable online
+   - 0: blank forms accessible only
+   - −1: one of the two forms inaccessible
+   - −2: neither form accessible
+5. **Lobbyist Compensation** (−1 to 0): Is lobbyist compensation disclosed?
+   - 0: earnings disclosed
+   - −1: no earnings disclosure
+
+**Resulting score range per state:** −7 to +6 (sum of five category caps). Maps to A–F grades — exact cut points not stated in the blog post but embedded in the CSV.
+
+**Empirical findings from the blog narrative:**
+- **33 of 50 states** do not require full itemized expenditure disclosure (threshold exemptions apply).
+- **24 of 50 states** do not require lobbyist compensation disclosure.
+- **6 states** withhold the registration form from the public entirely.
+- **18 states** only record the official met if expenditures exceed the threshold.
+- Expenditure thresholds range from $2–$5 on the low end to $50 (Connecticut, Ohio, Virginia).
+- Alabama's $500/quarter threshold makes most lobbyist-official interactions invisible.
+- Notable transparency practices flagged: Missouri's direct-business-relationship disclosure; Alabama's similar requirement; New Jersey's disclosure of lobbyist board service on state authorities.
+
+**Grade distribution (from the CSV):** All 50 states present. Top grade A: California, Massachusetts, New Jersey, New York, North Carolina, South Carolina, Wisconsin. Bottom grade F: Florida, Nevada, Oregon, West Virginia. Most states cluster B–D.
+
+### Relevance for `lobby_analysis`:
+
+1. **Explicit per-state category scores in machine-readable CSV — directly usable for calibration.** The CSV has each of the 5 scores per state plus state-statute and state-portal URLs. For our 2026 re-scoring work, these are a validation fixture: if a state ranked A in 2015 Sunlight and our pipeline scores it poorly in 2026, we should investigate whether (a) the state's laws degraded, (b) our rubric differs, or (c) the portal changed. The CSV is also the second per-state-per-category dataset we have (alongside PRI 2010), doubling the historical ground-truth surface.
+2. **Rubric overlap with FOCAL.** Sunlight's 5 categories map cleanly onto FOCAL subsets: Lobbyist Activity ↔ FOCAL 8.9–8.11 (topics/bills); Expenditure Transparency ↔ FOCAL 7.1–7.10 (financials); Form Accessibility ↔ FOCAL Openness (cat 3); Lobbyist Compensation ↔ FOCAL 7.1. Sunlight's "Expenditure Reporting Thresholds" (reverse-scored threshold exemption) has no clean FOCAL equivalent and is a potential PRI_ONLY-style incompatible item for the unified rubric.
+3. **Negative-scoring rubric is uncommon.** Most rubrics sum positive integers; Sunlight allows −2 on Form Accessibility. This creates a design question for the unified rubric: do we follow Sunlight and allow reverse-scored items (absence → penalty), or stick with PRI/FOCAL's non-negative convention? Newmark 2017's factor analysis already showed that mixing reverse-scored items into additive indices confuses the factor structure.
+4. **Shut-down context reinforces the structural gap this project fills.** Sunlight, the highest-profile transparency NGO, couldn't maintain even this single scorecard as a living artifact. The scorecard was a one-off publication, never updated, then the organization closed. Living open infrastructure at the state level is genuinely unfilled — and this project's maintained `StateMasterRecord` is the correct response.
+
+---
+
 ### Lobbying Regulation in the States Revisited
 
 - Authors: Adam J. Newmark (Appalachian State University)
@@ -399,6 +460,67 @@ Key findings:
 5. **The FOCAL weighting is category-level, not item-level equal.** Some indicators carry 2-point max, others 6-point max, reflecting the authors' view of relative importance. Cross-check when reading the methodology CSV: the scoring-direction column in `focal_2026_scoring_rubric.csv` currently treats all indicators as binary 0/1 — this diverges from Lacy-Nichols 2025's 0/1/2 with weights. Either the 2026 rubric needs updating to the published weights, or the project should document why it's deliberately using a simpler scheme.
 
 6. **Contact-log category finding validates the FOCAL decision to decompose it into 11 indicators.** The paper shows how much richness exists in Chile / Ireland / Scotland's contact logs (topic, purpose, attendees, date, form, location, materials) and argues contact logs are "one of the most imperative features of disclosure." The unified rubric should preserve FOCAL's 11-indicator contact-log granularity rather than collapsing toward PRI's briefer E1i/E2i treatment.
+
+---
+
+### State Lobbying Disclosure: A Scorecard (OpenSecrets)
+
+- Authors: Dan Auble, Brendan Glavin (OpenSecrets / Center for Responsive Politics)
+- Date: 2022-06-28 (part of OpenSecrets' "Layers of Lobbying" series, funded in part by Omidyar Network)
+- File: `papers/OpenSecrets_2022__state_lobbying_disclosure_scorecard.pdf` (web page printed as PDF)
+- Extracted text: `papers/text/OpenSecrets_2022__state_lobbying_disclosure_scorecard.txt`
+- Source: https://www.opensecrets.org/news/reports/layers-of-lobbying/lobbying-scorecard
+- Announcement: https://www.opensecrets.org/news/2022/06/opensecrets-releases-new-state-lobbying-disclosure-scorecard/
+
+Summary: The direct successor to Sunlight Foundation's 2015 scorecard — Sunlight shut down 2020; OpenSecrets (Center for Responsive Politics) picked up the thread. Framework is redesigned, not inherited: 4 categories, each on a 5-point scale, 20-point max. Explicit design focus on making data ingestion feasible — "only 19 of the 50 states make meaningful data available" in OpenSecrets' own database, gated primarily on compensation disclosure. Context: OpenSecrets tracked $1.8B in state lobbying spending across the covered 19 states in 2021, vs. $3.8B federal.
+
+Key findings:
+
+**Methodology — 4 categories × 5-point scale = 20-point max:**
+
+1. **Lobbyist/Client Disclosure Quality** (0–5): Are both lobbyist and client identified, and how?
+   - Baseline 3: both identified
+   - +1 (score 4): separate registrations for lobbyists and clients (cleaner data, fewer inconsistencies)
+   - 0–3 below-baseline for less complete coverage
+2. **Lobbyist Compensation** (0–5): Is compensation paid to lobbyists disclosed?
+   - 0: not required (17 states)
+   - 1–3: partial disclosure (e.g., reported in ranges, not linked to individual lobbyists — 7 states)
+   - 4: full baseline disclosure (compensation required and linked to lobbyist)
+   - 5: exceeding baseline (26 states total at 4+)
+3. **Timely Disclosure** (0–5):
+   - Baseline (4): monthly during legislative session + quarterly out of session (20 states meet this)
+   - 5: more frequent than baseline
+   - 0–3: below baseline (e.g., North and South Dakota: once a year)
+4. **Public Availability** (0–5): Composite of three sub-factors
+   - 1 pt: accessible lists of lobbyists and clients
+   - 2 pts: user-friendly search (no click-through burden, no insider jargon, auto-populating lists)
+   - 2 pts: downloadable data (bulk export, unique search URLs)
+
+**Top-scoring states (≥16 points)** share four features: full compensation disclosure, accessible public display, perfect timely-disclosure score, user-friendly sites. Washington State cited as exemplar of public-availability UX.
+
+**Bottom-scoring states (<10)** nearly all score 0 on compensation. North Dakota and South Dakota are the two lowest (once-a-year reporting only). Virginia is a notable exception — does require compensation disclosure but scores low overall due to a poor public-access site (the gap is partially filled by Virginia Public Access Project, an independent nonprofit).
+
+**Key finding on compensation data:** Of the $1.8B OpenSecrets tracked in 2021 state lobbying, **84% was compensation**. States that don't disclose compensation are invisible to 84% of the tracked lobbying spend, which is why OpenSecrets treats compensation disclosure as the gating criterion for dataset inclusion.
+
+**Per-state scores:** The PDF includes an interactive map (not a static table) plus descriptive top/bottom band discussion. The "complete list" is linked from the page as a separate artifact — not captured in the PDF. If the full 50-state per-category table is needed for calibration, it would require a separate fetch (possibly via OpenSecrets' data distribution or by Playwright-rendering the interactive map).
+
+**What OpenSecrets explicitly flags as future work:**
+- Targeted-legislation disclosure (bill references) — not addressed in this scorecard; "most states do not address it at all under the current rules."
+- Common frameworks for definitions/requirements across jurisdictions — directly aligned with this project's `StateMasterRecord` aim.
+
+### Relevance for `lobby_analysis`:
+
+1. **Most recent peer scoring framework — critical Phase-1 overlap-mapping input.** This is the 2022 answer to "how does a transparency-data organization grade state lobbying disclosure in 2026-minus-4 years?" It is the freshest reference in the whole PRI/CPI/Sunlight/OpenSecrets lineage and the most operationally motivated (designed by people who ingest the data, not just score it). Its 4-category structure deserves explicit mapping in the Phase-1 unified-rubric overlap analysis.
+
+2. **The compensation-disclosure gate is a strong empirical signal.** 84% of $1.8B tracked spending is compensation; 17 states require none. For our pipeline's `StateMasterRecord.RegistrationRequirement` / `ReportingPartyRequirement` fields, compensation disclosure is a high-leverage flag — states scoring low here have an extraction-ceiling regardless of how good our pipeline is. This should inform which states we prioritize for the 5–8 state target.
+
+3. **Category-weighting insight: OpenSecrets gives equal weight (5 pts each) to 4 categories.** This is distinct from CPI Hired Guns 2007's heavily-skewed weighting (Individual Spending 29/100, Public Access 20/100, etc.) and Lacy-Nichols 2025's indicator-specific weights. Adds a third data point for the unified-rubric weighting question.
+
+4. **"Virginia Public Access Project fills the gap where state site fails" is a pattern to note.** Some states have civic-tech nonprofits providing better data access than state government. For our pipeline, this raises the question of whether to ingest from such third-party sources where they exist, and how to credit them in provenance. Out of scope now but worth documenting.
+
+5. **Top-state benchmarking.** Our pipeline pilot (pri-calibration) currently targets CA/TX/WY/NY/WI. Cross-referencing with OpenSecrets 2022: Wisconsin and NY are likely top-band here; CA / TX should be high; WY is a known bottom-band state (comparable to ND/SD). This is broadly consistent with the pilot's intent — covering range, not just clean cases.
+
+6. **What they didn't publish in the article.** The full per-state per-category score table is an external linked artifact — not in the PDF. If we want a calibration fixture like the Sunlight CSV, we'd need to extract that list separately. Worth a note: unlike the Sunlight 2015 CSV which we successfully captured, OpenSecrets 2022 data is behind Cloudflare and will require either Playwright rendering or a direct data request to OpenSecrets.
 
 ---
 
