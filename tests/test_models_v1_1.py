@@ -18,7 +18,7 @@ Follow the style of tests/test_models.py: one test class per model,
 with-options, JSON round-trip) plus validation-rejection tests where the
 schema tightens.
 
-See docs/active/data-model-v1.1/plans/20260422_v1.1_gap_closures.md for the
+See docs/historical/data-model-v1.1/plans/20260422_v1.1_gap_closures.md for the
 full gap analysis and implementation handoff.
 """
 

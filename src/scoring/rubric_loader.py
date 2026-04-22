@@ -13,16 +13,16 @@ from scoring.models import Rubric, RubricItem
 # Rubric registry: logical name -> (path, column rename map to normalize into RubricItem fields)
 RUBRIC_PATHS: dict[str, tuple[Path, dict[str, str]]] = {
     "pri_accessibility": (
-        Path("docs/active/pri-2026-rescore/results/pri_2026_accessibility_rubric.csv"),
+        Path("docs/historical/pri-2026-rescore/results/pri_2026_accessibility_rubric.csv"),
         {"category": "category", "item_text": "item_text"},
     ),
     "pri_disclosure_law": (
-        Path("docs/active/pri-2026-rescore/results/pri_2026_disclosure_law_rubric.csv"),
+        Path("docs/historical/pri-2026-rescore/results/pri_2026_disclosure_law_rubric.csv"),
         # disclosure-law uses "sub_component" where accessibility uses "category"
         {"category": "sub_component", "item_text": "item_text"},
     ),
     "focal_indicators": (
-        Path("docs/active/focal-extraction/results/focal_2026_scoring_rubric.csv"),
+        Path("docs/historical/focal-extraction/results/focal_2026_scoring_rubric.csv"),
         # FOCAL uses indicator_id / indicator_text
         {"category": "category", "item_text": "indicator_text", "item_id": "indicator_id"},
     ),
