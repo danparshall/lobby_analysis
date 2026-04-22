@@ -1,14 +1,15 @@
 """State Master Record — per-state field requirements and reporting topology.
 
-Captures what each state's disclosure law requires, derived from
-PRI disclosure-law + FOCAL scoring results. Enables compliance monitoring:
-'this filer omitted a field that their state requires.'
+Captures what each state's disclosure law requires, derived from the compendium
+of external rubrics (PRI, FOCAL, Hired Guns, Newmark, Opheim, Sunlight,
+OpenSecrets, LDA). Enables compliance monitoring: 'this filer omitted a field
+that their state requires.'
 """
 
 from datetime import date
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 FieldStatus = Literal["required", "optional", "not_applicable", "unknown"]
 FilingStatus = Literal["required", "optional", "not_required"]
@@ -22,9 +23,59 @@ ReportingFrequency = Literal[
     "other",
 ]
 
+LegalAvailability = Literal[
+    "public",
+    "redacted",
+    "access_restricted",
+    "paper_on_request",
+    "unknown",
+]
+
+PracticalAvailability = Literal[
+    "structured_bulk",
+    "structured_search",
+    "html_search",
+    "pdf_only",
+    "not_available",
+    "unknown",
+]
+
+EvidenceSource = Literal[
+    "statute_verified",
+    "database_inferred",
+    "both",
+    "fellow_judgment",
+    "unknown",
+]
+
+FrameworkId = Literal[
+    "pri_2010_disclosure",
+    "pri_2010_accessibility",
+    "focal_2024",
+    "focal_2026",
+    "hired_guns_2007",
+    "newmark_2005",
+    "newmark_2017",
+    "opheim_1991",
+    "sunlight_2015",
+    "opensecrets_2022",
+    "lda",
+    "other",
+]
+
+
+class FrameworkReference(BaseModel):
+    """A citation to an item in an external rubric/framework."""
+
+    framework: FrameworkId
+    item_id: str
+    item_text: str | None = None
+
 
 class RegistrationRequirement(BaseModel):
     """Whether a particular role must register as a lobbyist in this state."""
+
+    model_config = ConfigDict(extra="forbid")
 
     role: Literal[
         "lobbyist",
@@ -40,10 +91,7 @@ class RegistrationRequirement(BaseModel):
         "other_public_entity",
     ]
     required: bool
-    pri_item_id: str | None = Field(
-        default=None,
-        description="Traceability to PRI rubric (A1-A11)",
-    )
+    framework_references: list[FrameworkReference] = Field(default_factory=list)
     legal_citation: str | None = None
     notes: str = ""
 
@@ -56,6 +104,8 @@ class ReportingPartyRequirement(BaseModel):
     is detectable even before examining field-level completeness.
     """
 
+    model_config = ConfigDict(extra="forbid")
+
     entity_role: Literal["lobbyist", "client", "firm", "official"]
     report_type: Literal[
         "activity_report",
@@ -66,10 +116,7 @@ class ReportingPartyRequirement(BaseModel):
     ]
     filing_status: FilingStatus
     reporting_frequency: ReportingFrequency | None = None
-    pri_item_ids: list[str] = Field(
-        default_factory=list,
-        description="Traceability to PRI rubric (E1h_*, E2h_*)",
-    )
+    framework_references: list[FrameworkReference] = Field(default_factory=list)
     notes: str = ""
 
 
@@ -81,16 +128,17 @@ class FieldRequirement(BaseModel):
     'positions[].bill_reference'.
     """
 
+    model_config = ConfigDict(extra="forbid")
+
     field_path: str
     reporting_party: Literal["lobbyist", "client", "firm", "all"]
     status: FieldStatus
+    legal_availability: LegalAvailability = "unknown"
+    practical_availability: PracticalAvailability = "unknown"
+    evidence_source: EvidenceSource = "unknown"
+    evidence_notes: str = ""
+    framework_references: list[FrameworkReference] = Field(default_factory=list)
     legal_citation: str | None = None
-    pri_item_id: str | None = Field(
-        default=None, description="Traceability to PRI rubric item"
-    )
-    focal_indicator_id: str | None = Field(
-        default=None, description="Traceability to FOCAL indicator"
-    )
     notes: str = ""
 
 
@@ -101,7 +149,7 @@ class StateMasterRecord(BaseModel):
     downstream compliance checks can distinguish 'state doesn't require
     this field' from 'filer failed to report a required field.'
 
-    Population strategy: auto-generated from PRI/FOCAL scoring results,
+    Population strategy: auto-generated from compendium scoring results,
     then manually verified by the fellow assigned to that state.
     """
 
@@ -127,12 +175,10 @@ class StateMasterRecord(BaseModel):
         description="Primary statute references for lobbying disclosure",
     )
 
-    # Who must register (PRI A1-A11)
     registration_requirements: list[RegistrationRequirement] = Field(
         default_factory=list
     )
 
-    # De minimis thresholds (PRI D1, D2)
     de_minimis_financial_threshold: float | None = Field(
         default=None,
         description="Dollar amount below which registration is exempt",
@@ -144,12 +190,10 @@ class StateMasterRecord(BaseModel):
     )
     de_minimis_time_citation: str | None = None
 
-    # Who files what, and how often (PRI E1, E2)
     reporting_parties: list[ReportingPartyRequirement] = Field(
         default_factory=list
     )
 
-    # Field-level requirements (derived from PRI E1/E2 + FOCAL)
     field_requirements: list[FieldRequirement] = Field(default_factory=list)
 
     notes: str = ""
