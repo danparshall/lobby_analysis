@@ -16,7 +16,7 @@ The closest existing analogs are **LobbyView** (Bacik et al. 2025, MIT) at the f
 
 The companion deliverable is the **requirements-vs-availability matrix** — for each field in a field-level compendium, for each state, two answers: is the field *required* by state law, and is it *available* (both legally and practically)? This matrix is derived from the data + a separate legal-review pass. It is the artifact that turns our raw data into something policymakers, journalists, and researchers can use to identify and quantify state-level disclosure gaps.
 
-The project is a **group effort of the Corda Democracy Fellowship**, led by Suhan Kacholia (Analogy Group), with approximately three fellows contributing. Dan Parshall authors most of this repository. The timeline is months, not years; the infrastructure bet is that LLM-assisted extraction (OCR, PDF parsing, text classification, statute interpretation) makes it cheap enough to maintain what organizations like the Council of State Governments stopped attempting around 2005.
+The project is a **group effort of the Corda Democracy Fellowship**, led by Suhan Kacholia (Analogy Group), with fellows Dan Parshall, Amina Rakhimbergenova, and Gowrav Mannem contributing. Dan Parshall authors most of this repository. The timeline is months, not years; the infrastructure bet is that LLM-assisted extraction (OCR, PDF parsing, text classification, statute interpretation) makes it cheap enough to maintain what organizations like the Council of State Governments stopped attempting around 2005.
 
 ## 2. What this project is not
 
@@ -54,6 +54,46 @@ Note what the 2×2 does *not* locate. Quality of the underlying disclosure regim
 
 The open civic data ecosystem has converged around a small number of interoperating pieces. Understanding them is important because our data model aligns with them deliberately — the point is that our output is ingestable by the tools journalists and researchers already use.
 
+The stack, with our position in it:
+
+```mermaid
+flowchart TB
+    subgraph Spec["Specification layer"]
+        direction TB
+        P["Popolo<br/>(base civic entity spec)"]
+        P --> OCD["Open Civic Data<br/>(US-specific extensions)"]
+        OCD --> O5["OCDEP 5: People, Orgs, Posts, Memberships ✓<br/>Popolo-based"]
+        OCD --> O6["OCDEP 6: Bills ✓"]
+        OCD --> OTHERS["OCDEPs 2, 3, 4, 7, 8, 20, 101 ✓<br/>divisions, jurisdictions, events,<br/>votes, governance, elections, datetimes"]
+        OCD --> CFF["Campaign Finance Filings<br/>(draft)"]
+        OCD --> DISC["Disclosures<br/>(withdrawn)"]
+        OCD --> GAP["Lobbying<br/>(no OCDEP exists)"]
+    end
+
+    subgraph Impl["Implementation and distribution"]
+        direction TB
+        pupa["pupa<br/>(emits OCD-conformant JSON)"]
+        spatula["spatula<br/>(state-portal scraping)"]
+        OS["Open States<br/>(50-state legislative data,<br/>operated by Plural)"]
+        pupa --> OS
+        spatula --> OS
+    end
+
+    O5 --> pupa
+    O6 --> pupa
+
+    OURS["<b>lobby_analysis</b> pydantic models<br/>src/lobby_analysis/models/<br/>Person, Organization (Popolo-compatible)<br/>+ LobbyingFiling, LobbyistRegistration,<br/>Gift, etc. (fills the lobbying gap)"]
+
+    O5 -.compatible.-> OURS
+    GAP -.filled by.-> OURS
+    OURS -.target consumer.-> OS
+
+    style OURS fill:#d4edda,stroke:#155724,stroke-width:3px,color:#000
+    style GAP fill:#fff3cd,stroke:#856404,color:#000
+    style DISC fill:#f8d7da,stroke:#721c24,color:#721c24
+    style CFF fill:#fff3cd,stroke:#856404,color:#000
+```
+
 ### Popolo
 
 The foundational spec. **Popolo** is a vendor-neutral, domain-general specification for representing civic and political entities in JSON: Person, Organization, Membership, Post, ContactDetail, Identifier, Area. It was developed jointly by Open North (Canada) and the Sunlight Foundation (US) in the early 2010s. Popolo doesn't know about lobbying specifically; it provides the reference-entity vocabulary that domain-specific extensions build on.
@@ -66,18 +106,22 @@ Popolo's governance has shifted since its original publication — the Sunlight 
 
 **Open Civic Data** is a project that extends Popolo for US-specific civic data. OCD lives at `opencivicdata/` on GitHub and publishes its specs as **OCDEPs** (Open Civic Data Extension Proposals). OCDEP 5 (the Popolo-based entity model) is the foundation; later OCDEPs extend to bills, votes, events, and elections. OCDEP-level specifications that are directly relevant here:
 
-- **OCDEP 5** (adopted) — Persons and Organizations, Popolo-based.
-- **OCDEP 6** (adopted) — Bills, votes, and legislative events.
-- **"Campaign Finance Filings"** — a draft OCDEP that has circulated without formal adoption.
-- **"Disclosures"** — an earlier withdrawn OCDEP that would have covered lobbying among other things.
+- **OCDEP 4** (adopted) — Events (hearings, committee meetings).
+- **OCDEP 5** (adopted) — People, Organizations, Posts, and Memberships (Popolo-based).
+- **OCDEP 6** (adopted) — Bills.
+- **OCDEP 7** (adopted) — Votes.
+- **"Campaign Finance Filings"** — a draft OCDEP (lives in `proposals/drafts/` of `opencivicdata/docs.opencivicdata.org`, authored by Abraham Epton) that has circulated without formal adoption.
+- **"Disclosures"** — a withdrawn OCDEP (in `proposals/withdrawn/`, authored by Bob Lannon) that defined a general `Disclosure` type; lobbying-style records would have fit under it.
+
+*OCDEP status above reflects the `opencivicdata/docs.opencivicdata.org` repo as of 2026-04-22 (verified via the GitHub API against `proposals/`, `proposals/drafts/`, and `proposals/withdrawn/`). Verify directly before external citation.*
 
 The **absence of an adopted lobbying-disclosure OCDEP** is structurally important: there is no canonical open spec for state lobbying disclosure data. Our `LobbyingFiling`, `LobbyistRegistration`, `LobbyingPosition`, `LobbyingExpenditure`, `LobbyingEngagement`, and `Gift` models fill that gap. An open question (flagged for fellow discussion) is whether we engage actively with the OCD governance process to propose our models as the basis of an OCDEP, or remain passively compatible and let OCD pick up our models independently.
 
 The reference library for OCD is **pupa** — a Python library for emitting OCD-compliant JSON. The primary consumer of OCD-emitted data is Open States.
 
-### Open States (now "Plural Open Data")
+### Open States (operated by Plural)
 
-**Open States** — rebranded **Plural Open Data** in 2023 under Plural (formerly Civic Eagle) — aggregates legislative data (bills, votes, legislators, committees) from all 50 states, DC, and Puerto Rico. It publishes data through an API and bulk downloads at pluralpolicy.com/open; the GitHub organization remains `openstates/`. The project's audience is members of the public, activist groups, journalists, and researchers with better data on what is happening in their state capital.
+**Open States** aggregates legislative data (bills, votes, legislators, committees) from all 50 states, DC, and Puerto Rico. The project was adopted by Civic Eagle in 2021; Civic Eagle rebranded to Plural in February 2023, and in July 2023 `openstates.org` was redirected to `pluralpolicy.com/open`. The project itself is still called Open States — it is operated under the Plural brand, the API and bulk downloads live at `pluralpolicy.com/open`, and the GitHub organization remains `openstates/`. The project's audience is members of the public, activist groups, journalists, and researchers with better data on what is happening in their state capital.
 
 Open States is the natural distribution partner for our data at the legislative-references layer: when our `BillReference` resolves to an Open States canonical bill ID, our lobbying data becomes joinable with the Open States legislative record. A journalist investigating lobbying on a specific bill can click through from our data to Open States' bill page without entity-reconciliation friction.
 
@@ -212,9 +256,11 @@ CSG has published *Book of the States* annually since 1935. The lobbying-regulat
 
 Activist organization that grades states with F-letter grades by design. The project scoped them in prior-art review (`docs/historical/research-prior-art/`) and decided to **treat F Minus as a hypothesis generator only**, pending methodology verification. Their advocacy framing is rhetorically useful, their measurement framing is not (yet) rigorous enough to use as a calibration source.
 
-### MultiState (Compliance Insider)
+### MultiState, and the broader commercial state-affairs tier
 
-Commercial lobbying compliance newsletter. Tracks state lobbying law changes for paying compliance professionals. Proprietary, subscription-gated, not usable as open infrastructure — but a signal that professional demand for cross-state lobbying law tracking is real enough to sustain a commercial operation. The gap we target is the same demand surface served openly.
+MultiState's *Compliance Insider* tracks state lobbying law changes for paying compliance professionals. The broader commercial tier — **FiscalNote, Quorum, Bloomberg Government** — occupies the same state-lobbying-intelligence demand surface at the enterprise level: cross-state coverage, search, alerts, some data enrichment, all behind paywalls and without bulk export. Proprietary, subscription-gated, not usable as open infrastructure — but a signal that professional demand for cross-state lobbying data is real enough to sustain several commercial operations. The gap we target is the same demand surface served openly.
+
+One practical implication worth flagging: a one-time commercial subscription could serve as an independent benchmark for our extracted data. We do not need ongoing access, and a short validation pass would not compromise the open-infrastructure framing — it would just give us a second independent signal against which to spot systematic extraction errors. Caveats: commercial providers are not ground truth (they have their own coverage gaps and errors), and most commercial TOS restrict use of output data, so the sensible framing is "cross-check coverage and sanity-check field-level values," not "build our data on top of theirs."
 
 ### Project positioning in one sentence
 
@@ -252,7 +298,7 @@ Quick reference for acronyms and domain terms used in this document:
 - **LobbyView** — MIT federal lobbying database (Bacik et al. 2025).
 - **OCD / Open Civic Data** — Project that extends Popolo with US-specific civic data schemas.
 - **OCDEP** — Open Civic Data Extension Proposal.
-- **Open States / Plural Open Data** — All-50-states legislative data aggregator; formerly Open States, rebranded under Plural in 2023.
+- **Open States** — All-50-states legislative data aggregator (bills, votes, legislators, committees); operated by Plural (Civic Eagle rebranded to Plural in 2023); URL: `pluralpolicy.com/open`.
 - **PACER** — Federal court records system; famously public-in-principle but paywalled in practice — the canonical "Required + Not Available" reference point.
 - **Popolo** — Base spec for representing civic/political entities in JSON.
 - **PRI** — Center for Public Integrity's 2010 State Lobbying Disclosure Report (rubric + 50-state scores).
@@ -266,9 +312,11 @@ Quick reference for acronyms and domain terms used in this document:
 ## Changelog
 
 - **2026-04-22** — Initial version. Drafted as output of the 2026-04-22 landscape brainstorm on `pri-calibration` branch; committed separately on `docs-landscape` branch for clean scoping.
+- **2026-04-22 (polish pass)** — Verified Layer 1 claims against upstream sources. Corrections: OCDEP 5 title expanded to include Posts and Memberships; OCDEP 6 corrected to "Bills only" (previously conflated with OCDEP 4 Events and OCDEP 7 Votes, both also adopted — now listed separately); Open States framing corrected (project still named Open States, operated under the Plural brand since Civic Eagle's Feb 2023 rebrand and the July 2023 URL redirect — previous "rebranded Plural Open Data" phrasing removed). Added Layer 1 architecture diagram. Named fellows (Amina Rakhimbergenova, Gowrav Mannem) in §1. Expanded §7 MultiState entry to cover the broader commercial tier (FiscalNote, Quorum, Bloomberg Government) and note the one-time-commercial-subscription validation option.
 
 ## How this document should be used
 
 - **Fellows onboarding:** read this document plus `README.md` plus `CLAUDE.md` first. Skip the Layer 1 section if already familiar with Popolo/OCD/Open States; skip Layer 2 if already familiar with the academic literature on state lobbying disclosure.
 - **Future Claude instances:** this is project-level reference material. It is not branch-scoped. When revisiting, check the changelog to see if the landscape has shifted since last update.
 - **External readers:** this is a snapshot of the project's architectural self-understanding. The actual deliverables live in `src/`, the actual data in `data/` (gitignored), the matrix exports at the project's eventual public URL (TBD).
+
