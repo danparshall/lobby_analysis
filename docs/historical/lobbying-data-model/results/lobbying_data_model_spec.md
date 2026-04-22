@@ -1,9 +1,9 @@
 # Lobbying Data Model Specification
 
-**Version:** 0.1 (draft for fellow review)
-**Date:** 2026-04-17
-**Branch:** `lobbying-data-model`
-**Status:** Draft — circulate for feedback, then finalize before pipeline work begins
+**Version:** 1.0
+**Date:** 2026-04-17 (v0.1 draft); accepted 2026-04-21 (v1.0)
+**Branch:** `lobbying-data-model` (archived to `docs/historical/` on acceptance)
+**Status:** **Accepted.** v0.1 circulated for feedback; no changes requested. This is the schema contract for state extraction pipelines — fellows writing per-state pipelines emit JSON conforming to these pydantic models. Future changes should go through a new branch with a migration plan, not silent edits.
 
 ---
 
