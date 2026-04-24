@@ -4,6 +4,8 @@
 
 Group project of the **Corda Democracy Fellowship**. Project lead: Suhan Kacholia (Co-Founder, Analogy Group). Multiple fellows contribute to this repo.
 
+Weekly updates for Corda are mirrored to [this shared Google Doc](https://docs.google.com/document/d/1vMHOV2zPcYTA0cKBiHlpzqNBMasTZcI8uScxASJm2fU/edit?usp=sharing); canonical versions live in [`docs/weekly_updates/`](docs/weekly_updates/).
+
 ## Why this exists
 
 Policy capture — when private interests systematically shape government decisions at the expense of the public — is one of the clearest indicators of democratic backsliding. At the US state level, lobbying disclosure data is the most direct signal of who is trying to influence policy and how much they're spending to do it.
