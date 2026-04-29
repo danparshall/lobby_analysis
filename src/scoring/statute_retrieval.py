@@ -298,10 +298,13 @@ def retrieve_statute_bundle(
         artifacts.append(
             {
                 "url": url,
-                "role": "statute",
+                "role": "core_chapter",
                 "sha256": hashlib.sha256(raw).hexdigest(),
                 "bytes": len(raw),
                 "local_path": f"sections/{filename}",
+                "retrieved_because": "curated core lobbying chapter",
+                "hop": 0,
+                "referenced_from": "",
             }
         )
 
