@@ -679,6 +679,79 @@ def cmd_retrieve_statutes(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_expand_bundle(args: argparse.Namespace) -> int:
+    """Generate a retrieval-agent brief for cross-reference discovery.
+
+    Loads the existing statute bundle and the PRI disclosure-law rubric,
+    builds a retrieval-agent brief, and writes it to the bundle directory.
+    A human or orchestrating agent then dispatches a subagent with this brief.
+    """
+    from scoring.bundle import build_retrieval_subagent_brief
+    from scoring.rubric_loader import load_rubric
+    from scoring.statute_loader import load_statute_bundle
+
+    repo_root = Path(args.repo_root).resolve()
+    state = args.state.upper()
+    bundle_dir = repo_root / "data" / "statutes" / state / str(args.vintage)
+    statute = load_statute_bundle(bundle_dir, repo_root)
+    rubric = load_rubric("pri_disclosure_law", repo_root)
+
+    hop = args.hop
+    output_json_path = bundle_dir / f"crossrefs_hop{hop}.json"
+    brief = build_retrieval_subagent_brief(
+        state=state,
+        rubric=rubric,
+        statute=statute,
+        repo_root=repo_root,
+        retrieval_prompt_path=repo_root / "src/scoring/retrieval_agent_prompt.md",
+        output_json_path=output_json_path,
+        hop=hop,
+    )
+    brief_path = bundle_dir / f"retrieval_brief_hop{hop}.md"
+    brief_path.write_text(brief, encoding="utf-8")
+    print(json.dumps({
+        "brief_path": str(brief_path),
+        "output_json_path": str(output_json_path),
+        "state": state,
+        "vintage": args.vintage,
+        "hop": hop,
+        "artifact_count": len(statute.artifacts),
+    }, indent=2))
+    return 0
+
+
+def cmd_ingest_crossrefs(args: argparse.Namespace) -> int:
+    """Fetch cross-referenced support chapters and update the manifest.
+
+    Reads the retrieval agent's output JSON, fetches each URL not already
+    in the bundle, and appends support_chapter artifacts to the manifest.
+    """
+    from scoring.justia_client import PlaywrightClient
+    from scoring.statute_retrieval import ingest_crossrefs
+
+    repo_root = Path(args.repo_root).resolve()
+    state = args.state.upper()
+    bundle_dir = repo_root / "data" / "statutes" / state / str(args.vintage)
+    crossrefs_path = Path(args.crossrefs) if args.crossrefs else bundle_dir / f"crossrefs_hop{args.hop}.json"
+
+    if not crossrefs_path.exists():
+        print(json.dumps({"error": f"crossrefs file not found: {crossrefs_path}"}))
+        return 2
+
+    client = PlaywrightClient(rate_limit_seconds=args.rate_limit_seconds)
+    new_files = ingest_crossrefs(
+        client=client,
+        bundle_dir=bundle_dir,
+        crossrefs_path=crossrefs_path,
+    )
+    print(json.dumps({
+        "ingested": len(new_files),
+        "new_sections": [f.name for f in new_files],
+        "bundle_dir": str(bundle_dir),
+    }, indent=2))
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(prog="scoring-orchestrator")
     parser.add_argument("--repo-root", default=".", help="repo root (worktree path)")
@@ -789,6 +862,31 @@ def main() -> int:
         help="courtesy delay between Justia fetches (see Phase 2 A4 decision)",
     )
     p_retrieve.set_defaults(func=cmd_retrieve_statutes)
+
+    p_expand = sub.add_parser(
+        "expand-bundle",
+        help="generate a retrieval-agent brief for cross-reference discovery",
+    )
+    p_expand.add_argument("--state", required=True, help="USPS state code (e.g. OH)")
+    p_expand.add_argument("--vintage", type=int, required=True, help="vintage year (e.g. 2010)")
+    p_expand.add_argument("--hop", type=int, default=1, help="hop number (default 1)")
+    p_expand.set_defaults(func=cmd_expand_bundle)
+
+    p_ingest = sub.add_parser(
+        "ingest-crossrefs",
+        help="fetch cross-referenced support chapters and update the manifest",
+    )
+    p_ingest.add_argument("--state", required=True, help="USPS state code (e.g. OH)")
+    p_ingest.add_argument("--vintage", type=int, required=True, help="vintage year (e.g. 2010)")
+    p_ingest.add_argument("--hop", type=int, default=1, help="hop number (default 1)")
+    p_ingest.add_argument("--crossrefs", default=None, help="path to crossrefs JSON (default: bundle_dir/crossrefs_hopN.json)")
+    p_ingest.add_argument(
+        "--rate-limit-seconds",
+        type=float,
+        default=2.0,
+        help="courtesy delay between Justia fetches",
+    )
+    p_ingest.set_defaults(func=cmd_ingest_crossrefs)
 
     p_cal_prep = sub.add_parser(
         "calibrate-prepare-run",
