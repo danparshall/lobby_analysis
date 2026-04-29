@@ -57,7 +57,7 @@ def test_load_statute_bundle_happy_path(tmp_path: Path) -> None:
     assert bundle.direction == "exact"
     assert bundle.pri_state_reviewed is True
     assert len(bundle.artifacts) == 1
-    assert bundle.artifacts[0].role == "statute"
+    assert bundle.artifacts[0].role == "core_chapter"
 
 
 def test_load_statute_bundle_normalizes_local_path_to_repo_root(tmp_path: Path) -> None:

@@ -52,12 +52,19 @@ def load_statute_bundle(bundle_dir: Path, repo_root: Path) -> StatuteBundle:
                 f"sha256 mismatch for {file_path}: "
                 f"manifest says {art['sha256']}, file is {actual_sha}"
             )
+        role = art.get("role", "statute")
+        if role == "statute":
+            role = "core_chapter"
         artifacts.append(
             StatuteArtifact(
                 url=art["url"],
+                role=role,
                 sha256=art["sha256"],
                 bytes=int(art["bytes"]),
                 local_path=str(file_path.relative_to(repo_root)),
+                retrieved_because=art.get("retrieved_because", ""),
+                hop=int(art.get("hop", 0)),
+                referenced_from=art.get("referenced_from", ""),
             )
         )
 

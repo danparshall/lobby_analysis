@@ -64,10 +64,13 @@ class StatuteArtifact(BaseModel):
     """One retrieved statute-text file in a state's statute bundle."""
 
     url: str
-    role: Literal["statute"] = "statute"
+    role: Literal["statute", "core_chapter", "support_chapter"] = "core_chapter"
     sha256: str
     bytes: int
     local_path: str  # relative to the bundle directory, e.g. "sections/gov-86100-86118.txt"
+    retrieved_because: str = ""
+    hop: int = 0
+    referenced_from: str = ""
 
 
 class StatuteBundle(BaseModel):
