@@ -21,7 +21,7 @@ Read every artifact in the statute bundle using the Read tool. Understand the st
 
 For each cross-reference you find, ask: "Does the downstream scorer need this to answer any rubric item?" Focus on:
 
-- **Definitions** — terms like "person," "lobbyist," "expenditure," "public entity," "employer" used in the lobbying chapter but defined elsewhere. These directly affect rubric items A1–A11 (who must register), B1–B4 (government exemptions), and C0–C3 (public entity definition).
+- **Definitions — especially "person."** This is your highest priority. Nearly every state's lobbying chapter uses the term "person" (or equivalent: "individual," "entity") to define who must register. The definition is often NOT in the lobbying chapter — it's in a general definitions/construction act (e.g., TX Gov Code §311.005, OH Rev. Code §1.59). If the core lobbying chapter uses "person" without defining it, finding the general definitions section is critical. This definition directly controls rubric items A5–A11 (whether government entities must register) and C0–C3 (public entity definition). Also look for definitions of "lobbyist," "expenditure," "public entity," "employer," and "compensation."
 - **Penalties and enforcement** — referenced penalty chapters that determine whether violations have consequences.
 - **Exemptions** — cross-referenced exemption provisions that affect whether certain entities must register or disclose.
 - **Disclosure requirements** — if the lobbying chapter says "as required by [other section]," that other section contains information the scorer needs for E-series items.
