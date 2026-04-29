@@ -29,12 +29,30 @@ PRI 2010 and Sunlight 2015 (and eventually CPI Hired Guns 2007, Newmark 2005/201
 ### Results
 - `results/20260429_calibration_comparison.md` — full cross-state calibration table with run histories
 
-### Next Steps
+### Next Steps (morning, superseded by afternoon continuation)
 - Fix TX E1 cascade (scorer must distinguish partial vs blanket principal exemption)
 - Investigate TX A-series: scorer needs to reason about interaction between expenditure-based triggers and entity definitions
 - Add Justia 404 detection + adjacent-vintage fallback to ingest_crossrefs
 - Re-run OH with prompt that doesn't regress D
 - Consider running all 3 states with the same prompt version for a clean comparison
+
+### Continuation, same day (afternoon) — appended to same convo doc
+
+- Bumped scorer to **claude-opus-4-7** (`provenance.py`); fixed duplicated literal in `orchestrator.py`.
+- Diagnosed dispatch variance (opus subagent uses 4–43 tool calls per dispatch on the same statute) as the dominant noise source. Added **files-read enforcement**: brief requires sidecar `files_read.json`; locked prompt adds Rule 7; orchestrator fails closed if any bundle file is unread without explanation. Variance collapsed from ±7 to ±1 on TX total.
+- **Narrowed Rule 6's C0 sub-rule**: public-entity definitions count only when they bring entities INTO the disclosure obligation, not when they appear in exemption or fund-use clauses. Fixed TX C0 over-score; CA C0 still 1/0 (open question).
+- **Three-state apples-to-apples (opus + enforcement)**: TX 22–23/29 (−7/−6), CA 29/23 (+6), OH 25/26 (−1). Gap structure asymmetric — chasing TX agreement would worsen CA/OH.
+- **Surfaced Sunlight 2015 as second ground-truth dataset** (`papers/Sunlight_2015__state_lobbying_disclosure_scorecard_data.csv`). PRI and Sunlight independently rank TX > OH; opus ranks OH > TX. Two unrelated human raters concurring is a real signal.
+- **Goal reframe**: harness produces `StateMasterRecord` disclosure-requirement extractions; PRI/Sunlight are calibration signals, not optimization targets. Updated four docs (RESEARCH_LOG Purpose, plan Goal/Architecture, calibration_comparison header, STATUS Track A line + branch row). Justification: Newmark 2017 PRI vs CPI cross-rater r = 0.04.
+- **Withdrew the proposed "within-the-regime's-reach" A-series rule** after user pushback. PRI item text reads institutionally; the proposed rule would have inflated scores on weakly-grounded reasoning.
+- **Commits**: `fc644b5` (scorer changes + doc reframe), `904b110` (multi-rubric-extraction-harness plan).
+
+### Carried-forward open questions
+1. CA C0 = 1/0 over-score — coverage-side definition or another exemption-side one to narrow Rule 6 against?
+2. Sunlight correlation analysis (Phase 1 of new plan) — does opus track Sunlight in the same band as PRI does?
+3. Phase 3 extraction-first refactor needs a brainstorm before coding.
+4. Justia 404 detection + adjacent-vintage fallback (still unaddressed).
+5. OH C0 = 1/1 ✓ — confirm genuinely correct vs lucky dispatch variance.
 
 ## Plans
 
