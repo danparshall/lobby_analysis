@@ -174,3 +174,90 @@ Use the Write tool. The array must have exactly {len(rubric.items)} objects, eac
 After writing the file, respond with a single line: `DONE <n items written>`. No other text.
 """
     return brief
+
+
+def build_retrieval_subagent_brief(
+    *,
+    state: str,
+    rubric: Rubric,
+    statute: StatuteBundle,
+    repo_root: Path,
+    retrieval_prompt_path: Path,
+    output_json_path: Path,
+    hop: int = 1,
+) -> str:
+    """Return a subagent brief for the cross-reference retrieval agent.
+
+    The brief gives the agent:
+    - The locked retrieval prompt
+    - The PRI rubric items (so it knows what cross-references are relevant)
+    - The current artifact index (so it can read core chapters and skip duplicates)
+    - URL pattern examples (so it can construct URLs for referenced sections)
+    - The hop number and 2-hop limit
+    """
+    artifact_index = [
+        {
+            "role": a.role,
+            "local_path": a.local_path,
+            "bytes": a.bytes,
+            "url": a.url,
+            "hop": a.hop,
+        }
+        for a in statute.artifacts
+    ]
+    rubric_items = [
+        {"item_id": ri.item_id, "category": ri.category, "item_text": ri.item_text}
+        for ri in rubric.items
+    ]
+    url_examples = [a.url for a in statute.artifacts if a.role == "core_chapter"][:3]
+
+    brief = f"""You are a cross-reference retrieval agent.
+
+Read the locked retrieval prompt first, then read the statute artifacts, identify cross-references relevant to the rubric, and write your output JSON.
+
+## Step 1 — read the locked prompt (follow it exactly)
+
+Read this file with the Read tool, in full:
+  {retrieval_prompt_path}
+
+All rules in that prompt are load-bearing.
+
+## Step 2 — state and vintage
+
+- State: {state}
+- Vintage year: {statute.vintage_year}
+- Current hop: {hop} (2-hop limit — {"this is your last pass" if hop >= 2 else "you may be invoked again for hop " + str(hop + 1)})
+
+## Step 3 — rubric items (what the scorer needs to answer)
+
+These are the PRI disclosure-law rubric items. Your job is to find cross-references that provide information the scorer needs for these items.
+
+```json
+{json.dumps(rubric_items, indent=2, ensure_ascii=False)}
+```
+
+## Step 4 — current statute bundle
+
+Read these artifacts via the Read tool (prepend `{repo_root}/` to each `local_path`):
+
+```json
+{json.dumps(artifact_index, indent=2, ensure_ascii=False)}
+```
+
+## Step 5 — URL pattern
+
+These are the Justia URLs for this state and vintage. Use them to infer the URL pattern for constructing new URLs:
+
+{chr(10).join(f"  - {u}" for u in url_examples)}
+
+## Step 6 — write output
+
+Write your cross-reference JSON to:
+
+  {output_json_path}
+
+Use the Write tool. Follow the output schema defined in the locked prompt exactly.
+
+After writing the file, respond with: `DONE <n cross-references found>, <m unresolvable>`
+"""
+    return brief
