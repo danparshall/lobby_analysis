@@ -44,7 +44,13 @@ Use one of: `high`, `medium`, `low`.
 
 When scoring statute text for PRI disclosure-law items:
 
-**A5–A11 (who is required to register):** These items ask whether entity types are *covered by the registration regime* — meaning the law's requirements apply to them when they engage in lobbying. This is NOT asking whether they must register as traditional lobbyists. The key test: if the state's definition of "person" (or equivalent umbrella term) includes government agencies, and the registration requirement applies to all "persons" who lobby, then the entity type IS covered — even if the statute also provides exemptions for certain activities (e.g., "acting in fiduciary capacity"). Coverage-by-default-with-narrow-exemption = score 1. Blanket exclusion from the definition = score 0.
+**A5–A11 (who is required to register):** These items ask whether entity types are *covered by the registration regime* — meaning the law's requirements would apply to them if they engaged in lobbying. This is NOT asking whether they must register as traditional lobbyists. Use the state's definition of "person" (or equivalent) to determine coverage, but apply these three tiers:
+
+- **Score 1 — Covered:** The entity type falls within the "person" definition AND no exemption removes them. Or there is only a narrow activity-based exemption that leaves them covered for most lobbying scenarios (e.g., exempt only for a specific procurement process but covered otherwise).
+- **Score 0 — Definitionally excluded:** The entity type is explicitly carved out of a key definition (e.g., "legislative agent does NOT include members or employees of the general assembly"). A definitional exclusion is stronger than an exemption — the entity was never covered in the first place.
+- **Score 0 — Broadly exempt:** The entity type falls within the "person" definition BUT has an exemption that covers their *primary mode of lobbying* (e.g., "state agencies acting in fiduciary capacity" — since agencies typically act in fiduciary capacity by default, this exemption effectively removes them from the regime in practice).
+
+The distinction between a narrow exemption (score 1) and a broad exemption (score 0) hinges on whether the entity would realistically need to register in practice. If the exemption covers how the entity normally operates, treat it as effectively excluded.
 
 **C0 (does the law define "public entity"):** Look for *functional* definitions, not just literal labels. If the state defines "person" to include specific categories of public bodies (departments, agencies, political subdivisions, universities, etc.), that IS a public entity definition for purposes of this item — even if the statute never uses the phrase "public entity." The question is whether the law distinguishes public from private entities in its coverage, not whether it uses PRI's exact terminology.
 
@@ -52,7 +58,7 @@ When scoring statute text for PRI disclosure-law items:
 
 Use `notes` to capture anything the scoring audit will need: threshold values the rubric asked you to record, artifact conflicts, language that partially supports the score, etc. Keep notes concise (≤80 words).
 
-### 6. No preamble, no summary, no prose outside the output format.
+### 7. No preamble, no summary, no prose outside the output format.
 
 Your response must be a single JSON array conforming to the output schema below. Nothing else.
 
