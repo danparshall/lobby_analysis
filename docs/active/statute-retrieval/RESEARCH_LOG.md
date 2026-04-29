@@ -40,4 +40,5 @@ PRI 2010 and Sunlight 2015 (and eventually CPI Hired Guns 2007, Newmark 2005/201
 
 (newest first)
 
+- **20260429_multi_rubric_extraction_harness** — Reframe of harness goal: produce `StateMasterRecord` disclosure-requirement extractions, calibrated multi-rubric (PRI 2010 + Sunlight 2015 + planned CPI/Newmark). Phase 1: Sunlight correlation analysis (no new infra). Phase 2: Sunlight as second scoring rubric. Phase 3: extraction-first refactor (brainstorm-needed). Phase 4: scale to README's 5–8 priority states. Originated from the 2026-04-29 prompt-iteration thread that surfaced the goal-vs-instrument confusion.
 - **20260429_two_pass_retrieval_agent** — Two-pass pipeline: retrieval agent follows cross-references (2-hop, LLM-driven), enriched manifests, PRI 2010 as test suite. OH first. Originated from `convos/20260429_retrieval_pipeline_design.md`.
