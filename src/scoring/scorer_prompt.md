@@ -40,7 +40,15 @@ Use one of: `high`, `medium`, `low`.
 - `medium` — evidence is present but requires light interpretation (e.g., FAQ language implies the rule; statute section isn't directly quoted).
 - `low` — evidence is indirect or partial; you inferred from adjacent material. Consider whether `unable_to_evaluate` is more honest than a low-confidence score.
 
-### 5. Notes.
+### 5. Interpreting registration coverage (PRI disclosure-law A-series and C-series).
+
+When scoring statute text for PRI disclosure-law items:
+
+**A5–A11 (who is required to register):** These items ask whether entity types are *covered by the registration regime* — meaning the law's requirements apply to them when they engage in lobbying. This is NOT asking whether they must register as traditional lobbyists. The key test: if the state's definition of "person" (or equivalent umbrella term) includes government agencies, and the registration requirement applies to all "persons" who lobby, then the entity type IS covered — even if the statute also provides exemptions for certain activities (e.g., "acting in fiduciary capacity"). Coverage-by-default-with-narrow-exemption = score 1. Blanket exclusion from the definition = score 0.
+
+**C0 (does the law define "public entity"):** Look for *functional* definitions, not just literal labels. If the state defines "person" to include specific categories of public bodies (departments, agencies, political subdivisions, universities, etc.), that IS a public entity definition for purposes of this item — even if the statute never uses the phrase "public entity." The question is whether the law distinguishes public from private entities in its coverage, not whether it uses PRI's exact terminology.
+
+### 6. Notes.
 
 Use `notes` to capture anything the scoring audit will need: threshold values the rubric asked you to record, artifact conflicts, language that partially supports the score, etc. Keep notes concise (≤80 words).
 
