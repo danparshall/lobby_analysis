@@ -1,14 +1,14 @@
 # Two-Pass Statute Retrieval Agent — Implementation Plan
 
-**Goal:** Replace manual per-state URL curation with an LLM-driven retrieval agent that autonomously follows cross-references in state lobbying statutes, producing an expanded, auditable statute bundle that the existing scoring agent can consume.
+**Goal:** Build the statute-reading harness that produces correct, auditable disclosure-requirement extractions for the StateMasterRecord. The two-pass design (retrieval agent → scoring agent) is the means, not the end. Replace manual per-state URL curation with an LLM-driven retrieval agent that autonomously follows cross-references, and run a scoring agent over the expanded bundle as a calibration instrument.
 
 **Originating conversation:** `docs/active/statute-retrieval/convos/20260429_retrieval_pipeline_design.md`
 
-**Context:** The pri-calibration branch's baseline showed 0% exact-match agreement against PRI 2010 on disclosure-law scoring. Root cause (H1): statute bundles contained only the core lobbying chapter, but PRI rubric items ask about definitions and provisions in cross-referenced chapters (e.g., TX Ch. 305 uses "person" without defining it — the definition lives in §311.005(2), a different title). Hand-curating support chapters per state doesn't scale to 50 states annually. The fix: make the retrieval agent itself capable of following cross-references.
+**Context:** The pri-calibration branch's baseline showed 0% exact-match agreement against PRI 2010 on disclosure-law scoring. Root cause (H1): statute bundles contained only the core lobbying chapter, but rubric items ask about definitions and provisions in cross-referenced chapters (e.g., TX Ch. 305 uses "person" without defining it — the definition lives in §311.005(2), a different title). Hand-curating support chapters per state doesn't scale to 50 states annually. The fix: make the retrieval agent itself capable of following cross-references.
 
 **Confidence:** Medium-high on architecture. The two-pass design and enriched manifest are well-motivated by the H1 diagnosis. The LLM's ability to reliably parse cross-references across diverse state citation styles is the main uncertainty — OH is the test case.
 
-**Architecture:** Pass 1 (retrieval agent) starts from core lobbying chapter URLs, reads statute text, identifies cross-referenced sections relevant to PRI rubric items, retrieves support chapters (2-hop limit), and writes an enriched manifest. Pass 2 (scoring agent) consumes the expanded bundle using the existing calibration harness (`build_statute_subagent_brief` → scorer subagent → `calibrate`). PRI 2010 ground-truth scores serve as the test suite.
+**Architecture:** Pass 1 (retrieval agent) starts from core lobbying chapter URLs, reads statute text, identifies cross-referenced sections relevant to disclosure-rubric items, retrieves support chapters (2-hop limit), and writes an enriched manifest. Pass 2 (scoring agent) consumes the expanded bundle using the existing calibration harness (`build_statute_subagent_brief` → scorer subagent → `calibrate`). The scoring agent's job is to project the harness's statute-reading onto a published rubric (PRI 2010, eventually Sunlight 2015 / CPI / etc.) so that human-rater agreement can serve as a calibration signal — it is **not** the harness's output. The output we care about is the underlying disclosure-requirement extraction; per-rubric scores are the diagnostic.
 
 **Branch:** `statute-retrieval`
 

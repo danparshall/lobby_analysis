@@ -1,6 +1,8 @@
 # Research Log: statute-retrieval
 Created: 2026-04-29
-Purpose: Build a scalable two-pass statute retrieval pipeline (retrieval agent → scoring agent) that can run annually on all 50 states without manual per-state URL curation
+Purpose: Build a harness that reads state lobbying law and produces correct, auditable disclosure-requirement extractions for the StateMasterRecord. The harness must scale to all 50 states annually without per-state hand-curation, and its outputs must be inspectable enough that activists and journalists can verify which disclosure obligations the law actually imposes.
+
+PRI 2010 and Sunlight 2015 (and eventually CPI Hired Guns 2007, Newmark 2005/2017) serve as **multi-rubric calibration signals**, not optimization targets. We don't tune the harness to match any one rubric — single-rubric matching can mask a scorer that is overfit to one rater's quirks (Newmark 2017: PRI vs CPI cross-rater r = 0.04). Instead: where multiple independent rubrics concur and the harness disagrees, that is a real extraction error worth fixing; where rubrics disagree with each other (judgment-call zones), the harness's reading of the statute is the load-bearing artifact, and we don't chase any single rubric's score.
 
 ## Conversations
 

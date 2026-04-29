@@ -163,7 +163,27 @@ Artifacts (all paths are relative to repo root `{repo_root}`):
 
 Read artifacts you need via the Read tool (prepend `{repo_root}/` to each `local_path`). These files contain raw statute text extracted from Justia — no WAF stubs, no portal navigation to skip.
 
-## Step 4 — write output
+You MUST Read every statute file listed above before scoring any rubric item. Lobbying statutes are layered (general rule → exemptions → exceptions to exemptions → separate disclosure triggers in adjacent sections). Skipping files reliably produces under-scoring on the E-series and over-application of exemption-based reasoning.
+
+## Step 4 — write outputs (TWO files)
+
+### 4a. Files-read manifest
+
+First, write a JSON object listing every statute file you Read in step 3, to:
+
+  {output_json_path.parent / "files_read.json"}
+
+Schema:
+```json
+{{
+  "statute_files_read": ["sections/<filename>.txt", "..."],
+  "notes": "optional: any file you skipped and why (e.g. 'irrelevant — covers school finance only')"
+}}
+```
+
+The `statute_files_read` list MUST contain every file from the artifact index above unless you cite a specific reason in `notes`. The orchestrator will fail finalization if any bundle file is missing without explanation.
+
+### 4b. Scored items
 
 Write a single JSON array (one object per rubric item, in rubric order) to:
 
@@ -171,7 +191,7 @@ Write a single JSON array (one object per rubric item, in rubric order) to:
 
 Use the Write tool. The array must have exactly {len(rubric.items)} objects, each matching the schema defined in the locked prompt. Do NOT include orchestrator-stamped fields (model_version, prompt_sha, rubric_sha, snapshot_manifest_sha, state, rubric_name, run_id, run_timestamp, coverage_tier).
 
-After writing the file, respond with a single line: `DONE <n items written>`. No other text.
+After writing both files, respond with a single line: `DONE <n items written>`. No other text.
 """
     return brief
 
