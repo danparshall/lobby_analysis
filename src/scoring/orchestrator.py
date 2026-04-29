@@ -53,6 +53,7 @@ from scoring.consistency import (
 from scoring.coverage import coverage_tier_for
 from scoring.output_writer import parse_and_validate, write_scored_csv
 from scoring.provenance import (
+    MODEL_VERSION,
     PROMPT_PATH,
     build_run_metadata,
     new_run_id,
@@ -503,6 +504,40 @@ def cmd_calibrate_finalize_run(args: argparse.Namespace) -> int:
                 continue
             print(json.dumps({"error": f"missing raw JSON for {rubric_name}", "path": str(raw_path)}))
             return 2
+
+        files_read_path = raw_path.parent / "files_read.json"
+        bundle_filenames = {Path(a.local_path).name for a in statute.artifacts}
+        if not files_read_path.exists():
+            all_finalized = False
+            per_rubric_status.append({"rubric": rubric_name, "status": "missing_files_read_manifest"})
+            if args.skip_missing:
+                continue
+            print(json.dumps({
+                "error": "missing files_read.json — agent did not enumerate which statute files it read",
+                "expected_path": str(files_read_path),
+            }))
+            return 2
+        files_read_obj = json.loads(files_read_path.read_text(encoding="utf-8"))
+        read_set = {Path(p).name for p in files_read_obj.get("statute_files_read", [])}
+        unread = sorted(bundle_filenames - read_set)
+        explained_in_notes = files_read_obj.get("notes", "") or ""
+        unread_unexplained = [f for f in unread if f not in explained_in_notes]
+        if unread_unexplained:
+            all_finalized = False
+            per_rubric_status.append({
+                "rubric": rubric_name,
+                "status": "unread_statute_files",
+                "unread": unread_unexplained,
+            })
+            if args.skip_missing:
+                continue
+            print(json.dumps({
+                "error": "agent skipped statute files without explanation in files_read.json notes",
+                "unread_files": unread_unexplained,
+                "files_read_path": str(files_read_path),
+            }))
+            return 2
+
         rubric = rubrics_loaded[rubric_name]
         scored_items = parse_and_validate(raw_path, rubric)
         rows = stamp_rows(
@@ -536,7 +571,7 @@ def cmd_calibrate_finalize_run(args: argparse.Namespace) -> int:
             statute_manifest_sha=statute.manifest_sha,
             prompt_sha=psha,
             prompt_path=str(PROMPT_PATH),
-            model_version="claude-sonnet-4-6",
+            model_version=MODEL_VERSION,
             rubric_shas={n: r.sha for n, r in rubrics_loaded.items()},
         )
         (rd / "run_metadata.json").write_text(

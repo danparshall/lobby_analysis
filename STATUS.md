@@ -10,7 +10,7 @@ Last updated: 2026-04-29
 
 **Work splits into two tracks going forward:**
 
-1. **Track A — Verify lobbying laws** (statute reading → `StateMasterRecord`). Extends the pri-calibration branch's work (now archived) on a new, fellow-owned branch. Current state: H1 bundle-scope bug confirmed but not fixed; PRI 2010 baseline at 0% exact-match agreement. Next: hand-curate `support_chapters` for CA/TX/NY/WI/WY, re-retrieve, re-score. Then broaden to multi-rubric (CPI Hired Guns 2007 + Sunlight 2015 + Newmark 2005/2017 + optional OpenSecrets 2022) per `docs/historical/pri-calibration/plans/20260422_multi_rubric_calibration.md`.
+1. **Track A — Build the statute-reading harness** that populates `StateMasterRecord` disclosure-requirement fields, calibrated against multi-rubric human-rater data (PRI 2010 + Sunlight 2015 + eventually CPI Hired Guns 2007 + Newmark 2005/2017 + optional OpenSecrets 2022) per `docs/historical/pri-calibration/plans/20260422_multi_rubric_calibration.md`. The harness's output is the disclosure-requirement extraction; per-rubric scores are calibration signals, not optimization targets. Single-rubric agreement is insufficient validation (Newmark 2017: PRI vs CPI cross-rater r = 0.04). Active on branch `statute-retrieval` (extends pri-calibration's now-archived infrastructure). Current state: two-pass retrieval pipeline shipped; opus-4-7 + files-read-enforcement is the current scoring configuration; multi-rubric calibration harness next.
 
 2. **Track B — Pull disclosure data** (portal scraping + LLM extraction → `LobbyingFiling`). Not started. Portal snapshot corpus (981 artifacts, all 50 states) already exists under `docs/historical/pri-2026-rescore/`. Integration points: `LobbyingFiling` models are in place; `ExtractionCapability` model waiting for population.
 
@@ -22,7 +22,7 @@ Last updated: 2026-04-29
 
 | Branch | Started | Focus | Status |
 |--------|---------|-------|--------|
-| statute-retrieval | 2026-04-29 | Two-pass statute retrieval pipeline (retrieval agent → scoring agent) with PRI 2010 calibration | Active — infrastructure built and tested, calibrating scorer prompt on CA/TX/OH |
+| statute-retrieval | 2026-04-29 | Statute-reading harness for `StateMasterRecord` disclosure-requirement extractions (two-pass retrieval → scoring agent), calibrated multi-rubric (PRI 2010 + Sunlight 2015 + planned CPI/Newmark) | Active — opus-4-7 scorer + files-read enforcement; CA/TX/OH single-rubric (PRI) calibration done; multi-rubric calibration harness next |
 
 ## Archived Research Lines
 

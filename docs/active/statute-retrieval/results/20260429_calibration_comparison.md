@@ -6,6 +6,8 @@
 **Rubric:** PRI disclosure-law (61 items, 5 sub-aggregates)
 **Scorer prompt version:** v1 with "read full statute" + exemption-narrowness rules
 
+> **Framing note (added 2026-04-29):** the "ours / PRI (delta)" columns below are a **calibration signal**, not an optimization target. The harness's job is to produce correct disclosure-requirement extractions; PRI 2010 is one of several human-rater datasets we triangulate against. Sub-aggregate gaps are flagged here to guide investigation, not to be eliminated. A gap that disappears under multi-rubric agreement (PRI + Sunlight 2015 concur with the harness) is not a bug; a gap where multiple independent rubrics disagree with the harness in the same direction is a real extraction error to investigate. See branch `RESEARCH_LOG.md` Purpose for the full framing.
+
 ## Best results per state (latest prompt)
 
 | Sub-aggregate | CA (run 3) | TX (run 4) | OH (run 4) |

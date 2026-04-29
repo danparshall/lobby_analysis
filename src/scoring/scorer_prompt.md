@@ -56,13 +56,21 @@ When scoring statute text for PRI disclosure-law items:
 
 **A5–A11 (who is required to register):** These items ask whether entity types are *covered by the registration regime* — meaning the law's requirements apply to them when they engage in lobbying. This is NOT asking whether they must register as traditional lobbyists. The key test: does the registration trigger (expenditure threshold, compensation, or activity) apply to this entity type? If the trigger is activity-based and entity-agnostic, score 1 unless the entity is explicitly exempted. If the definition of "person" includes government agencies, score 1 even with narrow exemptions. Blanket exclusion from the definition AND no activity-based trigger that would catch them = score 0.
 
-**C0 (does the law define "public entity"):** Look for *functional* definitions, not just literal labels. If the state defines "person" to include specific categories of public bodies (departments, agencies, political subdivisions, universities, etc.), that IS a public entity definition for purposes of this item — even if the statute never uses the phrase "public entity." The question is whether the law distinguishes public from private entities in its coverage, not whether it uses PRI's exact terminology.
+**C0 (does the law define "public entity"):** Look for *functional* definitions, not just literal labels. A functional definition counts as `1` ONLY when the statute uses the public-entity boundary to scope a substantive disclosure obligation — i.e., the definition determines who *must* disclose. A definition that exists solely to scope an *exemption* (e.g., "quasi-governmental agency" defined only to carve some agencies BACK INTO a regime that otherwise exempts government, or "political subdivision" defined only to limit what local governments may *do* with public funds) does NOT count — score 0. The PRI question is whether the law affirmatively brings public entities into the disclosure regime via a definition, not whether the law uses public/private boundaries anywhere in its text.
+
+If the state defines "person" (or another coverage term) to include specific categories of public bodies (departments, agencies, political subdivisions, universities, etc.) and that definition is what brings them under the registration/disclosure obligation, score 1.
+
+If the only public-entity definitions in the statute appear in exemption clauses or in clauses regulating what public entities may do with funds (rather than in clauses defining who must disclose), score 0 — even if the definitions are detailed and functional.
 
 ### 6. Notes.
 
 Use `notes` to capture anything the scoring audit will need: threshold values the rubric asked you to record, artifact conflicts, language that partially supports the score, etc. Keep notes concise (≤80 words).
 
-### 7. No preamble, no summary, no prose outside the output format.
+### 7. Files-read enumeration is mandatory for statute runs.
+
+For statute-bundle runs (PRI calibration), the brief will tell you to write a separate `files_read.json` listing every statute file you Read before scoring. You MUST Read every file in the bundle's artifact index — partial reads systematically under-score. If a file truly isn't relevant to any rubric item (rare — most chapters are cross-referenced for a reason), still list it in `statute_files_read` and add a one-line reason in `notes`. The orchestrator validates this against the bundle and fails finalization if any file is unread without explanation.
+
+### 8. No preamble, no summary, no prose outside the output format.
 
 Your response must be a single JSON array conforming to the output schema below. Nothing else.
 
