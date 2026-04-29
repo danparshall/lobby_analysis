@@ -40,15 +40,23 @@ Use one of: `high`, `medium`, `low`.
 - `medium` — evidence is present but requires light interpretation (e.g., FAQ language implies the rule; statute section isn't directly quoted).
 - `low` — evidence is indirect or partial; you inferred from adjacent material. Consider whether `unable_to_evaluate` is more honest than a low-confidence score.
 
-### 5. Interpreting registration coverage (PRI disclosure-law A-series and C-series).
+### 5. Read the full statute before scoring any item.
+
+Do NOT score an item based on the first relevant clause you find. Read ALL the statute files in the bundle first, then score. Lobbying statutes are structured as layers: a general rule, then exemptions, then exceptions to the exemptions, then separate disclosure requirements that apply to non-exempt entities. If you stop reading at the exemption layer, you will systematically under-score.
+
+In particular:
+- An exemption for *some* entities does not mean *all* entities of that type are exempt. Check who is NOT covered by the exemption.
+- Registration triggers based on expenditure thresholds or compensation apply regardless of entity type unless the entity is explicitly exempted. If anyone who spends $X lobbying must register, that includes government employees unless a specific exemption removes them.
+- If item E1a asks whether principals must disclose, and you find an exemption for *some* principals, check whether non-exempt principals must still disclose. Do not cascade E1a=0 to all E1 sub-items without verifying that NO principals are covered.
+- Do not treat "the definition of person doesn't list government entities" as equivalent to "government entities are exempt." The registration trigger may be activity-based (anyone who spends/receives above a threshold), not entity-based.
+
+### 6. Interpreting registration coverage (PRI disclosure-law A-series and C-series).
 
 When scoring statute text for PRI disclosure-law items:
 
-**A5–A11 (who is required to register):** These items ask whether entity types are *covered by the registration regime* — meaning the law's requirements apply to them when they engage in lobbying. This is NOT asking whether they must register as traditional lobbyists. The key test: if the state's definition of "person" (or equivalent umbrella term) includes government agencies, and the registration requirement applies to all "persons" who lobby, then the entity type IS covered — even if the statute also provides exemptions for certain activities (e.g., "acting in fiduciary capacity"). Coverage-by-default-with-narrow-exemption = score 1. Blanket exclusion from the definition = score 0.
+**A5–A11 (who is required to register):** These items ask whether entity types are *covered by the registration regime* — meaning the law's requirements apply to them when they engage in lobbying. This is NOT asking whether they must register as traditional lobbyists. The key test: does the registration trigger (expenditure threshold, compensation, or activity) apply to this entity type? If the trigger is activity-based and entity-agnostic, score 1 unless the entity is explicitly exempted. If the definition of "person" includes government agencies, score 1 even with narrow exemptions. Blanket exclusion from the definition AND no activity-based trigger that would catch them = score 0.
 
 **C0 (does the law define "public entity"):** Look for *functional* definitions, not just literal labels. If the state defines "person" to include specific categories of public bodies (departments, agencies, political subdivisions, universities, etc.), that IS a public entity definition for purposes of this item — even if the statute never uses the phrase "public entity." The question is whether the law distinguishes public from private entities in its coverage, not whether it uses PRI's exact terminology.
-
-**Exemptions are narrow unless proven otherwise.** When a statute exempts a specific *subset* of an entity type or activity, do NOT generalize the exemption to the entire category. Score the general case, not the exception. For example: "Persons whose only lobbying activity is compensating a registered lobbyist are exempt from registration" does NOT mean principals don't register — it means principals who ALSO communicate directly with officials, spend on entertainment/gifts, or engage in any other lobbying activity ARE required to register and disclose. Always ask: "Does the general rule require this? Does the exemption carve out only a narrow subset, leaving the general rule intact for most cases?" If yes, score based on the general rule. This applies to both A-series (registration) and E-series (disclosure) items.
 
 ### 6. Notes.
 
