@@ -1,6 +1,6 @@
 # STATUS — lobby_analysis
 
-Last updated: 2026-04-22
+Last updated: 2026-04-29
 
 ## Current Focus
 
@@ -20,11 +20,9 @@ Last updated: 2026-04-22
 
 ## Active Research Lines
 
-No research lines currently have docs under `docs/active/` on main. All merged branches have been archived; Track A and Track B successor branches will appear here when fellows start them.
-
 | Branch | Started | Focus | Status |
 |--------|---------|-------|--------|
-| _(none on main)_ | | | |
+| statute-retrieval | 2026-04-29 | Two-pass statute retrieval pipeline (retrieval agent → scoring agent) with PRI 2010 calibration | Active — infrastructure built and tested, calibrating scorer prompt on CA/TX/OH |
 
 ## Archived Research Lines
 
@@ -44,6 +42,7 @@ Lines moved to `docs/historical/` — not currently active, but available for re
 
 (One-line session summaries, newest first)
 
+- **2026-04-29** — [statute-retrieval] Built two-pass statute retrieval pipeline (retrieval agent → scoring agent). TDD'd enriched manifest format (StatuteArtifact with role/hop/retrieved_because/referenced_from), retrieval agent prompt, brief builder, ingest_crossrefs, expand-bundle/ingest-crossrefs orchestrator subcommands. Ran retrieval + scoring on CA/TX/OH. C_public_entity_def matches 3/3 states; D_materiality 2/3; A/E still iterating on scorer prompt. TX E1 cascade (E1a=0 zeros 15 items) is the dominant remaining error. 269 tests passing.
 - **2026-04-22 (docs)** — [main] Shipped `docs/LANDSCAPE.md` (fellow-facing landscape report, ~4.9k words, with Layer 1 architecture diagram, OCDEP list verified against upstream opencivicdata repo, Plural framing corrected, FOCAL/PRI/CPI/Newmark/Sunlight/OpenSecrets cross-rubric comparison, 4-axis framing, field-level compendium rationale, positioning vs. LobbyView / OpenSecrets / Sunlight / CSG / F Minus / commercial tier). Companion swap: "real-time" → "up-to-date" across `README.md` (3×), `CLAUDE.md` (1×), and archived `pri_2026_methodology.md` (1×) to match the framing set in LANDSCAPE §2.
 - **2026-04-22 (pm late)** — [main] Merged `pri-calibration` to main (34 commits: Justia retrieval, statute bundle construction, calibration harness, consistency metrics, Phase 3 baseline results, all convos + plans + results) and archived to `docs/historical/pri-calibration/`. Previously on `pri-calibration` branch: 2026-04-22 pm reflection session reframed the calibration charter from PRI-only to multi-rubric (PRI + CPI Hired Guns + Sunlight + Newmark + optional OpenSecrets), rationale: Newmark 2017's r=0.04 cross-rubric correlation means single-rubric agreement could mask overfitting. New plan doc shipped: `plans/20260422_multi_rubric_calibration.md` (now at `docs/historical/pri-calibration/plans/...`). Fellow-task split articulated: Track A (verify lobbying laws) extends pri-calibration's infrastructure on a new branch; Track B (pull disclosure data) starts fresh. Active Research Lines table on main remains empty pending successor branches.
 - **2026-04-22 (housekeeping)** — [main] Archival sweep: moved `docs/active/{scoring,pri-2026-rescore,focal-extraction}/` → `docs/historical/` (all three were merged to main but had not been archived per the lifecycle).
