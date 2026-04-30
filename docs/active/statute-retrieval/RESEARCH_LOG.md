@@ -8,6 +8,42 @@ PRI 2010 and Sunlight 2015 (and eventually CPI Hired Guns 2007, Newmark 2005/201
 
 (newest first)
 
+## Session: 2026-04-29 / 30 — 20260429_sunlight_pri_item_level_calibration
+
+### Topics Explored
+- Phase 1 of the multi-rubric extraction harness plan: Sunlight 2015 ↔ PRI 2010 calibration on the existing opus-4-7 + files-read-enforced harness runs (CA / TX / OH).
+- Reframe mid-Phase-1: unit of analysis is the disclosure item, not state-level totals or rankings. PRI/Sunlight are independent human-rater datasets used to identify real extraction errors vs judgment-call zones.
+- Sub-aggregate baseline recompiled with `rollup_disclosure_law`: CA 29/23 (+6), TX 23/29 (−6), OH 25/26 (−1). Replaces the morning's sonnet-run table.
+- Sunlight category → PRI item decomposition (Activity ↔ E*g; ExpTrans ↔ E*f; Compensation ↔ E*f_i; Threshold = no clean PRI map; DocAccess = portal accessibility, out of scope).
+- Joint per-item agreement table: 12/12 activity cells, 6/6 expenditure-itemization cells, 5/6 compensation cells match Sunlight across CA/TX/OH.
+- Second reframe (post-Phase-1): the actual product is the `StateMasterRecord`, not per-rubric scores. OH calibration is "good enough" to ship; build a pipeline that produces SMRs so other fellows can use it on their states.
+- Architectural redesign (2026-04-30, mid-session): user pushback on PRI-feeding-into-SMR direction. Correct architecture flips data flow — compendium is the universe; SMR is keyed to the compendium; PRI/Sunlight/etc. are *projections from* the SMR for calibration.
+- Verified `CompendiumItem` and `MatrixCell` schemas exist (data-model-v1.1, 2026-04-22) but compendium has **never been populated**. No `data/compendium/` dir; no `CompendiumItem` instances anywhere.
+
+### Provisional Findings
+- On items where Sunlight and PRI cover the same ground (~13 of 61 PRI items), the harness reads CA/TX/OH consistently with both human raters. No extraction errors identified by joint signal.
+- The headline opus-vs-PRI sub-aggregate gaps (TX A −2, CA B +2, CA C +1, E gaps) all live in items Sunlight is silent on. Single-rubric (PRI-only) signal too noisy to call those gaps extraction errors per Newmark r=0.04.
+- OH is the cleanest of the three: Δ=−1 vs PRI total; every Sunlight overlap cell matches; harness correctly identified that OH does not require lobbyist compensation disclosure (Sunlight independently confirms).
+- The OH `Threshold = −1` finding (under-$50 expenditures don't need itemization, per Sunlight methodology paragraph itself) is a real disclosure feature PRI's rubric has no slot for. Phase-3 compendium gap, not a harness bug.
+- Sunlight's narrow item coverage (~13/61 PRI items, all in E-series) means it primarily provides redundant verification of PRI's E-series rather than independent signal in A/B/C/D zones. CPI Hired Guns 2007 / Newmark / OpenSecrets 2022 are the higher-leverage next-rubric integrations.
+- Compendium population is the actually-load-bearing missing piece: schema is done; data isn't.
+
+### Decisions Made
+- **Skip Phase 2** of `plans/20260429_multi_rubric_extraction_harness.md` (Sunlight as a second scoring rubric — narrow item overlap doesn't justify duplicate scoring infrastructure).
+- **OH harness output accepted as the calibration baseline.** Stop iterating prompt against TX A or CA B/C without joint-rubric signal supporting them as extraction errors.
+- **Compendium is the universe.** SMR is keyed to compendium, not to any single rubric. PRI/Sunlight/etc. are projections from a populated SMR.
+- **Plan doc:** `plans/20260430_compendium_population_and_smr_fill.md` — Stage A (populate compendium CSV from PRI disclosure-law + PRI accessibility + FOCAL + Sunlight unique items, ~140 atomic items after dedup); Stage B (temporary OH/CA/TX SMR fill via PRI-data projection through populated compendium); Stage C reference (MatrixCell projection layer + real statute-extraction harness, deferred to separate branches).
+- **Earlier "Path 1 SMR projection MVP" plan abandoned** — rubric-shaped SMR was the wrong architecture per the user's correction.
+
+### Results
+- `results/20260429_sunlight_pri_item_level.md` — Phase 1 deliverable: full joint per-item table, Sunlight category decomposition, gap analysis, recommendation to skip Phase 2.
+
+### Next Steps
+- Stage A.1: pre-flight verify all 4 source CSV paths (especially `docs/historical/focal-extraction/results/focal_2024_indicators.csv`).
+- Stage A: write compendium loader (TDD), then curate `data/compendium/disclosure_items.csv` — PRI disclosure-law spine first, then accessibility, then FOCAL refs, then Sunlight unique items.
+- Stage B: populate `maps_to_state_master_field` on E-series compendium items, then TDD the `smr_projection` module + `cmd_build_smr` CLI.
+- Targeted re-read of TX §305.006 to resolve the `E1f_i` / Sunlight `Compensation = 0***` ambiguity (background; doesn't block Stage A).
+
 ## Session: 2026-04-29 — 20260429_retrieval_pipeline_design
 
 ### Topics Explored
