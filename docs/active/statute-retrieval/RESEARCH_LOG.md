@@ -8,6 +8,37 @@ PRI 2010 and Sunlight 2015 (and eventually CPI Hired Guns 2007, Newmark 2005/201
 
 (newest first)
 
+## Session: 2026-04-30 — 20260430_oh_2025_baseline_smr
+
+### Topics Explored
+- Executed `plans/20260430_oh_2026_baseline_smr.md` end-to-end. Source vintage was 2025 not 2026 — Justia tops out at 2025 for Ohio; user confirmed `(OH, 2025)` was fine for an April-2026 calibration baseline.
+- Phase 1: live Justia probe via `PlaywrightClient` confirmed URL convention identical to 2010 (Justia redirects newer slug-based forms to legacy underscore form), section list intact 2010 → 2025. Added `("OH", 2025)` entry to `LOBBYING_STATUTE_URLS` (30 URLs, commit `ee4ffdd`). Retrieved 30 sections (~143 KB) — apples-to-apples with the OH 2010 core (140,828 B) confirms the corpus is essentially unchanged in size.
+- Phase 2: 3 concurrent opus-4-7 scorer subagents per user request ("3 times for debugging"). All three scored 61 items, read all 30 statute files. Inter-run disagreement: 13 items, 21.3% (flagged at 11.5% threshold).
+- Mid-session reframe (which interpretation is correct?): read §101.72 + §101.70(F) directly and reasoned through the disputed items. **No 2025 run is fully correct.** r1 reads qualitative materiality test correctly (§101.70(F) "main purposes") but over-scores conjunctive E-series; r2/r3 read E-series correctly but miss qualitative materiality. The 2010 baseline got both right. Picked r2 (`e7846593ebb5`) for SMR projection because it best matches 2010 conventions on disputed binary items (8/9 vs 2/9 for r1, 5/9 for r3) — for continuity, not legal correctness.
+- Second reframe: **the rubric isn't the right product.** PRI asks diagnostic yes/no questions for cross-state comparison; an extraction pipeline needs a filing-field schema (filing types × required fields × cadence × triggers × cross-references). The compendium-keyed `field_requirements` row IS the right shape; the 22 fields populated by PRI projection are a thin slice of what OH's statute actually requires. User decision: don't pivot in this session — push the OH 2025 PRI-projection through as a parking-orbit MVP, then split future work into (1) filing-schema extraction harness, (2) parallel branch for pulling actual disclosure data.
+- Phase 3: built SMR from r2. Phase 4: diffed vs OH 2010 SMR.
+
+### Provisional Findings
+- **OH disclosure law is structurally near-unchanged 2010 → 2025** as PRI projection sees it. Only one structured-data flip (`governors_office.required: False → True`); all 22 field_requirements identical, both reporting_parties identical, both de_minimis nulls (wrong in both years — known scorer blind spot on qualitative materiality).
+- **Real text-level changes exist but don't move the rubric needle:** Ohio casino control commission added to "person"/"legislative agent" definitions in §101.70 (likely 2012). 8 procedural sections grew 15–60% (additions, not replacements). 12 sections ≥90% similar (housekeeping only).
+- **Section-level apparent shrinkage in §101.70 / §121.60 (~45%) is a Justia hosting artifact** — 2010 page contained both pre-9/10/2010 and post-9/10/2010 versions of those definitions inline ("set out twice"); 2025 shows only current version.
+- **OH was "the cleanest" state in the original 5-state calibration but inter-run rate jumped to 21% on 2025.** The disagreement is concentrated in known-broken zones (qualitative materiality, conjunctive E-series, C-series public-entity boundary) rather than spread evenly.
+
+### Decisions Made
+- **Source vintage = 2025** (Justia constraint, user confirmed for April-2026 calibration).
+- **3 concurrent runs** at safe-batch-size of 4 (10 min wall-clock vs 5 min for single run; worth it for inter-run signal).
+- **r2 (`e7846593ebb5`) for SMR projection** — 2010-convention continuity, not legal correctness. Diff doc explicitly flags this.
+- **No more polishing on this branch.** PRI-projection MVP shipped; future work splits into two parallel branches.
+
+### Results
+- `results/20260430_oh_2025_vs_2010_diff.md` — first multi-vintage-same-state SMR comparison; structural-diff finding + scorer-drift signals + statute-text change summary (commit `ce10674`).
+
+### Next Steps (forward signals, not acted on this session)
+- Extraction-harness branch: filing-schema-first design. The qualitative materiality gate must be handled. r2's E-series accuracy and r1's D0 accuracy are signals for what each prompt iteration got right — preserve both behaviors in a unified scorer or schema-extractor.
+- Disclosure-data branch: unblocked by the OH 2025 SMR existing as a downstream contract.
+- Open question on `governors_office.required: False → True` flip — could be a real Ch. 121 legal change since 2010 OR scorer judgment drift; not investigated this pass.
+- CA 2025 / TX 2025 baselines extend the same template; out of scope until extraction-harness branch is further along.
+
 ## Session: 2026-04-29 / 30 — 20260429_sunlight_pri_item_level_calibration
 
 ### Topics Explored
@@ -94,5 +125,7 @@ PRI 2010 and Sunlight 2015 (and eventually CPI Hired Guns 2007, Newmark 2005/201
 
 (newest first)
 
-- **20260429_multi_rubric_extraction_harness** — Reframe of harness goal: produce `StateMasterRecord` disclosure-requirement extractions, calibrated multi-rubric (PRI 2010 + Sunlight 2015 + planned CPI/Newmark). Phase 1: Sunlight correlation analysis (no new infra). Phase 2: Sunlight as second scoring rubric. Phase 3: extraction-first refactor (brainstorm-needed). Phase 4: scale to README's 5–8 priority states. Originated from the 2026-04-29 prompt-iteration thread that surfaced the goal-vs-instrument confusion.
+- **20260430_oh_2026_baseline_smr** — Re-run the Stage B SMR pipeline (URL list → retrieval → calibrate → build-smr) against the 2026-vintage OH lobbying statute. Executed end-to-end 2026-04-30 against actual Justia source vintage 2025 (no 2026 hosted yet). Diff vs OH 2010 baseline produced as `results/20260430_oh_2025_vs_2010_diff.md`. Originated from `convos/20260429_sunlight_pri_item_level_calibration.md` end-of-session.
+- **20260430_compendium_population_and_smr_fill** — Stage A populated the compendium (118 rows from PRI disclosure ∪ PRI accessibility ∪ FOCAL ∪ Sunlight unique). Stage B added `compendium_loader`, `smr_projection`, `cmd_build_smr`. Executed for OH 2010 baseline and OH 2025 baseline. Stage C (MatrixCell projection + statute-extraction harness) deferred to separate branches.
+- **20260429_multi_rubric_extraction_harness** — Reframe of harness goal: produce `StateMasterRecord` disclosure-requirement extractions, calibrated multi-rubric (PRI 2010 + Sunlight 2015 + planned CPI/Newmark). Phase 1: Sunlight correlation analysis (no new infra). Phase 2: Sunlight as second scoring rubric (skipped). Phase 3: extraction-first refactor (brainstorm-needed). Phase 4: scale to README's 5–8 priority states. Originated from the 2026-04-29 prompt-iteration thread that surfaced the goal-vs-instrument confusion.
 - **20260429_two_pass_retrieval_agent** — Two-pass pipeline: retrieval agent follows cross-references (2-hop, LLM-driven), enriched manifests, PRI 2010 as test suite. OH first. Originated from `convos/20260429_retrieval_pipeline_design.md`.
