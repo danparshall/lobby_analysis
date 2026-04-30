@@ -546,6 +546,135 @@ FOCAL_JUDGMENTS: list[dict] = [
 ]
 
 
+# -----------------------------------------------------------------------------
+# Sunlight 2015 (5 published categories → 7 atomic items per the decomposition
+# in docs/active/statute-retrieval/results/20260429_sunlight_pri_item_level.md)
+# -----------------------------------------------------------------------------
+
+SUNLIGHT_JUDGMENTS: list[dict] = [
+    {
+        "sunlight_id": "activity",
+        "type": "coarser",
+        "framework": "pri_2010_disclosure",
+        "pri_ids": ["E1g_i", "E1g_ii", "E2g_i", "E2g_ii"],
+        "op": "|",
+        "item_text": "Lobbyist Activity reporting (general subjects vs bills/actions vs bills+position)",
+        "note": "Sunlight Activity ordinal: -1 none, 0 general subjects, 1 bills, 2 bills+position",
+    },
+    {
+        "sunlight_id": "position_taken",
+        "type": "new",
+        "comp_id": "RPT_POSITION_TAKEN",
+        "name": "Lobbyist position taken on legislation (support/oppose)",
+        "domain": "reporting",
+        "data_type": "categorical",
+        "observable": True,
+        "item_text": "Position taken on each bill or item lobbied (support/oppose)",
+        "note": "Sunlight Activity score 2 implies position-taken disclosure; concept absent from PRI",
+    },
+    {
+        "sunlight_id": "expenditure_transparency",
+        "type": "coarser",
+        "framework": "pri_2010_disclosure",
+        "pri_ids": ["E1f_i", "E1f_ii", "E1f_iii", "E1f_iv", "E2f_i", "E2f_ii", "E2f_iii", "E2f_iv"],
+        "op": "|",
+        "item_text": "Expenditure Transparency (no report / lump / broad categories / itemized w/ dates+desc)",
+        "note": "Sunlight ExpTrans ordinal: -1 no report, 0 lump, 1 broad categories, 2 itemized w/ dates+desc",
+    },
+    {
+        "sunlight_id": "expenditure_format_granularity",
+        "type": "new",
+        "comp_id": "RPT_EXPENDITURE_FORMAT_GRANULARITY",
+        "name": "Expenditure report format granularity (lump / broad / itemized-w/-dates+desc)",
+        "domain": "reporting",
+        "data_type": "categorical",
+        "observable": True,
+        "item_text": "Expenditure format granularity",
+        "note": "Sunlight separates broad-categories from itemized-w/-dates+desc; PRI E*f_iv is binary itemized only",
+    },
+    {
+        "sunlight_id": "expenditure_itemization_threshold",
+        "type": "new",
+        "comp_id": "RPT_EXPENDITURE_ITEMIZATION_THRESHOLD",
+        "name": "Expenditure itemization threshold (expenses below $X exempt from itemization)",
+        "domain": "reporting",
+        "data_type": "numeric",
+        "observable": False,
+        "item_text": "Threshold below which expenditure itemization is not required",
+        "note": "Sunlight Threshold concept is itemization-threshold (different from PRI D1 registration-threshold)",
+    },
+    {
+        "sunlight_id": "document_accessibility",
+        "type": "coarser",
+        "framework": "pri_2010_accessibility",
+        "pri_ids": ["Q1", "Q6", "Q8"],
+        "op": "|",
+        "item_text": "Document Accessibility (portal usability for finding & downloading data)",
+        "note": "Sunlight DocAccess ordinal -2..2; overlaps PRI Q1 (data exists), Q6 (analysis-ready download), Q8 (multi-sort)",
+    },
+    {
+        "sunlight_id": "compensation",
+        "type": "coarser",
+        "framework": "pri_2010_disclosure",
+        "pri_ids": ["E1f_i", "E2f_i"],
+        "op": "|",
+        "item_text": "Lobbyist Compensation disclosed (Sunlight: -1 no, 0 yes)",
+        "note": "Sunlight Compensation: -1 not disclosed, 0 disclosed; PRI splits principal vs lobbyist sides",
+    },
+]
+
+
+def build_sunlight_2015() -> None:
+    for j in SUNLIGHT_JUDGMENTS:
+        sunlight_id = j["sunlight_id"]
+        text = j["item_text"]
+        ref = {"framework": "sunlight_2015", "item_id": sunlight_id, "item_text": text}
+
+        if j["type"] == "coarser":
+            framework = j["framework"]
+            pri_ids = j["pri_ids"]
+            op = j["op"]
+            joined = f" {op} ".join(f"{framework}:{pid}" for pid in pri_ids)
+            for pri_id in pri_ids:
+                target = _index[(framework, pri_id)]
+                if not any(
+                    r["framework"] == "sunlight_2015" and r["item_id"] == sunlight_id
+                    for r in target.framework_references
+                ):
+                    target.framework_references.append(ref)
+            _index[("sunlight_2015", sunlight_id)] = _index[(framework, pri_ids[0])]
+            _dedup.append(
+                DedupRow(
+                    source_framework="sunlight_2015",
+                    source_item_id=sunlight_id,
+                    target_expression=joined,
+                    notes=j.get("note", ""),
+                )
+            )
+
+        elif j["type"] == "new":
+            comp_row = CompRow(
+                id=j["comp_id"],
+                name=j["name"],
+                description=text.rstrip(".") + ".",
+                domain=j["domain"],
+                data_type=j["data_type"],
+                framework_references=[ref],
+                observable_from_database=j["observable"],
+            )
+            _add(comp_row)
+            _dedup.append(
+                DedupRow(
+                    source_framework="sunlight_2015",
+                    source_item_id=sunlight_id,
+                    target_expression="NEW",
+                    notes=j.get("note", ""),
+                )
+            )
+        else:
+            raise ValueError(f"unknown Sunlight judgment type: {j['type']}")
+
+
 def _focal_indicators_indexed() -> dict[str, dict]:
     with FOCAL.open() as f:
         return {row["indicator_id"]: row for row in csv.DictReader(f)}
@@ -745,6 +874,7 @@ def main() -> int:
     build_pri_accessibility()
     _dedup_self_pri_accessibility()
     build_focal_2024()
+    build_sunlight_2015()
     write_outputs()
     summary = _summary()
     print(f"Wrote {OUT_COMPENDIUM.relative_to(REPO_ROOT)}: {summary['compendium_rows']} rows")
