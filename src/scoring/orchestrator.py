@@ -32,6 +32,7 @@ all three temp-0 runs alongside any adjudicated rows without overwriting.
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 from pathlib import Path
 
@@ -787,6 +788,104 @@ def cmd_ingest_crossrefs(args: argparse.Namespace) -> int:
     return 0
 
 
+_STATE_NAMES: dict[str, str] = {
+    "CA": "California",
+    "TX": "Texas",
+    "OH": "Ohio",
+}
+
+
+def _detect_multi_set_frequencies(rows: list[dict]) -> dict[str, list[str]]:
+    """Return {prefix: [suffix, ...]} for any side (E1h / E2h) with 2+ true.
+
+    Empty dict if every side has at most one frequency set. Per plan B.5
+    STOP-AND-NOTIFY clause, a non-empty result should pause the build.
+    """
+    by_item = {r["item_id"]: r for r in rows}
+    out: dict[str, list[str]] = {}
+    for prefix in ("E1h", "E2h"):
+        set_freqs: list[str] = []
+        for suffix in ("i", "ii", "iii", "iv", "v", "vi"):
+            row = by_item.get(f"{prefix}_{suffix}")
+            if row is None:
+                continue
+            score_raw = (row.get("score") or "").strip()
+            try:
+                score = int(float(score_raw)) if score_raw else 0
+            except ValueError:
+                score = 0
+            if score == 1:
+                set_freqs.append(suffix)
+        if len(set_freqs) > 1:
+            out[prefix] = set_freqs
+    return out
+
+
+def cmd_build_smr(args: argparse.Namespace) -> int:
+    """Project a per-item PRI score CSV into a StateMasterRecord JSON.
+
+    Plan B.5 STOP-AND-NOTIFY: refuses to write if any side has 2+ frequencies
+    set; pass --allow-multi-frequency to override after surfacing to the user.
+    """
+    from lobby_analysis.compendium_loader import load_compendium
+    from scoring.smr_projection import project_pri_scores_to_smr
+
+    repo_root = Path(args.repo_root).resolve()
+    state = args.state.upper()
+    vintage = args.vintage
+    run_id = args.run_id
+
+    pri_csv = repo_root / "data" / "scores" / state / "statute" / str(vintage) / run_id / "pri_disclosure_law.csv"
+    if not pri_csv.exists():
+        print(json.dumps({"error": f"PRI score CSV not found: {pri_csv}"}, indent=2))
+        return 2
+
+    compendium_csv = repo_root / "data" / "compendium" / "disclosure_items.csv"
+
+    with pri_csv.open() as f:
+        rows = list(csv.DictReader(f))
+
+    multi_set = _detect_multi_set_frequencies(rows)
+    if multi_set and not args.allow_multi_frequency:
+        print(json.dumps({
+            "error": (
+                "Multiple reporting frequencies set on the same side. "
+                "Plan B.5 STOP-AND-NOTIFY: surface to the user before producing the SMR. "
+                "Re-run with --allow-multi-frequency to emit reporting_frequency='other'."
+            ),
+            "multi_set": multi_set,
+            "pri_csv": str(pri_csv),
+        }, indent=2))
+        return 3
+
+    compendium = load_compendium(compendium_csv)
+    state_name = _STATE_NAMES.get(state, state)
+    smr = project_pri_scores_to_smr(
+        pri_score_rows=rows,
+        compendium=compendium,
+        state=state,
+        state_name=state_name,
+        vintage=vintage,
+        run_id=run_id,
+    )
+
+    out_dir = repo_root / "data" / "state_master_records" / state / str(vintage)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out_path = out_dir / f"{run_id}.json"
+    out_path.write_text(smr.model_dump_json(indent=2) + "\n")
+
+    print(json.dumps({
+        "wrote": str(out_path),
+        "registration_requirements": len(smr.registration_requirements),
+        "reporting_parties": len(smr.reporting_parties),
+        "field_requirements": len(smr.field_requirements),
+        "de_minimis_financial_threshold": smr.de_minimis_financial_threshold,
+        "de_minimis_time_threshold": smr.de_minimis_time_threshold,
+        "version": smr.version,
+    }, indent=2))
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(prog="scoring-orchestrator")
     parser.add_argument("--repo-root", default=".", help="repo root (worktree path)")
@@ -1009,6 +1108,23 @@ def main() -> int:
         help="destination root, typically docs/active/<branch>/results/statute_manifests",
     )
     p_export.set_defaults(func=cmd_export_statute_manifests)
+
+    p_build_smr = sub.add_parser(
+        "build-smr",
+        help="project per-item PRI scores into a StateMasterRecord JSON",
+    )
+    p_build_smr.add_argument("--state", required=True, help="USPS state code (e.g. OH)")
+    p_build_smr.add_argument("--vintage", type=int, required=True, help="vintage year (e.g. 2010)")
+    p_build_smr.add_argument("--run-id", required=True, help="harness run id")
+    p_build_smr.add_argument(
+        "--allow-multi-frequency",
+        action="store_true",
+        help=(
+            "override the plan B.5 STOP-AND-NOTIFY guard for the rare case where a "
+            "side has 2+ frequencies set; emits reporting_frequency='other' with notes"
+        ),
+    )
+    p_build_smr.set_defaults(func=cmd_build_smr)
 
     args = parser.parse_args()
     return args.func(args)
