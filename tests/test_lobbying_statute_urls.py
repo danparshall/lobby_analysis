@@ -27,7 +27,7 @@ def test_tx_uses_2009_vintage_not_2010() -> None:
 
 
 def test_subset_keys_match_audit_chosen_years() -> None:
-    # CA/NY/WI/WY at 2010 (exact), TX at 2009 (pre-preferred). Matches the
-    # Phase 1 Justia retrieval audit's chosen_year column.
-    expected = {("CA", 2010), ("TX", 2009), ("NY", 2010), ("WI", 2010), ("WY", 2010)}
+    # CA at 2010 (exact), TX at 2009 (pre-preferred), OH at 2010 (exact).
+    # Reduced from original 5-state set to focus on difficult/informative states.
+    expected = {("CA", 2010), ("TX", 2009), ("OH", 2010)}
     assert set(CALIBRATION_SUBSET) == expected

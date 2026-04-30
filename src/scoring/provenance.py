@@ -12,7 +12,7 @@ from scoring.models import CoverageTier, RunMetadata, Rubric, ScoredItem, Scored
 PROMPT_PATH = Path("src/scoring/scorer_prompt.md")
 # Pinned model for all scoring subagents. Bump deliberately; every change invalidates
 # prior runs' comparability.
-MODEL_VERSION = "claude-sonnet-4-6"
+MODEL_VERSION = "claude-opus-4-7"
 
 
 def prompt_sha(repo_root: Path) -> str:

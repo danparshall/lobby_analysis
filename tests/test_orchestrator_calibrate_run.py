@@ -195,6 +195,10 @@ def _seed_raw_json_for_calibration_run(
         (run_dir / "raw" / f"{rubric_name}.json").write_text(
             json.dumps(raw), encoding="utf-8"
         )
+        (run_dir / "raw" / "files_read.json").write_text(
+            json.dumps({"statute_files_read": ["sections/fake-305.txt"], "notes": ""}),
+            encoding="utf-8",
+        )
     return run_dir
 
 
