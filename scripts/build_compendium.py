@@ -109,7 +109,7 @@ def _add_ref(framework: str, item_id: str, target_pri_id: str, item_text: str | 
 # A/B/C/D → registration; E1/E2 → reporting. data_type derived from PRI's
 # data_type column (binary→boolean, numeric_*→numeric, text→free_text).
 PRI_DISCLOSURE_JUDGMENTS: dict[str, dict] = {
-    # A. Who is required to register
+    # A. Who is required to register (no field_path; map to RegistrationRequirement)
     "A1": {"id": "REG_LOBBYIST", "name": "Lobbyist must register", "domain": "registration"},
     "A2": {"id": "REG_VOLUNTEER_LOBBYIST", "name": "Volunteer lobbyist must register", "domain": "registration"},
     "A3": {"id": "REG_PRINCIPAL", "name": "Principal must register", "domain": "registration"},
@@ -121,61 +121,62 @@ PRI_DISCLOSURE_JUDGMENTS: dict[str, dict] = {
     "A9": {"id": "REG_LOCAL_GOVERNMENT", "name": "Local government must register", "domain": "registration"},
     "A10": {"id": "REG_GOVT_LOBBYING_GOVT", "name": "Government lobbying government must register", "domain": "registration"},
     "A11": {"id": "REG_OTHER_PUBLIC_ENTITY", "name": "Other public entity must register", "domain": "registration"},
-    # B. Government exemptions
+    # B. Government exemptions (no field_path; routed to StateMasterRecord.notes per plan B.4)
     "B1": {"id": "EXEMPT_GOVT_OFFICIAL_CAPACITY", "name": "Government / official-capacity exemption exists", "domain": "registration"},
     "B2": {"id": "EXEMPT_GOVT_PARTIAL_RELIEF", "name": "Government partial relief from non-government rules", "domain": "registration"},
     "B3": {"id": "PARITY_GOVT_AS_LOBBYIST", "name": "Government subject to lobbyist disclosure rules", "domain": "registration"},
     "B4": {"id": "PARITY_GOVT_AS_PRINCIPAL", "name": "Government subject to principal disclosure rules", "domain": "registration"},
-    # C. Definition of public entity
+    # C. Definition of public entity (no field_path; routed to notes)
     "C0": {"id": "DEF_PUBLIC_ENTITY", "name": "Law defines 'public entity'", "domain": "registration"},
     "C1": {"id": "DEF_PUBLIC_ENTITY_OWNERSHIP", "name": "Public-entity definition uses ownership", "domain": "registration"},
     "C2": {"id": "DEF_PUBLIC_ENTITY_STRUCTURE", "name": "Public-entity definition uses structure / revenue composition", "domain": "registration"},
     "C3": {"id": "DEF_PUBLIC_ENTITY_CHARTER", "name": "Public-entity definition uses public charter / special protection", "domain": "registration"},
-    # D. Materiality test (de-minimis)
+    # D. Materiality test (no field_path; D1/D2 thresholds map to top-level de_minimis_* fields on StateMasterRecord directly per plan B.4)
     "D0": {"id": "THRESHOLD_MATERIALITY", "name": "Materiality (de-minimis) test exists", "domain": "registration"},
     "D1_present": {"id": "THRESHOLD_FINANCIAL_PRESENT", "name": "Financial de-minimis threshold exists", "domain": "registration"},
     "D1_value": {"id": "THRESHOLD_FINANCIAL_VALUE", "name": "Financial de-minimis dollar threshold (USD)", "domain": "registration"},
     "D2_present": {"id": "THRESHOLD_TIME_PRESENT", "name": "Time de-minimis threshold exists", "domain": "registration"},
     "D2_value": {"id": "THRESHOLD_TIME_VALUE", "name": "Time de-minimis percentage threshold", "domain": "registration"},
     # E1. Principal Reports
+    # E1a / E1h_* are NOT field-level — they map to ReportingPartyRequirement (gate / frequency).
     "E1a": {"id": "RPT_PRINCIPAL_GATE", "name": "Principal must file disclosure report", "domain": "reporting"},
-    "E1b": {"id": "RPT_PRINCIPAL_CONTACT", "name": "Principal report includes principal address & phone", "domain": "reporting"},
-    "E1c": {"id": "RPT_PRINCIPAL_LOBBYIST_NAMES", "name": "Principal report lists representing lobbyists", "domain": "reporting"},
-    "E1d": {"id": "RPT_PRINCIPAL_LOBBYIST_CONTACT", "name": "Principal report includes lobbyist address & phone", "domain": "reporting"},
-    "E1e": {"id": "RPT_PRINCIPAL_BUSINESS_NATURE", "name": "Principal report includes nature of business (public/private)", "domain": "reporting"},
-    "E1f_i": {"id": "RPT_PRINCIPAL_COMPENSATION", "name": "Principal report includes direct lobbying costs (compensation)", "domain": "reporting"},
-    "E1f_ii": {"id": "RPT_PRINCIPAL_NON_COMPENSATION", "name": "Principal report includes indirect lobbying costs (non-compensation)", "domain": "reporting"},
-    "E1f_iii": {"id": "RPT_PRINCIPAL_OTHER_COSTS", "name": "Principal report includes gifts / entertainment / transport / lodging", "domain": "reporting"},
-    "E1f_iv": {"id": "RPT_PRINCIPAL_ITEMIZED", "name": "Principal report is itemized (vs lump-sum)", "domain": "reporting"},
-    "E1g_i": {"id": "RPT_PRINCIPAL_ISSUE_GENERAL", "name": "Principal report discloses general issues lobbied", "domain": "reporting"},
-    "E1g_ii": {"id": "RPT_PRINCIPAL_BILL_SPECIFIC", "name": "Principal report discloses specific bill numbers / legislation IDs", "domain": "reporting"},
+    "E1b": {"id": "RPT_PRINCIPAL_CONTACT", "name": "Principal report includes principal address & phone", "domain": "reporting", "field_path": "filer_organization.contact_details[].value"},
+    "E1c": {"id": "RPT_PRINCIPAL_LOBBYIST_NAMES", "name": "Principal report lists representing lobbyists", "domain": "reporting", "field_path": "registration::lobbyist.name", "field_note": "Stored on LobbyistRegistration; principal's lobbyist list = inverse of registrations where clients[] contains the principal."},
+    "E1d": {"id": "RPT_PRINCIPAL_LOBBYIST_CONTACT", "name": "Principal report includes lobbyist address & phone", "domain": "reporting", "field_path": "registration::lobbyist.contact_details[].value", "field_note": "Lobbyist contact info is on the registration record, not the principal's filing."},
+    "E1e": {"id": "RPT_PRINCIPAL_BUSINESS_NATURE", "name": "Principal report includes nature of business (public/private)", "domain": "reporting", "field_path": "filer_organization.legal_form"},
+    "E1f_i": {"id": "RPT_PRINCIPAL_COMPENSATION", "name": "Principal report includes direct lobbying costs (compensation)", "domain": "reporting", "field_path": "total_compensation"},
+    "E1f_ii": {"id": "RPT_PRINCIPAL_NON_COMPENSATION", "name": "Principal report includes indirect lobbying costs (non-compensation)", "domain": "reporting", "field_path": "total_reimbursements"},
+    "E1f_iii": {"id": "RPT_PRINCIPAL_OTHER_COSTS", "name": "Principal report includes gifts / entertainment / transport / lodging", "domain": "reporting", "field_path": "total_other_costs"},
+    "E1f_iv": {"id": "RPT_PRINCIPAL_ITEMIZED", "name": "Principal report is itemized (vs lump-sum)", "domain": "reporting", "field_path": "is_itemized"},
+    "E1g_i": {"id": "RPT_PRINCIPAL_ISSUE_GENERAL", "name": "Principal report discloses general issues lobbied", "domain": "reporting", "field_path": "positions[].general_issue_area"},
+    "E1g_ii": {"id": "RPT_PRINCIPAL_BILL_SPECIFIC", "name": "Principal report discloses specific bill numbers / legislation IDs", "domain": "reporting", "field_path": "positions[].bill_reference"},
     "E1h_i": {"id": "FREQ_PRINCIPAL_MONTHLY", "name": "Principal reporting frequency: monthly", "domain": "reporting"},
     "E1h_ii": {"id": "FREQ_PRINCIPAL_QUARTERLY", "name": "Principal reporting frequency: quarterly", "domain": "reporting"},
     "E1h_iii": {"id": "FREQ_PRINCIPAL_TRI_ANNUAL", "name": "Principal reporting frequency: tri-annual (legislative calendar)", "domain": "reporting"},
     "E1h_iv": {"id": "FREQ_PRINCIPAL_SEMI_ANNUAL", "name": "Principal reporting frequency: semi-annual", "domain": "reporting"},
     "E1h_v": {"id": "FREQ_PRINCIPAL_ANNUAL", "name": "Principal reporting frequency: annual", "domain": "reporting"},
     "E1h_vi": {"id": "FREQ_PRINCIPAL_OTHER", "name": "Principal reporting frequency: other (free-text)", "domain": "reporting"},
-    "E1i": {"id": "RPT_PRINCIPAL_CONTACTS_LOGGED", "name": "Principal must disclose contacts (contact log)", "domain": "contact_log"},
-    "E1j": {"id": "RPT_PRINCIPAL_FINANCIAL_CONTRIBUTORS", "name": "Principal must disclose major financial contributors", "domain": "reporting"},
+    "E1i": {"id": "RPT_PRINCIPAL_CONTACTS_LOGGED", "name": "Principal must disclose contacts (contact log)", "domain": "contact_log", "field_path": "engagements[]", "field_note": "Gate item: presence of any engagement entry = contacts disclosed."},
+    "E1j": {"id": "RPT_PRINCIPAL_FINANCIAL_CONTRIBUTORS", "name": "Principal must disclose major financial contributors", "domain": "reporting", "field_note": "No clean LobbyingFiling field today; would surface as a separate financial_contributors[] disclosure if added."},
     # E2. Lobbyist Disclosure
     "E2a": {"id": "RPT_LOBBYIST_GATE", "name": "Lobbyist must file disclosure report", "domain": "reporting"},
-    "E2b": {"id": "RPT_LOBBYIST_CONTACT", "name": "Lobbyist report includes lobbyist address & phone", "domain": "reporting"},
-    "E2c": {"id": "RPT_LOBBYIST_PRINCIPAL_NAMES", "name": "Lobbyist report lists represented principals", "domain": "reporting"},
-    "E2d": {"id": "RPT_LOBBYIST_PRINCIPAL_CONTACT", "name": "Lobbyist report includes principal address & phone", "domain": "reporting"},
-    "E2e": {"id": "RPT_LOBBYIST_PRINCIPAL_NATURE", "name": "Lobbyist report includes principal's business nature (public/private)", "domain": "reporting"},
-    "E2f_i": {"id": "RPT_LOBBYIST_COMPENSATION", "name": "Lobbyist report includes direct lobbying costs (compensation)", "domain": "reporting"},
-    "E2f_ii": {"id": "RPT_LOBBYIST_NON_COMPENSATION", "name": "Lobbyist report includes indirect lobbying costs (non-compensation)", "domain": "reporting"},
-    "E2f_iii": {"id": "RPT_LOBBYIST_OTHER_COSTS", "name": "Lobbyist report includes gifts / entertainment / transport / lodging", "domain": "reporting"},
-    "E2f_iv": {"id": "RPT_LOBBYIST_ITEMIZED", "name": "Lobbyist report is itemized (vs lump-sum)", "domain": "reporting"},
-    "E2g_i": {"id": "RPT_LOBBYIST_ISSUE_GENERAL", "name": "Lobbyist report discloses general issues lobbied", "domain": "reporting"},
-    "E2g_ii": {"id": "RPT_LOBBYIST_BILL_SPECIFIC", "name": "Lobbyist report discloses specific bill numbers / legislation IDs", "domain": "reporting"},
+    "E2b": {"id": "RPT_LOBBYIST_CONTACT", "name": "Lobbyist report includes lobbyist address & phone", "domain": "reporting", "field_path": "filer_person.contact_details[].value"},
+    "E2c": {"id": "RPT_LOBBYIST_PRINCIPAL_NAMES", "name": "Lobbyist report lists represented principals", "domain": "reporting", "field_path": "registration::clients[].name"},
+    "E2d": {"id": "RPT_LOBBYIST_PRINCIPAL_CONTACT", "name": "Lobbyist report includes principal address & phone", "domain": "reporting", "field_path": "registration::clients[].contact_details[].value"},
+    "E2e": {"id": "RPT_LOBBYIST_PRINCIPAL_NATURE", "name": "Lobbyist report includes principal's business nature (public/private)", "domain": "reporting", "field_path": "registration::clients[].legal_form"},
+    "E2f_i": {"id": "RPT_LOBBYIST_COMPENSATION", "name": "Lobbyist report includes direct lobbying costs (compensation)", "domain": "reporting", "field_path": "total_compensation"},
+    "E2f_ii": {"id": "RPT_LOBBYIST_NON_COMPENSATION", "name": "Lobbyist report includes indirect lobbying costs (non-compensation)", "domain": "reporting", "field_path": "total_reimbursements"},
+    "E2f_iii": {"id": "RPT_LOBBYIST_OTHER_COSTS", "name": "Lobbyist report includes gifts / entertainment / transport / lodging", "domain": "reporting", "field_path": "total_other_costs"},
+    "E2f_iv": {"id": "RPT_LOBBYIST_ITEMIZED", "name": "Lobbyist report is itemized (vs lump-sum)", "domain": "reporting", "field_path": "is_itemized"},
+    "E2g_i": {"id": "RPT_LOBBYIST_ISSUE_GENERAL", "name": "Lobbyist report discloses general issues lobbied", "domain": "reporting", "field_path": "positions[].general_issue_area"},
+    "E2g_ii": {"id": "RPT_LOBBYIST_BILL_SPECIFIC", "name": "Lobbyist report discloses specific bill numbers / legislation IDs", "domain": "reporting", "field_path": "positions[].bill_reference"},
     "E2h_i": {"id": "FREQ_LOBBYIST_MONTHLY", "name": "Lobbyist reporting frequency: monthly", "domain": "reporting"},
     "E2h_ii": {"id": "FREQ_LOBBYIST_QUARTERLY", "name": "Lobbyist reporting frequency: quarterly", "domain": "reporting"},
     "E2h_iii": {"id": "FREQ_LOBBYIST_TRI_ANNUAL", "name": "Lobbyist reporting frequency: tri-annual (legislative calendar)", "domain": "reporting"},
     "E2h_iv": {"id": "FREQ_LOBBYIST_SEMI_ANNUAL", "name": "Lobbyist reporting frequency: semi-annual", "domain": "reporting"},
     "E2h_v": {"id": "FREQ_LOBBYIST_ANNUAL", "name": "Lobbyist reporting frequency: annual", "domain": "reporting"},
     "E2h_vi": {"id": "FREQ_LOBBYIST_OTHER", "name": "Lobbyist reporting frequency: other (free-text)", "domain": "reporting"},
-    "E2i": {"id": "RPT_LOBBYIST_CONTACTS_LOGGED", "name": "Lobbyist must disclose contacts (contact log)", "domain": "contact_log"},
+    "E2i": {"id": "RPT_LOBBYIST_CONTACTS_LOGGED", "name": "Lobbyist must disclose contacts (contact log)", "domain": "contact_log", "field_path": "engagements[]", "field_note": "Gate item: presence of any engagement entry = contacts disclosed."},
 }
 
 
@@ -753,6 +754,7 @@ def build_pri_disclosure_spine() -> None:
         for row in csv.DictReader(f):
             pri_id = row["item_id"]
             judgment = PRI_DISCLOSURE_JUDGMENTS[pri_id]
+            field_path = judgment.get("field_path")
             comp_row = CompRow(
                 id=judgment["id"],
                 name=judgment["name"],
@@ -766,7 +768,10 @@ def build_pri_disclosure_spine() -> None:
                         "item_text": row["item_text"],
                     }
                 ],
+                maps_to_state_master_field=field_path,
+                maps_to_filing_field=field_path,
                 observable_from_database=_observable_from_pri_id(pri_id),
+                notes=judgment.get("field_note", ""),
             )
             _add(comp_row)
 
