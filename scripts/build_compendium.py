@@ -199,6 +199,68 @@ def _observable_from_pri_id(pri_id: str) -> bool:
     return pri_id.startswith("E")
 
 
+# PRI 2010 accessibility (22 items, all domain=accessibility, all observable=True)
+PRI_ACCESSIBILITY_JUDGMENTS: dict[str, dict] = {
+    "Q1": {"id": "ACC_DATA_AVAILABLE_AT_ALL", "name": "Some lobbying data available (any format, by request or web)"},
+    "Q2": {"id": "ACC_DEDICATED_WEBSITE", "name": "Dedicated state lobbying website exists"},
+    "Q3": {"id": "ACC_WEBSITE_FINDABILITY", "name": "State lobbying website is easily found"},
+    "Q4": {"id": "ACC_CURRENT_YEAR_DATA", "name": "Current-year lobbying data available on the website"},
+    "Q5": {"id": "ACC_HISTORICAL_DATA", "name": "Historical lobbying data available, downloadable, or viewable"},
+    "Q6": {"id": "ACC_DOWNLOAD_ANALYSIS_READY", "name": "Data downloadable in analysis-ready electronic format (CSV / Excel / SPSS)"},
+    "Q7a": {"id": "ACC_SORT_BY_PRINCIPAL", "name": "Search/sort by principal (city, hiring authority, employer, corporation)"},
+    "Q7b": {"id": "ACC_SORT_BY_PRINCIPAL_LOCATION", "name": "Search/sort by principal location (address, city)"},
+    "Q7c": {"id": "ACC_SORT_BY_LOBBYIST_NAME", "name": "Search/sort by lobbyist name"},
+    "Q7d": {"id": "ACC_SORT_BY_LOBBYIST_LOCATION", "name": "Search/sort by lobbyist location (address, city)"},
+    "Q7e": {"id": "ACC_SORT_BY_DATE", "name": "Search/sort by specific date"},
+    "Q7f": {"id": "ACC_SORT_BY_PERIOD", "name": "Search/sort by specific time period (quarter etc.)"},
+    "Q7g": {"id": "ACC_SORT_BY_TOTAL_EXPENDITURES", "name": "Search/sort by total expenditures"},
+    "Q7h": {"id": "ACC_SORT_BY_COMPENSATION", "name": "Search/sort by compensation spending"},
+    "Q7i": {"id": "ACC_SORT_BY_MISC_EXPENSES", "name": "Search/sort by miscellaneous (non-compensation) expenses"},
+    "Q7j": {"id": "ACC_SORT_BY_FUNDING_SOURCE", "name": "Search/sort by sources of funding (public/taxpayer-funded)"},
+    "Q7k": {"id": "ACC_SORT_BY_SUBJECT", "name": "Search/sort by subject of lobbying (item of legislation)"},
+    "Q7l": {"id": "ACC_SORT_BY_DESIGNATED_ENTITY", "name": "Search/sort by designated entities assigned to lobbyist"},
+    "Q7m": {"id": "ACC_SORT_BY_LEGAL_STATUS", "name": "Search/sort by legal status of principal (govt / non-profit / for-profit)"},
+    "Q7n": {"id": "ACC_SORT_BY_SECTOR", "name": "Search/sort by sector"},
+    "Q7o": {"id": "ACC_SORT_BY_SUB_SECTOR", "name": "Search/sort by sub-sector"},
+    "Q8": {"id": "ACC_MULTI_CRITERIA_SORT", "name": "Multi-criteria simultaneous sort (ordinal 0-15)"},
+}
+
+
+def build_pri_accessibility() -> None:
+    with PRI_ACCESSIBILITY.open() as f:
+        for row in csv.DictReader(f):
+            q_id = row["item_id"]
+            judgment = PRI_ACCESSIBILITY_JUDGMENTS[q_id]
+            comp_row = CompRow(
+                id=judgment["id"],
+                name=judgment["name"],
+                description=row["item_text"].rstrip(".") + ".",
+                domain="accessibility",
+                data_type=_data_type_from_pri(row["data_type"]),
+                framework_references=[
+                    {
+                        "framework": "pri_2010_accessibility",
+                        "item_id": q_id,
+                        "item_text": row["item_text"],
+                    }
+                ],
+                observable_from_database=True,
+            )
+            _add(comp_row)
+
+
+def _dedup_self_pri_accessibility() -> None:
+    for q_id in PRI_ACCESSIBILITY_JUDGMENTS:
+        _dedup.append(
+            DedupRow(
+                source_framework="pri_2010_accessibility",
+                source_item_id=q_id,
+                target_expression=f"pri_2010_accessibility:{q_id}",
+                notes="self-reference (PRI accessibility row)",
+            )
+        )
+
+
 def build_pri_disclosure_spine() -> None:
     with PRI_DISCLOSURE.open() as f:
         for row in csv.DictReader(f):
@@ -322,6 +384,8 @@ def _summary() -> dict:
 def main() -> int:
     build_pri_disclosure_spine()
     _dedup_self_pri_disclosure()
+    build_pri_accessibility()
+    _dedup_self_pri_accessibility()
     write_outputs()
     summary = _summary()
     print(f"Wrote {OUT_COMPENDIUM.relative_to(REPO_ROOT)}: {summary['compendium_rows']} rows")
