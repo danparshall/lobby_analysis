@@ -261,6 +261,364 @@ def _dedup_self_pri_accessibility() -> None:
         )
 
 
+# -----------------------------------------------------------------------------
+# FOCAL 2024 (50 indicators)
+#
+# Each judgment has type ∈ {"1to1", "coarser", "new"}.
+# - 1to1: attach FOCAL ref to a single compendium row already keyed by
+#   (framework, pri_id).
+# - coarser: attach FOCAL ref to multiple PRI rows; dedup target_expression
+#   joins them with `&` (FOCAL = AND of the underlying items) or `|`
+#   (FOCAL = OR; counted if any underlying item is required).
+# - new: create a new compendium row with FOCAL as the only initial ref.
+# -----------------------------------------------------------------------------
+
+FOCAL_JUDGMENTS: list[dict] = [
+    # Group 1: Scope
+    {
+        "focal_id": "1.1", "type": "coarser",
+        "framework": "pri_2010_disclosure",
+        "pri_ids": ["A1", "A2", "A3", "A4", "A6", "A7", "A8", "A9", "A10", "A11"],
+        "op": "&",
+        "note": "FOCAL 1.1 (registry covers all listed types) = AND of PRI A-series",
+    },
+    {
+        "focal_id": "1.2", "type": "coarser",
+        "framework": "pri_2010_disclosure",
+        "pri_ids": ["D1_present", "D2_present"],
+        "op": "&",
+        "note": "polarity-flipped: FOCAL asks for low/no threshold, PRI asks if threshold exists",
+    },
+    {
+        "focal_id": "1.3", "type": "new",
+        "comp_id": "REG_LOBBYING_TARGETS_SCOPE",
+        "name": "Scope of officials counted as lobbying targets",
+        "domain": "registration", "data_type": "categorical", "observable": False,
+    },
+    {
+        "focal_id": "1.4", "type": "new",
+        "comp_id": "REG_LOBBYING_ACTIVITY_FORMS_SCOPE",
+        "name": "Scope of activity forms counted as lobbying (oral, written, electronic, events)",
+        "domain": "registration", "data_type": "categorical", "observable": False,
+    },
+    # Group 2: Timeliness
+    {
+        "focal_id": "2.1", "type": "new",
+        "comp_id": "ACC_REGISTRY_UPDATE_FRESHNESS",
+        "name": "Registry change updates frequency (target close to real-time)",
+        "domain": "accessibility", "data_type": "categorical", "observable": True,
+    },
+    {
+        "focal_id": "2.2", "type": "new",
+        "comp_id": "ACC_ACTIVITY_DISCLOSURE_FRESHNESS",
+        "name": "Lobbying activity disclosure freshness (target close to real-time)",
+        "domain": "accessibility", "data_type": "categorical", "observable": True,
+    },
+    {
+        "focal_id": "2.3", "type": "new",
+        "comp_id": "RPT_OFFICIAL_DIARY_DISCLOSURE",
+        "name": "Officials' / ministers' diaries (calendars / meeting logs) disclosed",
+        "domain": "contact_log", "data_type": "boolean", "observable": False,
+    },
+    # Group 3: Openness
+    {
+        "focal_id": "3.1", "type": "1to1",
+        "framework": "pri_2010_accessibility", "pri_id": "Q2",
+    },
+    {
+        "focal_id": "3.2", "type": "new",
+        "comp_id": "ACC_DIARIES_ONLINE",
+        "name": "Lobbyist / minister diaries available online",
+        "domain": "accessibility", "data_type": "boolean", "observable": True,
+    },
+    {
+        "focal_id": "3.3", "type": "coarser",
+        "framework": "pri_2010_accessibility",
+        "pri_ids": ["Q1", "Q6"],
+        "op": "&",
+        "note": "FOCAL 3.3 is a 5-condition compound (no-registration, free, open license, non-proprietary, machine-readable); PRI Q1 covers availability and Q6 covers analysis-ready format. Open-license / no-registration are not in PRI",
+    },
+    {
+        "focal_id": "3.4", "type": "1to1",
+        "framework": "pri_2010_accessibility", "pri_id": "Q6",
+    },
+    {
+        "focal_id": "3.5", "type": "1to1",
+        "framework": "pri_2010_accessibility", "pri_id": "Q8",
+    },
+    {
+        "focal_id": "3.6", "type": "new",
+        "comp_id": "ACC_UNIQUE_IDENTIFIERS",
+        "name": "Unique identifiers in registry (lobbyists, individuals, organisations)",
+        "domain": "accessibility", "data_type": "boolean", "observable": True,
+    },
+    {
+        "focal_id": "3.7", "type": "new",
+        "comp_id": "ACC_LINKED_DATA",
+        "name": "Linked / interconnected data (to other datasets, e.g. campaign finance)",
+        "domain": "accessibility", "data_type": "boolean", "observable": True,
+    },
+    {
+        "focal_id": "3.8", "type": "1to1",
+        "framework": "pri_2010_accessibility", "pri_id": "Q5",
+    },
+    {
+        "focal_id": "3.9", "type": "new",
+        "comp_id": "ACC_CHANGE_FLAGGING",
+        "name": "Changes / updates documented with a flagging system",
+        "domain": "accessibility", "data_type": "boolean", "observable": True,
+    },
+    # Group 4: Descriptors
+    {
+        "focal_id": "4.1", "type": "coarser",
+        "framework": "pri_2010_disclosure",
+        "pri_ids": ["E1c", "E2c"],
+        "op": "|",
+        "note": "FOCAL 4.1 (full names) finer than PRI but cross-references both name-listing rows",
+    },
+    {
+        "focal_id": "4.2", "type": "coarser",
+        "framework": "pri_2010_disclosure",
+        "pri_ids": ["E1b", "E1d", "E2b", "E2d"],
+        "op": "|",
+        "note": "FOCAL 4.2 (contact details) covers all four contact-detail rows on either side",
+    },
+    {
+        "focal_id": "4.3", "type": "coarser",
+        "framework": "pri_2010_disclosure",
+        "pri_ids": ["E1e", "E2e"],
+        "op": "|",
+        "note": "FOCAL 4.3 (legal form) on either principal-side or lobbyist-side report",
+    },
+    {
+        "focal_id": "4.4", "type": "new",
+        "comp_id": "RPT_ORG_REGISTRATION_NUMBER",
+        "name": "Organization registration number (Sec-of-State entity ID or EIN)",
+        "domain": "reporting", "data_type": "free_text", "observable": True,
+    },
+    {
+        "focal_id": "4.5", "type": "new",
+        "comp_id": "RPT_SECTOR_DISCLOSED",
+        "name": "Sector / sub-sector of principal disclosed",
+        "domain": "reporting", "data_type": "categorical", "observable": True,
+    },
+    {
+        "focal_id": "4.6", "type": "new",
+        "comp_id": "RPT_LOBBYIST_CONTRACT_TYPE",
+        "name": "Type of lobbyist contract (salaried / contracted)",
+        "domain": "reporting", "data_type": "categorical", "observable": True,
+    },
+    # Group 5: Revolving door
+    {
+        "focal_id": "5.1", "type": "new",
+        "comp_id": "REVOLVING_LOBBYIST_PRIOR_OFFICES",
+        "name": "List of all prior public offices held by lobbyist with dates",
+        "domain": "revolving_door", "data_type": "compound", "observable": True,
+    },
+    {
+        "focal_id": "5.2", "type": "new",
+        "comp_id": "REVOLVING_COOLING_OFF_DATABASE",
+        "name": "Database of officials banned from lobbying (cooling-off period)",
+        "domain": "revolving_door", "data_type": "boolean", "observable": True,
+    },
+    # Group 6: Relationships
+    {
+        "focal_id": "6.1", "type": "1to1",
+        "framework": "pri_2010_disclosure", "pri_id": "E2c",
+        "note": "FOCAL 6.1 (consultant/firm client list) ≈ PRI E2c (lobbyist report lists represented principals)",
+    },
+    {
+        "focal_id": "6.2", "type": "1to1",
+        "framework": "pri_2010_disclosure", "pri_id": "E1j",
+        "note": "FOCAL 6.2 (sponsors / members) ≈ PRI E1j (major financial contributors)",
+    },
+    {
+        "focal_id": "6.3", "type": "new",
+        "comp_id": "REL_BOARD_SEATS",
+        "name": "List of board seats held (associations, companies)",
+        "domain": "relationship", "data_type": "compound", "observable": True,
+    },
+    {
+        "focal_id": "6.4", "type": "new",
+        "comp_id": "REL_OFFICIAL_BUSINESS_TIES",
+        "name": "Direct business associations with public officials, candidates, or household members",
+        "domain": "relationship", "data_type": "compound", "observable": True,
+    },
+    # Group 7: Financials
+    {
+        "focal_id": "7.1", "type": "1to1",
+        "framework": "pri_2010_disclosure", "pri_id": "E2f_i",
+        "note": "FOCAL 7.1 (total lobbying income for consultants/firms) ≈ PRI E2f_i (lobbyist compensation)",
+    },
+    {
+        "focal_id": "7.2", "type": "new",
+        "comp_id": "FIN_INCOME_PER_CLIENT",
+        "name": "Lobbying income per client (consultants / firms)",
+        "domain": "financial", "data_type": "numeric", "observable": True,
+    },
+    {
+        "focal_id": "7.3", "type": "1to1",
+        "framework": "pri_2010_disclosure", "pri_id": "E1j",
+        "note": "FOCAL 7.3 (income sources + amount) finer than PRI E1j (major financial contributors)",
+    },
+    {
+        "focal_id": "7.4", "type": "1to1",
+        "framework": "pri_2010_disclosure", "pri_id": "E1c",
+        "note": "FOCAL 7.4 (number of lobbyists) implied by PRI E1c (lobbyists listed by name)",
+    },
+    {
+        "focal_id": "7.5", "type": "new",
+        "comp_id": "FIN_TIME_SPENT_LOBBYING",
+        "name": "Amount of time spent on lobbying",
+        "domain": "financial", "data_type": "numeric", "observable": True,
+    },
+    {
+        "focal_id": "7.6", "type": "coarser",
+        "framework": "pri_2010_disclosure",
+        "pri_ids": ["E1f_i", "E1f_ii", "E1f_iii"],
+        "op": "&",
+        "note": "FOCAL 7.6 (total expenditure) = AND of PRI E1f_i (comp) + E1f_ii (non-comp) + E1f_iii (other)",
+    },
+    {
+        "focal_id": "7.7", "type": "coarser",
+        "framework": "pri_2010_disclosure",
+        "pri_ids": ["E1f_i", "E1f_ii"],
+        "op": "&",
+        "note": "FOCAL 7.7 (compensated vs uncompensated) = AND of PRI E1f_i + E1f_ii",
+    },
+    {
+        "focal_id": "7.8", "type": "new",
+        "comp_id": "FIN_EXPENDITURE_PER_ISSUE",
+        "name": "Expenditure per issue / topic",
+        "domain": "financial", "data_type": "numeric", "observable": True,
+    },
+    {
+        "focal_id": "7.9", "type": "new",
+        "comp_id": "FIN_TRADE_ASSOCIATION_DUES",
+        "name": "Expenditure on membership / sponsorship of organisations that lobby",
+        "domain": "financial", "data_type": "numeric", "observable": True,
+    },
+    {
+        "focal_id": "7.10", "type": "1to1",
+        "framework": "pri_2010_disclosure", "pri_id": "E1f_iii",
+        "note": "FOCAL 7.10 (gifts / non-financial benefits) ≈ PRI E1f_iii (gifts/entertainment/transport/lodging)",
+    },
+    {
+        "focal_id": "7.11", "type": "new",
+        "comp_id": "FIN_CAMPAIGN_CONTRIBUTIONS",
+        "name": "Campaign / political contributions disclosed (incl. in-kind)",
+        "domain": "financial", "data_type": "compound", "observable": True,
+    },
+    # Group 8: Contact log fields (all NEW; PRI E1i / E2i are gate items only)
+    {"focal_id": "8.1", "type": "new", "comp_id": "CONTACT_BENEFICIARY",
+     "name": "Contact log: organisation / interest represented (beneficiary)",
+     "domain": "contact_log", "data_type": "free_text", "observable": True},
+    {"focal_id": "8.2", "type": "new", "comp_id": "CONTACT_PERSONS_CONTACTED",
+     "name": "Contact log: names of persons contacted and their position",
+     "domain": "contact_log", "data_type": "compound", "observable": True},
+    {"focal_id": "8.3", "type": "new", "comp_id": "CONTACT_INSTITUTION",
+     "name": "Contact log: institution / department contacted",
+     "domain": "contact_log", "data_type": "free_text", "observable": True},
+    {"focal_id": "8.4", "type": "new", "comp_id": "CONTACT_MEETING_ATTENDEES",
+     "name": "Contact log: names of all meeting attendees",
+     "domain": "contact_log", "data_type": "compound", "observable": True},
+    {"focal_id": "8.5", "type": "new", "comp_id": "CONTACT_DATE",
+     "name": "Contact log: date",
+     "domain": "contact_log", "data_type": "free_text", "observable": True},
+    {"focal_id": "8.6", "type": "new", "comp_id": "CONTACT_FORM",
+     "name": "Contact log: form (in-person, video, phone)",
+     "domain": "contact_log", "data_type": "categorical", "observable": True},
+    {"focal_id": "8.7", "type": "new", "comp_id": "CONTACT_LOCATION",
+     "name": "Contact log: location",
+     "domain": "contact_log", "data_type": "free_text", "observable": True},
+    {"focal_id": "8.8", "type": "new", "comp_id": "CONTACT_MATERIALS_SHARED",
+     "name": "Contact log: materials shared (excluding commercially sensitive)",
+     "domain": "contact_log", "data_type": "free_text", "observable": True},
+    {"focal_id": "8.9", "type": "new", "comp_id": "CONTACT_TOPICS",
+     "name": "Contact log: topics / issues discussed",
+     "domain": "contact_log", "data_type": "free_text", "observable": True},
+    {"focal_id": "8.10", "type": "new", "comp_id": "CONTACT_OUTCOMES_SOUGHT",
+     "name": "Contact log: outcomes sought (legislation supported / opposed)",
+     "domain": "contact_log", "data_type": "free_text", "observable": True},
+    {"focal_id": "8.11", "type": "new", "comp_id": "CONTACT_LEGISLATIVE_REFERENCES",
+     "name": "Contact log: targeted legislation / bill numbers / measures",
+     "domain": "contact_log", "data_type": "compound", "observable": True},
+]
+
+
+def _focal_indicators_indexed() -> dict[str, dict]:
+    with FOCAL.open() as f:
+        return {row["indicator_id"]: row for row in csv.DictReader(f)}
+
+
+def build_focal_2024() -> None:
+    indicators = _focal_indicators_indexed()
+    for j in FOCAL_JUDGMENTS:
+        focal_id = j["focal_id"]
+        focal_row = indicators[focal_id]
+        text = focal_row["indicator_text"]
+        ref = {"framework": "focal_2024", "item_id": focal_id, "item_text": text}
+
+        if j["type"] == "1to1":
+            framework = j["framework"]
+            pri_id = j["pri_id"]
+            target = _index[(framework, pri_id)]
+            target.framework_references.append(ref)
+            _index[("focal_2024", focal_id)] = target
+            _dedup.append(
+                DedupRow(
+                    source_framework="focal_2024",
+                    source_item_id=focal_id,
+                    target_expression=f"{framework}:{pri_id}",
+                    notes=j.get("note", ""),
+                )
+            )
+
+        elif j["type"] == "coarser":
+            framework = j["framework"]
+            pri_ids = j["pri_ids"]
+            op = j["op"]  # "&" or "|"
+            joined = f" {op} ".join(f"{framework}:{pid}" for pid in pri_ids)
+            for pri_id in pri_ids:
+                target = _index[(framework, pri_id)]
+                if not any(
+                    r["framework"] == "focal_2024" and r["item_id"] == focal_id
+                    for r in target.framework_references
+                ):
+                    target.framework_references.append(ref)
+            _index[("focal_2024", focal_id)] = _index[(framework, pri_ids[0])]
+            _dedup.append(
+                DedupRow(
+                    source_framework="focal_2024",
+                    source_item_id=focal_id,
+                    target_expression=joined,
+                    notes=j.get("note", ""),
+                )
+            )
+
+        elif j["type"] == "new":
+            comp_row = CompRow(
+                id=j["comp_id"],
+                name=j["name"],
+                description=text.rstrip(".") + ".",
+                domain=j["domain"],
+                data_type=j["data_type"],
+                framework_references=[ref],
+                observable_from_database=j["observable"],
+            )
+            _add(comp_row)
+            _dedup.append(
+                DedupRow(
+                    source_framework="focal_2024",
+                    source_item_id=focal_id,
+                    target_expression="NEW",
+                    notes=j.get("note", ""),
+                )
+            )
+        else:
+            raise ValueError(f"unknown FOCAL judgment type: {j['type']}")
+
+
 def build_pri_disclosure_spine() -> None:
     with PRI_DISCLOSURE.open() as f:
         for row in csv.DictReader(f):
@@ -386,6 +744,7 @@ def main() -> int:
     _dedup_self_pri_disclosure()
     build_pri_accessibility()
     _dedup_self_pri_accessibility()
+    build_focal_2024()
     write_outputs()
     summary = _summary()
     print(f"Wrote {OUT_COMPENDIUM.relative_to(REPO_ROOT)}: {summary['compendium_rows']} rows")
