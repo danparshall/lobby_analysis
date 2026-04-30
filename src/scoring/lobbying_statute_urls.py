@@ -46,14 +46,62 @@ LOBBYING_STATUTE_URLS: dict[tuple[str, int], list[str]] = {
     ("WY", 2010): [
         "https://law.justia.com/codes/wyoming/2010/Title28/chapter7.html",
     ],
+    # OH - Three separate lobbying statute bodies across two chapters. 2010 exact.
+    # URL pattern inferred from confirmed 2010 leaf (101_83.html); needs verification.
+    #
+    # Legislative lobbying: ORC Ch. 101 §§ 101.70-101.79
+    # Retirement system lobbying: ORC Ch. 101 §§ 101.90-101.99
+    # Executive agency lobbying: ORC Ch. 121 §§ 121.60-121.69
+    ("OH", 2010): [
+        # Legislative lobbying (Ch. 101, §§ 101.70-101.79)
+        *[
+            f"https://law.justia.com/codes/ohio/2010/title1/chapter101/101_{n}.html"
+            for n in range(70, 80)
+        ],
+        # Retirement system lobbying (Ch. 101, §§ 101.90-101.99)
+        *[
+            f"https://law.justia.com/codes/ohio/2010/title1/chapter101/101_{n}.html"
+            for n in range(90, 100)
+        ],
+        # Executive agency lobbying (Ch. 121, §§ 121.60-121.69)
+        *[
+            f"https://law.justia.com/codes/ohio/2010/title1/chapter121/121_{n}.html"
+            for n in range(60, 70)
+        ],
+    ],
+    # OH 2025 - same three statute bodies as 2010, sourced from the most recent
+    # Justia-hosted vintage (Justia hosts up to 2025 for OH; no 2026 available
+    # as of 2026-04). Section numbering verified intact 2010 → 2025 by boundary
+    # spot-check (§101.70, §101.79, §101.99, §121.60, §121.69 all resolve with
+    # subject titles matching the 2010 list). URL pattern identical to 2010
+    # with year swapped — Justia redirects newer slug-based URLs back to this
+    # legacy underscore form.
+    ("OH", 2025): [
+        # Legislative lobbying (Ch. 101, §§ 101.70-101.79)
+        *[
+            f"https://law.justia.com/codes/ohio/2025/title1/chapter101/101_{n}.html"
+            for n in range(70, 80)
+        ],
+        # Retirement system lobbying (Ch. 101, §§ 101.90-101.99)
+        *[
+            f"https://law.justia.com/codes/ohio/2025/title1/chapter101/101_{n}.html"
+            for n in range(90, 100)
+        ],
+        # Executive agency lobbying (Ch. 121, §§ 121.60-121.69)
+        *[
+            f"https://law.justia.com/codes/ohio/2025/title1/chapter121/121_{n}.html"
+            for n in range(60, 70)
+        ],
+    ],
 }
 
-# The 5-state calibration subset — (state_abbr, vintage_year) pairs that map 1:1
+# Active calibration subset — (state_abbr, vintage_year) pairs that map 1:1
 # into LOBBYING_STATUTE_URLS. Used by the calibrate subcommand and by Phase 3.
+# Reduced from original 5-state set (CA/TX/NY/WI/WY) to focus on CA, TX (known
+# difficult — cross-referenced support chapters), and OH (three separate lobbying
+# statute bodies across two chapters).
 CALIBRATION_SUBSET: list[tuple[str, int]] = [
     ("CA", 2010),
     ("TX", 2009),
-    ("NY", 2010),
-    ("WI", 2010),
-    ("WY", 2010),
+    ("OH", 2010),
 ]

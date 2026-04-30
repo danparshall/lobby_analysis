@@ -71,7 +71,7 @@ def test_retrieve_bundles_raises_on_uncurated_state(tmp_path: Path) -> None:
 
 
 def test_retrieve_bundles_all_calibration_subset(tmp_path: Path) -> None:
-    # Assemble a FakeClient with canned HTML for every URL across all 5 states.
+    # Assemble a FakeClient with canned HTML for every URL across all calibration states.
     all_urls = [u for pair in CALIBRATION_SUBSET for u in LOBBYING_STATUTE_URLS[pair]]
     client = FakeClient({u: _statute_html(f"statute at {u}") for u in all_urls})
     paths = retrieve_bundles_for_states(
@@ -79,7 +79,7 @@ def test_retrieve_bundles_all_calibration_subset(tmp_path: Path) -> None:
         targets=list(CALIBRATION_SUBSET),
         dest_root=tmp_path,
     )
-    assert len(paths) == 5
+    assert len(paths) == len(CALIBRATION_SUBSET)
     # Each (state, vintage) pair got its own bundle directory.
     expected_dirs = {tmp_path / s / str(y) for s, y in CALIBRATION_SUBSET}
     got_dirs = {p.parent for p in paths}
