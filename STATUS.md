@@ -1,6 +1,6 @@
 # STATUS — lobby_analysis
 
-Last updated: 2026-04-22
+Last updated: 2026-04-30
 
 ## Current Focus
 
@@ -20,11 +20,9 @@ Last updated: 2026-04-22
 
 ## Active Research Lines
 
-No research lines currently have docs under `docs/active/` on main. All merged branches have been archived; Track A and Track B successor branches will appear here when fellows start them.
-
 | Branch | Started | Focus | Status |
 |--------|---------|-------|--------|
-| _(none on main)_ | | | |
+| oh-portal-extraction | 2026-04-30 | Track B — pull OH disclosure data from state portal into `LobbyingFiling`. Test state ahead of broader Track B rollout. | Kickoff: worktree + scaffolding only; no code yet. Next: brainstorming session on what the OH portal looks like, using the archived `pri-2026-rescore` snapshot as starting artifact. |
 
 ## Archived Research Lines
 
