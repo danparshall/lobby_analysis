@@ -139,3 +139,117 @@ sunlight_2015,expenditure_format_granularity,NEW,Sunlight separates broad-catego
 sunlight_2015,expenditure_itemization_threshold,NEW,Sunlight Threshold concept is itemization-threshold (different from PRI D1 registration-threshold)
 sunlight_2015,document_accessibility,pri_2010_accessibility:Q1 | pri_2010_accessibility:Q6 | pri_2010_accessibility:Q8,"Sunlight DocAccess ordinal -2..2; overlaps PRI Q1 (data exists), Q6 (analysis-ready download), Q8 (multi-sort)"
 sunlight_2015,compensation,pri_2010_disclosure:E1f_i | pri_2010_disclosure:E2f_i,"Sunlight Compensation: -1 not disclosed, 0 disclosed; PRI splits principal vs lobbyist sides"
+newmark_2017,def_legislative_lobbying,REG_LOBBYIST,EXISTS; universal-yes definition trigger; notes-flagged for v1.2 review
+newmark_2017,def_admin_agency_lobbying,DEF_ADMIN_AGENCY_LOBBYING_TRIGGER,NEW; notes-flagged for v1.2 review
+newmark_2017,def_elected_officials,DEF_ELECTED_OFFICIAL_AS_LOBBYIST,NEW; notes-flagged for v1.2 review
+newmark_2017,def_public_employees,DEF_PUBLIC_EMPLOYEE_AS_LOBBYIST,NEW; notes-flagged for v1.2 review
+newmark_2017,def_compensation_standard,DEF_COMPENSATION_STANDARD,NEW (income-side; distinct from PRI D1 expenditure-side); notes-flagged for v1.2 review
+newmark_2017,def_expenditure_standard,pri_2010_disclosure:D1_present,EXISTS; same statutory mechanism as PRI D1; notes-flagged for v1.2 review
+newmark_2017,def_time_standard,pri_2010_disclosure:D2_present,EXISTS; same statutory mechanism as PRI D2; notes-flagged for v1.2 review
+newmark_2017,prohib_contribs_anytime,OUT_OF_SCOPE,Prohibition; no filing carries this as data
+newmark_2017,prohib_contribs_session,OUT_OF_SCOPE,Prohibition
+newmark_2017,prohib_solicitation,OUT_OF_SCOPE,Prohibition
+newmark_2017,prohib_contingent_comp,OUT_OF_SCOPE,Prohibition
+newmark_2017,prohib_revolving_door,OUT_OF_SCOPE,Restriction; no filing
+newmark_2017,disc_seeking_to_influence,pri_2010_disclosure:E1g_i | pri_2010_disclosure:E1g_ii | pri_2010_disclosure:E2g_i | pri_2010_disclosure:E2g_ii,MERGE; binary 'subject of influence disclosed' = disjunction over PRI's principal/lobbyist x general/bill 4-row split
+newmark_2017,disc_exp_benefitting_officials,pri_2010_disclosure:E1f_iii | pri_2010_disclosure:E2f_iii,EXISTS; folds into both OTHER_COSTS rows (already covered via FOCAL 7.10)
+newmark_2017,disc_comp_by_employer,focal_2024:7.2,EXISTS; FIN_INCOME_PER_CLIENT (FOCAL 7.2) directly captures break-down
+newmark_2017,disc_total_compensation,pri_2010_disclosure:E2f_i,EXISTS; direct match to RPT_LOBBYIST_COMPENSATION
+newmark_2017,disc_categories_expenditures,sunlight_2015:expenditure_format_granularity,EXISTS; Sunlight granularity ordinal captures categories disclosed
+newmark_2017,disc_total_expenditures,(pri_2010_disclosure:E1f_i & pri_2010_disclosure:E1f_ii & pri_2010_disclosure:E1f_iii) | (pri_2010_disclosure:E2f_i & pri_2010_disclosure:E2f_ii & pri_2010_disclosure:E2f_iii),MERGE; mirrors FOCAL 7.6 dedup pattern (total = comp + non-comp + other on either side)
+newmark_2017,disc_contribs_received,pri_2010_disclosure:E1j,EXISTS; folds into RPT_PRINCIPAL_FINANCIAL_CONTRIBUTORS
+newmark_2005,def_legislative_lobbying,REG_LOBBYIST,EXISTS; same as Newmark 2017 (subset); dropped from active scoring as constant
+newmark_2005,def_admin_agency_lobbying,DEF_ADMIN_AGENCY_LOBBYING_TRIGGER,NEW (Newmark 2017 mirror); notes-flagged
+newmark_2005,def_elected_officials,DEF_ELECTED_OFFICIAL_AS_LOBBYIST,NEW (Newmark 2017 mirror); notes-flagged
+newmark_2005,def_public_employees,DEF_PUBLIC_EMPLOYEE_AS_LOBBYIST,NEW (Newmark 2017 mirror); notes-flagged
+newmark_2005,def_compensation_standard,DEF_COMPENSATION_STANDARD,NEW (Newmark 2017 mirror); notes-flagged
+newmark_2005,def_expenditure_standard,pri_2010_disclosure:D1_present,EXISTS; same as N17
+newmark_2005,def_time_standard,pri_2010_disclosure:D2_present,EXISTS; same as N17
+newmark_2005,freq_binary,pri_2010_disclosure:E1h_i | pri_2010_disclosure:E1h_ii | pri_2010_disclosure:E1h_iii | pri_2010_disclosure:E1h_iv | pri_2010_disclosure:E2h_i | pri_2010_disclosure:E2h_ii | pri_2010_disclosure:E2h_iii | pri_2010_disclosure:E2h_iv,MERGE; 'reports more frequent than annual' = disjunction over above-annual cadences on either side
+newmark_2005,prohib_contribs_anytime,OUT_OF_SCOPE,Prohibition
+newmark_2005,prohib_contribs_session,OUT_OF_SCOPE,Prohibition
+newmark_2005,prohib_expenditures_over_cap,OUT_OF_SCOPE,Prohibition (gift-cap on lobbying expenditures); N2017 dropped this in favor of contingent-comp + revolving-door
+newmark_2005,prohib_solicitation,OUT_OF_SCOPE,Prohibition
+newmark_2005,disc_seeking_to_influence,pri_2010_disclosure:E1g_i | pri_2010_disclosure:E1g_ii | pri_2010_disclosure:E2g_i | pri_2010_disclosure:E2g_ii,MERGE; same as N17
+newmark_2005,disc_exp_benefitting_officials,pri_2010_disclosure:E1f_iii | pri_2010_disclosure:E2f_iii,EXISTS; same as N17
+newmark_2005,disc_comp_by_employer,focal_2024:7.2,EXISTS; same as N17
+newmark_2005,disc_total_compensation,pri_2010_disclosure:E2f_i,EXISTS; same as N17
+newmark_2005,disc_categories_expenditures,sunlight_2015:expenditure_format_granularity,EXISTS; same as N17
+newmark_2005,disc_total_expenditures,(pri_2010_disclosure:E1f_i & pri_2010_disclosure:E1f_ii & pri_2010_disclosure:E1f_iii) | (pri_2010_disclosure:E2f_i & pri_2010_disclosure:E2f_ii & pri_2010_disclosure:E2f_iii),MERGE; same as N17
+opheim_1991,def_legislative_lobbying,REG_LOBBYIST,EXISTS; same as Newmark dispositions
+opheim_1991,def_admin_agency_lobbying,DEF_ADMIN_AGENCY_LOBBYING_TRIGGER,NEW; same as Newmark dispositions; notes-flagged
+opheim_1991,def_elective_officials,DEF_ELECTED_OFFICIAL_AS_LOBBYIST,NEW; same as Newmark dispositions; notes-flagged
+opheim_1991,def_public_employees,DEF_PUBLIC_EMPLOYEE_AS_LOBBYIST,NEW; same as Newmark dispositions; notes-flagged
+opheim_1991,def_compensation_standard,DEF_COMPENSATION_STANDARD,NEW; same as Newmark dispositions; notes-flagged
+opheim_1991,def_expenditure_standard,pri_2010_disclosure:D1_present,EXISTS; same as Newmark; notes-flagged
+opheim_1991,def_time_standard,pri_2010_disclosure:D2_present,EXISTS; same as Newmark; notes-flagged
+opheim_1991,freq_binary,pri_2010_disclosure:E1h_i | pri_2010_disclosure:E2h_i,MERGE; 'monthly during session' = monthly cadence on either side
+opheim_1991,disc_total_spending,(pri_2010_disclosure:E1f_i & pri_2010_disclosure:E1f_ii & pri_2010_disclosure:E1f_iii) | (pri_2010_disclosure:E2f_i & pri_2010_disclosure:E2f_ii & pri_2010_disclosure:E2f_iii),MERGE; same as N17 disc_total_expenditures
+opheim_1991,disc_spending_by_category,sunlight_2015:expenditure_format_granularity,EXISTS; same as N17 disc_categories_expenditures
+opheim_1991,disc_exp_benefitting_employees,pri_2010_disclosure:E1f_iii | pri_2010_disclosure:E2f_iii,EXISTS; same as N17 disc_exp_benefitting_officials
+opheim_1991,disc_legislation_supported_opposed,sunlight_2015:position_taken,EXISTS; direct match to RPT_POSITION_TAKEN (Sunlight)
+opheim_1991,disc_sources_of_income,focal_2024:7.2,EXISTS; same as N17 disc_comp_by_employer (FIN_INCOME_PER_CLIENT)
+opheim_1991,disc_total_income,pri_2010_disclosure:E2f_i,EXISTS; same as N17 disc_total_compensation
+opheim_1991,disc_other_influence_peddling,pri_2010_disclosure:E1j,EXISTS (catch-all per Decision Log D6); folded into RPT_PRINCIPAL_FINANCIAL_CONTRIBUTORS rather than NEW row
+opheim_1991,enforce_review_thoroughness,OUT_OF_SCOPE,Enforcement
+opheim_1991,enforce_subpoena_witnesses,OUT_OF_SCOPE,Enforcement
+opheim_1991,enforce_subpoena_records,OUT_OF_SCOPE,Enforcement
+opheim_1991,enforce_admin_hearings,OUT_OF_SCOPE,Enforcement
+opheim_1991,enforce_admin_fines,OUT_OF_SCOPE,Enforcement
+opheim_1991,enforce_admin_penalties,OUT_OF_SCOPE,Enforcement
+opheim_1991,enforce_court_actions,OUT_OF_SCOPE,Enforcement
+hired_guns_2007,Q1,DEF_ADMIN_AGENCY_LOBBYING_TRIGGER,EXISTS; same definition-trigger criterion as Newmark 2017
+hired_guns_2007,Q2,pri_2010_disclosure:D1_present | DEF_COMPENSATION_STANDARD | pri_2010_disclosure:D1_value,MERGE; CPI Q2 conflates compensation + expenditure thresholds + threshold value into one multi-tier score
+hired_guns_2007,Q3,pri_2010_disclosure:A1,EXISTS; REG_LOBBYIST
+hired_guns_2007,Q4,REG_PRE_LOBBYING_REGISTRATION_WINDOW,NEW
+hired_guns_2007,Q5,REG_BILL_SUBJECT_ON_REGISTRATION,NEW
+hired_guns_2007,Q6,REG_REGISTRATION_RENEWAL_FREQUENCY,NEW
+hired_guns_2007,Q7,REG_CHANGE_NOTIFICATION_WINDOW,NEW
+hired_guns_2007,Q8,REG_PHOTO_REQUIRED,NEW
+hired_guns_2007,Q9,pri_2010_disclosure:E2c,EXISTS; RPT_LOBBYIST_PRINCIPAL_NAMES (registration vs report — same data point)
+hired_guns_2007,Q10,focal_2024:4.6,EXISTS; RPT_LOBBYIST_CONTRACT_TYPE
+hired_guns_2007,Q11,pri_2010_disclosure:E2a,EXISTS; RPT_LOBBYIST_GATE
+hired_guns_2007,Q12,pri_2010_disclosure:E2h_i | pri_2010_disclosure:E2h_ii | pri_2010_disclosure:E2h_iii | pri_2010_disclosure:E2h_iv | pri_2010_disclosure:E2h_v | pri_2010_disclosure:E2h_vi,EXISTS via disjunction over FREQ_LOBBYIST_*
+hired_guns_2007,Q13,pri_2010_disclosure:E2f_i,EXISTS; RPT_LOBBYIST_COMPENSATION
+hired_guns_2007,Q14,sunlight_2015:expenditure_format_granularity,EXISTS; RPT_EXPENDITURE_FORMAT_GRANULARITY
+hired_guns_2007,Q15,sunlight_2015:expenditure_itemization_threshold,EXISTS; RPT_EXPENDITURE_ITEMIZATION_THRESHOLD
+hired_guns_2007,Q16,RPT_ITEMIZED_PRINCIPAL_BENEFITED,NEW
+hired_guns_2007,Q17,RPT_ITEMIZED_RECIPIENT,NEW
+hired_guns_2007,Q18,RPT_ITEMIZED_DATE,NEW
+hired_guns_2007,Q19,RPT_ITEMIZED_DESCRIPTION,NEW
+hired_guns_2007,Q20,pri_2010_disclosure:E2g_i | pri_2010_disclosure:E2g_ii,EXISTS via disjunction over RPT_LOBBYIST_ISSUE_GENERAL + RPT_LOBBYIST_BILL_SPECIFIC
+hired_guns_2007,Q21,RPT_HOUSEHOLD_OF_OFFICIAL_SPENDING,NEW
+hired_guns_2007,Q22,focal_2024:6.4,EXISTS; REL_OFFICIAL_BUSINESS_TIES
+hired_guns_2007,Q23,(pri_2010_disclosure:E1f_iii | pri_2010_disclosure:E2f_iii) | OUT_OF_SCOPE,"PARTIAL; reported half = OTHER_COSTS rows, limit/prohibition halves OUT_OF_SCOPE"
+hired_guns_2007,Q24,focal_2024:7.11 | OUT_OF_SCOPE,"PARTIAL; disclosed half = FIN_CAMPAIGN_CONTRIBUTIONS, prohibition half OUT_OF_SCOPE"
+hired_guns_2007,Q25,RPT_ZERO_ACTIVITY_FILING,NEW
+hired_guns_2007,Q26,pri_2010_disclosure:E1a,EXISTS; RPT_PRINCIPAL_GATE
+hired_guns_2007,Q27,pri_2010_disclosure:E1f_i,EXISTS; RPT_PRINCIPAL_COMPENSATION
+hired_guns_2007,Q28,pri_2010_accessibility:Q2,EXISTS via ACC_DEDICATED_WEBSITE (online registration filing)
+hired_guns_2007,Q29,pri_2010_accessibility:Q2,EXISTS via ACC_DEDICATED_WEBSITE (online spending report filing)
+hired_guns_2007,Q30,OUT_OF_SCOPE,Deferred (accessibility-side training feature; no current row; reconsider in a follow-up accessibility audit)
+hired_guns_2007,Q31,pri_2010_accessibility:Q6,EXISTS via ACC_DOWNLOAD_ANALYSIS_READY (registrations directory format)
+hired_guns_2007,Q32,pri_2010_accessibility:Q6,EXISTS via ACC_DOWNLOAD_ANALYSIS_READY (spending reports format)
+hired_guns_2007,Q33,ACC_COPIES_COST,NEW
+hired_guns_2007,Q34,ACC_SAMPLE_FORMS_ONLINE,NEW
+hired_guns_2007,Q35,ACC_AGGREGATE_TOTALS_BY_YEAR,NEW
+hired_guns_2007,Q36,ACC_AGGREGATE_TOTALS_BY_DEADLINE,NEW
+hired_guns_2007,Q37,ACC_AGGREGATE_TOTALS_BY_INDUSTRY,NEW
+hired_guns_2007,Q38,focal_2024:2.1,EXISTS; ACC_REGISTRY_UPDATE_FRESHNESS
+hired_guns_2007,Q39,OUT_OF_SCOPE,Enforcement
+hired_guns_2007,Q40,OUT_OF_SCOPE,Enforcement
+hired_guns_2007,Q41,OUT_OF_SCOPE,Penalty
+hired_guns_2007,Q42,OUT_OF_SCOPE,Penalty
+hired_guns_2007,Q43,OUT_OF_SCOPE,Enforcement
+hired_guns_2007,Q44,OUT_OF_SCOPE,Penalty
+hired_guns_2007,Q45,OUT_OF_SCOPE,Penalty
+hired_guns_2007,Q46,OUT_OF_SCOPE,Enforcement
+hired_guns_2007,Q47,OUT_OF_SCOPE,Enforcement-publication; borderline — reconsider if downstream consumer wants delinquent-filer signal
+hired_guns_2007,Q48,OUT_OF_SCOPE,Revolving-door restriction; FOCAL 5.2 row REVOLVING_COOLING_OFF_DATABASE is distinct (database of restricted officials)
+opensecrets_2022,lobbyist_client_separate,REG_SEPARATE_LOBBYIST_CLIENT_FILINGS,NEW
+opensecrets_2022,compensation,pri_2010_disclosure:E2f_i | pri_2010_disclosure:E1f_i | focal_2024:7.2,EXISTS via disjunction over compensation rows
+opensecrets_2022,timely_disclosure,(pri_2010_disclosure:E1h_i | pri_2010_disclosure:E1h_ii) & (pri_2010_disclosure:E2h_i | pri_2010_disclosure:E2h_ii),EXISTS; baseline = monthly during session + quarterly otherwise = conjunction of (monthly | quarterly) on each side
+opensecrets_2022,public_search,pri_2010_accessibility:Q8,EXISTS; ACC_MULTI_CRITERIA_SORT
+opensecrets_2022,public_lists,pri_2010_accessibility:Q1 | pri_2010_accessibility:Q2,EXISTS via ACC_DATA_AVAILABLE_AT_ALL + ACC_DEDICATED_WEBSITE
+opensecrets_2022,public_download,pri_2010_accessibility:Q6,EXISTS; ACC_DOWNLOAD_ANALYSIS_READY
+opensecrets_2022,targeted_legislation_gap,pri_2010_disclosure:E1g_ii | pri_2010_disclosure:E2g_ii,EXISTS; OpenSecrets flagged this as a gap most states don't address
