@@ -619,7 +619,6 @@ _REQUIRED_FIELD_REQUIREMENT_KEYS = (
     "field_path",
     "reporting_party",
     "status",
-    "legal_citation",
 )
 
 
@@ -789,6 +788,30 @@ def cmd_extract_finalize_run(args: argparse.Namespace) -> int:
             if rec.get(key) in (None, ""):
                 print(json.dumps({
                     "error": f"record {i} missing required field {key!r}",
+                    "compendium_row_id": row_id,
+                }))
+                return 2
+        # legal_citation is required unless the row is `not_addressed`
+        # (statute is silent — there is no clause to cite). For
+        # `not_addressed`, evidence_notes must enumerate where we searched.
+        status = rec.get("status")
+        if status == "not_addressed":
+            if not rec.get("evidence_notes"):
+                print(json.dumps({
+                    "error": (
+                        f"record {i} status='not_addressed' but evidence_notes "
+                        f"is empty -- enumerate the sections searched"
+                    ),
+                    "compendium_row_id": row_id,
+                }))
+                return 2
+        else:
+            if rec.get("legal_citation") in (None, ""):
+                print(json.dumps({
+                    "error": (
+                        f"record {i} missing legal_citation "
+                        f"(required for status={status!r})"
+                    ),
                     "compendium_row_id": row_id,
                 }))
                 return 2

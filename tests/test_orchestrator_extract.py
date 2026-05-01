@@ -199,6 +199,52 @@ def test_extract_finalize_run_validates_raw_output(tmp_path: Path) -> None:
     assert rc_bad != 0, "finalize must fail when legal_citation is null"
 
 
+def test_extract_finalize_run_allows_null_citation_for_not_addressed(
+    tmp_path: Path,
+) -> None:
+    """`not_addressed` rows need not carry legal_citation; evidence_notes carries
+    the search trail instead. (Statute silence has no clause to cite.)"""
+    from scoring.orchestrator import cmd_extract_finalize_run
+
+    tmp_repo = _tmp_repo_root(tmp_path)
+    _seed_definitions_bundle(tmp_repo)
+    run_dir = _prepare_run(tmp_repo, run_id="iter1silent01")
+
+    silent_record = _valid_record(
+        compendium_row_id="DEF_COMPENSATION_STANDARD",
+        status="not_addressed",
+        condition_text=None,
+        legal_citation=None,
+        evidence_notes="searched §§101.70, 101.90, 121.60; no $-threshold found",
+    )
+    _write_raw_output(run_dir, [silent_record])
+
+    args = argparse.Namespace(
+        repo_root=str(tmp_repo),
+        snapshot_date="ignored",
+        state="OH",
+        vintage=2025,
+        chunk="definitions",
+        run_id="iter1silent01",
+    )
+    rc = cmd_extract_finalize_run(args)
+    assert rc == 0, "not_addressed + null citation + populated evidence_notes must pass"
+
+    # And the inverse: not_addressed with empty evidence_notes must fail.
+    run_dir_b = _prepare_run(tmp_repo, run_id="iter1silent02")
+    bad_silent = _valid_record(
+        compendium_row_id="DEF_COMPENSATION_STANDARD",
+        status="not_addressed",
+        condition_text=None,
+        legal_citation=None,
+        evidence_notes="",
+    )
+    _write_raw_output(run_dir_b, [bad_silent])
+    args.run_id = "iter1silent02"
+    rc_bad = cmd_extract_finalize_run(args)
+    assert rc_bad != 0, "not_addressed with empty evidence_notes must be rejected"
+
+
 def test_extract_finalize_run_rejects_unknown_compendium_id(tmp_path: Path) -> None:
     from scoring.orchestrator import cmd_extract_finalize_run
 

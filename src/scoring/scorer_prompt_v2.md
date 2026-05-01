@@ -11,9 +11,11 @@ Your output is a JSON array of `FieldRequirement`-shape records, one or more per
 
 ## Rules
 
-### 1. Citation is mandatory.
+### 1. Citation is mandatory (with one exception for silence).
 
-For every populated row, fill `legal_citation` with the section reference (e.g., `ORC §101.70(F)`) and provide a ≤30-word verbatim quote in `evidence_notes`. No paraphrase, no synthesis — the quote must be a substring of the statute text inlined below.
+For every record where the statute affirmatively says something — `required`, `not_required`, or `required_conditional` — fill `legal_citation` with the section reference (e.g., `ORC §101.70(F)`) and provide a ≤30-word verbatim quote in `evidence_notes`. No paraphrase, no synthesis — the quote must be a substring of the statute text inlined below.
+
+**Exception: `not_addressed` rows.** When the statute is silent on a row, there is no clause to cite. Set `legal_citation` to `null` and put the sections you searched in `evidence_notes` (per Rule 3). Do NOT pick an arbitrary "primary section" to populate `legal_citation` for `not_addressed` rows — that would create false structured anchors downstream.
 
 ### 2. Layered-reading discipline.
 
