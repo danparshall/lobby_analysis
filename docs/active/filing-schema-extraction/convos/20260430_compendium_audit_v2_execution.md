@@ -19,7 +19,7 @@ Mid-execution, the user pushed back on the audit's PRI-shaped vocabulary. Five t
 - Disposition tagging (EXISTS / NEW / OUT_OF_SCOPE / MERGE) per item, with rationale captured in audit doc
 - The threshold/trigger cluster: untangled inclusion-framed vs exemption-framed and compensation vs expenditure vs time
 - PRI-vocabulary privilege in the compendium: where it shows up, where it bites, what to rename
-- Re-scoping the kickoff plan (`plans/20260430_filing_schema_extraction_kickoff.md`) for the new ~112-row statute-side MVP target
+- Re-scoping the kickoff plan (`plans/20260430_filing_schema_extraction_kickoff.md`) for the new 106-row statute-side MVP target (139 total compendium = 106 statute-side + 33 accessibility-side)
 
 ## Provisional Findings
 
@@ -53,7 +53,7 @@ Plus direct CSV / code changes:
 - `data/compendium/framework_dedup_map.csv`: 140 → 254 entries (+114 walked atomic items)
 - `scripts/build_compendium.py`: threshold row IDs/names updated to neutral framing
 - `tests/test_compendium_loader.py`: +5 per-rubric curation-drop tests (12 → 17 total; all passing)
-- `docs/active/filing-schema-extraction/plans/20260430_filing_schema_extraction_kickoff.md`: re-scoped row-count targets (~96 → ~112 statute-side MVP)
+- `docs/active/filing-schema-extraction/plans/20260430_filing_schema_extraction_kickoff.md`: re-scoped row-count targets (~90 → 106 statute-side MVP)
 
 ## Open Questions
 
