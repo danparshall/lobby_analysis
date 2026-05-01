@@ -8,7 +8,7 @@ from pathlib import Path
 
 from scoring.models import SnapshotArtifact, SnapshotBundle
 
-SNAPSHOT_DATE_DEFAULT = "2026-04-13"
+SNAPSHOT_DATE_DEFAULT = "2026-05-01"
 
 
 def _sha256(path: Path) -> str:

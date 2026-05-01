@@ -973,6 +973,53 @@ def cmd_retrieve_statutes(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_capture_snapshots(args: argparse.Namespace) -> int:
+    """Stage 2 portal-snapshot capture from Stage 1 URL JSONs.
+
+    Reads `compendium/portal_urls/<ABBR>.json` and writes
+    `data/portal_snapshots/<ABBR>/<DATE>/manifest.json` (+ artifacts).
+
+    Modes:
+      --state CA           one state
+      --all                every JSON found in compendium/portal_urls/
+    """
+    from scoring.portal_snapshot import capture_state
+
+    repo_root = Path(args.repo_root).resolve()
+    json_dir = Path(args.urls_dir) if args.urls_dir else repo_root / "compendium" / "portal_urls"
+    output_root = Path(args.output_dir) if args.output_dir else repo_root / "data" / "portal_snapshots"
+
+    if args.all:
+        targets = sorted(json_dir.glob("*.json"))
+    elif args.state:
+        target = json_dir / f"{args.state.upper()}.json"
+        if not target.exists():
+            print(json.dumps({"error": f"no Stage 1 JSON at {target}"}))
+            return 2
+        targets = [target]
+    else:
+        print(json.dumps({"error": "must supply --state or --all"}))
+        return 2
+
+    manifests: list[str] = []
+    for stage1 in targets:
+        manifest_path = capture_state(
+            stage1_json=stage1,
+            output_root=output_root,
+            snapshot_date=args.snapshot_date,
+            repo_root=repo_root,
+        )
+        manifests.append(str(manifest_path))
+        print(f"wrote {manifest_path}")
+
+    print(json.dumps({
+        "captured": len(manifests),
+        "manifests": manifests,
+        "snapshot_date": args.snapshot_date,
+    }, indent=2))
+    return 0
+
+
 def cmd_expand_bundle(args: argparse.Namespace) -> int:
     """Generate a retrieval-agent brief for cross-reference discovery.
 
@@ -1254,6 +1301,29 @@ def main() -> int:
         help="courtesy delay between Justia fetches (see Phase 2 A4 decision)",
     )
     p_retrieve.set_defaults(func=cmd_retrieve_statutes)
+
+    p_capture = sub.add_parser(
+        "capture-snapshots",
+        help="Stage 2: fetch portal seed URLs from compendium/portal_urls/<ABBR>.json",
+    )
+    p_capture.add_argument("--state", default=None, help="USPS state code (e.g. CA)")
+    p_capture.add_argument("--all", action="store_true", help="capture every Stage 1 JSON found")
+    p_capture.add_argument(
+        "--snapshot-date",
+        default=None,
+        help="YYYY-MM-DD; defaults to today",
+    )
+    p_capture.add_argument(
+        "--urls-dir",
+        default=None,
+        help="Stage 1 JSON dir (default: <repo_root>/compendium/portal_urls)",
+    )
+    p_capture.add_argument(
+        "--output-dir",
+        default=None,
+        help="snapshot root (default: <repo_root>/data/portal_snapshots)",
+    )
+    p_capture.set_defaults(func=cmd_capture_snapshots)
 
     p_expand = sub.add_parser(
         "expand-bundle",

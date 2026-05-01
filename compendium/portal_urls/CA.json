@@ -1,0 +1,143 @@
+{
+  "state_abbr": "CA",
+  "discovered_at": "2026-05-01",
+  "portal_system": "CAL-ACCESS (legacy public portal) + Cal-Online (filer side); CARS replacement in active development, public go-live targeted Nov 26 2026",
+  "regulator": "California Fair Political Practices Commission (FPPC, enforcement) + California Secretary of State, Political Reform Division (filings/registry)",
+  "seed_urls": [
+    {
+      "url": "https://www.sos.ca.gov/campaign-lobbying",
+      "role": "home",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Top-level Secretary of State Campaign & Lobbying landing page; hub for CAL-ACCESS, Cal-Online, Power Search, CARS updates"
+    },
+    {
+      "url": "https://cal-access.sos.ca.gov/Lobbying/",
+      "role": "search",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "CAL-ACCESS public lobbying search hub; links to Lobbyists, Firms, Employers, $5K+ payments, daily filings, advanced search; the legacy classic-ASP system due for CARS replacement"
+    },
+    {
+      "url": "https://cal-access.sos.ca.gov/Lobbying/Lobbyists/",
+      "role": "search",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Alphabetical lobbyist directory, filterable by 2025-2026 session; returns name, filer ID, employer, photo"
+    },
+    {
+      "url": "https://cal-access.sos.ca.gov/Lobbying/Employers/",
+      "role": "search",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Lobbyist employers directory; alphabetical and by category; includes payment totals"
+    },
+    {
+      "url": "https://www.sos.ca.gov/campaign-lobbying/lobbying-filing/lobbying-registration",
+      "role": "registration",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Registration filing requirements (Forms 601-607); 2-year cycle, $100 first-year fee per lobbyist, 10-day registration window, 20-day amendment window"
+    },
+    {
+      "url": "https://www.sos.ca.gov/campaign-lobbying/lobbying-filing/lobbying-disclosure",
+      "role": "report_filings",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Quarterly disclosure filing requirements (Forms 615/625/630/635/640/645/690/635-C); deadlines 4/30, 7/31, 10/31, 1/31"
+    },
+    {
+      "url": "https://www.sos.ca.gov/campaign-lobbying/helpful-resources/raw-data-campaign-finance-and-lobbying-activity",
+      "role": "bulk_index",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Bulk-data index page; documents the daily-refreshed tab-delimited extracts and points to the dbwebexport.zip and calaccess-documentation.zip artifacts"
+    },
+    {
+      "url": "https://campaignfinance.cdn.sos.ca.gov/dbwebexport.zip",
+      "role": "bulk_download",
+      "http_status": 200,
+      "content_type": "application/zip",
+      "verified_via": "WebFetch",
+      "notes": "Daily-refreshed full CAL-ACCESS database export (tab-delimited tables, ~650MB unzipped, ~80 tables across campaigns + lobbying); WebFetch hit 10MB cap which confirms file is large and live. Stage 2 must download with proper UA + streaming."
+    },
+    {
+      "url": "https://campaignfinance.cdn.sos.ca.gov/calaccess-documentation.zip",
+      "role": "data_dictionary",
+      "http_status": 200,
+      "content_type": "application/zip",
+      "verified_via": "WebFetch",
+      "notes": "CAL-ACCESS schema/format documentation ZIP (~4.1MB); CalFormat spec + errata PDFs describing the bulk-export tables"
+    },
+    {
+      "url": "https://www.sos.ca.gov/campaign-lobbying/cal-access-resources/cal-access-users-manual",
+      "role": "user_guide",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "CAL-ACCESS User's Manual; Section 2 is the Lobbying Finance FAQ; also links to glossary, statutes & regulations, table of forms"
+    },
+    {
+      "url": "https://www.fppc.ca.gov/learn/lobbyist-rules/lobbying-manual-and-forms.html",
+      "role": "user_guide",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "FPPC Lobbying Manual + forms hub; 7-chapter manual covering qualification, registration, expense reporting, recordkeeping"
+    },
+    {
+      "url": "https://www.fppc.ca.gov/learn/lobbying-rules/lobbying-registration-and-reporting/",
+      "role": "help",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "FPPC plain-language guide to registration and quarterly reporting obligations; complements the SOS filing pages"
+    },
+    {
+      "url": "https://leginfo.legislature.ca.gov/faces/codes_displayexpandedbranch.xhtml?tocCode=GOV&division=&title=9.&part=&chapter=6.&article=",
+      "role": "statute",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Cal. Gov. Code Title 9, Chapter 6 (Lobbyists), sections 86100-86300; Article 1 Registration & Reporting, Article 2 Prohibitions, Article 3 Exemptions. Implements Political Reform Act of 1974 (Prop 9)."
+    },
+    {
+      "url": "https://www.fppc.ca.gov/about-fppc/",
+      "role": "agency_about",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "FPPC About page; 5-member independent commission, est. 1974 by Prop 9; enforces Political Reform Act"
+    },
+    {
+      "url": "https://www.sos.ca.gov/campaign-lobbying/helpful-resources/cal-access-replacement-system-project-cars-updates",
+      "role": "landing",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "CARS project status page; vendor CGI; public go-live targeted Nov 26 2026 ahead of general election. Worth re-checking quarterly to detect cutover."
+    }
+  ],
+  "flagged": [
+    {
+      "url": "https://www.sos.ca.gov/campaign-lobbying/cal-access-resources/cal-access-users-manual/lobbying-finance-faq",
+      "role": "user_guide",
+      "reason": "404 Not Found",
+      "notes": "Direct deep-link to Lobbying Finance FAQ (Section 2) returned 404; the parent users-manual page (verified above) is the working entry point and should be used to navigate into Section 2. May indicate a recent SOS site reorg."
+    },
+    {
+      "url": "https://calaccess.download/",
+      "role": "bulk_download",
+      "reason": "Not verified in this pass",
+      "notes": "Third-party California Civic Data Coalition mirror that re-publishes CAL-ACCESS bulk data as CSV instead of the official tab-delimited format. Useful as a backup/secondary source; should be verified separately before relying on it. Not part of the official portal."
+    }
+  ],
+  "observations": "California still runs the legacy CAL-ACCESS public portal (classic-ASP under cal-access.sos.ca.gov) plus the Cal-Online filer-side system. The CARS replacement (vendor: CGI) is in active development with a public go-live target of Nov 26 2026, so this URL set is expected to be in flux and should be re-snapped quarterly. Bulk data is excellent: a single daily-refreshed dbwebexport.zip (~650MB, ~80 tables) covers both campaigns and lobbying, with a separate documentation ZIP describing the CalFormat schema; both live on campaignfinance.cdn.sos.ca.gov and are friendly to programmatic snapshotting (no auth/WAF observed via WebFetch, but Stage 2 should still set a real UA and stream the response). Regulator split matters for downstream parsing: FPPC owns rules/manual/forms guidance, Secretary of State Political Reform Division owns the registry and bulk export. Statute lives at leginfo.legislature.ca.gov in Gov. Code Title 9 Ch. 6 (sections 86100-86300)."
+}

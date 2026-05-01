@@ -93,18 +93,15 @@ Do these even when the user gives a specific task. You start each session with z
 
 ## Working in a git worktree (testing gotcha)
 
-When working under `.worktrees/<branch>/`, **do not run `uv run pytest`** — the inherited `VIRTUAL_ENV` env var points at `lobby_analysis/.venv` (main's), whose editable install resolves `lobby_analysis` and `scoring` to main's `src/`, not the worktree's. Symptom: schema/Literal/model edits you just made don't take effect in tests; `uv run python -c "..."` sees them but pytest doesn't.
+**Status (verified 2026-05-01):** appears resolved in current `uv`. From a worktree with `VIRTUAL_ENV` still pointing at main's `.venv`, `uv run python` and `uv run pytest` both emit `warning: VIRTUAL_ENV ... does not match the project environment path '.venv' and will be ignored` and correctly resolve to the worktree's `.venv`. Leaving this section in place because the symptom (schema edits not propagating to tests) was real at some prior uv version, and we want a paper trail if it recurs.
 
-First time setting up a worktree's venv:
+**Original symptom (kept for reference):** when working under `.worktrees/<branch>/`, the inherited `VIRTUAL_ENV` env var points at `lobby_analysis/.venv` (main's), whose editable install resolves `lobby_analysis` and `scoring` to main's `src/`, not the worktree's. Symptom: schema/Literal/model edits you just made don't take effect in tests; `uv run python -c "..."` sees them but pytest doesn't.
+
+**If the symptom recurs**, the workaround is to unset `VIRTUAL_ENV` for the setup step and call the worktree's pytest binary directly:
 
 ```sh
 cd .worktrees/<branch>
 unset VIRTUAL_ENV && uv sync --extra dev
-```
-
-Then run tests via the worktree's own pytest binary:
-
-```sh
 .venv/bin/python -m pytest tests/
 ```
 
