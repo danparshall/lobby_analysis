@@ -15,10 +15,12 @@ Carry-forward signals from prior branches (informational, not gates):
 
 (Newest first.)
 
-### 2026-05-01 (pm) — Phases 0–3 implemented + iter-1 dispatched (3 runs)
+### 2026-05-01 (pm) — Phases 0–3 implemented + iter-1 dispatched (3 runs) + iter-2 prep
 
+**Convo:** [`convos/20260501_pm_phases_0_3_iter1_dispatch.md`](convos/20260501_pm_phases_0_3_iter1_dispatch.md)
 **Plan executed:** [`plans/20260501_statute_extraction_harness.md`](plans/20260501_statute_extraction_harness.md)
 **Iter-1 analysis doc:** [`results/iter-1_analysis.md`](results/iter-1_analysis.md)
+**Audit handoff brief:** [`plans/_handoffs/20260501_compendium_item_audit_handoff.md`](plans/_handoffs/20260501_compendium_item_audit_handoff.md)
 
 #### Topics Explored
 - TDD-driven build of all four phases of the kickoff plan: v1.3 schema bump, v2 scorer prompt + extraction_brief module, ExtractionRunMetadata + sha helpers, orchestrator extract-prepare/finalize subcommands.
@@ -37,6 +39,16 @@ Carry-forward signals from prior branches (informational, not gates):
 - **Q6 (multi-run agreement) settles to ≥3 temp-0 runs** at iter-1 evidence; bumping to 5 wouldn't resolve interpretive disagreement. The 3-model consensus oracle (or per-row scope tightening) is the right escalation path for interpretive cases, not more same-model runs.
 - **Validation: legal_citation is required for required/not_required/required_conditional, optional+evidence_notes-required for not_addressed.** Codified in commit `0ac7800` after r1 surfaced the prompt/validation tension.
 
+#### Iter-2 prep (later in same session)
+
+After cross-examining the `DEF_ADMIN_AGENCY_LOBBYING_TRIGGER × retirement_system` disagreement: the row name reads as actor-axis to a careful human even though the description is target-axis (anchored on Hired Guns Q1's "executive branch lobbyists"). The framework_references that pin the axis weren't visible to the agent. Three iter-2 prep artifacts shipped:
+
+- **Tightened 7 `definitions` row descriptions** to lead with explicit axis labels (`TARGET axis.` / `ACTOR axis.` / `THRESHOLD axis (quantitative, inclusion-framed).` / `THRESHOLD axis (qualitative).`) plus cross-references to adjacent rows on different axes.
+- **`src/scoring/chunk_frames/definitions.md`** — per-chunk preamble naming the three axes the rows decompose, mapping each to its rows, calling out the FDA-as-actor case as out-of-chunk (lives in `REG_GOVT_LOBBYING_GOVT` / `REG_EXECUTIVE_AGENCY` in the registration domain). Wired into `extraction_brief._render_suffix()` as auto-inlined `chunk_frames/<chunk>.md`; absent files are no-ops, so the wiring is generic for future chunks.
+- **Audit handoff brief** at `plans/_handoffs/20260501_compendium_item_audit_handoff.md`. Defines the work for a future agent that will write the v3 compendium-curation audit plan (axis explicitness + name clarity + description fidelity + framework-reference cohesion across all 141 rows; possible v1.4 schema bump for an explicit `axis` field).
+
+Tests: 1 new (`test_extraction_brief_includes_chunk_frame_when_present`); full suite 337/337 green.
+
 #### Commits (this session)
 - `44fc762` — v1.3 FieldRequirement schema bump (Phase 0).
 - `d8e5187` — v2 scorer prompt + extraction_brief module (Phase 1).
@@ -44,9 +56,13 @@ Carry-forward signals from prior branches (informational, not gates):
 - `878133a` — provenance v1.3: ExtractionRunMetadata + sha helpers (Phase 2).
 - `a703566` — orchestrator: extract-prepare-run + extract-finalize-run (Phase 3).
 - `0ac7800` — extract-finalize: allow null legal_citation for not_addressed rows.
+- `67ccb4b` — iter-1 dispatch (3 runs) + analysis doc.
+- `2d32c39` — iter-2 prep: definitions chunk frame + tightened row descriptions + audit handoff.
 
 #### Next Steps
-Iter-2: re-dispatch the same chunk after adding a `definitions`-specific per-domain note clarifying cross-regime row applicability (when a compendium row's category partially maps to a parallel regime, prefer `not_addressed` with parallel-regime mapping in evidence_notes). Confirm the disagreement on `DEF_ADMIN_AGENCY_LOBBYING_TRIGGER × retirement_system` collapses. If iter-2 reaches ≥14/15 unanimous with the disagreement resolved or stably explained, expand to a second chunk for iter-3 (likely `contact_log` — 14 rows, structurally distinct extraction shape).
+**Iter-2 dispatch** — re-run 3 temp-0 subagents on OH 2025 `definitions` with the new chunk frame + tightened descriptions in the brief. Hypothesis: the disagreement on `DEF_ADMIN_AGENCY_LOBBYING_TRIGGER × retirement_system` collapses to 3-way `not_required` consensus (r1's reading was right; the preamble + tightened description should pull r2 and r3 toward it). If yes, the per-chunk-preamble approach is validated and gets applied to other chunks. If no, the disagreement is deeper than name/description ambiguity (possibly genuine cross-regime definitional ambiguity in OH statute itself), and iter-3 escalates to a 3-model consensus oracle.
+
+**v3 compendium audit** — the audit handoff brief is ready for a fresh-context agent to develop into a plan. Independent of iter-2; can run in parallel.
 
 ### 2026-05-01 — kickoff: harness brainstorming (closed)
 
