@@ -144,8 +144,8 @@ newmark_2017,def_admin_agency_lobbying,DEF_ADMIN_AGENCY_LOBBYING_TRIGGER,NEW; no
 newmark_2017,def_elected_officials,DEF_ELECTED_OFFICIAL_AS_LOBBYIST,NEW; notes-flagged for v1.2 review
 newmark_2017,def_public_employees,DEF_PUBLIC_EMPLOYEE_AS_LOBBYIST,NEW; notes-flagged for v1.2 review
 newmark_2017,def_compensation_standard,DEF_COMPENSATION_STANDARD,NEW (income-side; distinct from PRI D1 expenditure-side); notes-flagged for v1.2 review
-newmark_2017,def_expenditure_standard,pri_2010_disclosure:D1_present,EXISTS; same statutory mechanism as PRI D1; notes-flagged for v1.2 review
-newmark_2017,def_time_standard,pri_2010_disclosure:D2_present,EXISTS; same statutory mechanism as PRI D2; notes-flagged for v1.2 review
+newmark_2017,def_expenditure_standard,DEF_EXPENDITURE_STANDARD,NEW (v1.2 inclusion-framed standard); was EXISTS to PRI D1 in v2 audit
+newmark_2017,def_time_standard,DEF_TIME_STANDARD,NEW (v1.2 inclusion-framed standard); was EXISTS to PRI D2 in v2 audit
 newmark_2017,prohib_contribs_anytime,OUT_OF_SCOPE,Prohibition; no filing carries this as data
 newmark_2017,prohib_contribs_session,OUT_OF_SCOPE,Prohibition
 newmark_2017,prohib_solicitation,OUT_OF_SCOPE,Prohibition
@@ -163,8 +163,8 @@ newmark_2005,def_admin_agency_lobbying,DEF_ADMIN_AGENCY_LOBBYING_TRIGGER,NEW (Ne
 newmark_2005,def_elected_officials,DEF_ELECTED_OFFICIAL_AS_LOBBYIST,NEW (Newmark 2017 mirror); notes-flagged
 newmark_2005,def_public_employees,DEF_PUBLIC_EMPLOYEE_AS_LOBBYIST,NEW (Newmark 2017 mirror); notes-flagged
 newmark_2005,def_compensation_standard,DEF_COMPENSATION_STANDARD,NEW (Newmark 2017 mirror); notes-flagged
-newmark_2005,def_expenditure_standard,pri_2010_disclosure:D1_present,EXISTS; same as N17
-newmark_2005,def_time_standard,pri_2010_disclosure:D2_present,EXISTS; same as N17
+newmark_2005,def_expenditure_standard,DEF_EXPENDITURE_STANDARD,NEW (v1.2 inclusion-framed standard); was EXISTS to PRI D1 in v2 audit
+newmark_2005,def_time_standard,DEF_TIME_STANDARD,NEW (v1.2 inclusion-framed standard); was EXISTS to PRI D2 in v2 audit
 newmark_2005,freq_binary,pri_2010_disclosure:E1h_i | pri_2010_disclosure:E1h_ii | pri_2010_disclosure:E1h_iii | pri_2010_disclosure:E1h_iv | pri_2010_disclosure:E2h_i | pri_2010_disclosure:E2h_ii | pri_2010_disclosure:E2h_iii | pri_2010_disclosure:E2h_iv,MERGE; 'reports more frequent than annual' = disjunction over above-annual cadences on either side
 newmark_2005,prohib_contribs_anytime,OUT_OF_SCOPE,Prohibition
 newmark_2005,prohib_contribs_session,OUT_OF_SCOPE,Prohibition
@@ -181,8 +181,8 @@ opheim_1991,def_admin_agency_lobbying,DEF_ADMIN_AGENCY_LOBBYING_TRIGGER,NEW; sam
 opheim_1991,def_elective_officials,DEF_ELECTED_OFFICIAL_AS_LOBBYIST,NEW; same as Newmark dispositions; notes-flagged
 opheim_1991,def_public_employees,DEF_PUBLIC_EMPLOYEE_AS_LOBBYIST,NEW; same as Newmark dispositions; notes-flagged
 opheim_1991,def_compensation_standard,DEF_COMPENSATION_STANDARD,NEW; same as Newmark dispositions; notes-flagged
-opheim_1991,def_expenditure_standard,pri_2010_disclosure:D1_present,EXISTS; same as Newmark; notes-flagged
-opheim_1991,def_time_standard,pri_2010_disclosure:D2_present,EXISTS; same as Newmark; notes-flagged
+opheim_1991,def_expenditure_standard,DEF_EXPENDITURE_STANDARD,NEW (v1.2 inclusion-framed standard); was EXISTS to PRI D1 in v2 audit
+opheim_1991,def_time_standard,DEF_TIME_STANDARD,NEW (v1.2 inclusion-framed standard); was EXISTS to PRI D2 in v2 audit
 opheim_1991,freq_binary,pri_2010_disclosure:E1h_i | pri_2010_disclosure:E2h_i,MERGE; 'monthly during session' = monthly cadence on either side
 opheim_1991,disc_total_spending,(pri_2010_disclosure:E1f_i & pri_2010_disclosure:E1f_ii & pri_2010_disclosure:E1f_iii) | (pri_2010_disclosure:E2f_i & pri_2010_disclosure:E2f_ii & pri_2010_disclosure:E2f_iii),MERGE; same as N17 disc_total_expenditures
 opheim_1991,disc_spending_by_category,sunlight_2015:expenditure_format_granularity,EXISTS; same as N17 disc_categories_expenditures
@@ -199,7 +199,7 @@ opheim_1991,enforce_admin_fines,OUT_OF_SCOPE,Enforcement
 opheim_1991,enforce_admin_penalties,OUT_OF_SCOPE,Enforcement
 opheim_1991,enforce_court_actions,OUT_OF_SCOPE,Enforcement
 hired_guns_2007,Q1,DEF_ADMIN_AGENCY_LOBBYING_TRIGGER,EXISTS; same definition-trigger criterion as Newmark 2017
-hired_guns_2007,Q2,pri_2010_disclosure:D1_present | DEF_COMPENSATION_STANDARD | pri_2010_disclosure:D1_value,MERGE; CPI Q2 conflates compensation + expenditure thresholds + threshold value into one multi-tier score
+hired_guns_2007,Q2,pri_2010_disclosure:D1_present | DEF_COMPENSATION_STANDARD | pri_2010_disclosure:D1_value | DEF_EXPENDITURE_STANDARD,MERGE; CPI Q2 conflates compensation + expenditure thresholds + threshold value into one multi-tier score; v1.2: also targets new DEF_EXPENDITURE_STANDARD inclusion-framed row
 hired_guns_2007,Q3,pri_2010_disclosure:A1,EXISTS; REG_LOBBYIST
 hired_guns_2007,Q4,REG_PRE_LOBBYING_REGISTRATION_WINDOW,NEW
 hired_guns_2007,Q5,REG_BILL_SUBJECT_ON_REGISTRATION,NEW

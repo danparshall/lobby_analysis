@@ -132,7 +132,9 @@ PRI_DISCLOSURE_JUDGMENTS: dict[str, dict] = {
     "C3": {"id": "DEF_PUBLIC_ENTITY_CHARTER", "name": "Public-entity definition uses public charter / special protection", "domain": "registration"},
     # D. Materiality test (no field_path; D1/D2 thresholds map to top-level de_minimis_* fields on StateMasterRecord directly per plan B.4)
     # Row IDs renamed to rubric-neutral framing (2026-04-30 audit) — formerly THRESHOLD_MATERIALITY / THRESHOLD_FINANCIAL_* / THRESHOLD_TIME_*.
-    "D0": {"id": "THRESHOLD_LOBBYING_MATERIALITY_GATE", "name": "Materiality gate on lobbying coverage", "domain": "registration"},
+    # D0 promoted to domain="definitions" in v1.2 (qualitative-materiality umbrella);
+    # D1_present / D2_present stay in "registration" (exemption-framed gates downstream of the definition).
+    "D0": {"id": "THRESHOLD_LOBBYING_MATERIALITY_GATE", "name": "Materiality gate on lobbying coverage", "domain": "definitions"},
     "D1_present": {"id": "THRESHOLD_LOBBYING_EXPENDITURE_PRESENT", "name": "Expenditure-on-lobbying threshold (in statute)", "domain": "registration"},
     "D1_value": {"id": "THRESHOLD_LOBBYING_EXPENDITURE_VALUE", "name": "Expenditure-on-lobbying threshold dollar value (USD)", "domain": "registration"},
     "D2_present": {"id": "THRESHOLD_LOBBYING_TIME_PRESENT", "name": "Time-spent-on-lobbying threshold (in statute)", "domain": "registration"},

@@ -19,6 +19,7 @@ from lobby_analysis.models.state_master import (
 )
 
 CompendiumDomain = Literal[
+    "definitions",
     "registration",
     "reporting",
     "financial",

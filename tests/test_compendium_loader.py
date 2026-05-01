@@ -435,3 +435,177 @@ def test_loaded_real_compendium_includes_all_hired_guns_2007_items() -> None:
 
 def test_loaded_real_compendium_includes_all_opensecrets_2022_items() -> None:
     _assert_rubric_walked("opensecrets_2022", _NEWLY_WALKED_RUBRICS["opensecrets_2022"])
+
+
+# -----------------------------------------------------------------------------
+# Data model v1.2: domain="definitions" + 7 notes-flagged row resolution
+#
+# Plan: docs/active/filing-schema-extraction/plans/20260501_data_model_v1_2_definitions_domain.md
+#
+# These tests assert the v1.2 migration is complete:
+#   - Schema accepts "definitions" as a valid CompendiumDomain value.
+#   - 5 rows are migrated to domain="definitions".
+#   - 2 new symmetry rows exist (DEF_EXPENDITURE_STANDARD, DEF_TIME_STANDARD)
+#     in domain="definitions".
+#   - All 7 notes-flagged rows have their flag dropped.
+#   - Every domain="definitions" row has at least one definitional
+#     framework_reference (Newmark, Opheim, CPI, or PRI D0).
+# -----------------------------------------------------------------------------
+
+
+_DEFINITIONS_ROW_IDS = {
+    "THRESHOLD_LOBBYING_MATERIALITY_GATE",
+    "DEF_ADMIN_AGENCY_LOBBYING_TRIGGER",
+    "DEF_ELECTED_OFFICIAL_AS_LOBBYIST",
+    "DEF_PUBLIC_EMPLOYEE_AS_LOBBYIST",
+    "DEF_COMPENSATION_STANDARD",
+    "DEF_EXPENDITURE_STANDARD",
+    "DEF_TIME_STANDARD",
+}
+
+_NOTES_FLAG_FRAGMENT = "definition-trigger criterion"
+
+_PREVIOUSLY_FLAGGED_ROWS = _DEFINITIONS_ROW_IDS - {
+    "DEF_EXPENDITURE_STANDARD",
+    "DEF_TIME_STANDARD",
+} | {
+    # Rows that were notes-flagged but stay in registration (flag must drop).
+    "REG_LOBBYIST",
+    "THRESHOLD_LOBBYING_EXPENDITURE_PRESENT",
+    "THRESHOLD_LOBBYING_TIME_PRESENT",
+}
+
+
+def test_compendium_domain_literal_accepts_definitions_value(tmp_path: Path) -> None:
+    """v1.2: 'definitions' is a valid CompendiumDomain Literal value."""
+    csv_path = tmp_path / "compendium.csv"
+    _write_csv(csv_path, [_row(domain="definitions")])
+
+    items = load_compendium(csv_path)
+
+    assert len(items) == 1
+    assert items[0].domain == "definitions"
+
+
+def test_real_compendium_has_definitions_domain_rows() -> None:
+    """v1.2: the 7 expected row IDs all have domain='definitions' post-migration."""
+    items = _real_compendium_or_skip()
+    by_id = {i.id: i for i in items}
+
+    missing = _DEFINITIONS_ROW_IDS - by_id.keys()
+    assert not missing, f"v1.2 row IDs missing from compendium: {sorted(missing)}"
+
+    wrong_domain = {
+        rid: by_id[rid].domain for rid in _DEFINITIONS_ROW_IDS if by_id[rid].domain != "definitions"
+    }
+    assert not wrong_domain, (
+        f"v1.2 rows have wrong domain (expected 'definitions'): {wrong_domain}"
+    )
+
+
+def test_real_compendium_has_no_lingering_definition_trigger_notes_flags() -> None:
+    """v1.2: every previously notes-flagged row must have its flag dropped."""
+    items = _real_compendium_or_skip()
+    by_id = {i.id: i for i in items}
+
+    still_flagged: list[str] = []
+    for rid in _PREVIOUSLY_FLAGGED_ROWS:
+        if rid not in by_id:
+            continue
+        if _NOTES_FLAG_FRAGMENT in by_id[rid].notes:
+            still_flagged.append(rid)
+    assert not still_flagged, (
+        f"rows still carry the v1.1 notes flag (should be dropped post-v1.2): {still_flagged}"
+    )
+
+
+def test_definitions_domain_rows_have_definitional_framework_refs() -> None:
+    """v1.2: every domain='definitions' row references at least one of
+    Newmark/Opheim/CPI Hired Guns, OR PRI D0 (the materiality umbrella).
+
+    This catches an orphan 'definitions' row that has no definitional rubric
+    behind it. PRI D0 is the only PRI item that captures the qualitative
+    materiality concept; PRI A/B/C/D1/D2/E items are not definitional in this
+    sense.
+    """
+    items = _real_compendium_or_skip()
+    definitional_frameworks = {"newmark_2017", "newmark_2005", "opheim_1991", "hired_guns_2007"}
+
+    orphans: list[str] = []
+    for item in items:
+        if item.domain != "definitions":
+            continue
+        has_definitional = any(
+            ref.framework in definitional_frameworks
+            or (ref.framework == "pri_2010_disclosure" and ref.item_id == "D0")
+            for ref in item.framework_references
+        )
+        if not has_definitional:
+            orphans.append(item.id)
+    assert not orphans, (
+        f"domain='definitions' rows missing a definitional framework_reference: {orphans}"
+    )
+
+
+def test_materiality_gate_row_has_newmark_opheim_cross_refs() -> None:
+    """v1.2 curation-gap fix: D0 (the qualitative-materiality umbrella) gains
+    Newmark/Opheim framework_references.
+
+    Each Newmark/Opheim 'standard' (compensation/expenditure/time) implies the
+    existence of a materiality test; the D0 row should reflect that.
+    """
+    items = _real_compendium_or_skip()
+    by_id = {i.id: i for i in items}
+    row = by_id.get("THRESHOLD_LOBBYING_MATERIALITY_GATE")
+    assert row is not None, "THRESHOLD_LOBBYING_MATERIALITY_GATE missing"
+    frameworks = {ref.framework for ref in row.framework_references}
+    expected_extra = {"newmark_2017", "newmark_2005", "opheim_1991"}
+    missing = expected_extra - frameworks
+    assert not missing, (
+        f"THRESHOLD_LOBBYING_MATERIALITY_GATE missing definitional cross-refs: {sorted(missing)}"
+    )
+
+
+def test_inclusion_framed_expenditure_standard_is_separate_row() -> None:
+    """v1.2 symmetry-gap fix: DEF_EXPENDITURE_STANDARD exists as a separate
+    inclusion-framed row, paralleling DEF_COMPENSATION_STANDARD.
+
+    Newmark/Opheim's def_expenditure_standard re-targets here (was previously
+    folded into the exemption-framed THRESHOLD_LOBBYING_EXPENDITURE_PRESENT).
+    """
+    items = _real_compendium_or_skip()
+    by_id = {i.id: i for i in items}
+    row = by_id.get("DEF_EXPENDITURE_STANDARD")
+    assert row is not None, "DEF_EXPENDITURE_STANDARD missing"
+    assert row.domain == "definitions"
+
+    # Newmark/Opheim def_expenditure_standard now targets this row in dedup map.
+    with DEDUP_MAP.open() as f:
+        for r in csv.DictReader(f):
+            if r["source_framework"] in {"newmark_2017", "newmark_2005", "opheim_1991"} and (
+                r["source_item_id"] == "def_expenditure_standard"
+            ):
+                assert "DEF_EXPENDITURE_STANDARD" in r["target_expression"], (
+                    f"{r['source_framework']}/def_expenditure_standard should target "
+                    f"DEF_EXPENDITURE_STANDARD; got {r['target_expression']!r}"
+                )
+
+
+def test_inclusion_framed_time_standard_is_separate_row() -> None:
+    """v1.2 symmetry-gap fix: DEF_TIME_STANDARD exists as a separate
+    inclusion-framed row, paralleling DEF_COMPENSATION_STANDARD."""
+    items = _real_compendium_or_skip()
+    by_id = {i.id: i for i in items}
+    row = by_id.get("DEF_TIME_STANDARD")
+    assert row is not None, "DEF_TIME_STANDARD missing"
+    assert row.domain == "definitions"
+
+    with DEDUP_MAP.open() as f:
+        for r in csv.DictReader(f):
+            if r["source_framework"] in {"newmark_2017", "newmark_2005", "opheim_1991"} and (
+                r["source_item_id"] == "def_time_standard"
+            ):
+                assert "DEF_TIME_STANDARD" in r["target_expression"], (
+                    f"{r['source_framework']}/def_time_standard should target "
+                    f"DEF_TIME_STANDARD; got {r['target_expression']!r}"
+                )

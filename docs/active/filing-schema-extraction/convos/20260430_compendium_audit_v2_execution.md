@@ -57,7 +57,7 @@ Plus direct CSV / code changes:
 
 ## Open Questions
 
-- **Notes-flagged rows:** seven rows now carry the `definition-trigger criterion (review for v1.2 domain='definitions' promotion)` flag. Decide which (if any) warrant a future v1.2 schema bump. Recommendation in audit doc: promote the four `DEF_*` rows + `THRESHOLD_LOBBYING_MATERIALITY_GATE`; leave the inclusion/exemption-distinction rows in `registration`.
+- **Notes-flagged rows: RESOLVED 2026-05-01.** All 7 flags resolved via v1.2 schema bump per `plans/20260501_data_model_v1_2_definitions_domain.md` and Decision Log D11 in the audit doc. 5 rows promoted to new `domain="definitions"`; 3 stay in `registration` (flag dropped); 2 new symmetry-gap rows added (`DEF_EXPENDITURE_STANDARD`, `DEF_TIME_STANDARD`). Compendium grew 139 → 141; statute-side 106 → 108.
 - **Coverage matrix:** placeholder in audit doc; deferred to a small follow-up that generates `data/compendium/coverage_matrix.csv` programmatically from the dedup map.
 - **`REG_PHOTO_REQUIRED` / `REG_SEPARATE_LOBBYIST_CLIENT_FILINGS`:** added as statute-side rows but may be portal/process facts in some states; flagged for harness brainstorm to handle.
 - **Inclusion-framed expenditure standard:** for symmetry with `DEF_COMPENSATION_STANDARD` we could add `DEF_EXPENDITURE_STANDARD` (inclusion-framed) alongside the renamed `THRESHOLD_LOBBYING_EXPENDITURE_PRESENT` (exemption-framed). Deferred — user signaled rename was sufficient for now.

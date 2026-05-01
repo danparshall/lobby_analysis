@@ -13,7 +13,8 @@ This is the **durable anti-loop artifact** — every contested call is recorded 
 ## Summary
 
 - **Pre-audit:** 118 compendium rows from 4 rubrics (PRI 2010 disclosure 61 rows, PRI 2010 accessibility 22 rows, FOCAL 2024 50 indicators, Sunlight 2015 ~7 unique items).
-- **Post-audit:** **140 compendium rows** (+22 new rows from 5 walked rubrics).
+- **Post-v2-audit:** 139 compendium rows (+21 new rows from 5 walked rubrics).
+- **Post-v1.2 (Decision Log D11, 2026-05-01):** **141 compendium rows** (+2 symmetry-gap rows). 7 rows now in new `domain="definitions"`.
 - **Items walked:** 114 atomic items across 5 rubrics.
   - Newmark 2017: 19 items
   - Newmark 2005: 18 items (1 dropped by author as constant)
@@ -347,6 +348,22 @@ The anti-loop record. Each entry: decision made, why, and the alternative consid
 - **Migration script:** `scripts/build_compendium.py` lines 134-140 also updated so a re-run produces the same neutral names.
 - **Alternative considered:** Rename the entire compendium to rubric-neutral IDs (e.g., `REG_LOBBYIST` → `WHO_LOBBYIST_REGISTRATION_REQUIRED`). Rejected as too much churn for too little harness payoff; defer to a hypothetical future curation pass.
 
+### D11. v1.2 schema bump: `domain="definitions"` added (2026-05-01)
+
+- **Decision (post-audit, in-session):** Landed v1.2 schema bump per `plans/20260501_data_model_v1_2_definitions_domain.md`.
+  - Added `"definitions"` to `CompendiumDomain` Literal in `src/lobby_analysis/models/compendium.py`.
+  - Migrated 5 rows from `domain="registration"` to `domain="definitions"`: `THRESHOLD_LOBBYING_MATERIALITY_GATE` (PRI D0 umbrella), `DEF_ADMIN_AGENCY_LOBBYING_TRIGGER`, `DEF_ELECTED_OFFICIAL_AS_LOBBYIST`, `DEF_PUBLIC_EMPLOYEE_AS_LOBBYIST`, `DEF_COMPENSATION_STANDARD`.
+  - **Symmetry-gap fix:** added 2 NEW rows in `domain="definitions"` (inclusion-framed parallels of `DEF_COMPENSATION_STANDARD`):
+    - `DEF_EXPENDITURE_STANDARD` — "spend > $X on lobbying = you ARE a lobbyist" (Newmark/Opheim def_expenditure_standard re-targeted here).
+    - `DEF_TIME_STANDARD` — "spend > X% of compensated time = you ARE a lobbyist" (Newmark/Opheim def_time_standard re-targeted here).
+  - **Curation-gap fix:** added Newmark 2017/2005, Opheim 1991, CPI Hired Guns framework_references to `THRESHOLD_LOBBYING_MATERIALITY_GATE` (D0). Each Newmark/Opheim "standard" implies a materiality test; D0 was missing those cross-refs in the v2 audit.
+  - Dropped the `definition-trigger criterion` notes flag from all 7 previously-flagged rows. The 3 stay-in-registration rows (`REG_LOBBYIST`, `THRESHOLD_LOBBYING_EXPENDITURE_PRESENT`, `THRESHOLD_LOBBYING_TIME_PRESENT`) keep their domain; their flag is gone.
+  - Re-targeted dedup-map entries: Newmark/Opheim `def_expenditure_standard` and `def_time_standard` flip from `EXISTS` (folded into PRI D1/D2 exemption-framed rows) to `NEW` (their own inclusion-framed rows). CPI Q2 expenditure-portion expression expanded to also reference `DEF_EXPENDITURE_STANDARD`.
+- **Conceptual line established:** `domain="definitions"` = statutory criteria for whether a person *is* a lobbyist (predicate on the agent). `domain="registration"` = filing requirements once a person is a lobbyist (gates, exemption thresholds, registration-form contents). Test for borderline future rows: "Does this answer 'who is a lobbyist?' or 'what does a lobbyist file?'"
+- **OpenSecrets's `REG_SEPARATE_LOBBYIST_CLIENT_FILINGS` stays in `registration`** under this rule — it's a filing-architecture feature, not a definitional criterion.
+- **Compendium row count:** 139 → **141** (+2 from v1.2 symmetry-gap rows). Statute-side total: **108** (up from 106; the 2 new rows are statute-side). Domain breakdown post-v1.2: 7 `definitions`, 31 `registration` (was 36; 5 promoted to definitions), 47 `reporting`, 33 `accessibility`, plus smaller domains.
+- **Tests added (TDD):** 7 new tests in `test_compendium_loader.py` enforcing the v1.2 invariants (loader accepts `definitions`, expected row IDs are present with the right domain, no rows still carry the v1.1 notes flag, every `definitions` row has a definitional framework_reference, D0 has Newmark/Opheim cross-refs, the 2 symmetry rows exist with correct dedup-map re-targeting). 24/24 compendium tests pass.
+
 ### D10. CPI Q30 (electronic-filing training) deferred, not folded
 
 - **Decision:** Not added in this audit. Deferred to a future accessibility-rubric audit.
@@ -354,21 +371,24 @@ The anti-loop record. Each entry: decision made, why, and the alternative consid
 
 ---
 
-## Notes-flagged rows for end-of-audit review
+## Notes-flagged rows for end-of-audit review — RESOLVED 2026-05-01 (v1.2 landed)
 
-Per user direction (2026-04-30): all rows tagged with the definition-trigger notes flag should be reviewed at audit-end to decide whether to promote them via a v1.2 schema bump (adding `domain="definitions"`).
+End-of-audit review (2026-05-01) resolved all 7 notes-flagged rows per Decision Log D11 (v1.2 schema bump). Final dispositions:
 
-| Row id | Current domain | Source rubric framework_references | Suggested action |
-|---|---|---|---|
-| `REG_LOBBYIST` | registration | + Newmark 2017, Newmark 2005, Opheim 1991 (def_legislative_lobbying) | Promote to v1.2 `domain="definitions"`? Probably not — universal-yes; little signal. |
-| `THRESHOLD_LOBBYING_EXPENDITURE_PRESENT` | registration | + Newmark 2017, Newmark 2005, Opheim 1991, CPI Q2 (def_expenditure_standard) | Strong candidate for promotion — definition-trigger criterion proper. |
-| `THRESHOLD_LOBBYING_TIME_PRESENT` | registration | + Newmark 2017, Newmark 2005, Opheim 1991 (def_time_standard) | Strong candidate for promotion. |
-| `DEF_ADMIN_AGENCY_LOBBYING_TRIGGER` (new) | registration | Newmark 2017/2005/Opheim def_admin_agency, CPI Q1 | Strong candidate. |
-| `DEF_ELECTED_OFFICIAL_AS_LOBBYIST` (new) | registration | Newmark 2017/2005/Opheim def_elected_officials | Strong candidate. |
-| `DEF_PUBLIC_EMPLOYEE_AS_LOBBYIST` (new) | registration | Newmark 2017/2005/Opheim def_public_employees | Strong candidate. |
-| `DEF_COMPENSATION_STANDARD` (new) | registration | Newmark 2017/2005/Opheim def_compensation_standard, CPI Q2 | Strong candidate. |
+| Row id | Final domain | Action taken |
+|---|---|---|
+| `REG_LOBBYIST` | registration | Flag dropped. The flag was defensive; on review it doesn't capture a definition (universal-yes, no signal beyond "registration regime exists"). |
+| `THRESHOLD_LOBBYING_EXPENDITURE_PRESENT` | registration | Flag dropped. Stays in registration — exemption-framed, properly a registration gate. Newmark/Opheim's def_expenditure_standard re-targeted to the new `DEF_EXPENDITURE_STANDARD` row (inclusion-framed). |
+| `THRESHOLD_LOBBYING_TIME_PRESENT` | registration | Flag dropped. Stays in registration — exemption-framed. Newmark/Opheim's def_time_standard re-targeted to the new `DEF_TIME_STANDARD` row. |
+| `THRESHOLD_LOBBYING_MATERIALITY_GATE` | **definitions** | Promoted. Qualitative-materiality umbrella; gained Newmark/Opheim/CPI cross-refs (curation-gap fix). |
+| `DEF_ADMIN_AGENCY_LOBBYING_TRIGGER` | **definitions** | Promoted. |
+| `DEF_ELECTED_OFFICIAL_AS_LOBBYIST` | **definitions** | Promoted. |
+| `DEF_PUBLIC_EMPLOYEE_AS_LOBBYIST` | **definitions** | Promoted. |
+| `DEF_COMPENSATION_STANDARD` | **definitions** | Promoted. |
+| `DEF_EXPENDITURE_STANDARD` (new) | **definitions** | Symmetry-gap fix added in v1.2 — inclusion-framed parallel of DEF_COMPENSATION_STANDARD. |
+| `DEF_TIME_STANDARD` (new) | **definitions** | Symmetry-gap fix added in v1.2 — inclusion-framed parallel. |
 
-**End-of-audit user review:** decide which of these (if any) warrant a v1.2 schema bump. If yes, draft `plans/<date>_data_model_v1_2_definitions_domain.md` as a follow-up; this audit's notes flags become the migration's row list.
+Total: 7 rows now in `domain="definitions"` (5 migrated + 2 new). Conceptual line: `definitions` = "who is a lobbyist?" (predicate on the agent); `registration` = "what does a lobbyist file?" (filing requirements, including exemption-framed gates).
 
 ---
 
