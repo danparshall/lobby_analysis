@@ -11,7 +11,15 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-FieldStatus = Literal["required", "optional", "not_applicable", "unknown"]
+FieldStatus = Literal[
+    "required",
+    "optional",
+    "not_applicable",
+    "unknown",
+    "required_conditional",
+    "not_required",
+    "not_addressed",
+]
 FilingStatus = Literal["required", "optional", "not_required"]
 ReportingFrequency = Literal[
     "monthly",
@@ -139,6 +147,9 @@ class FieldRequirement(BaseModel):
     evidence_notes: str = ""
     framework_references: list[FrameworkReference] = Field(default_factory=list)
     legal_citation: str | None = None
+    condition_text: str | None = None
+    regime: str | None = None
+    registrant_role: str | None = None
     notes: str = ""
 
 
