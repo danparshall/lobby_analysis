@@ -175,17 +175,33 @@ data/extractions/<STATE>/<VINTAGE>/<CHUNK>/<RUN_ID>/
 
 **Verify in pilot** — should be a non-issue but observe the OH output for any residual collapse on multi-clause statutory language.
 
-### Q4 — Multi-regime parallel chapters (provisionally resolved; final pending external survey)
+### Q4 — Multi-regime parallel chapters (resolved: regime-aware from day one)
 
-**Provisional decision:** flat representation for OH MVP (option (a)). Each compendium row populates once; per-regime variation is captured in `notes`. Matches the existing PRI-projection SMR shape and minimizes schema change.
+**Survey result** (`results/state_regime_splitting.md`, web-UX agent, 2026-05-01): **8 states with unambiguous statutory multiple disclosure regimes** (Ohio, Florida, California, New York, New Jersey, Illinois, North Carolina, Massachusetts) plus 2–4 borderline (CT, TN, possibly KY/LA/PA). Of the priority 5–8 states the README scopes to, that's likely 4+ multi-regime — comfortably "more than a handful."
 
-**Reopened mid-session:** the user asked how many states have parallel-regime structures. Rough estimate: of the 5–8 priority states the README scopes to, ~25–40% (likely 2–3 of 8: OH confirmed, IL likely, MA possibly) have meaningful multi-regime structure. That's at the boundary of "more than a handful." If empirical survey confirms ≥3 of 8 priority states have parallel regimes, lock in regime-aware representation (option (b)) from day one as part of the v1.3 schema bump rather than deferring to v1.4.
+**Decision:** option (b) regime-aware from day one. Lock as part of the v1.3 schema bump alongside `condition_text` (Q2). Building flat-then-refactoring is more expensive than carrying one extra optional field.
 
-**External agent dispatched (web-UX, special research skill, 2026-05-01)** to survey regime structure across priority states. Output expected as a per-state structured table. **Q4 final decision blocks on that survey returning** — the harness plan will cover both branches:
-- if survey shows ≤2 of 8 multi-regime → ship flat for OH MVP, target regime-aware in v1.4 as data accumulates.
-- if survey shows ≥3 of 8 multi-regime → ship regime-aware in v1.3 alongside `condition_text`. The schema cost is one additional field; the rework cost of building flat then refactoring is much higher.
+**v1.3 schema additions on `FieldRequirement` (all `str | None`, default None — non-breaking, additive):**
 
-**Either way, OH iteration 1 (definitions chunk) can proceed** — the `definitions` rows do not vary by regime in OH (definitions cross-apply within Ch. 101's two regimes via shared §101.70 vocabulary; Ch. 121 has parallel definitions in §121.60 that we'd extract whether the schema is flat or regime-aware). Iter 1 is unblocked by the regime decision.
+| field | purpose | example values |
+|---|---|---|
+| `condition_text` | Verbatim qualifying clause for `status="required_conditional"` (qualitative materiality, Q2) | "as one of the individual's main purposes" |
+| `regime` | What is being lobbied (target axis) | `legislative` / `executive` / `retirement_system` / `procurement_restricted_period` / `placement_agent` / `liaison_state_agency` / `liaison_local_government` / `pay_to_play_business_entity` |
+| `registrant_role` | Who is doing the lobbying (registrant taxonomy axis) | `client_lobbyist` / `communicator_lobbyist` / `consulting_services` (CT/TN-style splits) |
+
+**Why string not `Literal[...]`:** start as freeform strings; observe what the harness emits across the 8 multi-regime states; lock as `Literal[...]` in a future schema version once the value space stabilizes. Avoids prematurely picking a wrong vocabulary.
+
+**Output-shape implications for the brief:**
+- Emit one row per `(compendium_row_id, regime, registrant_role)` combination where they differ; emit single row with `regime=None, registrant_role=None` when uniform across regimes/roles in that state.
+- Single-bundle, single-pass — no per-regime cost multiplier; cost stays at the previously-locked ~56K equivalent input per OH run.
+
+**Validation tool implications:**
+- Compendium→rubric projection now needs to know which regime to project. PRI 2010 / FOCAL / CPI / etc. each implicitly scored against a regime focus (PRI 2010 typically `legislative` in OH-style states).
+- Per-rubric regime mapping is configuration data — surface in the plan; not blocking iter 1.
+
+**OH iteration 1 (definitions chunk) implications:**
+- Some compendium rows now likely emit 2× per ID for OH (legislative+retirement use shared §101.70 vocabulary; executive uses §121.60 parallel definitions). Good test case for the regime-aware emit shape.
+- Iter 1 remains unblocked.
 
 ### Q6 — Multi-run agreement (resolved provisionally)
 
