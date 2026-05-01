@@ -8,11 +8,17 @@
 
 **Calibration anchor:** OH 2025 PRI-projection SMR (`data/state_master_records/OH/2025/e7846593ebb5.json` — gitignored, regenerable from committed score CSV). Diff doc with structural findings: `docs/historical/statute-retrieval/results/20260430_oh_2025_vs_2010_diff.md`.
 
+> **Re-scope note (2026-04-30):** This plan was originally written against a 118-row compendium. After the v2 audit (`results/20260430_compendium_audit.md`), the compendium is now **139 rows** (+21 net new from Newmark 2017/2005 + Opheim 1991 + CPI Hired Guns 2007 + OpenSecrets 2022). Row-count targets below have been updated to reflect the new universe. The qualitative shape of the harness is unchanged; only the row count grows.
+
 ---
 
 ## The gap this plan closes
 
-The OH 2025 PRI-projection SMR has 22 `field_requirements` rows. The compendium has 118 rows total. Of those 118 rows, **57 have no 2025 score data at all** (PRI accessibility + FOCAL-only + Sunlight-only items not separately scored); **another 39 are scored but not projected** (compendium rows where `maps_to_state_master_field` was only populated for the E-series during Stage B.6.1, leaving most of the 61 PRI disclosure-law items projected nowhere). The SMR is genuinely thin.
+The OH 2025 PRI-projection SMR has 22 `field_requirements` rows. The compendium has **139 rows total** (post v2 audit, 2026-04-30). Of those 139 rows, the harness must populate a statute-side subset (~112 rows; see "MVP target" below); the remaining ~27 are accessibility-side and depend on portal observation, not statute reading (out of scope for this branch).
+
+> **Pre-audit note:** The original kickoff (118 rows) is preserved in this section for trajectory; the `~96` and `57`/`39` breakdown numbers have been updated below to reflect the v2-audit row counts. The qualitative gap argument is unchanged.
+
+Of the **pre-audit 118 rows**, 57 had no 2025 score data at all (PRI accessibility + FOCAL-only + Sunlight-only items not separately scored); another 39 were scored but not projected (compendium rows where `maps_to_state_master_field` was only populated for the E-series during Stage B.6.1, leaving most of the 61 PRI disclosure-law items projected nowhere). The +21 v2 audit rows are unscored under PRI by definition (Newmark/Opheim/CPI/OpenSecrets concepts PRI didn't ask about). The SMR is even thinner now relative to the universe.
 
 But that's only the *quantitative* gap. The *qualitative* gap is bigger:
 
@@ -27,31 +33,44 @@ The **product** for this branch is: each compendium-keyed `field_requirements` r
 
 ## What "full compendium-SMR" means
 
-For OH (the MVP target), the compendium has 118 rows. Of those:
+For OH (the MVP target), the compendium has **139 rows** (post v2 audit). Of those:
+
+**Statute-side (in-scope) — ~112 rows:**
 - **28 PRI-disclosure-only rows** — must be populated from OH §101.70-79 + §101.90-99 + §121.60-69 directly.
 - **21 PRI-disclosure ∪ FOCAL rows** — same, but with FOCAL refs riding along.
 - **8 PRI-disclosure ∪ Sunlight rows** — same, with Sunlight refs riding along.
 - **4 triple-overlap rows** — same.
-- **17 PRI-accessibility rows** — populated from portal-side observation, not statute. **Out of scope for this plan** (accessibility is portal evidence, not statute evidence).
-- **32 FOCAL-only rows** — assess: do these correspond to OH disclosure requirements? Some do (OH may require disclosure of items FOCAL covers but PRI doesn't); some don't (OH has no parallel requirement).
-- **3 FOCAL ∪ accessibility rows** — accessibility-side, deferred.
-- **3 Sunlight-only rows** — atomic facts from Sunlight 2015 methodology paragraph; assess applicability to OH.
-- **2 PRI-accessibility ∪ FOCAL rows** — accessibility-side, deferred.
+- **32 FOCAL-only rows** — assess applicability to OH (some are OH disclosures PRI didn't cover; some are not parallel).
+- **3 Sunlight-only rows** — atomic facts from Sunlight 2015 methodology paragraph.
+- **+16 v2-audit rows** (statute-side):
+  - 4 definition-trigger rows (`DEF_ADMIN_AGENCY_LOBBYING_TRIGGER`, `DEF_ELECTED_OFFICIAL_AS_LOBBYIST`, `DEF_PUBLIC_EMPLOYEE_AS_LOBBYIST`, `DEF_COMPENSATION_STANDARD`) — domain `registration`, notes-flagged for v1.2 review.
+  - 5 CPI registration-form additions (`REG_PRE_LOBBYING_REGISTRATION_WINDOW`, `REG_BILL_SUBJECT_ON_REGISTRATION`, `REG_REGISTRATION_RENEWAL_FREQUENCY`, `REG_CHANGE_NOTIFICATION_WINDOW`, `REG_PHOTO_REQUIRED`).
+  - 4 CPI itemized-expenditure metadata rows (`RPT_ITEMIZED_PRINCIPAL_BENEFITED`, `RPT_ITEMIZED_RECIPIENT`, `RPT_ITEMIZED_DATE`, `RPT_ITEMIZED_DESCRIPTION`).
+  - 2 CPI miscellaneous reporting rows (`RPT_HOUSEHOLD_OF_OFFICIAL_SPENDING`, `RPT_ZERO_ACTIVITY_FILING`).
+  - 1 OpenSecrets registration-architecture row (`REG_SEPARATE_LOBBYIST_CLIENT_FILINGS`).
 
-**MVP target for OH (statute-side rows only):** 61 + 32 + 3 = **~96 compendium rows** to assess. Each row resolves to one of:
+**Accessibility-side (out of scope for this plan) — ~27 rows:**
+- 17 PRI-accessibility rows.
+- 3 FOCAL ∪ accessibility rows.
+- 2 PRI-accessibility ∪ FOCAL rows.
+- **+5 v2-audit accessibility rows** (`ACC_COPIES_COST`, `ACC_SAMPLE_FORMS_ONLINE`, `ACC_AGGREGATE_TOTALS_BY_YEAR`, `ACC_AGGREGATE_TOTALS_BY_DEADLINE`, `ACC_AGGREGATE_TOTALS_BY_INDUSTRY`).
+
+> **Note on definition-trigger rows:** Per the v2 audit Decision Log D1, the four `DEF_*` rows (and three notes-flagged existing rows: `REG_LOBBYIST`, `THRESHOLD_LOBBYING_EXPENDITURE_PRESENT`, `THRESHOLD_LOBBYING_TIME_PRESENT`) are stored under `domain="registration"` with a notes flag pending end-of-audit review for a possible v1.2 schema bump (`domain="definitions"`). The harness should treat them as registration-side rows for now and depend on the schema staying as-is. If v1.2 lands, the rows migrate to the new domain but the harness logic is unaffected (it reads `id`, `description`, and `framework_references`, not `domain`). **Naming note:** these threshold rows were renamed from PRI-vocabulary IDs (`THRESHOLD_FINANCIAL_*`, `THRESHOLD_TIME_*`) to rubric-neutral IDs in the v2 audit (Decision Log D9) to remove implicit PRI privilege.
+
+**MVP target for OH (statute-side rows only):** **~112 compendium rows** to assess (was ~96 pre-audit). Each row resolves to one of:
 - **`required` + legal citation + status="known"** — OH law explicitly requires this.
 - **`not_required` + status="known"** — OH law explicitly does NOT require this (negative finding, equally valuable).
 - **`not_addressed` + status="unknown"** — OH law is silent; we can't infer from statute alone.
 - **`required_conditional` + condition + citation** — required when X (e.g., "required when expenditure > aggregate $50/year per member").
 
-**Compare to current PRI-projection SMR for OH (22 rows populated):** the new harness should produce ≥22 populated rows that *match* the PRI-projection result on items where PRI is correct, AND populate the other ~74 statute-side compendium rows with proper findings, AND fix the known PRI-projection errors (D0=1 not 0; conjunctive E-series read correctly).
+**Compare to current PRI-projection SMR for OH (22 rows populated):** the new harness should produce ≥22 populated rows that *match* the PRI-projection result on items where PRI is correct, AND populate the other ~90 statute-side compendium rows with proper findings (was ~74 pre-audit; now ~90 with the +16 v2-audit statute-side additions), AND fix the known PRI-projection errors (D0=1 not 0; conjunctive E-series read correctly).
 
 ---
 
 ## Design questions (resolve via brainstorming first)
 
-1. **Subagent architecture.** One agent reads the whole bundle and emits the full schema in one pass? Or per-section agents that each emit the obligations from one section, then a unifier? The Stage B harness used one-agent-per-rubric (one agent scored all 61 PRI items at once); the agent had to hold the whole 30-section bundle + all 61 questions + the locked prompt in context. For full schema extraction with ~96 compendium rows, that's much heavier. Per-section is more scalable but loses cross-reference context (e.g., §101.74's expenditure rules reference §101.70's definitions).
-2. **Prompt shape.** What does the agent's brief look like? It needs: (a) the compendium rows to populate (with `field_path`, `data_type`, `description` for each row); (b) the bundled statute text; (c) instructions to emit each row's `status`, `legal_availability`, `legal_citation`, `evidence_source`, `notes`. The PRI scorer prompt's three-tier exemption boundary, files-read enforcement, and locked rules are reusable scaffolding.
+1. **Subagent architecture.** One agent reads the whole bundle and emits the full schema in one pass? Or per-section agents that each emit the obligations from one section, then a unifier? The Stage B harness used one-agent-per-rubric (one agent scored all 61 PRI items at once); the agent had to hold the whole 30-section bundle + all 61 questions + the locked prompt in context. For full schema extraction with ~112 compendium rows (post v2 audit), that's even heavier than the original ~96 estimate. Per-section is more scalable but loses cross-reference context (e.g., §101.74's expenditure rules reference §101.70's definitions). The +16 v2-audit additions (mostly itemized-expenditure metadata + registration-form fields) tend to cluster in §101.72-74 (registration content + financial transaction statement), so a per-section split there is a good locality test.
+2. **Prompt shape.** What does the agent's brief look like? It needs: (a) the compendium rows to populate (with `field_path`, `data_type`, `description` for each row); (b) the bundled statute text; (c) instructions to emit each row's `status`, `legal_availability`, `legal_citation`, `evidence_source`, `notes`. The PRI scorer prompt's three-tier exemption boundary, files-read enforcement, and locked rules are reusable scaffolding. **Row-budget impact:** ~112 rows × ~150 tokens of row metadata each ≈ 17K tokens of brief, plus the 30-section bundle (~143 KB ≈ 36K tokens). Total ≈ 53K input tokens before answers — within opus-4-7 limits but no longer trivially cacheable across runs.
 3. **Multi-regime representation in the SMR.** OH has three parallel lobbying regimes. The current SMR has 11 `registration_requirements` rows and 2 `reporting_parties` rows (lobbyist + client). Does the new schema represent each regime separately (3 × 2 = 6 reporting-party rows) or unified (the existing flat shape, with regime as a `notes` qualifier)? **Strong opinion: keep flat shape for now; document multi-regime in `notes` per row;** revisit if Track B's extraction pipeline needs structural multi-regime.
 4. **What is "evidence" for a `not_required` finding?** Negative findings are harder than positive ones — the agent must show it considered whether OH law requires X and didn't find it, vs missing the requirement entirely. Possible approach: require the agent to cite the *most relevant* statute section even for `not_required`, with `evidence_source.evidence_type="statute_silence"` and `evidence_notes="searched §101.72 (registration content), §101.73 (expenditure statement), §101.74 (financial transaction statement); none require X."`
 5. **How do we calibrate?** The OH 2025 PRI-projection SMR is the *floor* — the new harness must match its 22 populated rows on agreement items. But it must also *correct* the known errors (D0=1 not 0; conjunctive items). Calibration approach: produce the new SMR; diff against PRI-projection SMR; for each diff, classify as "harness right, PRI wrong" / "harness wrong, PRI right" / "judgment call." Report agreement rate + categorized differences.
@@ -77,9 +96,9 @@ For OH (the MVP target), the compendium has 118 rows. Of those:
 A brainstorming session that resolves design questions 1, 2, 3, 4 above. Don't write any code in the first session — the design choices are load-bearing and a wrong subagent architecture or prompt shape will cost weeks. The brainstorming skill is the right framework. Specific questions to land before any implementation:
 
 - One agent vs per-section agents?
-- Brief shape: how do we present 96 compendium rows + 30-section bundle + extraction instructions in one prompt without the agent dropping rows?
+- Brief shape: how do we present **~112** compendium rows (was 96 pre-audit) + 30-section bundle + extraction instructions in one prompt without the agent dropping rows? The row-count growth raises the drop-risk; brainstorm should weigh row-chunking strategies.
 - What's the minimum viable schema for a compendium row's "filled" state? `status` + `legal_citation` is the floor. Are `evidence_source` + `data_type` overrides necessary at MVP?
-- How do we handle compendium rows where the *concept* doesn't fit OH's statute structure (e.g., a FOCAL indicator about a database feature that's portal-side, not statute-side)?
+- How do we handle compendium rows where the *concept* doesn't fit OH's statute structure (e.g., a FOCAL indicator about a database feature that's portal-side, not statute-side)? The +16 v2-audit additions surface several borderline cases — e.g., `REG_PHOTO_REQUIRED` and `REG_SEPARATE_LOBBYIST_CLIENT_FILINGS` may or may not have statute-text answers in OH; both might be portal/process facts.
 
 Once design questions are resolved, the second session writes a TDD-ready implementation plan and begins.
 

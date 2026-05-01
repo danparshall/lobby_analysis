@@ -324,3 +324,114 @@ def test_dedup_map_target_expressions_reference_real_compendium_items() -> None:
         f"dedup map references items not present in compendium: {bad[:5]}"
         + ("..." if len(bad) > 5 else "")
     )
+
+
+# -----------------------------------------------------------------------------
+# Compendium expansion v2 — curation-drop tests for the 5 newly walked rubrics.
+#
+# Source-of-truth for "items walked" is `framework_dedup_map.csv`: the per-
+# rubric audit walkthrough lands every atomic rubric item there with a
+# disposition (EXISTS via framework:item_id reference, MERGE via boolean
+# expression, NEW via UPPERCASE compendium row id, or OUT_OF_SCOPE).
+#
+# Audit document: docs/active/filing-schema-extraction/results/20260430_compendium_audit.md
+# Originating plan: docs/active/filing-schema-extraction/plans/20260430_compendium_expansion_v2.md
+#
+# Atomic item counts per rubric come from the audit's per-rubric tables.
+# -----------------------------------------------------------------------------
+
+
+_NEWLY_WALKED_RUBRICS = {
+    "newmark_2017": 19,       # 7 def + 5 prohib + 7 disc
+    "newmark_2005": 18,       # 7 def + 1 freq + 4 prohib + 6 disc
+    "opheim_1991": 22,        # 7 def + 8 freq-and-quality + 7 enforcement
+    "hired_guns_2007": 48,    # CPI: 2 def + 8 reg + 15 ind-spending + 2 emp + 3 efile + 8 access + 9 enforce + 1 revolving
+    "opensecrets_2022": 7,    # 4 main scoring areas + 3 public-availability sub-items
+}
+
+
+_UPPERCASE_ROW_RE = re.compile(r"^[A-Z][A-Z0-9_]+$")
+
+
+def _walked_items_for(framework: str) -> list[dict]:
+    """Return all dedup-map rows for a given source framework."""
+    if not DEDUP_MAP.exists():
+        pytest.fail(f"dedup map missing at {DEDUP_MAP}")
+    with DEDUP_MAP.open() as f:
+        return [r for r in csv.DictReader(f) if r["source_framework"] == framework]
+
+
+def _assert_rubric_walked(framework: str, expected_count: int) -> None:
+    """Per-rubric curation-drop assertion.
+
+    Asserts: (a) the expected number of atomic items appear in the dedup map
+    for this framework, AND (b) every non-OUT_OF_SCOPE entry resolves either
+    to a real framework:item_id reference (EXISTS/MERGE) or to a real
+    UPPERCASE compendium row id (NEW).
+
+    Catches future drops: if a fellow removes a compendium row or fails to
+    re-curate after a paper update, the corresponding rubric item resolution
+    will break and this test will fire with a precise diff.
+    """
+    items = _real_compendium_or_skip()
+    by_id = {i.id for i in items}
+    referenced_pairs: set[tuple[str, str]] = {
+        (ref.framework, ref.item_id) for i in items for ref in i.framework_references
+    }
+
+    walked = _walked_items_for(framework)
+    assert len(walked) == expected_count, (
+        f"{framework}: expected {expected_count} atomic items walked into dedup map, "
+        f"found {len(walked)}. The audit doc "
+        f"(results/20260430_compendium_audit.md) is the source of truth for the count."
+    )
+
+    unresolved: list[str] = []
+    for entry in walked:
+        expr = entry["target_expression"].strip()
+        if expr.startswith("OUT_OF_SCOPE"):
+            continue
+        # Check uppercase row-id tokens (NEW dispositions)
+        for token in re.split(r"[\s|&()]+", expr):
+            token = token.strip()
+            if not token or token == "NEW" or token.startswith("OUT_OF_SCOPE"):
+                continue
+            if ":" in token:
+                fw, item_id = token.split(":", 1)
+                if (fw, item_id) not in referenced_pairs:
+                    unresolved.append(
+                        f"{framework}/{entry['source_item_id']}: framework_ref "
+                        f"{fw}:{item_id} missing from compendium"
+                    )
+            elif _UPPERCASE_ROW_RE.match(token):
+                if token not in by_id:
+                    unresolved.append(
+                        f"{framework}/{entry['source_item_id']}: NEW row id "
+                        f"{token} missing from compendium"
+                    )
+    assert not unresolved, (
+        f"{framework}: {len(unresolved)} dedup-map entries fail to resolve "
+        f"against the curated compendium (curation drop?):\n  "
+        + "\n  ".join(unresolved[:10])
+        + ("\n  ..." if len(unresolved) > 10 else "")
+    )
+
+
+def test_loaded_real_compendium_includes_all_newmark_2017_items() -> None:
+    _assert_rubric_walked("newmark_2017", _NEWLY_WALKED_RUBRICS["newmark_2017"])
+
+
+def test_loaded_real_compendium_includes_all_newmark_2005_items() -> None:
+    _assert_rubric_walked("newmark_2005", _NEWLY_WALKED_RUBRICS["newmark_2005"])
+
+
+def test_loaded_real_compendium_includes_all_opheim_1991_items() -> None:
+    _assert_rubric_walked("opheim_1991", _NEWLY_WALKED_RUBRICS["opheim_1991"])
+
+
+def test_loaded_real_compendium_includes_all_hired_guns_2007_items() -> None:
+    _assert_rubric_walked("hired_guns_2007", _NEWLY_WALKED_RUBRICS["hired_guns_2007"])
+
+
+def test_loaded_real_compendium_includes_all_opensecrets_2022_items() -> None:
+    _assert_rubric_walked("opensecrets_2022", _NEWLY_WALKED_RUBRICS["opensecrets_2022"])

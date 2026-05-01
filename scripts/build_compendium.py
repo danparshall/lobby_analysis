@@ -20,7 +20,6 @@ from __future__ import annotations
 
 import csv
 import json
-import re
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -132,11 +131,12 @@ PRI_DISCLOSURE_JUDGMENTS: dict[str, dict] = {
     "C2": {"id": "DEF_PUBLIC_ENTITY_STRUCTURE", "name": "Public-entity definition uses structure / revenue composition", "domain": "registration"},
     "C3": {"id": "DEF_PUBLIC_ENTITY_CHARTER", "name": "Public-entity definition uses public charter / special protection", "domain": "registration"},
     # D. Materiality test (no field_path; D1/D2 thresholds map to top-level de_minimis_* fields on StateMasterRecord directly per plan B.4)
-    "D0": {"id": "THRESHOLD_MATERIALITY", "name": "Materiality (de-minimis) test exists", "domain": "registration"},
-    "D1_present": {"id": "THRESHOLD_FINANCIAL_PRESENT", "name": "Financial de-minimis threshold exists", "domain": "registration"},
-    "D1_value": {"id": "THRESHOLD_FINANCIAL_VALUE", "name": "Financial de-minimis dollar threshold (USD)", "domain": "registration"},
-    "D2_present": {"id": "THRESHOLD_TIME_PRESENT", "name": "Time de-minimis threshold exists", "domain": "registration"},
-    "D2_value": {"id": "THRESHOLD_TIME_VALUE", "name": "Time de-minimis percentage threshold", "domain": "registration"},
+    # Row IDs renamed to rubric-neutral framing (2026-04-30 audit) — formerly THRESHOLD_MATERIALITY / THRESHOLD_FINANCIAL_* / THRESHOLD_TIME_*.
+    "D0": {"id": "THRESHOLD_LOBBYING_MATERIALITY_GATE", "name": "Materiality gate on lobbying coverage", "domain": "registration"},
+    "D1_present": {"id": "THRESHOLD_LOBBYING_EXPENDITURE_PRESENT", "name": "Expenditure-on-lobbying threshold (in statute)", "domain": "registration"},
+    "D1_value": {"id": "THRESHOLD_LOBBYING_EXPENDITURE_VALUE", "name": "Expenditure-on-lobbying threshold dollar value (USD)", "domain": "registration"},
+    "D2_present": {"id": "THRESHOLD_LOBBYING_TIME_PRESENT", "name": "Time-spent-on-lobbying threshold (in statute)", "domain": "registration"},
+    "D2_value": {"id": "THRESHOLD_LOBBYING_TIME_VALUE", "name": "Time-spent-on-lobbying threshold percentage value", "domain": "registration"},
     # E1. Principal Reports
     # E1a / E1h_* are NOT field-level — they map to ReportingPartyRequirement (gate / frequency).
     "E1a": {"id": "RPT_PRINCIPAL_GATE", "name": "Principal must file disclosure report", "domain": "reporting"},
