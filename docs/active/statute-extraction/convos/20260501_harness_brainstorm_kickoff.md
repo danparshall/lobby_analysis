@@ -1,8 +1,66 @@
 # 2026-05-01 — Harness Brainstorm Kickoff
 
 **Branch:** `statute-extraction` (worktree: `.worktrees/statute-extraction/`)
-**Status:** in progress (live convo summary)
+**Status:** closed; brainstorm complete; plan written
 **Predecessor branch:** `filing-schema-extraction` (merged 2026-05-01 via PR #5, archived to `docs/historical/`; v2 audit + v1.2 schema bump landed there)
+
+## Summary
+
+Kickoff brainstorm for the `statute-extraction` branch — successor to `filing-schema-extraction`. Goal: design the harness that reads state statute text from Justia, populates the 108-row statute-side compendium per state, and emits a `StateMasterRecord`. OH 2025 is the test state.
+
+Two material reframings landed mid-session that re-shaped subsequent decisions:
+1. **PRI is not privileged.** Earlier framings throughout the repo (and my initial responses) anchored harness success on "match PRI" or "PRI-projection SMR as floor." User pushed back: PRI is one of nine framework_references in the compendium, not a target. The compendium is the universe; rubrics are projections from a populated SMR. Saved as a memory; rewrote STATUS.md Current Focus + Track A description; archived `filing-schema-extraction` docs to `historical/` to retire the polluted kickoff plan.
+2. **Compendium relocated to repo root.** `data/compendium/` → `compendium/` (commit `5537c92`). The compendium is locked contract data, not gitignored runtime; belongs alongside `papers/` as top-level reference. Path constants updated in 3 modules + `.gitignore` re-include cleanup.
+
+A web-UX research agent ran in parallel and produced a regime-survey doc (`results/state_regime_splitting.md`) showing 8 states have unambiguous multi-regime statutory disclosure structures (OH/FL/CA/NY/NJ/IL/NC/MA) + 2–4 borderline. That flipped Q4 from "flat for OH MVP, regime-aware as v1.4" to "regime-aware from day one in v1.3."
+
+## Topics Explored
+
+- The 7 open design questions in the predecessor's kickoff plan (Q1 architecture, Q2 qualitative materiality, Q3 conjunctive/disjunctive drift, Q4 multi-regime, Q5 MVP gate, Q6 multi-run agreement, Q7 scaling).
+- Single-prompt vs chunked extraction (measured: ~43–46K tokens single-prompt, ~5% of context window — size is not the bottleneck; attention dilution across 108 simultaneous extraction goals is).
+- Bundle-as-system-prompt inlining vs Read-tool-driven fetches (chose inlining; obsoletes the prior architecture's files-read sidecar enforcement).
+- Existing harness review (`src/scoring/`): which modules carry forward unchanged, which need v2 rewrites, what's genuinely new.
+- Provenance / reproducibility as a first-class requirement (per-run `brief_suffix.md` + `meta.json` with prompt_sha + bundle_manifest_sha + compendium_csv_sha + iteration_label + prior_run_id + changes_from_prior).
+- Per-iteration analysis-doc template (start simple; weak-row flags exclude self-reported confidence).
+
+## Provisional Findings
+
+- The prior MVP's failure modes (4–43 tool-call dispatch variance, exemption-layer under-reading, conjunctive collapse, qualitative materiality silently dropped, 21.3% inter-run disagreement) all trace back to the model choosing what to read. Inlining the bundle in a cached system-prompt prefix should remove the dispatch-variance source structurally — to be confirmed in iter-1.
+- 8 of 50 states (and likely 4+ of any reasonable priority 5–8) have unambiguous statutory multi-regime structures. Building a flat schema and refactoring later costs more than carrying one extra optional `regime` field from the start.
+- Compendium curation is sufficiently mature (141 rows, 9-rubric union, locked Decision Log D1–D11) that the harness can treat the compendium as a stable contract.
+
+## Decisions Made
+
+| topic | decision |
+|---|---|
+| Q1 architecture | 4 chunks by `domain` (reporting 47 / registration 31 / contact_log 14 / other 16 = defs+financial+revolving_door+relationship); bundle inlined as cached system-prompt prefix; chunk-specific row briefs as variable suffix |
+| Q2 qualitative materiality | v1.3 schema bump adds `condition_text: str | None` to `FieldRequirement`; populates with verbatim qualifying clause when `status="required_conditional"` |
+| Q3 conjunctive/disjunctive | Resolved structurally by atomic per-row briefs + bundle inlining; verify in pilot |
+| Q4 multi-regime | Regime-aware from day one (driven by 8-state survey result). v1.3 adds `regime: str | None` and `registrant_role: str | None` to `FieldRequirement` (target axis vs registrant taxonomy axis). Free string, not `Literal[...]`, until value space stabilizes |
+| Q5 MVP gate | Iteration loop, not fixed gate. Iter-1 = `definitions` chunk only on OH 2025 (7 rows). User OK required to call MVP done. Multi-rubric agreement is one factor in user judgment, not a hard threshold |
+| Q6 multi-run | 3 temp-0 runs per chunk; measure variance; choose collapse strategy after observing. 3-model consensus oracle as fallback |
+| Q7 scaling | Defer until OH iteration converges; reopen as separate brainstorm |
+| Bundle inlining | Inline in cached system-prompt prefix; obsoletes Rule 7 files-read sidecar; obsoletes Rule 5 imperative ("read everything") since it becomes structural. Citation discipline preserved |
+| Provenance | Per-run `brief_suffix.md` (variable part only) + `meta.json` (with shas, iteration_label, prior_run_id, changes_from_prior). Bundle saved by sha-reference; full prompt reconstructible |
+| Skeleton refactor | `data/compendium/` → `compendium/` at repo root (commit `5537c92`) |
+| Framing | All forward-looking PRI-as-anchor language removed from STATUS.md; `filing-schema-extraction` docs archived; saved feedback memory `feedback_pri_not_privileged.md` |
+| Analysis-doc template | Simple 4-section structure (header + per-row results + weak rows + next iteration); weak-row flags exclude self-reported confidence |
+
+**Plan produced:** [`plans/20260501_statute_extraction_harness.md`](../plans/20260501_statute_extraction_harness.md) — iter-1 implementation plan covering v1.3 schema bump, v2 scorer prompt, brief builder, provenance extension, orchestrator extract-prepare/finalize subcommands, and the 3-run dispatch on OH 2025 `definitions` chunk. Execution under the Nori workflow with TDD discipline.
+
+## Results
+
+- [`results/state_regime_splitting.md`](../results/state_regime_splitting.md) — regime survey produced by an external web-UX research agent; flipped Q4 to regime-aware-from-day-one.
+
+## Open Questions
+
+These didn't block iter-1 plan acceptance; surface during implementation or in follow-up plans:
+
+- `StatuteRunMetadata` extension vs new `ExtractionRunMetadata` model (decide during implementation based on field overlap).
+- Per-rubric regime mapping data file location for the validation tool (next plan).
+- Whether to bump the multi-run count above 3 if iter-1 variance is high.
+- Whether the `regime` and `registrant_role` value vocabulary stabilizes enough by state-3 or state-4 to lock as `Literal[...]` in v1.4.
+- For larger states (CA's lobbying chapter ~3× OH), whether bundle inlining will need per-regime sub-bundles for context-window reasons (Q7 scaling concern).
 
 ## Framing (corrected mid-session 2026-05-01)
 
