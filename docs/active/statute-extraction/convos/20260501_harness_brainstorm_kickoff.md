@@ -167,6 +167,50 @@ data/extractions/<STATE>/<VINTAGE>/<CHUNK>/<RUN_ID>/
 - The harness CLI must take `--iteration-label` and `--prior-run-id` as args, write the meta sidecar on each run.
 - The existing `MODEL_VERSION`, `prompt_sha`, `new_run_id`, `utc_now` helpers carry forward.
 
+### Per-iteration analysis-doc template (resolved — start simple)
+
+**Path:** `docs/active/statute-extraction/results/iter-<N>_analysis.md` (one per iteration; numbered).
+
+**Cadence:** one commit per iteration (harness run output + meta files + analysis doc all together). Iter-N is the unit of work.
+
+**Weak-row flag triggers** (auto-detected; **self-reported `confidence` is NOT a flag** — known-unreliable):
+- Citation missing or empty.
+- Multi-rubric disagreement: harness output, projected through `framework_dedup_map.csv` to a per-rubric value, doesn't match the published human-graded score for that (rubric, state, vintage, row).
+- Inter-run disagreement: the 3 temp-0 runs disagree on `status` or `regime` for that row.
+- Reviewer judgment: status looks wrong given statute (added in Weak Rows section by me during analysis; not auto-flagged).
+- Regime mis-attribution: row populated under a regime whose statute chapter doesn't actually contain the cited section.
+
+**`confidence` field** stays in raw output as informational but does NOT drive the flag set.
+
+**Doc structure (simple; refine later as needed):**
+
+```markdown
+# OH Iteration N — Analysis
+
+**Iteration:** iter-N (prior: iter-N-1, or "first")
+**Date:** YYYY-MM-DD
+**Provenance:** chunk → run_id, prompt_sha, bundle_manifest_sha, compendium_sha
+**What changed vs prior:** one paragraph (prompt/scaffolding diff summary; "first iteration baseline" for iter-1)
+
+## Per-row results
+| compendium_id | regime | status | citation | run-agreement | rubric-agreement | flag(s) |
+
+## Weak rows
+(Per flagged row.)
+### <compendium_id> [<regime>]
+- Harness output: …
+- Statute says: … (citation + ≤30-word quote)
+- Likely cause: prompt blind spot / ambiguous statute / regime mis-attribution / cross-ref miss / etc.
+- Proposed change: …
+
+## Next iteration
+One paragraph: concrete prompt/scaffolding changes, whether to repeat same chunk or expand.
+```
+
+**Deferred until needed:**
+- Quantitative metric snapshot (e.g., `% rows missing citation` over iterations). Useful once we have ≥2 iterations to compare; premature for iter-1.
+- Separating the multi-rubric validation table as its own section. Folded into the per-row table for simplicity; extract if it gets too wide.
+
 ### Q3 — Conjunctive vs disjunctive (resolved structurally)
 
 **Answered by prior decisions, not a new design call:**
