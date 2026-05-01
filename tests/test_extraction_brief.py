@@ -143,6 +143,35 @@ def test_reconstruct_brief_round_trip(tmp_path):
     assert reconstructed == full_brief, "reconstruct_brief round-trip mismatch"
 
 
+def test_extraction_brief_includes_chunk_frame_when_present():
+    """When src/scoring/chunk_frames/<chunk>.md exists, the brief inlines it
+    ahead of the row briefs so the agent gets a conceptual map of the chunk's
+    axes before answering individual rows."""
+    brief_module = _import_brief_module()
+    full_brief, suffix = brief_module.build_extraction_brief(
+        state="OH",
+        vintage_year=2025,
+        chunk="definitions",
+        bundle_dir=OH_2025_BUNDLE_DIR,
+        compendium_csv=COMPENDIUM_CSV,
+        scorer_prompt_path=SCORER_PROMPT_V2_PATH,
+        repo_root=REPO_ROOT,
+    )
+    chunk_frame_path = REPO_ROOT / "src" / "scoring" / "chunk_frames" / "definitions.md"
+    assert chunk_frame_path.exists(), "definitions chunk frame must be present"
+    frame_content = chunk_frame_path.read_text()
+
+    # The frame's distinguishing prose appears in the suffix and the full brief.
+    assert "Chunk frame: `definitions`" in frame_content
+    assert "TARGET axis" in suffix
+    assert "ACTOR axis" in suffix
+    assert "THRESHOLD axis" in suffix
+    # The frame appears before the row-briefs section (orientation precedes detail).
+    frame_pos = suffix.find("TARGET axis")
+    rows_pos = suffix.find("Compendium rows to extract")
+    assert frame_pos < rows_pos, "chunk frame must precede the row briefs"
+
+
 def test_extraction_brief_includes_v1_3_output_schema():
     """The brief's output-schema section names the v1.3 fields by name."""
     brief_module = _import_brief_module()

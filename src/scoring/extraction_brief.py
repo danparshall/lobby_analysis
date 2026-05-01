@@ -166,6 +166,9 @@ def _render_bundle_prefix(
     return "".join(parts)
 
 
+_CHUNK_FRAMES_DIR_REL = Path("src") / "scoring" / "chunk_frames"
+
+
 def _render_suffix(
     *,
     chunk: str,
@@ -180,10 +183,20 @@ def _render_suffix(
     prompt_body = scorer_prompt_path.read_text()
     row_briefs = "\n".join(_format_row_brief(r) for r in rows)
 
+    chunk_frame_path = repo_root / _CHUNK_FRAMES_DIR_REL / f"{chunk}.md"
+    if chunk_frame_path.exists():
+        chunk_frame_block = (
+            "\n== Chunk frame (read first; orients the row briefs below) ==\n\n"
+            f"{chunk_frame_path.read_text()}\n"
+        )
+    else:
+        chunk_frame_block = ""
+
     return (
         f"\n= COMPENDIUM CHUNK: {chunk} =\n"
         f"Rows in this chunk: {len(rows)}\n"
         f"Locked scorer prompt: {prompt_rel}\n"
+        f"{chunk_frame_block}"
         "\n== Compendium rows to extract ==\n\n"
         f"{row_briefs}\n"
         "\n== Locked scorer prompt v2 (verbatim) ==\n\n"
