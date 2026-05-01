@@ -16,12 +16,16 @@ stays small while the prompt itself is fully reproducible.
 
 from __future__ import annotations
 
-import hashlib
 import json
 from pathlib import Path
 
 from lobby_analysis.compendium_loader import load_compendium
 from lobby_analysis.models.compendium import CompendiumItem
+from scoring.provenance import compute_bundle_manifest_sha as _compute_bundle_manifest_sha
+
+
+# Re-exported for back-compat with callers that imported from extraction_brief.
+compute_bundle_manifest_sha = _compute_bundle_manifest_sha
 
 
 _CHUNK_DOMAIN_FILTERS: dict[str, frozenset[str]] = {
@@ -111,17 +115,6 @@ def reconstruct_brief(
         bundle_dir=bundle_dir,
     )
     return bundle_prefix + suffix_path.read_text()
-
-
-def compute_bundle_manifest_sha(bundle_dir: Path) -> str:
-    """sha256 of a stable JSON serialization of the bundle's artifact index.
-
-    Sorts artifacts by `local_path` so the digest is stable across retrieval
-    re-runs that produce the same files in different order.
-    """
-    artifacts = _load_sorted_artifacts(bundle_dir)
-    canonical = json.dumps(artifacts, sort_keys=True, separators=(",", ":"))
-    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 
 
 def _read_manifest(bundle_dir: Path) -> dict:

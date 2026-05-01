@@ -168,3 +168,30 @@ class StatuteRunMetadata(BaseModel):
     model_version: str
     rubric_shas: dict[str, str]
     temperature: float = 0.0
+
+
+class ExtractionRunMetadata(BaseModel):
+    """Metadata for a v2 statute-extraction harness run (per-chunk).
+
+    Written to `meta.json` in the run directory at
+    `data/extractions/<STATE>/<VINTAGE>/<CHUNK>/<RUN_ID>/`.
+
+    Distinct from `StatuteRunMetadata` because the v2 harness is keyed to
+    the compendium (not rubrics), runs per-chunk (not per-rubric-set), and
+    carries iteration provenance for the iter-1/iter-2 loop the harness
+    uses to converge.
+    """
+
+    state: str
+    run_id: str
+    run_timestamp_utc: str
+    vintage_year: int
+    chunk: str
+    prompt_sha: str
+    bundle_manifest_sha: str
+    compendium_csv_sha: str
+    model_version: str
+    iteration_label: str
+    prior_run_id: str | None = None
+    changes_from_prior: str = ""
+    temperature: float = 0.0

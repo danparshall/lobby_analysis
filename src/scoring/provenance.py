@@ -1,8 +1,9 @@
-"""Provenance helpers: prompt sha, run ids, row stamping."""
+"""Provenance helpers: prompt sha, run ids, row stamping, corpus shas."""
 
 from __future__ import annotations
 
 import hashlib
+import json
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
@@ -17,6 +18,28 @@ MODEL_VERSION = "claude-opus-4-7"
 
 def prompt_sha(repo_root: Path) -> str:
     return hashlib.sha256((repo_root / PROMPT_PATH).read_bytes()).hexdigest()
+
+
+def file_sha(path: Path) -> str:
+    """sha256 of a file's bytes."""
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def compute_compendium_sha(compendium_csv: Path) -> str:
+    """sha256 of the compendium CSV bytes — pinned for run reproducibility."""
+    return file_sha(compendium_csv)
+
+
+def compute_bundle_manifest_sha(bundle_dir: Path) -> str:
+    """sha256 of a stable JSON serialization of the bundle's artifact index.
+
+    Sorts artifacts by `local_path` so the digest is stable across retrieval
+    re-runs that produce the same files in different order.
+    """
+    manifest = json.loads((Path(bundle_dir) / "manifest.json").read_text())
+    artifacts = sorted(manifest["artifacts"], key=lambda a: a["local_path"])
+    canonical = json.dumps(artifacts, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 
 
 def new_run_id() -> str:
