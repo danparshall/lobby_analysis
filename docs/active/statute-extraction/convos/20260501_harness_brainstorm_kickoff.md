@@ -330,3 +330,7 @@ Defer state-selection and ordering until OH iteration converges. Re-open as a se
 **Schema implication:** additive v1.3 schema bump — `FieldRequirement.condition_text: str | None` (default None). No breaking changes; existing populated SMRs without conditions are valid as-is. Plan for v1.3 to be its own small commit before harness implementation.
 
 **Deferred:** LLM-flagged-for-human-review (option iii) is premature; observe the harness's actual failure modes first, then add review-flagging if needed.
+
+## Captured Tasks
+
+- [#6: Rerun Justia statute pull + portal snapshots after laptop data loss](https://github.com/danparshall/lobby_analysis/issues/6) — captured 2026-05-01
