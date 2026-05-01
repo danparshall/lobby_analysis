@@ -39,6 +39,16 @@ _CHUNK_DOMAIN_FILTERS: dict[str, frozenset[str]] = {
 VALID_CHUNKS: tuple[str, ...] = tuple(_CHUNK_DOMAIN_FILTERS)
 
 
+def chunk_row_ids(chunk: str, compendium_csv: Path) -> set[str]:
+    """Return the set of compendium row ids that belong to `chunk`."""
+    if chunk not in _CHUNK_DOMAIN_FILTERS:
+        raise ValueError(
+            f"unknown chunk {chunk!r}; valid choices: {VALID_CHUNKS}"
+        )
+    domains = _CHUNK_DOMAIN_FILTERS[chunk]
+    return {r.id for r in load_compendium(compendium_csv) if r.domain in domains}
+
+
 def build_extraction_brief(
     *,
     state: str,

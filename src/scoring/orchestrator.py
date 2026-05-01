@@ -37,6 +37,11 @@ import json
 from pathlib import Path
 
 from scoring.bundle import build_statute_subagent_brief, build_subagent_brief
+from scoring.extraction_brief import (
+    VALID_CHUNKS,
+    build_extraction_brief,
+    chunk_row_ids,
+)
 from scoring.calibration import (
     compute_agreement,
     load_atomic_scores_from_csv,
@@ -57,12 +62,15 @@ from scoring.provenance import (
     MODEL_VERSION,
     PROMPT_PATH,
     build_run_metadata,
+    compute_bundle_manifest_sha,
+    compute_compendium_sha,
+    file_sha,
     new_run_id,
     prompt_sha,
     stamp_rows,
     utc_now,
 )
-from scoring.models import StatuteRunMetadata
+from scoring.models import ExtractionRunMetadata, StatuteRunMetadata
 from scoring.rubric_loader import load_all_rubrics, load_rubric
 from scoring.snapshot_loader import SNAPSHOT_DATE_DEFAULT, load_snapshot
 from scoring.statute_loader import load_statute_bundle
@@ -91,6 +99,18 @@ def statute_run_dir(
 
 def statute_bundle_dir(repo_root: Path, state: str, vintage_year: int) -> Path:
     return repo_root / "data" / "statutes" / state / str(vintage_year)
+
+
+def extract_run_dir(
+    repo_root: Path, state: str, vintage_year: int, chunk: str, run_id: str
+) -> Path:
+    return (
+        repo_root / "data" / "extractions" / state / str(vintage_year) / chunk / run_id
+    )
+
+
+SCORER_PROMPT_V2 = Path("src/scoring/scorer_prompt_v2.md")
+COMPENDIUM_CSV_REL = Path("compendium") / "disclosure_items.csv"
 
 
 def brief_path(run_dir_: Path, rubric: str) -> Path:
@@ -590,6 +610,221 @@ def cmd_calibrate_finalize_run(args: argparse.Namespace) -> int:
     return 0
 
 
+# ---------------------------------------------------------------------------
+# v2 extraction harness — compendium-keyed, per-chunk, with iteration provenance.
+# ---------------------------------------------------------------------------
+
+
+_REQUIRED_FIELD_REQUIREMENT_KEYS = (
+    "field_path",
+    "reporting_party",
+    "status",
+    "legal_citation",
+)
+
+
+def cmd_extract_prepare_run(args: argparse.Namespace) -> int:
+    """Prepare an extraction-run directory for one (state, vintage, chunk).
+
+    Writes `brief_suffix.md` (variable suffix only — bundle reconstructible
+    by manifest sha) and an initial `meta.json` (no `run_timestamp_utc`
+    yet — finalize stamps it).
+    """
+    repo_root = Path(args.repo_root).resolve()
+    state = args.state.upper()
+    vintage = int(args.vintage)
+    chunk = args.chunk
+
+    bundle_dir = statute_bundle_dir(repo_root, state, vintage)
+    if not (bundle_dir / "manifest.json").exists():
+        print(json.dumps({
+            "error": "statute bundle not found",
+            "state": state,
+            "vintage": vintage,
+            "expected_path": str(bundle_dir / "manifest.json"),
+        }))
+        return 2
+
+    compendium_csv = repo_root / COMPENDIUM_CSV_REL
+    if not compendium_csv.exists():
+        print(json.dumps({
+            "error": "compendium CSV not found",
+            "expected_path": str(compendium_csv),
+        }))
+        return 2
+
+    scorer_prompt_path = repo_root / SCORER_PROMPT_V2
+    if not scorer_prompt_path.exists():
+        print(json.dumps({
+            "error": "v2 scorer prompt not found",
+            "expected_path": str(scorer_prompt_path),
+        }))
+        return 2
+
+    run_id = args.run_id or new_run_id()
+    rd = extract_run_dir(repo_root, state, vintage, chunk, run_id)
+    rd.mkdir(parents=True, exist_ok=True)
+
+    _full_brief, suffix = build_extraction_brief(
+        state=state,
+        vintage_year=vintage,
+        chunk=chunk,
+        bundle_dir=bundle_dir,
+        compendium_csv=compendium_csv,
+        scorer_prompt_path=scorer_prompt_path,
+        repo_root=repo_root,
+    )
+    (rd / "brief_suffix.md").write_text(suffix, encoding="utf-8")
+
+    meta = {
+        "state": state,
+        "run_id": run_id,
+        "run_timestamp_utc": "",
+        "vintage_year": vintage,
+        "chunk": chunk,
+        "prompt_sha": file_sha(scorer_prompt_path),
+        "bundle_manifest_sha": compute_bundle_manifest_sha(bundle_dir),
+        "compendium_csv_sha": compute_compendium_sha(compendium_csv),
+        "model_version": MODEL_VERSION,
+        "iteration_label": args.iteration_label,
+        "prior_run_id": args.prior_run_id,
+        "changes_from_prior": args.changes_from_prior or "",
+        "temperature": 0.0,
+    }
+    (rd / "meta.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
+
+    print(json.dumps({
+        "run_id": run_id,
+        "state": state,
+        "vintage_year": vintage,
+        "chunk": chunk,
+        "run_dir": str(rd),
+        "brief_suffix_path": str(rd / "brief_suffix.md"),
+        "expected_raw_output_path": str(rd / "raw_output.json"),
+        "iteration_label": args.iteration_label,
+    }, indent=2))
+    return 0
+
+
+def cmd_extract_finalize_run(args: argparse.Namespace) -> int:
+    """Validate raw_output.json against FieldRequirement v1.3 + chunk membership.
+
+    Writes `field_requirements.json` and stamps `run_timestamp_utc` into
+    `meta.json`. Refuses to finalize if the bundle's current manifest sha
+    doesn't match the recorded one (drift guard).
+    """
+    from lobby_analysis.models import FieldRequirement
+
+    repo_root = Path(args.repo_root).resolve()
+    state = args.state.upper()
+    vintage = int(args.vintage)
+    chunk = args.chunk
+
+    rd = extract_run_dir(repo_root, state, vintage, chunk, args.run_id)
+    meta_path = rd / "meta.json"
+    raw_path = rd / "raw_output.json"
+
+    if not meta_path.exists():
+        print(json.dumps({"error": "meta.json missing", "expected_path": str(meta_path)}))
+        return 2
+    if not raw_path.exists():
+        print(json.dumps({"error": "raw_output.json missing", "expected_path": str(raw_path)}))
+        return 2
+
+    meta = json.loads(meta_path.read_text())
+    bundle_dir = statute_bundle_dir(repo_root, state, vintage)
+    current_sha = compute_bundle_manifest_sha(bundle_dir)
+    if meta["bundle_manifest_sha"] != current_sha:
+        print(json.dumps({
+            "error": "bundle manifest sha drift between prepare and finalize",
+            "recorded_sha": meta["bundle_manifest_sha"],
+            "current_sha": current_sha,
+            "bundle_dir": str(bundle_dir),
+        }))
+        return 2
+
+    try:
+        records = json.loads(raw_path.read_text())
+    except json.JSONDecodeError as exc:
+        print(json.dumps({
+            "error": "raw_output.json is malformed JSON",
+            "path": str(raw_path),
+            "detail": str(exc),
+        }))
+        return 2
+
+    if not isinstance(records, list):
+        print(json.dumps({
+            "error": "raw_output.json must contain a JSON array",
+            "got_type": type(records).__name__,
+        }))
+        return 2
+
+    valid_ids = chunk_row_ids(chunk, repo_root / COMPENDIUM_CSV_REL)
+    seen_tuples: set[tuple[str, str | None, str | None]] = set()
+    validated: list[dict] = []
+    for i, rec in enumerate(records):
+        row_id = rec.get("compendium_row_id")
+        if not row_id:
+            print(json.dumps({"error": f"record {i} missing compendium_row_id"}))
+            return 2
+        if row_id not in valid_ids:
+            print(json.dumps({
+                "error": "compendium_row_id outside chunk membership",
+                "compendium_row_id": row_id,
+                "chunk": chunk,
+                "record_index": i,
+            }))
+            return 2
+        tup = (row_id, rec.get("regime"), rec.get("registrant_role"))
+        if tup in seen_tuples:
+            print(json.dumps({
+                "error": "duplicate (compendium_row_id, regime, registrant_role)",
+                "tuple": tup,
+                "record_index": i,
+            }))
+            return 2
+        seen_tuples.add(tup)
+        for key in _REQUIRED_FIELD_REQUIREMENT_KEYS:
+            if rec.get(key) in (None, ""):
+                print(json.dumps({
+                    "error": f"record {i} missing required field {key!r}",
+                    "compendium_row_id": row_id,
+                }))
+                return 2
+        # Validate via the pydantic model (drops compendium_row_id since
+        # FieldRequirement doesn't carry it; finalize keeps it alongside).
+        fr_kwargs = {k: v for k, v in rec.items() if k != "compendium_row_id"}
+        try:
+            FieldRequirement(**fr_kwargs)
+        except Exception as exc:
+            print(json.dumps({
+                "error": f"record {i} fails FieldRequirement v1.3 validation",
+                "compendium_row_id": row_id,
+                "detail": str(exc),
+            }))
+            return 2
+        validated.append(rec)
+
+    (rd / "field_requirements.json").write_text(
+        json.dumps(validated, indent=2), encoding="utf-8"
+    )
+
+    meta["run_timestamp_utc"] = utc_now()
+    meta_path.write_text(json.dumps(meta, indent=2), encoding="utf-8")
+
+    print(json.dumps({
+        "run_id": args.run_id,
+        "state": state,
+        "vintage_year": vintage,
+        "chunk": chunk,
+        "records": len(validated),
+        "field_requirements_path": str(rd / "field_requirements.json"),
+        "run_timestamp_utc": meta["run_timestamp_utc"],
+    }, indent=2))
+    return 0
+
+
 def cmd_calibrate(args: argparse.Namespace) -> int:
     """Compute agreement between N LLM-scored statute runs and PRI 2010 reference scores.
 
@@ -1044,6 +1279,29 @@ def main() -> int:
         help="finalize whichever rubrics have raw JSON; skip the rest without erroring",
     )
     p_cal_fin.set_defaults(func=cmd_calibrate_finalize_run)
+
+    p_extract_prep = sub.add_parser(
+        "extract-prepare-run",
+        help="prepare a v2 extraction-run dir (compendium-keyed) for one (state, vintage, chunk)",
+    )
+    p_extract_prep.add_argument("--state", required=True)
+    p_extract_prep.add_argument("--vintage", type=int, required=True)
+    p_extract_prep.add_argument("--chunk", required=True, choices=list(VALID_CHUNKS))
+    p_extract_prep.add_argument("--iteration-label", required=True)
+    p_extract_prep.add_argument("--prior-run-id", default=None)
+    p_extract_prep.add_argument("--changes-from-prior", default="")
+    p_extract_prep.add_argument("--run-id", default=None)
+    p_extract_prep.set_defaults(func=cmd_extract_prepare_run)
+
+    p_extract_fin = sub.add_parser(
+        "extract-finalize-run",
+        help="validate raw_output.json + write field_requirements.json (v2 extraction)",
+    )
+    p_extract_fin.add_argument("--state", required=True)
+    p_extract_fin.add_argument("--vintage", type=int, required=True)
+    p_extract_fin.add_argument("--chunk", required=True, choices=list(VALID_CHUNKS))
+    p_extract_fin.add_argument("--run-id", required=True)
+    p_extract_fin.set_defaults(func=cmd_extract_finalize_run)
 
     p_cal_cons = sub.add_parser(
         "calibrate-analyze-consistency",
