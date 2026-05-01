@@ -8,13 +8,13 @@
 
 **Calibration anchor:** OH 2025 PRI-projection SMR (`data/state_master_records/OH/2025/e7846593ebb5.json` — gitignored, regenerable from committed score CSV). Diff doc with structural findings: `docs/historical/statute-retrieval/results/20260430_oh_2025_vs_2010_diff.md`.
 
-> **Re-scope note (2026-04-30, corrected 2026-05-01):** This plan was originally written against a 118-row compendium. After the v2 audit (`results/20260430_compendium_audit.md`), the compendium is now **139 rows total — 106 statute-side + 33 accessibility-side** (+21 net new = +16 statute-side + +5 accessibility-side from Newmark 2017/2005 + Opheim 1991 + CPI Hired Guns 2007 + OpenSecrets 2022). Row-count targets below have been updated to reflect the new universe. The qualitative shape of the harness is unchanged; only the row count grows.
+> **Re-scope note (2026-04-30 → 2026-05-01):** This plan was originally written against a 118-row compendium. After the v2 audit + v1.2 schema bump (`results/20260430_compendium_audit.md`), the compendium is now **141 rows total — 108 statute-side + 33 accessibility-side** (+23 net new across both passes). Row-count targets below reflect the post-v1.2 universe. The qualitative shape of the harness is unchanged; only the row count grows. **Domain breakdown:** 7 `definitions` (new in v1.2), 31 `registration`, 47 `reporting`, 33 `accessibility`, plus smaller domains.
 
 ---
 
 ## The gap this plan closes
 
-The OH 2025 PRI-projection SMR has 22 `field_requirements` rows. The compendium has **139 rows total** (post v2 audit, 2026-04-30). Of those 139 rows, the harness must populate the **106-row statute-side subset** (rows where `domain != "accessibility"`); the remaining 33 accessibility-side rows depend on portal observation, not statute reading, and are out of scope for this branch.
+The OH 2025 PRI-projection SMR has 22 `field_requirements` rows. The compendium has **141 rows total** (post v2 audit + v1.2 bump, 2026-05-01). Of those 141 rows, the harness must populate the **108-row statute-side subset** (rows where `domain != "accessibility"`); the remaining 33 accessibility-side rows depend on portal observation, not statute reading, and are out of scope for this branch.
 
 > **Pre-audit note:** The original kickoff (118 rows) is preserved in this section for trajectory; the `~96` and `57`/`39` breakdown numbers have been updated below to reflect the v2-audit row counts. The qualitative gap argument is unchanged.
 
@@ -33,7 +33,7 @@ The **product** for this branch is: each compendium-keyed `field_requirements` r
 
 ## What "full compendium-SMR" means
 
-For OH (the MVP target), the compendium has **139 rows** (post v2 audit). Of those:
+For OH (the MVP target), the compendium has **141 rows** (post v2 audit + v1.2 bump). Of those:
 
 **Statute-side (in-scope) — 106 rows** (verified by domain-filter on `disclosure_items.csv`):
 - **28 PRI-disclosure-only rows** — must be populated from OH §101.70-79 + §101.90-99 + §121.60-69 directly.
@@ -57,19 +57,19 @@ For OH (the MVP target), the compendium has **139 rows** (post v2 audit). Of tho
 
 > **Note on definition-trigger rows:** Per the v2 audit Decision Log D1, the four `DEF_*` rows (and three notes-flagged existing rows: `REG_LOBBYIST`, `THRESHOLD_LOBBYING_EXPENDITURE_PRESENT`, `THRESHOLD_LOBBYING_TIME_PRESENT`) are stored under `domain="registration"` with a notes flag pending end-of-audit review for a possible v1.2 schema bump (`domain="definitions"`). The harness should treat them as registration-side rows for now and depend on the schema staying as-is. If v1.2 lands, the rows migrate to the new domain but the harness logic is unaffected (it reads `id`, `description`, and `framework_references`, not `domain`). **Naming note:** these threshold rows were renamed from PRI-vocabulary IDs (`THRESHOLD_FINANCIAL_*`, `THRESHOLD_TIME_*`) to rubric-neutral IDs in the v2 audit (Decision Log D9) to remove implicit PRI privilege.
 
-**MVP target for OH (statute-side rows only):** **106 compendium rows** to assess (was ~90 pre-audit by the same domain-filter; original kickoff's "~96" was an eyeballed estimate). Each row resolves to one of:
+**MVP target for OH (statute-side rows only):** **108 compendium rows** to assess (was ~90 pre-audit by the same domain-filter; original kickoff's "~96" was an eyeballed estimate). Each row resolves to one of:
 - **`required` + legal citation + status="known"** — OH law explicitly requires this.
 - **`not_required` + status="known"** — OH law explicitly does NOT require this (negative finding, equally valuable).
 - **`not_addressed` + status="unknown"** — OH law is silent; we can't infer from statute alone.
 - **`required_conditional` + condition + citation** — required when X (e.g., "required when expenditure > aggregate $50/year per member").
 
-**Compare to current PRI-projection SMR for OH (22 rows populated):** the new harness should produce ≥22 populated rows that *match* the PRI-projection result on items where PRI is correct, AND populate the other 84 statute-side compendium rows (106 statute-side − 22 already populated) with proper findings, AND fix the known PRI-projection errors (D0=1 not 0; conjunctive E-series read correctly).
+**Compare to current PRI-projection SMR for OH (22 rows populated):** the new harness should produce ≥22 populated rows that *match* the PRI-projection result on items where PRI is correct, AND populate the other 86 statute-side compendium rows (108 statute-side − 22 already populated) with proper findings, AND fix the known PRI-projection errors (D0=1 not 0; conjunctive E-series read correctly).
 
 ---
 
 ## Design questions (resolve via brainstorming first)
 
-1. **Subagent architecture.** One agent reads the whole bundle and emits the full schema in one pass? Or per-section agents that each emit the obligations from one section, then a unifier? The Stage B harness used one-agent-per-rubric (one agent scored all 61 PRI items at once); the agent had to hold the whole 30-section bundle + all 61 questions + the locked prompt in context. For full schema extraction with **106 compendium rows** (statute-side, post v2 audit), that's substantially heavier than 61. Per-section is more scalable but loses cross-reference context (e.g., §101.74's expenditure rules reference §101.70's definitions). The +16 v2-audit statute-side additions (mostly itemized-expenditure metadata + registration-form fields) tend to cluster in §101.72-74 (registration content + financial transaction statement), so a per-section split there is a good locality test.
+1. **Subagent architecture.** One agent reads the whole bundle and emits the full schema in one pass? Or per-section agents that each emit the obligations from one section, then a unifier? The Stage B harness used one-agent-per-rubric (one agent scored all 61 PRI items at once); the agent had to hold the whole 30-section bundle + all 61 questions + the locked prompt in context. For full schema extraction with **108 compendium rows** (statute-side, post v2 audit), that's substantially heavier than 61. Per-section is more scalable but loses cross-reference context (e.g., §101.74's expenditure rules reference §101.70's definitions). The +16 v2-audit statute-side additions (mostly itemized-expenditure metadata + registration-form fields) tend to cluster in §101.72-74 (registration content + financial transaction statement), so a per-section split there is a good locality test.
 2. **Prompt shape.** What does the agent's brief look like? It needs: (a) the compendium rows to populate (with `field_path`, `data_type`, `description` for each row); (b) the bundled statute text; (c) instructions to emit each row's `status`, `legal_availability`, `legal_citation`, `evidence_source`, `notes`. The PRI scorer prompt's three-tier exemption boundary, files-read enforcement, and locked rules are reusable scaffolding. **Row-budget impact:** 106 rows × ~150 tokens of row metadata each ≈ 16K tokens of brief, plus the 30-section bundle (~143 KB ≈ 36K tokens). Total ≈ 52K input tokens before answers — within opus-4-7 limits but no longer trivially cacheable across runs.
 3. **Multi-regime representation in the SMR.** OH has three parallel lobbying regimes. The current SMR has 11 `registration_requirements` rows and 2 `reporting_parties` rows (lobbyist + client). Does the new schema represent each regime separately (3 × 2 = 6 reporting-party rows) or unified (the existing flat shape, with regime as a `notes` qualifier)? **Strong opinion: keep flat shape for now; document multi-regime in `notes` per row;** revisit if Track B's extraction pipeline needs structural multi-regime.
 4. **What is "evidence" for a `not_required` finding?** Negative findings are harder than positive ones — the agent must show it considered whether OH law requires X and didn't find it, vs missing the requirement entirely. Possible approach: require the agent to cite the *most relevant* statute section even for `not_required`, with `evidence_source.evidence_type="statute_silence"` and `evidence_notes="searched §101.72 (registration content), §101.73 (expenditure statement), §101.74 (financial transaction statement); none require X."`
@@ -108,7 +108,7 @@ Once design questions are resolved, the second session writes a TDD-ready implem
 
 - **High** that the compendium-keyed SMR shape is the right long-term target. (User-confirmed twice on the parent branch.)
 - **High** that the OH 2025 PRI-projection SMR is the right calibration anchor. (Built end-to-end; diff doc shipped.)
-- **Medium** on whether one-pass extraction will scale to **106 statute-side rows** × 30 sections in a single agent context. May need to chunk. (Original kickoff said "~96 rows"; that figure was an eyeballed estimate before the v2 audit verified the actual count.)
+- **Medium** on whether one-pass extraction will scale to **108 statute-side rows** × 30 sections in a single agent context. May need to chunk. (Original kickoff said "~96 rows"; that figure was an eyeballed estimate before the v2 audit verified the actual count.)
 - **Medium** on whether negative findings (`not_required` + `statute_silence` evidence) are reliably distinguishable from missed positives. The brainstorming session must address this.
 - **Lower** on whether FOCAL-only compendium rows can all be resolved against OH statute alone. Some FOCAL indicators are about portal features that have no statutory mandate — those will resolve to `not_addressed` from a statute-only harness, even if the disclosure feature exists in practice.
 
