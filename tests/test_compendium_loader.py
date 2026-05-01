@@ -3,7 +3,7 @@
 Stage A of plans/20260430_compendium_population_and_smr_fill.md.
 
 Unit tests use synthetic CSVs in tmp_path. Integration tests load the real
-data/compendium/disclosure_items.csv and verify curation completeness against
+compendium/disclosure_items.csv and verify curation completeness against
 the four source rubric CSVs.
 """
 
@@ -22,8 +22,8 @@ from lobby_analysis.models import CompendiumItem
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-REAL_COMPENDIUM = REPO_ROOT / "data" / "compendium" / "disclosure_items.csv"
-DEDUP_MAP = REPO_ROOT / "data" / "compendium" / "framework_dedup_map.csv"
+REAL_COMPENDIUM = REPO_ROOT / "compendium" / "disclosure_items.csv"
+DEDUP_MAP = REPO_ROOT / "compendium" / "framework_dedup_map.csv"
 
 PRI_DISCLOSURE_RUBRIC = (
     REPO_ROOT
@@ -201,7 +201,7 @@ def test_loader_raises_on_missing_file(tmp_path: Path) -> None:
 # -----------------------------------------------------------------------------
 # A.5 real-artifact integration tests
 #
-# These use the curated `data/compendium/disclosure_items.csv`. They are
+# These use the curated `compendium/disclosure_items.csv`. They are
 # expected to fail until Stage A curation lands; once it does, they enforce
 # that no source-rubric items were dropped during curation.
 # -----------------------------------------------------------------------------

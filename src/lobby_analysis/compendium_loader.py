@@ -1,4 +1,4 @@
-"""Load the compendium artifact (`data/compendium/disclosure_items.csv`).
+"""Load the compendium artifact (`compendium/disclosure_items.csv`).
 
 The compendium is the union of field-level questions across rubric frameworks
 (PRI, FOCAL, Sunlight, ...). Each row maps to one ``CompendiumItem``; the
@@ -18,7 +18,7 @@ from lobby_analysis.models import CompendiumItem, FrameworkReference
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_COMPENDIUM_CSV = REPO_ROOT / "data" / "compendium" / "disclosure_items.csv"
+DEFAULT_COMPENDIUM_CSV = REPO_ROOT / "compendium" / "disclosure_items.csv"
 
 
 _TRUE = {"true", "1", "yes", "y", "t"}
@@ -62,7 +62,7 @@ def load_compendium(path: Path | str = DEFAULT_COMPENDIUM_CSV) -> list[Compendiu
 
     Args:
         path: Path to the compendium CSV. Defaults to the repo's
-            ``data/compendium/disclosure_items.csv``.
+            ``compendium/disclosure_items.csv``.
 
     Returns:
         A list of validated CompendiumItem objects in CSV order.

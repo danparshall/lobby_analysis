@@ -6,8 +6,8 @@ Curation judgments are encoded as Python data structures in this file. The
 script reads the four source rubric CSVs (PRI 2010 disclosure, PRI 2010
 accessibility, FOCAL 2024, Sunlight 2015), applies the judgments, and emits:
 
-    data/compendium/disclosure_items.csv
-    data/compendium/framework_dedup_map.csv
+    compendium/disclosure_items.csv
+    compendium/framework_dedup_map.csv
 
 Idempotent: rerun any time. The CSVs are committed so reviewers can diff
 both the script and the output.
@@ -51,7 +51,7 @@ FOCAL = (
 )
 SUNLIGHT_DATA = REPO_ROOT / "papers" / "Sunlight_2015__state_lobbying_disclosure_scorecard_data.csv"
 
-OUT_DIR = REPO_ROOT / "data" / "compendium"
+OUT_DIR = REPO_ROOT / "compendium"
 OUT_COMPENDIUM = OUT_DIR / "disclosure_items.csv"
 OUT_DEDUP_MAP = OUT_DIR / "framework_dedup_map.csv"
 

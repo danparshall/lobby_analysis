@@ -279,7 +279,7 @@ Per `plans/20260430_compendium_expansion_v2.md`:
 
 Generated programmatically from `framework_dedup_map.csv` post-audit. Rows: 140 compendium items. Columns: PRI 2010 disclosure / PRI 2010 accessibility / FOCAL 2024 / Sunlight 2015 / Newmark 2017 / Newmark 2005 / Opheim 1991 / CPI Hired Guns 2007 / OpenSecrets 2022.
 
-> **Status:** matrix not generated in this audit pass (deferred to a small follow-up — generate via `pandas` from the dedup-map). Output should land at `data/compendium/coverage_matrix.csv` and be regenerated whenever the dedup-map changes. Add a test that asserts every compendium row has at least one framework_reference and every dedup-map source_item maps to a row that exists.
+> **Status:** matrix not generated in this audit pass (deferred to a small follow-up — generate via `pandas` from the dedup-map). Output should land at `compendium/coverage_matrix.csv` and be regenerated whenever the dedup-map changes. Add a test that asserts every compendium row has at least one framework_reference and every dedup-map source_item maps to a row that exists.
 
 ---
 
@@ -408,5 +408,5 @@ Total: 7 rows now in `domain="definitions"` (5 migrated + 2 new). Conceptual lin
 - State-by-state SMR population.
 - Adding F Minus / Common Cause / OpenSecrets-state-pages methodology.
 - Re-walking PRI 2010 / FOCAL 2024 / Sunlight 2015 — their dedup decisions stand.
-- Generating `data/compendium/coverage_matrix.csv` programmatically — deferred (small follow-up task).
+- Generating `compendium/coverage_matrix.csv` programmatically — deferred (small follow-up task).
 - Verifying dedup-map source-frame counts against rubric-paper item counts — deferred (small test addition).
