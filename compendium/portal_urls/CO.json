@@ -1,0 +1,157 @@
+{
+  "state_abbr": "CO",
+  "discovered_at": "2026-05-01",
+  "portal_system": "Colorado SOS Online Lobbyist System (Business and Licensing Division) + data.colorado.gov Socrata mirror",
+  "regulator": "Colorado Secretary of State, Business and Licensing Division (lobbyist registration); enforcement under Colorado Sunshine Law (C.R.S. Title 24, Article 6, Part 3)",
+  "seed_urls": [
+    {
+      "url": "https://www.coloradosos.gov/lobby/Home.do",
+      "role": "home",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Online Lobbyist System landing page; hub for searches (lobbyist, client, bill, manual filings), redistricting filings, and the eFile login. Same app as sos.state.co.us/lobby/Home.do but coloradosos.gov is the canonical/WAF-friendly host (sos.state.co.us 403s through WebFetch)."
+    },
+    {
+      "url": "https://www.coloradosos.gov/pubs/lobby/lobby_home.html",
+      "role": "landing",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Public-facing 'Lobbyists' resource hub: File Reports (registration, disclosure, cumulative, termination, fine payment), Search functions, Resources (guidance manual, advisory opinions, complaints, hearing office, FAQs, forms, laws/rules), Training (Colorado Lobby Talks), and Data Reports links. Best single index page for the whole system."
+    },
+    {
+      "url": "https://www.coloradosos.gov/lobby/SearchLobbyist.do",
+      "role": "search",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Public lobbyist search form; query by organization/firm name or by individual (last/first/middle). Filter by Professional, State, or both. Backed by the eFile system."
+    },
+    {
+      "url": "https://www.coloradosos.gov/lobby/SearchPrincipal.do",
+      "role": "search",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Public client (principal/employer) activity search; query by organization or individual; reporting-year dropdown 2003-2026."
+    },
+    {
+      "url": "https://www.coloradosos.gov/lobby/RequestUserId.do",
+      "role": "registration",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "New-user registration form for eFile access. Seven lobbyist-type categories (individual, firm employee, single-member firm, multi-member firm, state liaison, contribution-reporting entity, redistricting). Existing users login via the Home.do page."
+    },
+    {
+      "url": "https://www.coloradosos.gov/pubs/lobby/professionalCalendar.html",
+      "role": "report_filings",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "FY 2025-2026 Professional Lobbyist Filing Calendar. Annual cumulative report due 7/15; monthly disclosures due 15th of following month (next business day if weekend/holiday). Late penalties: $20/day days 1-10, $50/day from day 11. Fiscal year runs 7/1-6/30."
+    },
+    {
+      "url": "https://www.coloradosos.gov/pubs/lobby/reports.html",
+      "role": "bulk_download",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Lobby Disclosure System Data Reports index. Lists 12 datasets, all daily-refreshed tab-separated TXT files: lobbyist directory, client directory (current FY + 5yr), client positions/bills (current + 5yr), expenditures (current + 5yr), income (current + 5yr), subcontractors (current + 5yr), disclosure report summaries (current + 5yr). Pattern: /pubs/lobby/downloadFiles/<name>.txt"
+    },
+    {
+      "url": "https://www.coloradosos.gov/pubs/lobby/downloadFiles/prof_lobbyist_directory.txt",
+      "role": "bulk_download",
+      "http_status": 200,
+      "content_type": "text/plain",
+      "verified_via": "WebFetch",
+      "notes": "Representative bulk file. Tab-separated, 18 columns including primaryLobbyistID, fiscalYearsRegistered, lobbyistType (Professional/Redistrict), status (Current/Expired/Terminated), runDate. Thousands of rows spanning decades. Use as the canonical directory join key for the rest of the bulk files."
+    },
+    {
+      "url": "https://www.coloradosos.gov/pubs/lobby/downloadFiles/prof_disclosure_report_summary_5_years.txt",
+      "role": "bulk_download",
+      "http_status": 200,
+      "content_type": "text/plain",
+      "verified_via": "WebFetch",
+      "notes": "Representative monthly-disclosure bulk file. Tab-separated, 15-16 columns including primaryLobbyistID, annualLobbyistRegistrationID, totalMonthlyIncome, totalMonthlyExpenditures, businessAssociatedWithPendingLegislation, reportMonth, fiscalYear. Spans 2020-2026."
+    },
+    {
+      "url": "https://www.coloradosos.gov/pubs/info_center/COinfoMarket.html",
+      "role": "data_dictionary",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Colorado Information Marketplace index page. Enumerates 10 lobbying datasets on data.colorado.gov (Socrata): Professional Lobbyist Bills, Disclosure Report Summary, Directory, Subcontractors, Income, Expenditures, Clients; State Lobbyist Bills, Funds and Hours, Directory. Acts as the de facto data dictionary / metadata hub for the bulk feeds."
+    },
+    {
+      "url": "https://data.colorado.gov/Legislative/Professional-Lobbyist-Disclosure-Report-Summary-in/df5p-p6jt/about_data",
+      "role": "bulk_download",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Socrata dataset page for Professional Lobbyist Disclosure Report Summary. Provides CSV/JSON/XML exports plus a SODA API endpoint (https://data.colorado.gov/resource/df5p-p6jt.json). Mirrors the SOS bulk TXT but in cleaner schema with column metadata; preferred for programmatic ingest."
+    },
+    {
+      "url": "https://www.coloradosos.gov/pubs/lobby/files/guidanceManual.pdf",
+      "role": "user_guide",
+      "http_status": 200,
+      "content_type": "application/pdf",
+      "verified_via": "WebFetch",
+      "notes": "Colorado Secretary of State Lobbying Guidance Manual, revised March 2025. ~750 KB PDF; primary plain-language reference for filer obligations under C.R.S. 24-6-301 et seq."
+    },
+    {
+      "url": "https://www.coloradosos.gov/pubs/lobby/FAQs/registration.html",
+      "role": "help",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Lobbyist FAQ hub. Topic menu: registration, 72-hour position-change disclosure, annual cumulative disclosure, clients, lobbying firms, monthly disclosure, new client disclosure, penalties/waivers, professional lobbyists, redistricting commission lobbyists, state liaisons, volunteer lobbyists."
+    },
+    {
+      "url": "https://content.leg.colorado.gov/agencies/house-representatives/guidelines-lobbyists",
+      "role": "user_guide",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Colorado General Assembly 'Guidelines for Lobbyists' page. Covers definitions, disclosure thresholds, registration (professional with SOS, volunteer with House Chief Clerk), exceptions, prohibitions, Joint Rule 36, floor access, material distribution, ethics. Cites C.R.S. 24-6-301 through 24-6-309 and Colorado Constitution Article XXIX. Note: leg.colorado.gov 301-redirects to content.leg.colorado.gov - use the redirect target directly."
+    },
+    {
+      "url": "https://content.leg.colorado.gov/sites/default/files/images/olls/crs2024-title-24.pdf",
+      "role": "statute",
+      "http_status": 200,
+      "content_type": "application/pdf",
+      "verified_via": "WebFetch",
+      "notes": "Official Colorado Revised Statutes 2024, Title 24 (Government - State), published by the Office of Legislative Legal Services. Lobbying statute lives in Article 6, Part 3 (Regulation of Lobbyists), sections 24-6-301 through 24-6-309. Large PDF (>10 MB - WebFetch hit cap, which confirms file is live). Stage 2 must stream."
+    },
+    {
+      "url": "https://www.coloradosos.gov/pubs/info_center/about.html",
+      "role": "agency_about",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Colorado Secretary of State About page. Confirms lobbyist registration sits under the Business and Licensing Division (NOT Elections) - alongside corporate filings, trademarks, notary, charitable orgs, bingo/raffle. Elections Division handles campaign finance separately. Important regulator-attribution detail for downstream taxonomy."
+    }
+  ],
+  "flagged": [
+    {
+      "url": "https://www.sos.state.co.us/lobby/Home.do",
+      "role": "home",
+      "reason": "403 via WebFetch (likely WAF/UA filter)",
+      "notes": "The legacy sos.state.co.us hostname returns 403 to WebFetch on every path tried (Home.do, lobby_home.html, reports.html, SearchLobbyist.do). The coloradosos.gov mirror serves the identical app and is the canonical host - use that. Stage 2 should set a real Chrome UA if it tries sos.state.co.us at all; otherwise prefer coloradosos.gov throughout."
+    },
+    {
+      "url": "https://www.coloradosos.gov/pubs/info_center/laws/Title24/Title24Article6Part3.html",
+      "role": "statute",
+      "reason": "404 Not Found",
+      "notes": "Old SOS-hosted HTML mirror of the lobbying statute is gone. Use the official OLLS PDF (crs2024-title-24.pdf, listed as a verified seed) for authoritative text. Justia and FindLaw mirrors exist but are third-party and not part of the official portal."
+    },
+    {
+      "url": "https://www.coloradosos.gov/pubs/lobby/files/lawsRules.html",
+      "role": "user_guide",
+      "reason": "404 Not Found",
+      "notes": "The 'Laws, rules and guidelines' link surfaced on lobby_home.html appears to live at a different path than guessed. Collaborator should re-discover the working URL by clicking through from /pubs/lobby/lobby_home.html in a real browser."
+    }
+  ],
+  "observations": "Colorado runs a single classic-Java/Struts web app under /lobby/*.do, served from two hostnames - sos.state.co.us (legacy) and coloradosos.gov (current). Only coloradosos.gov is reachable via WebFetch; sos.state.co.us 403s on every path and Stage 2 must either spoof a Chrome UA or just standardize on coloradosos.gov. Bulk data is excellent and cleanly dual-published: 12 daily-refreshed tab-separated TXT files under /pubs/lobby/downloadFiles/ (SOS-hosted, no auth, no WAF) plus 10 Socrata datasets on data.colorado.gov with CSV/JSON/SODA-API exports - the Socrata layer is the preferred programmatic feed because columns are named and typed. Regulator attribution matters: lobbyist registration is under the SOS Business and Licensing Division (not Elections, which owns campaign finance) - downstream taxonomy should reflect that split. Statute is C.R.S. Title 24, Article 6, Part 3, sections 24-6-301 through 24-6-309 (Colorado Sunshine Law of 1972, with 2025 amendments via HB25-1170 on nonprofit-entity lobbying); authoritative text is the OLLS-published Title 24 PDF on content.leg.colorado.gov, which is >10 MB and must be streamed. Versus the 2026-04-13 baseline (10 seeds, 25 snapshots, 0 flagged): hostname has effectively shifted from sos.state.co.us to coloradosos.gov for HTTP-fetch purposes (whether by WAF tightening or just our test path), and the old SOS-hosted statute HTML mirror at /pubs/info_center/laws/.../Title24Article6Part3.html is gone - use the OLLS PDF instead."
+}

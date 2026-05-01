@@ -1,0 +1,143 @@
+{
+  "state_abbr": "FL",
+  "discovered_at": "2026-05-01",
+  "portal_system": "Florida Lobbyist Registration & Compensation Reporting System (LRCRS, floridalobbyist.gov) — single unified portal that internally separates Legislative-branch vs Executive-branch registration/compensation, with two distinct regulators behind it",
+  "regulator": "Florida Joint Legislative Auditing Committee (legislative) + Florida Commission on Ethics (executive); Lobbyist Registration Office (111 W. Madison St., Tallahassee) operates the shared portal on behalf of both",
+  "seed_urls": [
+    {
+      "url": "https://floridalobbyist.gov/",
+      "role": "home",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "LRCRS landing page; explicitly states 'ONE portal for BOTH lobbyist registrations and compensation reports' covering both legislative and executive regimes. Live counts shown: Legislative ~1,705 lobbyists / 4,797 principals / 14,261 registrations; Executive ~1,337 lobbyists / 4,596 principals / 13,307 registrations."
+    },
+    {
+      "url": "https://floridalobbyist.gov/LobbyistInformation",
+      "role": "landing",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "'Other Resources' hub page; canonical index of governing laws (legislative §§11.044–11.062, §350.031; executive §§112.3215–112.3217 + FAC Ch. 34-12), data downloads, FAQs, application user guide, deadlines (Q1 May 15 / Q2 Aug 14 / Q3 Nov 14 / Q4 Feb 14)."
+    },
+    {
+      "url": "https://www.floridalobbyist.gov/LobbyistInformation/LobbyistSearch",
+      "role": "search",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Unified lobbyist search; users select Legislative vs Executive branch and search by Name / Location / Principal / Industry. Covers BOTH regimes through one UI."
+    },
+    {
+      "url": "https://floridalobbyist.gov/LobbyistInformation/RegisteredLegislativeLobbyists",
+      "role": "registration",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Legislative regime — Registered Legislative Branch Lobbyist Directory (PDFs by lobbyist name and by principal name, 2006–2026). This is the public-facing registry view, not the filer login. Includes special CRC 2017–2018 registrations."
+    },
+    {
+      "url": "https://www.floridalobbyist.gov/LobbyistInformation/RegisteredExecutiveLobbyists",
+      "role": "registration",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Executive regime — Registered Executive Branch Lobbyist Directory (PDFs by lobbyist name and by principal name, 2006–2026). Same shape as the legislative directory but distinct dataset administered by Commission on Ethics."
+    },
+    {
+      "url": "https://floridalobbyist.gov/CompensationReportSearch/",
+      "role": "report_filings",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Compensation Report Search — quarterly compensation reports searchable by Firm / Lobbyist / Principal, filterable by reporting quarter (Q1–Q4), calendar year (2007–2027), and Branch (Legislative or Executive). Serves both regimes from the same UI."
+    },
+    {
+      "url": "https://www.leg.state.fl.us/cgi-bin/View_Page.pl?Tab=lobbyist&Submenu=1&File=dl_data.cfm&Directory=Lobbyist/&Location=app",
+      "role": "bulk_download",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Online Sunshine bulk-download index; serves two tab-delimited (.TXT) files — Legislative Lobbyist File and Executive Lobbyist File — both updated daily per page text. Page also exposes a 'File Definition Description' PDF (data dictionary) link from this index. Lobbyist/principal/firm fields per file."
+    },
+    {
+      "url": "https://floridalobbyist.gov/LobbyistInformation/FAQsLegislative",
+      "role": "user_guide",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Legislative regime — 28-question FAQ for Florida Legislature lobbyists; covers registration mechanics, principal authorization, fees, compensation reporting, deadlines, contingency-fee prohibition. Authoritative interpretive guidance for the legislative side."
+    },
+    {
+      "url": "https://floridalobbyist.gov/LobbyistInformation/FAQsExecutive",
+      "role": "user_guide",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Executive regime — 28-question FAQ for Executive Branch lobbyists; covers registration, $25/principal annual fee, renewal cycles, quarterly reporting (45-day deadline), subcontracting, mixed legislative/executive lobbying allocation."
+    },
+    {
+      "url": "https://www.leg.state.fl.us/Lobbyist/index.cfm?Mode=compensation&Submenu=7&Tab=lobbyist",
+      "role": "report_filings",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Legislative regime — Online Sunshine archive of legislative-branch quarterly compensation reports (PDFs grouped by quarter and alphabetical bucket). Complementary to the LRCRS search; useful for older quarters and bulk PDF pulls."
+    },
+    {
+      "url": "https://www.leg.state.fl.us/Statutes/index.cfm?App_mode=Display_Statute&URL=0000-0099/0011/Sections/0011.045.html",
+      "role": "statute",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Legislative regime statute — F.S. §11.045 'Lobbying before the Legislature; registration and reporting; exemptions; penalties' on Online Sunshine (Title III, Chapter 11). Authoritative state-source URL; the broader §§11.044–11.062 cluster also governs."
+    },
+    {
+      "url": "https://www.leg.state.fl.us/statutes/index.cfm?App_mode=Display_Statute&URL=0100-0199/0112/Sections/0112.3215.html",
+      "role": "statute",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Executive regime statute — F.S. §112.3215 'Lobbying before the executive branch or the Constitution Revision Commission; registration and reporting; investigation by commission' on Online Sunshine (Title X, Chapter 112, Part III). Companion §§112.3216–112.3217 also apply."
+    },
+    {
+      "url": "https://www.leg.state.fl.us/cgi-bin/View_Page.pl?File=about.cfm&Directory=committees/joint/Jcla/&Tab=committees",
+      "role": "agency_about",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Legislative regime regulator — Joint Legislative Auditing Committee (JLAC) about page. JLAC's lobbying nexus is narrower than 'register the lobbyists': it adopts audit guidelines, maintains the approved-auditor list, and runs random selection for audits of compensation reports filed by both legislative and executive branch firms."
+    },
+    {
+      "url": "https://www.ethics.state.fl.us/AboutUs/Index.aspx",
+      "role": "agency_about",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Executive regime regulator — Florida Commission on Ethics 'About Us'. Nine-member independent commission (5 Gov / 2 Sen Pres / 2 House Spkr appointees, 2-year terms), staff ~25 in Tallahassee. Administers Executive Branch Lobbyist Registration System; investigates breaches of public trust."
+    },
+    {
+      "url": "https://ethics.state.fl.us/PublicInformation/LobbyistInfo.aspx",
+      "role": "help",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Executive regime — Commission on Ethics 'Lobbyist Information' page; bridges ethics.state.fl.us users to floridalobbyist.gov for registration/reporting and surfaces statutory framework (contingency-fee prohibition, public-funds restrictions), FAQ links, complaint forms, advisory opinions."
+    }
+  ],
+  "flagged": [
+    {
+      "url": "https://www.leg.state.fl.us/data/lobbyist/Forms/file_definition.pdf",
+      "role": "data_dictionary",
+      "reason": "404 Not Found at guessed path",
+      "notes": "The bulk-download index page (verified seed above) advertises a 'File Definition Description' PDF link, but the inferred path returns 404 — actual filename differs. Stage 2 should scrape the dl_data.cfm page to extract the live PDF href rather than hard-coding it."
+    },
+    {
+      "url": "https://floridalobbyist.gov/Documents/ApplicationUserGuide.pdf",
+      "role": "user_guide",
+      "reason": "Not independently verified",
+      "notes": "The 'Other Resources' page (verified seed above) references an 'Application User Guide (PDF)' download but the exact href was not surfaced via WebFetch summarization. Stage 2 should scrape the LobbyistInformation page to extract the canonical PDF URL."
+    }
+  ],
+  "observations": "Florida runs a deceptively simple-looking single portal (floridalobbyist.gov / LRCRS) that masks a genuine bifurcated regime: the Joint Legislative Auditing Committee owns legislative-branch lobbying oversight (statutes §§11.044–11.062) while the Florida Commission on Ethics administers executive-branch lobbying (statutes §§112.3215–112.3217 + FAC Ch. 34-12). The portal's search, registration, and compensation surfaces all expose a Branch=Legislative|Executive selector, so most disclosure UIs serve both regimes through one widget — but downstream parsing must keep the regime tag, since fees ($25/principal executive vs separate legislative fee schedule) and audit pipelines diverge. A separate Online Sunshine bulk-download index (leg.state.fl.us) hosts two tab-delimited registration files (one per regime, advertised as daily-refreshed) plus a File Definition Description PDF; this is the only true bulk channel — the rest of the portal is PDF-per-quarter or interactive search. Compared with the 2026-04-13 baseline (12 seeds, 12 snapshots, 0.3 MB), this rebuild yields 15 verified seeds, deliberately broader to cover both regulators' about pages and both statutes; small payload size in the original is consistent with Florida's heavy reliance on PDF reports rather than HTML/JSON endpoints."
+}

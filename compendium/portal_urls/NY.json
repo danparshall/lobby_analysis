@@ -1,0 +1,165 @@
+{
+  "state_abbr": "NY",
+  "discovered_at": "2026-05-01",
+  "portal_system": "COELIG Public Search Query (PSQ) at reports.ethics.ny.gov + Open NY Socrata datasets at data.ny.gov + Lobbying Application (LA) filer system at public.ethics.ny.gov / my.ny.gov",
+  "regulator": "NY Commission on Ethics and Lobbying in Government (CELG / COELIG) - successor to JCOPE under the Ethics Commission Reform Act of 2022 (eff. July 8, 2022)",
+  "seed_urls": [
+    {
+      "url": "https://ethics.ny.gov/",
+      "role": "home",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "COELIG home page. Top-level Lobbying nav covers File Online, Search Lobbying Filings, Lobbying Training, Lobbying Filings Information, Late Filing Fee Waiver, Lobbying at a Glance, Section 166 Notice of Appearance. Public Data section is the gateway to the rest of the disclosure system."
+    },
+    {
+      "url": "https://ethics.ny.gov/lobbying-overview",
+      "role": "landing",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Plain-language overview of NY's lobbying regulation system. Identifies the governing statute as Legislative Law Article 1-A (the Lobbying Act); enumerates the three filing types (registration statements, lobbyist bi-monthly reports, client semi-annual reports); notes mandated ethics training for lobbyists and clients."
+    },
+    {
+      "url": "https://reports.ethics.ny.gov/publicquery",
+      "role": "search",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Public Search Query (PSQ) - the public lobbying search portal. Covers filings 2019-present. Filters by entity type (Lobbyist / Client / Public Corporation / Coalition), reporting year, bi-monthly period, filing category (registration / bi-monthly / semi-annual), 16 subject-matter industries, jurisdiction (state / municipal), communication type (direct / grassroots / monitoring). Backed by COELIG's modern stack; replaces the retired JCOPE webapps."
+    },
+    {
+      "url": "https://ethics.ny.gov/registration-and-reportable-business-relationship-rbr-information",
+      "role": "registration",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Registration filing requirements. Threshold: must register if combined Reportable Lobbying Compensation + Expenses at State and/or Municipal Level exceeds (or is reasonably anticipated to exceed) $5,000 in a calendar year. Per-client registration. Fees $100-$200 per client depending on timing. 2026 Filing Due Dates PDF (revised 11/17/2025) is linked from this page."
+    },
+    {
+      "url": "https://ethics.ny.gov/lobbying-filings-information",
+      "role": "report_filings",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Index hub for the three lobbying filing types: Lobbyist Bi-Monthly + Disbursement of Public Monies; Client Semi-Annual + Source of Funding; Registration + RBR. Each section has its own Filing Due Dates and instructions sub-page. Best single index to navigate the report-side of the system."
+    },
+    {
+      "url": "https://ethics.ny.gov/public-data",
+      "role": "landing",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Centralized Public Data hub. Three categories: Lobbying Data, Financial Disclosure, Enforcement Actions. Lobbying side links to PSQ (Search Current Filings), PSQ Instructions and Data Dictionaries, Registration and Termination Docket, Open NY (six datasets), alphabetical static lists, and rankings."
+    },
+    {
+      "url": "https://ethics.ny.gov/lobbying-datasets",
+      "role": "bulk_download",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Historical bulk downloads (2011-2018), compiled 3-22-19. Five files: Registered Lobbyist Disclosures 2018, Registered Lobbyist Disclosures 2011-2017, Lobbying Client Disclosures 2011-2018, Lobbyist Disbursement of Public Monies 2011-2018, Public Corporation Data 2011-2018. Plus four glossaries. For 2019-forward, page directs to interactive search (legacy URL webapps.jcope.ny.gov/public is dead - now reports.ethics.ny.gov/publicquery)."
+    },
+    {
+      "url": "https://data.ny.gov/Transparency/Lobbyist-Bi-Monthly-Reports-Beginning-2019/t9kf-dqbc",
+      "role": "bulk_download",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Open NY Socrata dataset, ID t9kf-dqbc. Per the 10/18/2023 COELIG-Open-NY partnership announcement, this is the cumulative Lobbyist Bi-Monthly Reports dataset and alone contains 122M+ records (out of ~159M total across the six lobbying datasets). SODA API endpoint pattern: https://data.ny.gov/resource/t9kf-dqbc.json - preferred for programmatic ingest."
+    },
+    {
+      "url": "https://data.ny.gov/Transparency/Lobbyist-Statement-of-Registration-2025-2026/dz6x-9475",
+      "role": "bulk_download",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Open NY Socrata dataset, ID dz6x-9475. Current biennial (2025-2026) Lobbyist Statements of Registration. The Statement-of-Registration family is one of six COELIG-published datasets; per-biennium dataset slices exist alongside the cumulative Bi-Monthly stream."
+    },
+    {
+      "url": "https://data.ny.gov/Transparency/Lobbyist-Disbursement-of-Public-Monies-Disclosures/scx8-uayk",
+      "role": "bulk_download",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Open NY Socrata dataset, ID scx8-uayk. Lobbyist Disbursement of Public Monies Disclosures - 7-year rolling window (current reporting year + 6 prior). Updated semi-annually. Originally provided by JCOPE; now maintained by COELIG."
+    },
+    {
+      "url": "https://ethics.ny.gov/psq-instructions-and-data-dictionaries",
+      "role": "data_dictionary",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Index page for PSQ instructions plus five plain-language data dictionaries: Lobbyist Statement of Registration, Public Corporation Statement of Registration, Lobbyist Bi-Monthly Report, Public Corporation Bi-Monthly Report, Client Semi-Annual Report. The canonical schema reference for both PSQ and the Open NY datasets."
+    },
+    {
+      "url": "https://ethics.ny.gov/how-search-public-search-query",
+      "role": "user_guide",
+      "http_status": 200,
+      "content_type": "application/pdf",
+      "verified_via": "WebFetch",
+      "notes": "PDF (~896 KB) - 'How to Navigate the Commission on Ethics and Lobbying in Government Public Search Query'. Step-by-step guide for using the PSQ portal. WebFetch returned the binary PDF (size confirmed); text extraction needed downstream for any indexing."
+    },
+    {
+      "url": "https://ethics.ny.gov/lobbying-application-la-information",
+      "role": "user_guide",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Filer-side hub for the Lobbying Application (LA) - the system that produces all the data shown in PSQ and Open NY. Links to LA Enrollment (https://public.ethics.ny.gov/enrollment - flagged below), returning-user login (https://my.ny.gov/LoginV4/login.xhtml), four LA Basics video tutorials (registration, bi-monthly, client semi-annual, funding), and written instructions."
+    },
+    {
+      "url": "https://ethics.ny.gov/lobbying-laws-and-regulations",
+      "role": "statute",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Hub linking to the governing statute (Legislative Law Article 1-A, the Lobbying Act, eff. 1/1/2000, as amended through the Ethics Commission Reform Act of 2022) and to the implementing regulations: 19 NYCRR Part 934 (gift limits), Part 938 (source-of-funding disclosure >$2,500, eff. 3/15/2023), Part 943 (comprehensive lobbying regulations, eff. 2/19/2025, with sub-parts for ethics training certification, late-filing fees, and Responsible Party definitions)."
+    },
+    {
+      "url": "https://ethics.ny.gov/system/files/documents/2022/10/coelig_-legislative-law-1a.pdf",
+      "role": "statute",
+      "http_status": 200,
+      "content_type": "application/pdf",
+      "verified_via": "WebFetch",
+      "notes": "COELIG-hosted PDF copy of Legislative Law Article 1-A (Lobbying Act). 314.6 KB. Authoritative agency-published text; preferred over third-party Justia mirror for provenance. Note: this is the October-2022 cut - may not include post-2022 amendments. Cross-check against nysenate.gov/legislation/laws/LEG/A1-A (flagged below for WebFetch UA issue but live in a real browser) for current consolidated text."
+    },
+    {
+      "url": "https://ethics.ny.gov/about-commission-ethics-and-lobbying-government-coelig",
+      "role": "agency_about",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "About COELIG. Established 7/8/2022 by the Ethics Commission Reform Act of 2022; replaced JCOPE. Oversees 300,000+ filers (state agencies, SUNY/CUNY, four statewide elected officials, legislators, party chairs, registered lobbyists). Three core functions: education/compliance, transparency (lobbying + financial disclosure publication), enforcement (investigations + civil penalties)."
+    },
+    {
+      "url": "https://ethics.ny.gov/commission-forms",
+      "role": "help",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Forms repository. Lobbying-relevant forms: Lobbying Agreement Form (Employed and Retained variants), Sample Written Authorization Letter, Sample Termination Letters, Source of Funding Exemption Application, Source of Funding Excel template, Section 166 Notice of Appearance paper form, Late Filing Fee Waiver application + affidavit. Paper-filer help desk: (518) 474-3973."
+    }
+  ],
+  "flagged": [
+    {
+      "url": "https://www.nysenate.gov/legislation/laws/LEG/A1-A",
+      "role": "statute",
+      "reason": "403 via WebFetch (likely UA filter)",
+      "notes": "Authoritative NY Senate consolidated-law page for Legislative Law Article 1-A. Returns 403 to WebFetch but is live in a browser (verified via Google's cached snippet listing all sections 1-a through 1-x). Stage 2 should set a real Chrome UA when fetching. This is the canonical living-text source for the statute; the COELIG-hosted PDF (verified above) is a useful authoritative snapshot but not always current."
+    },
+    {
+      "url": "https://public.ethics.ny.gov/enrollment/",
+      "role": "registration",
+      "reason": "403 via WebFetch (auth wall - expected)",
+      "notes": "First-time enrollment endpoint for the Lobbying Application. Requires a NY.gov ID; not browseable anonymously. Correctly behind auth - listing here for completeness so collaborators don't waste time trying to scrape it. Filer-side only; not in scope for public disclosure ingest."
+    },
+    {
+      "url": "https://webapps.jcope.ny.gov/public",
+      "role": "search",
+      "reason": "ECONNREFUSED (host retired)",
+      "notes": "Legacy JCOPE public search webapp - referenced as recently as 2023 from ethics.ny.gov/lobbying-datasets but the host is now offline. Its replacement is reports.ethics.ny.gov/publicquery (verified above). Stage 2 should treat any historical reference to webapps.jcope.ny.gov as a redirect target to map to the new PSQ. Worth noting because the 2026-04-13 baseline likely captured this URL."
+    }
+  ],
+  "observations": "NY's disclosure stack post-JCOPE-to-COELIG transition (Ethics Commission Reform Act of 2022, eff. 7/8/2022) is now three layers: (1) the COELIG-operated PSQ at reports.ethics.ny.gov/publicquery for interactive 2019-present search; (2) six Open NY Socrata datasets on data.ny.gov (Lobbyist + Public Corporation Statements of Registration; Lobbyist + Public Corporation Bi-Monthly Reports; Client Semi-Annual Reports; Disbursement of Public Monies) totaling ~159M records as of the 10/18/2023 partnership announcement, with the Bi-Monthly Reports dataset alone at 122M+ records and a clean SODA API; (3) the Lobbying Application (LA) filer system on public.ethics.ny.gov + my.ny.gov - auth-walled and out of scope for public ingest. Historical 2011-2018 data lives in five SOS-hosted bulk files at ethics.ny.gov/lobbying-datasets. Statute is Legislative Law Article 1-A (the 'Lobbying Act'), with COELIG implementing regulations at 19 NYCRR Parts 934, 938, 943 - 943 was substantially rewritten 2/19/2025, so the regulatory text is fresher than the statute. Notable changes vs the 2026-04-13 baseline (12 seeds, 27 clean snapshots, 39.6 MB - largest in corpus): the legacy JCOPE host (webapps.jcope.ny.gov) is now fully retired (ECONNREFUSED, not just renamed), so any old seed URL pointing there needs a redirect-map to reports.ethics.ny.gov/publicquery. nysenate.gov 403s on WebFetch (UA filter, same pattern observed for CA's leginfo and CO's sos.state.co.us) - Stage 2 must spoof a real Chrome UA for statute fetches."
+}

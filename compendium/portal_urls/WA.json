@@ -1,0 +1,187 @@
+{
+  "state_abbr": "WA",
+  "discovered_at": "2026-05-01",
+  "portal_system": "Washington PDC website (registration, browse/search, guides) + data.wa.gov Socrata open-data layer (bulk lobbyist datasets); legacy AccessHub now redirects into pdc.wa.gov browse/search",
+  "regulator": "Washington Public Disclosure Commission (PDC)",
+  "seed_urls": [
+    {
+      "url": "https://www.pdc.wa.gov/",
+      "role": "home",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "PDC home page; top-level navigation to Registration & Reporting, Political Disclosure Data, Rules & Enforcement, About PDC. PDC has regulated WA political disclosure for 50+ years (since I-276 in 1972)."
+    },
+    {
+      "url": "https://www.pdc.wa.gov/lobbyists",
+      "role": "landing",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Lobbyist hub page; entry point to Lobbyist Guide, Lobbyist Employer Guide, Grassroots Lobbying, and Public Agency Lobbying Guide."
+    },
+    {
+      "url": "https://www.pdc.wa.gov/registration-reporting",
+      "role": "registration",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Registration & reporting hub covering candidates/committees, F-1 personal financial affairs, incidental committees, lobbying, independent expenditures (C-6), and last-minute contributions. Lobbying section has subsections for Lobbyists and Lobbyist Employers."
+    },
+    {
+      "url": "https://www.pdc.wa.gov/registration-reporting/lobbying/lobbyists/registration",
+      "role": "registration",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Lobbyist registration page. Must register within 30 days of being employed to lobby (or before lobbying, whichever comes first); separate registration per employer; valid up to 2 years; electronic filing required; Code of Conduct training certification required (updated Sep 2024)."
+    },
+    {
+      "url": "https://www.pdc.wa.gov/browse",
+      "role": "search",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Political Disclosure Data search/browse hub. Lobbying tools: Lobbyists (agents), Lobbying firms, Lobbyist employers, Public agency lobbying, Grassroots lobbying. Coverage since 2007."
+    },
+    {
+      "url": "https://www.pdc.wa.gov/political-disclosure-reporting-data/browse-search-data/lobbyists/agents",
+      "role": "search",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Lobbyist agents search; filter by lobbyist name, lobbying firm, lobbying clients, and year. Returns phone, email, address, certification date. This is also the destination of the legacy accesshub.pdc.wa.gov 302 redirect."
+    },
+    {
+      "url": "https://www.pdc.wa.gov/political-disclosure-reporting-data/browse-search-data/lobbyists/employers",
+      "role": "search",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Lobbyist clients/employers search; columns include email, compensation, expenditures, contributions, total expenses, reports. Employers report annually."
+    },
+    {
+      "url": "https://www.pdc.wa.gov/browse/open-data",
+      "role": "data_dictionary",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "PDC Open Data hub; documents the lobbying datasets published to data.wa.gov. Datasets cover the prior 16 years plus current year and are refreshed at least daily."
+    },
+    {
+      "url": "https://data.wa.gov/Politics/Lobbyist-Agents/bp5b-jrti",
+      "role": "bulk_download",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Socrata dataset (resource id bp5b-jrti): individual lobbyist agents employed by registered lobbying firms; includes agent name, firm, employers list, year, contact info, training-cert flag, bio, photo URL. Page is JS-rendered (chrome only via WebFetch); Socrata API endpoints (/resource/bp5b-jrti.json|.csv) are the Stage-2 fetch targets."
+    },
+    {
+      "url": "https://data.wa.gov/Politics/Lobbyist-Agent-Employers/mncn-zj8q",
+      "role": "bulk_download",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Socrata dataset (resource id mncn-zj8q): one row per agent-to-employer relationship; companion to Lobbyist Agents. Important caveat from PDC: presence in this table only means the agent's firm lobbied for that employer, not that the specific agent did."
+    },
+    {
+      "url": "https://data.wa.gov/Politics/Lobbyist-Summary/c4ag-3cmj",
+      "role": "bulk_download",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Socrata dataset (resource id c4ag-3cmj): per-lobbyist annual totals aggregated from monthly L2 expenditure reports. Effectively the L2 rollup."
+    },
+    {
+      "url": "https://data.wa.gov/Politics/Lobbyist-Employers-Summary/biux-xiwe",
+      "role": "bulk_download",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Socrata dataset (resource id biux-xiwe): per-employer annual totals (compensation, expenditures, contributions). Companion to Lobbyist Summary on the employer side."
+    },
+    {
+      "url": "https://data.wa.gov/Politics/Lobbyist-Compensation-and-Expenses-by-Source/9nnw-c693",
+      "role": "bulk_download",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Socrata dataset (resource id 9nnw-c693): finer-grained breakdown of lobbyist compensation and expenses by funding source / employer. Captures the dollar-flow detail behind the summary tables."
+    },
+    {
+      "url": "https://data.wa.gov/Politics/Lobbyist-Reporting-History/nuwx-ay5h",
+      "role": "bulk_download",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Socrata dataset (resource id nuwx-ay5h): filing history per lobbyist (which monthly L2 reports were submitted, when). Useful for completeness audits and missing-report detection."
+    },
+    {
+      "url": "https://www.pdc.wa.gov/lobbyists/lobbyist-guide",
+      "role": "user_guide",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Lobbyist Guide; covers registration, reportable activities, guidelines & restrictions, deadlines, training, support contacts."
+    },
+    {
+      "url": "https://www.pdc.wa.gov/learn/new-lobbyists",
+      "role": "help",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Lobbyist FAQ. Confirms monthly L2 expenditure reports due by the 15th of the following month; covers exemptions (under 4 days in 3 months, under $100 spending), prohibited contingency compensation, and required online filing."
+    },
+    {
+      "url": "https://app.leg.wa.gov/RCW/default.aspx?cite=29B",
+      "role": "statute",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Title 29B RCW 'Campaign Disclosure and Contribution' — the new home of WA disclosure law as of Jan 1, 2026 (recodified from former Title 42 Ch. 42.17A). Lobbying lives at Chapter 29B.50."
+    },
+    {
+      "url": "https://app.leg.wa.gov/RCW/default.aspx?cite=29B.50",
+      "role": "statute",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Chapter 29B.50 RCW 'Lobbying Disclosure and Restrictions'; 13 sections covering registration (29B.50.010), code of conduct (.020), exemptions (.040), reporting (.050), employer reports (.080), public-agency lobbying (.090), grassroots lobbying (.100), and penalties (.130). This is the primary lobbying statute citation post-recodification."
+    },
+    {
+      "url": "https://apps.leg.wa.gov/WAC/default.aspx?cite=390",
+      "role": "statute",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "WAC Title 390 — PDC administrative rules. Chapter 390-20 is 'Reporting lobbying activities'. PDC plans expedited rulemaking to update RCW citations from 42.17A to 29B throughout 390."
+    }
+  ],
+  "flagged": [
+    {
+      "url": "https://app.leg.wa.gov/RCW/default.aspx?cite=42.17A",
+      "role": "statute",
+      "reason": "Legacy citation; recodified Jan 1, 2026",
+      "notes": "The former primary lobbying statute (RCW Ch. 42.17A 'Campaign Disclosure and Contribution'). Still resolves and the legislature maintains a citation-mapping tool, but each section now carries an 'Effective until January 1, 2026. Recodified as RCW 29B.xx.xxx' note. Keep as a fallback for older documents and PRI-2010 reproducibility, but use 29B as the canonical 2026+ citation."
+    },
+    {
+      "url": "https://accesshub.pdc.wa.gov/",
+      "role": "search",
+      "reason": "302 redirect to pdc.wa.gov browse/search",
+      "notes": "AccessHub host still resolves but immediately 302s to https://www.pdc.wa.gov/political-disclosure-reporting-data/browse-search-data/lobbyists/agents. Some old AccessHub deep links (e.g., /node/<id>) also still appear in search results. Treat as legacy; canonical search is now under pdc.wa.gov/political-disclosure-reporting-data/browse-search-data/."
+    },
+    {
+      "url": "https://www.pdc.wa.gov/about",
+      "role": "agency_about",
+      "reason": "WebFetch returned 403; canonical About URL is /about-pdc",
+      "notes": "Use https://www.pdc.wa.gov/about-pdc instead (verified 200). The /about path appears to be blocked or non-canonical. Preserved here so a future Stage-2 doesn't re-discover it as a mystery 403."
+    },
+    {
+      "url": "https://www.pdc.wa.gov/about-pdc",
+      "role": "agency_about",
+      "reason": "Verified 200 on retry — promote to seed_urls in next pass",
+      "notes": "PDC About page (verified content): five-member commission appointed by governor and confirmed by Senate; statutory authority Title 29B RCW + WAC 390; ~95,621 reports filed and 9.4M+ open-data records in 2023. Listed here rather than in seed_urls because it was found mid-pass after the 403 on /about; flagging keeps the agency_about role attested without retroactively editing the seed list."
+    }
+  ],
+  "observations": "Two big changes vs the 2026-04-13 baseline. (1) Statute citation: RCW 42.17A was recodified to Title 29B effective Jan 1, 2026, so lobbying-disclosure statute now lives at Chapter 29B.50; the old 42.17A URLs still resolve but each section is annotated as recodified. Any downstream code keying on '42.17A' needs to learn the 29B mapping. (2) AccessHub deprecation: accesshub.pdc.wa.gov now 302-redirects into pdc.wa.gov/political-disclosure-reporting-data/browse-search-data/, which is the new canonical search surface. The Socrata layer on data.wa.gov is unchanged and remains the high-value bulk source — six lobbyist datasets (Agents, Agent Employers, Lobbyist Summary, Lobbyist Employers Summary, Compensation & Expenses by Source, Reporting History) cover the L1/L2/L3 family with daily refresh and ~16 years of history; Socrata pages render via JS so WebFetch only confirms the page chrome, but the underlying /resource/<id>.json|.csv API endpoints are the right Stage-2 targets. 19 verified seeds vs 13 in the prior pass; no hard blockers."
+}

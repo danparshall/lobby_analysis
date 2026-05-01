@@ -8,6 +8,13 @@ for rationale, and the Phase 1 audit CSV
 (`docs/historical/pri-calibration/results/20260418_justia_retrieval_audit.csv`) for
 vintage-selection logic.
 
+Justia is the project's *operational* statute SSOT — chosen for stable per-vintage
+URLs (`/codes/<state>/<year>/...`) and programmatic access. It is NOT the
+canonical authority: that role belongs to each state's own legislative
+codification (CA leginfo, NY official Legislative Law, TX statutes.capitol, etc.)
+— the state-level analog of the Federal Register / U.S. Code. Justia republishes
+those.
+
 Start small: minimum viable coverage per state (core registration + disclosure
 chapter). Expand only if calibration agreement against PRI 2010 is poor for
 that state.

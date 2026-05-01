@@ -1,0 +1,107 @@
+{
+  "state_abbr": "IL",
+  "discovered_at": "2026-05-01",
+  "portal_system": "Illinois Lobbyist Registration & Expenditure Reporting System (ilsos.gov apps + Illinois Open Data Socrata mirror)",
+  "regulator": "Illinois Secretary of State, Index Department",
+  "seed_urls": [
+    {
+      "url": "https://www.ilga.gov/Legislation/ILCS/Articles?ActID=465&ChapterID=6",
+      "role": "statute",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Canonical state-source for the Lobbyist Registration Act (25 ILCS 170). Confirmed 17 sections including Sec. 3 (registration), Sec. 5 (lobbyist registration and disclosure), Sec. 6 (reports), Sec. 6.5 (expenditures on behalf of officials), Sec. 7 (duties of the Secretary of State). Body fetch not required per task scope (Justia is operational SSOT for statute body)."
+    },
+    {
+      "url": "https://www.illinois.gov/services/service.lobbyist-registration.html",
+      "role": "landing",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Illinois.gov citizen-services landing page for lobbyist registration. Acts as a stable redirector to ilsos.gov resources; useful when ilsos.gov hosts are WAF-throttled. Links to https://www.ilsos.gov/departments/index/lobbyist/lobintro.html as the operational service entry."
+    },
+    {
+      "url": "https://www.illinois.gov/services/service.lobbying-information.html",
+      "role": "landing",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Illinois.gov citizen-services landing page for the public Lobbying Information Search. Note: the Go-To-Service link still points at the legacy cyberdriveillinois.com host (now aliased to ilsos.gov); the live application is at apps.ilsos.gov/lobbyistsearch/."
+    },
+    {
+      "url": "https://data.illinois.gov/",
+      "role": "bulk_download",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Illinois Open Data portal landing (Socrata platform; support: doit.sdp.support@illinois.gov). Hosts the daily-refreshed Secretary of State lobbyist datasets that are F Minus's preferred IL data source over the SOS search UI."
+    },
+    {
+      "url": "https://data.illinois.gov/browse?q=lobbyist",
+      "role": "bulk_download",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Socrata browse with q=lobbyist filter; shell renders via JS so individual dataset tiles don't appear in the static HTML (WebFetch sees only nav). Use as the discovery entry for the SOS-published lobbyist family of datasets."
+    },
+    {
+      "url": "https://data.illinois.gov/Government-and-Public-Employees/Active-Lobbying-Entities-and-Their-Clients/2hsr-n93j",
+      "role": "bulk_download",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Socrata dataset 2hsr-n93j 'Active Lobbying Entities and Their Clients' under Government and Public Employees category. Page returns 200 with title confirmed; field schema and resource links are JS-rendered (Stage 2 should hit the Socrata Open Data API endpoint at /resource/2hsr-n93j.csv|.json directly rather than scraping the HTML)."
+    }
+  ],
+  "flagged": [
+    {
+      "url": "https://www.ilsos.gov/departments/index/lobbyist/lobintro.html",
+      "role": "home",
+      "reason": "WebFetch timeout (60s exceeded) on multiple retries; ilsos.gov consistently rejects WebFetch's UA — same WAF/HTTP-2 behavior the 2026-04-13 baseline noted as '5 curl HTTP/2 failures on ilsos.gov'. URL is canonical per Illinois.gov citizen-services redirect and multiple ilsos sub-page references.",
+      "notes": "Operational landing page for the Lobbyist Registration & Expenditure Reporting System per Illinois.gov. Stage 2 should fetch with Playwright/stealth or a real-browser UA, not curl/WebFetch."
+    },
+    {
+      "url": "https://www.ilsos.gov/departments/index/lobbyist.html",
+      "role": "agency_about",
+      "reason": "WebFetch timeout (60s exceeded). Same ilsos.gov WAF behavior as other Index Department pages.",
+      "notes": "Top-level Lobbyist Activities page under the Secretary of State Index Department; the standard about-the-program page that links to registration, search, statute, and PDFs."
+    },
+    {
+      "url": "https://www.ilsos.gov/departments/index/lobbyist/lobbyist-search.html",
+      "role": "search",
+      "reason": "WebFetch timeout (60s exceeded). Same ilsos.gov WAF behavior.",
+      "notes": "Public-facing search portal page that frames/links the apps.ilsos.gov/lobbyistsearch app. Two layers of WAF (this page + the underlying app) per the historical pass."
+    },
+    {
+      "url": "https://apps.ilsos.gov/lobbyistsearch/",
+      "role": "search",
+      "reason": "WebFetch HTTP 403 — apps.ilsos.gov subdomain explicitly rejects scripted UAs (matches historical 'curl HTTP/2 failures' pattern).",
+      "notes": "The actual public Lobbyist Information Search application: search by lobbyist, client, consultants, expenditures, and type of public office, with annual filtering and partial-match. Per F Minus 2026 review the UI is usable but limited; bulk download via the data.illinois.gov mirror is the recommended path. Stage 2 needs a real browser to render."
+    },
+    {
+      "url": "https://apps.ilsos.gov/lobbyistweb/",
+      "role": "registration",
+      "reason": "WebFetch HTTP 403 — apps.ilsos.gov rejects scripted UAs.",
+      "notes": "The Illinois Lobbyist System filer-side application — login portal where authorized agents register lobbying entities and submit semi-monthly expenditure reports electronically. Likely behind an auth wall even with stealth; Stage 2 only needs the unauthenticated landing for layout capture."
+    },
+    {
+      "url": "https://www.ilsos.gov/publications/pdf_publications/ipub31.pdf",
+      "role": "user_guide",
+      "reason": "WebFetch timeout (60s exceeded) — ilsos.gov PDF host blocks WebFetch.",
+      "notes": "Illinois Lobbyist Registration Annual Registration Guide (IPub 31). Cited by the SOS lobbyist intro page; should be downloadable with a real-browser UA. Note: a /content/dam/publications/ alternate path also exists in search results — try both at Stage 2."
+    },
+    {
+      "url": "https://www.ilsos.gov/publications/pdf_publications/ipub32.pdf",
+      "role": "user_guide",
+      "reason": "WebFetch timeout (60s exceeded) — ilsos.gov PDF host blocks WebFetch.",
+      "notes": "Illinois Lobbyist Electronic Expenditure Filing Instructions (IPub 32). The functional 'data dictionary' for the expenditure report fields filers submit; valuable for Stage 2 schema mapping."
+    },
+    {
+      "url": "https://apps.ilsos.gov/ContactFormsWeb/lobbyist_contact.jsp",
+      "role": "help",
+      "reason": "WebFetch HTTP 403 — apps.ilsos.gov rejects scripted UAs.",
+      "notes": "Lobbyist Registration contact form (eLobbyist@ilsos.gov / 217-782-7017). Help/contact endpoint; not strictly required for compendium ingest but useful for Stage 2 to log as the support escalation path."
+    }
+  ],
+  "observations": "Heavy WAF on ilsos.gov and apps.ilsos.gov is unchanged from the 2026-04-13 baseline (which logged 5 curl HTTP/2 failures and salvaged 6 of 13 seeds): WebFetch hit 60s timeouts on every www.ilsos.gov page tried and HTTP 403 on every apps.ilsos.gov host. The Illinois.gov citizen-services hub and the Illinois Open Data Socrata portal both serve fine and provide the canonical bulk-download path the SOS itself points filers to. Statute is on ilga.gov (note: ilga.gov migrated from /legislation/ilcs/ilcs3.asp?... to /Legislation/ILCS/Articles?... — the older form now 404s, so any historical compendium link should be re-cited). Stage 2 must drive a stealth browser for any ilsos.gov capture; static fetchers will reproduce the historical partial-WAF state."
+}

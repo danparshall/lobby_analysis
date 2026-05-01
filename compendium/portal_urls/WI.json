@@ -1,0 +1,163 @@
+{
+  "state_abbr": "WI",
+  "discovered_at": "2026-05-01",
+  "portal_system": "Eye on Lobbying (lobbying.wi.gov, public registration/reporting/search portal) + Wisconsin Ethics Commission CMS (ethics.wi.gov, agency hub with overview, statute index, and SSRS-driven canned report endpoints)",
+  "regulator": "Wisconsin Ethics Commission",
+  "seed_urls": [
+    {
+      "url": "https://lobbying.wi.gov/Home/Welcome",
+      "role": "home",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Eye on Lobbying portal home for the 2025-2026 legislative session. Top-level surfaces: 'Who Is Lobbying?' (principals, lobbyists, agency liaisons), 'What Are They Lobbying About?' (bills, budget bill subjects, administrative rules, topics), FOCUS notification service, FAQs, Log On. No account required to search/view."
+    },
+    {
+      "url": "https://lobbying.wi.gov/Home/About",
+      "role": "landing",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "About Lobbying In Wisconsin. Covers scope (legislative + administrative + budget + admin-rule-making), licensing thresholds (single-principal $250, multi-principal $400, principal $385 / limited principal $20), 4-day exemption window, Wis. Stat. 13.67(1) 15-day reporting trigger, FOCUS subscription ($100), and the 6-month SLAE due dates (Jan 31 / Jul 31). Links to the Lobbying Users Guide PDF."
+    },
+    {
+      "url": "https://lobbying.wi.gov/Account/LogOn",
+      "role": "registration",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Log On page; the only path to register a principal, obtain/amend a lobbyist license, file 15-day notifications and 6-month SLAEs, manage FOCUS, and (for state agencies) report legislative liaisons. Public search does not require an account."
+    },
+    {
+      "url": "https://lobbying.wi.gov/Who/WhoIsLobbying",
+      "role": "search",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Who Is Lobbying hub. Four sub-searches: (1) lobbying principals, (2) licensed lobbyists, (3) state-agency legislative liaisons, (4) Changes To Lobbying Registry by date range. Session selector spans 2003-2004 through 2025-2026 (13 biennia)."
+    },
+    {
+      "url": "https://lobbying.wi.gov/Who/LobbyingRegistryChanges/2025REG/SearchByDateRange",
+      "role": "search",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Changes To Lobbying Registry, 2025-2026 session, date-range search. Default window is last 10 days. Surfaces changes to authorized lobbyists, principals, and licensed lobbyists; useful for incremental crawl / change detection."
+    },
+    {
+      "url": "https://lobbying.wi.gov/What/WhatAreTheyLobbyingAbout/2025REG",
+      "role": "report_filings",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Lobbying Activity and Expenses for the 2025-2026 session. Search bills, budget bill subjects, administrative rulemakings, and topics; surfaces overall hours and dollars per legislative matter. Also serves Total Lobbying Expenditures Reports sortable by principal, hours, and dollars in Excel and PDF (canned SSRS exports)."
+    },
+    {
+      "url": "https://lobbying.wi.gov/FAQ/FAQHome/Index?session=2025REG",
+      "role": "help",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Public FAQ for the 2025-2026 session. Covers registration/licensing thresholds (5+ days of communication in any 6-month window triggers licensing), fees, training/compliance, time tracking, 15-day reports, 6-month SLAEs, public search instructions, and gift/contribution restrictions ('legislators may not even accept a cup of coffee from a lobbyist')."
+    },
+    {
+      "url": "https://lobbying.wi.gov/FAQ/FAQPublic/Index",
+      "role": "help",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Session-agnostic public FAQ entry point. Same content surface as the session-scoped FAQ but with a stable URL suitable for citation."
+    },
+    {
+      "url": "https://ethics.wi.gov/Pages/Lobbying/LobbyingOverview.aspx",
+      "role": "landing",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Wisconsin Ethics Commission Lobbying Overview. Hub linking to the Eye on Lobbying portal, View Reports, Report Lobbying Activity, State Agency Liaisons, the Lobbying Users Guide, and the statute index. Cites Chapter 13 Subchapter III as the operative statute and includes the multi-year reporting deadline schedule through 2028."
+    },
+    {
+      "url": "https://ethics.wi.gov/Pages/Lobbying/ViewReports.aspx",
+      "role": "report_filings",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Agency-side View Lobbying Reports page. Describes the two report families (15-Day Reports under Wis. Stat. 13.67, and 6-month SLAEs) and points to Eye on Lobbying for browse/search. Also describes FOCUS ($100/session, daily email summaries filtered by keyword/bill/principal)."
+    },
+    {
+      "url": "https://ethics.wi.gov/Resources/Lobbying%20Users%20Guide%2007192022.pdf",
+      "role": "user_guide",
+      "http_status": 200,
+      "content_type": "application/pdf",
+      "verified_via": "WebFetch",
+      "notes": "Lobbying Users Guide PDF (rev. 2022-07-19, 2.4 MB). Linked from the lobbying.wi.gov About page as the canonical user guide; orients principals and lobbyists to registration, licensing, and reporting workflows on the Eye on Lobbying portal."
+    },
+    {
+      "url": "https://ethics.wi.gov/Pages/Resources/StatutesAndRules.aspx",
+      "role": "data_dictionary",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Index of statutes and admin rules administered by the Ethics Commission. The schema-of-record for lobbying disclosure: Chapter 11 (Campaign Finance), Chapter 13 Subchapter III (Lobbying), Chapter 19 Subchapter III (Code of Ethics), and Admin Code Chapter ETH 16 (Lobbying). Use this page to enumerate the canonical legal definitions backing the disclosure data model."
+    },
+    {
+      "url": "https://docs.legis.wisconsin.gov/statutes/statutes/13/iii",
+      "role": "statute",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Wisconsin Statutes Chapter 13 Subchapter III 'Regulation of Lobbying' (canonical state-source citation; statute body extraction handled separately via Justia per project SSOT policy). Sections include 13.61 (purpose), 13.62 (definitions), 13.621 (exemptions), 13.625 (prohibited practices), 13.63-13.695 (licensing, registration, statements, enforcement). 13.685 specifically codifies Ethics Commission duties (forms, accounting manual, statement examination, topic definitions)."
+    },
+    {
+      "url": "http://docs.legis.wisconsin.gov/code/admin_code/eth/16",
+      "role": "statute",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Wis. Admin. Code Chapter ETH 16 'Lobbying' — implementing rules. Sections: 16.02 (hospitality defined), 16.03 (topic of a lobbying communication, including the controlled vocabulary of subject categories used in 'What Are They Lobbying About'), 16.04 (proposed administrative rule number), 16.05 (voluntary lobbyist home address disclosure). ETH 16.03's category list is effectively the topic-code dictionary for the disclosure system."
+    },
+    {
+      "url": "https://ethics.wi.gov/Pages/AboutUs/AboutEthicsCommission.aspx",
+      "role": "agency_about",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "About the Wisconsin Ethics Commission. Created by 2015 Wis. Act 118, replacing the Government Accountability Board on 2016-06-30. Six commissioners (2 gubernatorial appointees, 1 each from Senate President, Senate Majority Leader, Assembly Speaker, Assembly Minority Leader). Statutory duties at Wis. Stat. 11.1304, 13.685, 19.48. Nonpartisan staff led by a Senate-confirmed Administrator."
+    },
+    {
+      "url": "https://ethics.wi.gov/Pages/AboutUs/ContactUs.aspx",
+      "role": "agency_about",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Ethics Commission contact info. Lobbying-specific email: ETHLobbying@wi.gov; phone (608) 266-8123; fax (608) 264-9319; PO Box 7125, Madison, WI 53707-7125; physical office at 101 E. Wilson Street, Suite 127, Madison (DOA Building); M-F 8:00-4:30."
+    }
+  ],
+  "flagged": [
+    {
+      "url": "https://lobbying.wi.gov/Reports/Report.aspx?ReportPath=/Ethics/Lobbying/RptPublic&ReportName=DirectoryOfLicensedLobbyistsFlat&SessionID=2025REG&SessionStartYear=2025&SessionEndYear=2026&OutputFormat=Excel",
+      "role": "bulk_download",
+      "reason": "SSRS endpoint returns 'Failed call to SSRSAgent.GetReportList()' under WebFetch UA",
+      "notes": "Canonical session-scoped Excel export of the Directory of Licensed Lobbyists, generated server-side by SSRS. The URL pattern is the right one (matches Google-indexed result titles), but the SSRS handler is sensitive to UA / session cookie / Referer and currently 500s under WebFetch. Stage 2 should retry with a real Chrome UA + warmup GET on lobbying.wi.gov/Home/Welcome (to seed cookies) before hitting /Reports/Report.aspx; alternatively use Playwright. Sister endpoints exist with the same shape: ReportName=DirectoryOfRegisteredLobbyingOrganizations, DirectoryOfStateAgencyLiasons (sic), and OutputFormat=PDF|Excel."
+    },
+    {
+      "url": "https://lobbying.wi.gov/Reports/Report.aspx?ReportPath=/Ethics/Lobbying/RptPublic&ReportName=DirectoryOfRegisteredLobbyingOrganizations&SessionID=2025REG&SessionStartYear=2025&SessionEndYear=2026&OutputFormat=PDF",
+      "role": "bulk_download",
+      "reason": "Same SSRSAgent.GetReportList() failure as the licensed-lobbyists Excel export",
+      "notes": "Canonical PDF of the 2025-2026 Directory of Registered Lobbying Organizations. Confirmed real (Google-indexed page title matches). Same WebFetch-vs-SSRS issue; Stage 2 needs a session-cookied Chrome request or Playwright."
+    },
+    {
+      "url": "https://ethics.wi.gov/Pages/Lobbying/StateAgencyLiaisons.aspx",
+      "role": "report_filings",
+      "reason": "404 under WebFetch — link target on ethics.wi.gov nav menu but the .aspx path may have been renamed",
+      "notes": "Listed on the Ethics Commission home-page nav under Lobbying > State Agency Liaisons but returns 404. Equivalent content is reachable via the Eye on Lobbying 'Who Is Lobbying' search (legislative-liaison sub-search) and via the SSRS DirectoryOfStateAgencyLiasons report endpoint. Worth a manual check at next pass — might just be a typo in nav vs filesystem."
+    },
+    {
+      "url": "https://ethics.wi.gov/Pages/Lobbying/ReportLobbyingActivity.aspx",
+      "role": "registration",
+      "reason": "404 under WebFetch — also linked from the ethics.wi.gov nav menu",
+      "notes": "Nav link 'Report Lobbying Activity' under Lobbying section. Returns 404; canonical filing path is the lobbying.wi.gov Account/LogOn flow (already in seed_urls). Flag retained so Stage 2 doesn't rediscover it as a mystery 404."
+    }
+  ],
+  "observations": "Wisconsin remains a clean two-host system: Eye on Lobbying (lobbying.wi.gov) is the live transactional + public-search portal for the 2025-2026 session and back to 2003-2004; ethics.wi.gov is the Ethics Commission CMS that wraps the portal with overview, statute index, user guide PDF, and agency metadata. 16 verified seeds vs 11 in the 2026-04-13 baseline; the additions are the session-scoped Changes-To-Registry surface, the Eye on Lobbying public FAQ at both session-scoped and stable URLs, the Admin Code ETH 16 chapter (which contains the topic-code controlled vocabulary at ETH 16.03 — useful as an effective data dictionary), and split agency-about (About + Contact). Two structural gotchas to surface for Stage 2: (1) the SSRS canned-report endpoints under /Reports/Report.aspx are the only true bulk-download surface and they need a real-browser session (cookie + UA) — they 500 under WebFetch but Google has them indexed by title, so they're real. The correct ReportPath is '/Ethics/Lobbying/RptPublic' (not 'Public' as some older URLs show). (2) Two ethics.wi.gov nav links (StateAgencyLiaisons.aspx, ReportLobbyingActivity.aspx) 404; the underlying functionality lives on lobbying.wi.gov. Statute citation is unchanged from prior years: Wis. Stat. Chapter 13 Subchapter III (sections 13.61 - 13.695), with Ethics Commission duties at 13.685 and the implementing rules at Admin Code ETH 16. No WAF/Cloudflare blocks observed on either host."
+}

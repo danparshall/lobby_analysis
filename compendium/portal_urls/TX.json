@@ -1,0 +1,157 @@
+{
+  "state_abbr": "TX",
+  "discovered_at": "2026-05-01",
+  "portal_system": "TEC Lobby Filing & Search System (public search at ethics.state.tx.us; e-filer at prd.tecprd.ethicsefile.com / TECFilerWeb)",
+  "regulator": "Texas Ethics Commission (TEC)",
+  "seed_urls": [
+    {
+      "url": "https://www.ethics.state.tx.us/",
+      "role": "home",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "TEC top-level home; primary nav: Resources, Opinions/Statutes/Rules, Filing Reports, Training, Forms/Instructions, Search. ethics.state.tx.us is still the live public-facing host as of 2026-05-01 (the parallel ethics.texas.gov host returns 401 across the paths probed in this pass — see flagged)."
+    },
+    {
+      "url": "https://www.ethics.state.tx.us/about/",
+      "role": "agency_about",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "About TEC; 8-member commission established by 1991 constitutional amendment (Article III, Section 24a). Chair Chris Flood, Vice Chair Patrick W. Mizell as of 2026-05-01."
+    },
+    {
+      "url": "https://www.ethics.state.tx.us/search/lobby/",
+      "role": "search",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Lobby search hub; routes to Registration Reports search, Activities Reports search, year-by-year static lists (1999-2030), and the bulk CSV ZIP. Lobby registrations searchable from 1998; activities reports from 2000."
+    },
+    {
+      "url": "https://www.ethics.state.tx.us/search/lobby/LobbySimpleSearch.php",
+      "role": "search",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "TEC Lobby Registration Reports search form; fields: Lobbyist Name, Client Name, Compensation (code or amount), Filer ID, Subject Matter (extensive dropdown), City, ZIP, Year, optional Include Client Information."
+    },
+    {
+      "url": "https://www.ethics.state.tx.us/search/lobby/LobbyLASearch.php",
+      "role": "search",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "TEC Lobby Activity Reports search form; filters by Lobbyist (Last/First/ID), Year, Report Number, Expenditure Categories (Transportation/Lodging, Food/Beverages, Entertainment, Gifts, Awards/Mementos, Fundraisers, Mass Media), Persons Benefitted (Senators, Representatives, other officers, staff, family, attendees), and 8 amount-range tiers."
+    },
+    {
+      "url": "https://www.ethics.state.tx.us/resources/lobby/StartEndLobby.php",
+      "role": "registration",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Start/end lobby registration walkthrough; defines lobbying as direct communication with legislative/executive branch members to influence legislation or administrative action. Compensation thresholds ($1,870/quarter for 2024+) and expenditure thresholds determine registration trigger; 5-day registration window after triggering activity. Termination requires Form TN + final activity report."
+    },
+    {
+      "url": "https://www.ethics.state.tx.us/filinginfo/lobby/LobbyRegistrationFees.php",
+      "role": "registration",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Lobby Registration Fees page; $750/year regular ($767.13 online w/ service charge), $150/year non-profit ($153.63 online) — non-profit requires ALL clients qualify under federal income-tax exemption. $600 upgrade fee to convert non-profit to regular mid-year."
+    },
+    {
+      "url": "https://www.ethics.state.tx.us/filinginfo/lobby/",
+      "role": "report_filings",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Filer-facing lobby filing-reports hub; aggregates the Lobbying-in-Texas guide, Filing Application FAQ, Filer ID request, statute/rule links, training videos, and the CSV Import File Format Verifier. Single best entry-point for filer-side instructions."
+    },
+    {
+      "url": "https://www.ethics.state.tx.us/forms/lobby/",
+      "role": "report_filings",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Lobby forms index: REG (original registration), AREG (amendment), Form LA (activity report), TN (termination), CI-CLIENT/CI-TEC (conflict of interest), FILER ID REQ-LOBBY, SECURITY-LOBBY, LEG-REL/LOB-REL (relative notices), Statement of Defense. Note: registration must be filed electronically — paper forms are reference only."
+    },
+    {
+      "url": "https://prd.tecprd.ethicsefile.com/public/lobby/public/TEC_LA_CSV.zip",
+      "role": "bulk_download",
+      "http_status": 200,
+      "content_type": "application/zip",
+      "verified_via": "WebFetch",
+      "notes": "Lobby Activities CSV bulk ZIP — MOVED HOST since 2026-04-13. Old location ethics.state.tx.us/search/lobby/TEC_LA_CSV.zip now 404s; new live URL is on the prd.tecprd.ethicsefile.com (TECFilerWeb) host. WebFetch hit 10MB content cap, confirming a real large artifact. 10 record types per the README: CoverSheetLaData, IndividualReportingData, SubjectMatterData, DocketData, TransportationData, FoodBeverageData, EntertainmentData, GiftData, AwardMementoData, EventData."
+    },
+    {
+      "url": "https://www.ethics.state.tx.us/data/search/lobby/LobbyLAR-ReadMe.txt",
+      "role": "data_dictionary",
+      "http_status": 200,
+      "content_type": "text/plain",
+      "verified_via": "WebFetch",
+      "notes": "CSV record-layout README for the TEC_LA_CSV.zip bulk export; documents flat-file architecture and field-by-field definitions for the 10 record types. Notes that most reports have been e-filed since Feb 2005; pre-2005 paper filings entered by TEC staff."
+    },
+    {
+      "url": "https://www.ethics.state.tx.us/data/resources/guides/lobby_guide.pdf",
+      "role": "user_guide",
+      "http_status": 200,
+      "content_type": "application/pdf",
+      "verified_via": "WebFetch",
+      "notes": "'Lobbying in Texas' guide PDF (~364 KB, 21 pages); the canonical narrative manual for lobbyists, referenced by the FAQ as the primary supporting document."
+    },
+    {
+      "url": "https://www.ethics.state.tx.us/resources/FAQs/FAQ_Lobby.php",
+      "role": "help",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "Lobby FAQ (15 questions): registration trigger, mandatory e-filing, fees ($750 / $150), online payment processing fees, password setup, browser compatibility, printing/confirmations, historical-report filing. Phone support 512-463-5800."
+    },
+    {
+      "url": "https://prd.tecprd.ethicsefile.com/TECFilerWeb/pages/login/statewideLogin.jsf",
+      "role": "report_filings",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "TECFilerWeb electronic filing application login; covers personal financial statements, candidate/committee campaign finance, lobbyist disclosures, party reports. Build version V4.1.0.b6ef2aab (02/13/2026) — actively maintained. This is the authoritative filer entry point for all TEC e-filings, including lobby."
+    },
+    {
+      "url": "https://www.ethics.state.tx.us/statutes/ch305.php",
+      "role": "statute",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "TEC-hosted canonical text of Tex. Gov. Code Chapter 305 (Registration of Lobbyists). Subchapter A (registration / reporting), Subchapter B (prohibited activities — false communications, contingent fees, conflicts), Subchapter C (criminal & civil penalties). This is the authoritative state-source statute page; the project's Justia pipeline handles statute body extraction separately."
+    },
+    {
+      "url": "https://www.ethics.state.tx.us/rules/commission/ch34.php",
+      "role": "statute",
+      "http_status": 200,
+      "content_type": "text/html",
+      "verified_via": "WebFetch",
+      "notes": "TEC Commission Rules Chapter 34 (Regulation of Lobbyists) — the agency-rule complement to Gov. Code Ch. 305. Subchapter A (definitions: lobby activity = direct communication + preparation), B (registration thresholds — $880/quarter expenditures, $1,760/quarter compensation as of this fetch), C (completing registration), D (activity reports + annual filing election), E (electronic filing requirements + limited exemptions)."
+    }
+  ],
+  "flagged": [
+    {
+      "url": "https://www.ethics.texas.gov/",
+      "role": "home",
+      "reason": "HTTP 401 Unauthorized via WebFetch",
+      "notes": "Parallel ethics.texas.gov hostname appears to be partially provisioned (returned 401 on /, /lobby/, /data-reports/lobby/, /data-reports/lobby/registrations/). Multiple WebSearch results surfaced ethics.texas.gov URLs as if active, but none resolved cleanly in this pass. Possible auth-walled staging environment or in-progress migration. Worth re-checking quarterly — if/when this host goes live, the seed URLs above may need to migrate."
+    },
+    {
+      "url": "https://statutes.capitol.texas.gov/Docs/GV/htm/GV.305.htm",
+      "role": "statute",
+      "reason": "Loads HTTP 200 but WebFetch sees the homepage shell, not the chapter body",
+      "notes": "Canonical Texas Legislature URL pattern for Gov. Code Ch. 305 (the authoritative legislative-branch host, parallel to TEC's own ch305.php). The base host statutes.capitol.texas.gov serves a JS/frame-rendered shell that WebFetch's HTML-to-markdown conversion cannot follow into the chapter content; URL pattern is correct and known-canonical. For statute-body extraction the project relies on the Justia pipeline; this URL is recorded as a secondary canonical reference. Re-verify with a JS-capable fetcher if a portal-snapshot Stage 2 is rerun."
+    },
+    {
+      "url": "https://www.ethics.state.tx.us/search/lobby/TEC_LA_CSV.zip",
+      "role": "bulk_download",
+      "reason": "HTTP 404 — moved host",
+      "notes": "Historical bulk-download URL (recorded in 2026-04-13 baseline) now 404s. Bulk CSV has migrated to prd.tecprd.ethicsefile.com/public/lobby/public/TEC_LA_CSV.zip (verified, included in seeds). Flagging the dead URL explicitly so any cached references in downstream code/snapshots get updated."
+    }
+  ],
+  "observations": "TX still runs the same conceptual portal as the 2026-04-13 baseline (TEC Lobby Filing & Search System), but the bulk-download endpoint has migrated from ethics.state.tx.us to the new prd.tecprd.ethicsefile.com (TECFilerWeb) host — a substantive provenance change worth flagging for any pipeline that hardcoded the old TEC_LA_CSV.zip URL. Public search, FAQ, forms, statute, and rules still live on the legacy ethics.state.tx.us host; the parallel ethics.texas.gov hostname surfaced in WebSearch results but returned 401 across every probed path, suggesting a partial / staging migration in progress. Statute coverage is doubly redundant: TEC publishes Gov. Code Ch. 305 directly (verified, included as primary), and the canonical legislative host statutes.capitol.texas.gov serves the same chapter via a JS-rendered shell (recorded as secondary, flagged for SPA rendering). 16 verified seed URLs delivered (vs. 12 in the 2026-04-13 baseline, +4 reflecting the migrated bulk endpoint, the explicit TECFilerWeb login, the rules-Ch.34 page, and the registration-fees page); 0 honest skips; 3 flagged (1 partial-migration host, 1 SPA-rendered canonical URL, 1 dead historical URL kept as a breadcrumb)."
+}

@@ -142,6 +142,24 @@ def capture_state(
     for i, seed in enumerate(spec.get("seed_urls", []), start=1):
         url = seed["url"]
         role = seed.get("role", "unknown")
+        # Skip body fetch for statute-role URLs — Justia is our operational SSOT
+        # for statute content (see lobbying_statute_urls.py); recapturing the
+        # state's own statute hosting here is redundant. We still record the URL
+        # + Stage 1 verified status as portal-accessibility metadata.
+        if role == "statute":
+            fetches.append({
+                "url": url,
+                "role": role,
+                "source": "seed",
+                "http_status": int(seed.get("http_status", 0)),
+                "content_type": seed.get("content_type", ""),
+                "bytes": 0,
+                "sha256": "",
+                "local_path": "",
+                "suspicious_challenge_stub": False,
+                "notes": "body fetch skipped: statute SSOT is Justia (lobbying_statute_urls.py)",
+            })
+            continue
         status, ct, body, err = fetch_one(url)
         is_stub = bool(body) and detect_stub(ct, body, seed.get("notes", ""))
         fname = artifact_filename(role, i, url, ct)
