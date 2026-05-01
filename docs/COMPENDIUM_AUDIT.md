@@ -21,9 +21,9 @@ This is the **durable anti-loop artifact** — every contested call is recorded 
   - Opheim 1991: 22 items
   - CPI Hired Guns 2007: 48 items
   - OpenSecrets 2022: 7 atomic items (4 main categories + 3 public-availability sub-items)
-- **Items folded into existing rows (`EXISTS`/`MERGE`):** 51
-- **Items added as new rows (`NEW`):** 22 unique new compendium rows (multiple rubrics often refer to the same new row)
-- **Items excluded (`OUT_OF_SCOPE`):** 41 (prohibitions, penalties, enforcement, revolving-door restrictions per the disclosure-only scoping reframe)
+- **Items folded into existing rows (`EXISTS`/`MERGE`):** 87 dedup-map entries across the 5 walked rubrics (one per atomic item that mapped to an existing or boolean-expression target).
+- **Items added as new rows (`NEW`):** 21 net new compendium rows from v2 (Opheim's "other influence peddling" catch-all folded into `RPT_PRINCIPAL_FINANCIAL_CONTRIBUTORS` rather than getting its own row); +2 in v1.2 (`DEF_EXPENDITURE_STANDARD`, `DEF_TIME_STANDARD`) for a cumulative **23 NEW rows**. Multiple rubrics often reference the same new row (e.g., `DEF_ADMIN_AGENCY_LOBBYING_TRIGGER` is referenced by Newmark 2017, Newmark 2005, Opheim 1991, and CPI Q1).
+- **Items excluded (`OUT_OF_SCOPE`):** 27 dedup-map entries (Newmark 2017: 5 prohibitions, Newmark 2005: 4 prohibitions, Opheim 1991: 7 enforcement, CPI Hired Guns 2007: 11, OpenSecrets 2022: 0). Categorized: 12 prohibitions + 4 penalties + 12 enforcement + 1 revolving-door + the deferred Q30 (counted separately from OOS). Some atomic items are PARTIAL — disclosure half EXISTS, restriction half OUT_OF_SCOPE — and book to a single dedup-map entry with the dominant disposition.
 - **Schema bump avoided:** `domain="definitions"` not added; definition-trigger items folded into `domain="registration"` with a `notes` flag (`"definition-trigger criterion (review for v1.2 domain='definitions' promotion)"`) per user direction. **All notes-flagged rows are listed in the Decision Log below for end-of-audit review.**
 
 ---
@@ -97,8 +97,8 @@ The 6 disclosure items are a **proper subset** of N2017's 7 (N2017 added "contri
 **Source:** `papers/Opheim_1991__state_lobby_regulation.pdf` (text at `papers/text/Opheim_1991__state_lobby_regulation.txt`)
 **Item count:** 22 (7 definitions + 8 frequency-and-quality-of-disclosure + 7 oversight/enforcement)
 **Items added as new rows:** 0
-**Items folded into existing rows:** 14
-**Items excluded:** 8
+**Items folded into existing rows:** 15
+**Items excluded:** 7
 
 Opheim is the foundational ancestor of Newmark 2005/2017 — the 7 definition items are word-for-word identical. The disclosure items significantly overlap with Newmark/PRI; the enforcement items are out of scope en bloc.
 
@@ -126,8 +126,8 @@ Opheim is the foundational ancestor of Newmark 2005/2017 — the 7 definition it
 **Source:** `papers/CPI_2007__hired_guns_methodology.pdf` (text at `papers/text/CPI_2007__hired_guns_methodology.txt`)
 **Item count:** 48 questions across 8 categories (Definition 2, Individual Registration 8, Individual Spending 15, Employer Spending 2, Electronic Filing 3, Public Access 8, Enforcement 9, Revolving Door 1)
 **Items added as new rows:** 16 (most of the row growth in this audit is from CPI)
-**Items folded into existing rows:** 22
-**Items excluded:** 10
+**Items folded into existing rows:** 21
+**Items excluded:** 11 (Q23 limit/prohibition halves and Q24 prohibition half count separately from their EXISTS-disposition disclosure halves)
 
 | Q# | Description | Disposition | Compendium row(s) | Rationale |
 |---|---|---|---|---|
@@ -247,7 +247,7 @@ OpenSecrets 2022 uses 4 high-level scored areas (each on a 5-point scale), heavi
 ### Penalties (statutory schedule, not filing data) — 4 items
 - CPI Hired Guns: Q41, Q42, Q44, Q45
 
-### Enforcement (agency authority/action, not filing data) — 14 items
+### Enforcement (agency authority/action, not filing data) — 12 items
 - Opheim 1991: enforce_review_thoroughness, enforce_subpoena_witnesses, enforce_subpoena_records, enforce_admin_hearings, enforce_admin_fines, enforce_admin_penalties, enforce_court_actions (7)
 - CPI Hired Guns: Q39, Q40, Q43, Q46, Q47 (5)
 
@@ -363,6 +363,7 @@ The anti-loop record. Each entry: decision made, why, and the alternative consid
 - **OpenSecrets's `REG_SEPARATE_LOBBYIST_CLIENT_FILINGS` stays in `registration`** under this rule — it's a filing-architecture feature, not a definitional criterion.
 - **Compendium row count:** 139 → **141** (+2 from v1.2 symmetry-gap rows). Statute-side total: **108** (up from 106; the 2 new rows are statute-side). Domain breakdown post-v1.2: 7 `definitions`, 31 `registration` (was 36; 5 promoted to definitions), 47 `reporting`, 33 `accessibility`, plus smaller domains.
 - **Tests added (TDD):** 7 new tests in `test_compendium_loader.py` enforcing the v1.2 invariants (loader accepts `definitions`, expected row IDs are present with the right domain, no rows still carry the v1.1 notes flag, every `definitions` row has a definitional framework_reference, D0 has Newmark/Opheim cross-refs, the 2 symmetry rows exist with correct dedup-map re-targeting). 24/24 compendium tests pass.
+- **Disambiguation rule for inclusion- vs exemption-framed thresholds (review addendum, 2026-05-01).** The `DEF_*_STANDARD` / `THRESHOLD_LOBBYING_*_PRESENT` row pairs initially carried overlapping descriptions: each THRESHOLD_* row claimed to capture "both inclusion- and exemption-framed framings," while each DEF_*_STANDARD row described itself as "the inclusion-framed parallel," giving the harness no rule for which row a given statute populates. Resolved by tightening descriptions: THRESHOLD_LOBBYING_EXPENDITURE_PRESENT and THRESHOLD_LOBBYING_TIME_PRESENT are now exemption-framed only; DEF_EXPENDITURE_STANDARD and DEF_TIME_STANDARD are inclusion-framed only; each row's description points to its counterpart. **Both rows in a pair populate when a state combines an inclusion trigger on one axis with an exemption carve-out on another** (e.g., "primary time on lobbying, unless expenses < $1,000" → DEF_TIME_STANDARD=true AND THRESHOLD_LOBBYING_EXPENDITURE_PRESENT=true). Same-axis statutes ("if you spend > $X you ARE a lobbyist" only) populate just the DEF_*_STANDARD row; same-axis exemption-only statutes populate just the THRESHOLD_*_PRESENT row.
 
 ### D10. CPI Q30 (electronic-filing training) deferred, not folded
 
