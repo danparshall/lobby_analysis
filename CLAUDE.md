@@ -91,6 +91,25 @@ Do these even when the user gives a specific task. You start each session with z
 - **Never merge to `main` unless the user explicitly asks.** Research lines stay on their branches until the user decides they're ready.
 - **Never make changes directly on `main`.** All work happens on a research branch.
 
+## Working in a git worktree (testing gotcha)
+
+When working under `.worktrees/<branch>/`, **do not run `uv run pytest`** — the inherited `VIRTUAL_ENV` env var points at `lobby_analysis/.venv` (main's), whose editable install resolves `lobby_analysis` and `scoring` to main's `src/`, not the worktree's. Symptom: schema/Literal/model edits you just made don't take effect in tests; `uv run python -c "..."` sees them but pytest doesn't.
+
+First time setting up a worktree's venv:
+
+```sh
+cd .worktrees/<branch>
+unset VIRTUAL_ENV && uv sync --extra dev
+```
+
+Then run tests via the worktree's own pytest binary:
+
+```sh
+.venv/bin/python -m pytest tests/
+```
+
+Worktrees should also have a `data/` symlink to the main repo's `data/` so bundles + portal snapshots resolve. The `use-worktree` skill creates this; if a worktree was made with bare `git worktree add`, add the symlink manually.
+
 ## Coding norms
 
 - YAGNI. Don't add features that weren't asked for.
