@@ -4,6 +4,9 @@
 _lobby_analysis.code-workspace
 # Heavy experiment data (snapshots, scores, statutes, state_master_records) is
 # gitignored. Curated reference data lives at repo-root `compendium/`, not under data/.
+# `data` itself is the symlink to ~/data/<REPO>/ created by use-worktree; ignore both
+# the symlink and its contents.
+/data
 data/*
 .DS_Store
 __pycache__/

@@ -15,6 +15,45 @@ Carry-forward signals from prior branches (informational, not gates):
 
 (Newest first.)
 
+### 2026-05-01 (eve → 05-02) — Issue #6: post-laptop-crash data restoration
+
+**Convo:** [`convos/20260501_eve_issue6_data_restoration.md`](convos/20260501_eve_issue6_data_restoration.md)
+**Issue:** [#6](https://github.com/danparshall/lobby_analysis/issues/6) — Rerun Justia statute pull + portal snapshots after laptop data loss
+**Result doc:** [`results/20260501_state_portal_drift.md`](results/20260501_state_portal_drift.md)
+
+#### Topics Explored
+- Inventory of what survived the pre-2026-04-30 laptop drive crash: `data/statutes/{CA/2010, TX/2009, OH/2010, OH/2025}` intact; `data/portal_snapshots/`, `data/portal_urls/`, NY/WI/WY statutes lost.
+- Stage 1 vs Stage 2 design: keep URL discovery as one-shot subagent work, replace the historical 50-parallel `curl` subagents (which produced a permissions storm) with a single deterministic Python script.
+- Permission patterns: empirically verified that `unset VIRTUAL_ENV` is no longer needed in the worktree — uv warns and ignores mismatched VIRTUAL_ENV; updated CLAUDE.md gotcha section accordingly.
+- Statute SSOT framing correction: my initial framing claimed "Justia is the statute SSOT" — pushback established that Justia is the project's *operational* SSOT (stable per-vintage URLs, programmatic), not the canonical authority (each state's own legislative codification).
+
+#### Provisional Findings
+- 3 missing statutes (NY/WI/WY) fetched cleanly via the existing `retrieve-statutes` orchestrator — no infra changes needed.
+- 8 of 50 states cover the README's "5–8 priority" scope (CA + CO/NY/WA/TX/WI/IL/FL); all 8 captured at 2026-05-01, ~144 MB total disk.
+- 18-day Stage 1 re-discovery surfaced substantive drift in 5 of 8 portals (CA: CARS rollout date; CO: hostname shift; NY: JCOPE → COELIG transition; WA: RCW recodification to Title 29B; TX: bulk ZIP migration). See `results/20260501_state_portal_drift.md`.
+- IL's WAF posture (every `ilsos.gov` host blocks WebFetch) appears unchanged from the historical pass — Stage 2 reproduces the partial-capture state without Playwright.
+- The `compendium/portal_urls/<ABBR>.json` files are now committed at the repo-root locked-contract location (alongside the compendium CSVs), not the gitignored `data/portal_urls/` location of the original — so the next laptop crash can't take them out.
+
+#### Decisions
+- Stage 2 implementation: deterministic Python script (`src/scoring/portal_snapshot.py`) + `cmd_capture_snapshots` orchestrator subcommand.
+- Stage 1 dispatch: one foreground subagent at a time (sequential), not parallel.
+- Body cap: 100 MB streaming cap per artifact (matches historical pragmatic behavior on CA's 650 MB CalAccess ZIP).
+- `statute`-role URLs: record metadata, skip body fetch — Justia is the operational SSOT for content; the state's own statute hosting is portal-accessibility metadata, not content.
+- `SNAPSHOT_DATE_DEFAULT` bumped 2026-04-13 → 2026-05-01.
+- Scope cap: 8 priority states this session; remaining 42 are deferred (script + orchestrator handle scale-out without further architectural work).
+
+#### Commits (this session)
+- `6673d99` — portal-snapshot Stage 2 script + CA capture (initial CA Stage 1 + manifest, `SNAPSHOT_DATE_DEFAULT` bump, worktree gotcha doc fix, 8 unit tests).
+- `d9be039` — Stage 1 JSONs for 7 priority states (CO/NY/WA/TX/WI/IL/FL) + statute-role body skip + framing docstring on `lobbying_statute_urls.py`.
+
+Tests: 337/337 green throughout. The 3 previously failing `tests/test_pipeline.py` tests are unblocked by the fresh CA snapshot.
+
+#### Next Steps
+- **GH issue #6 status:** infrastructure restored; 8 of 50 states captured. Open question: close the issue (priority-state coverage achieved) or leave open with a comment noting the remaining 42 states as deferred work.
+- The other 42 states are "more of the same" — script and dispatch loop work, no architectural blockers.
+- WI's SSRS endpoints, FL's SPA-shell stubs, IL's WAF-blocked apps remain structural gaps that would need a Playwright Stage 3 pass (out of scope for this session).
+- FL's `dl_data.cfm` timestamps frozen at 12/31/2014 needs a HEAD-check follow-up (flagged in FL.json observations).
+
 ### 2026-05-01 (pm) — Phases 0–3 implemented + iter-1 dispatched (3 runs) + iter-2 prep
 
 **Convo:** [`convos/20260501_pm_phases_0_3_iter1_dispatch.md`](convos/20260501_pm_phases_0_3_iter1_dispatch.md)
