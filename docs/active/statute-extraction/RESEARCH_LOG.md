@@ -15,6 +15,48 @@ Carry-forward signals from prior branches (informational, not gates):
 
 (Newest first.)
 
+### 2026-05-02 — Compendium Audit v3 brainstorm + Phase 0 plan
+
+**Convo:** [`convos/20260502_compendium_audit_v3_brainstorm.md`](convos/20260502_compendium_audit_v3_brainstorm.md)
+**Plan produced:** [`plans/20260502_compendium_item_audit_v3_phase0.md`](plans/20260502_compendium_item_audit_v3_phase0.md)
+**Spawning artifact:** [`plans/_handoffs/20260501_compendium_item_audit_handoff.md`](plans/_handoffs/20260501_compendium_item_audit_handoff.md)
+
+#### Topics Explored
+
+- Whether the iter-1-surfaced curation gap (`DEF_ADMIN_AGENCY_LOBBYING_TRIGGER` axis ambiguity) justifies a 141-row sweep — pressure-tested the handoff thesis that compendium-side disambiguation must be authoritative because consistent-but-wrong rows give no inter-run-disagreement signal.
+- Schema-axis-field tradeoff (Option 1 v1.4 schema bump vs Option 2 descriptions+rename vs Option 3 free-form `tags` field). Rejected Option 1 because axis taxonomy is per-domain not global; Option 3 defers the decision rather than makes it.
+- Axis-in-ID convention: `<DOMAIN>_<SUBJECT>_<AXIS>_<SPECIFIER>` (e.g., `DEF_LOBBYING_TARGET_ADMIN_AGENCIES`) as user-proposed refinement of Option 2 — gives most of Option 1's machine-readability without the schema bump.
+- Audit sequencing: per-domain (smallest first, `definitions` as canary) vs full-sweep first. Chose full-sweep so cross-domain patterns inform per-domain axis vocabulary harmonization rather than locking `definitions`'s axes prematurely.
+- Three-phase decoupling (P0 concerns sweep → P1 solution design → P2 apply fixes in batches). Separates concern-finding from solution-design as distinct cognitive tasks.
+- Concerns-doc tag taxonomy: 8 starting-point tags including `other-issue` escape hatch. Severity field considered then dropped — Phase 1's grouping pass produces cluster-level prioritization signal naturally.
+- One-plan vs staged-plan flow. Chose staged: ship Phase 0 plan only this session; Phase 1's plan written *after* concerns doc lands so its design is informed by Phase 0's findings.
+
+#### Provisional Findings
+
+- The latent-axis-bug rate is unknown (iter-1 evidence is N=1 by accident). Phase 0's full sweep is itself the population estimate; the audit is cheap enough that doing it tells us more than guessing.
+- Axis vocabulary is genuinely per-domain — `definitions` uses {target, actor, threshold (quant + qual)}; `reporting`, `contact_log`, etc. will use different sets. A global axis enum would be lossy or incoherent; per-domain natural-language vocabularies (in chunk-frame preambles + IDs) are the right structure.
+- Rename cascade per fix is non-trivial (tests + dedup-map + prior run dirs + chunk-frame preambles + `.py` source). Phase 1 must include cascade-cost methodology so Phase 2's batching is informed.
+- The v2 audit's Decision Log (D1–D11 in `docs/COMPENDIUM_AUDIT.md`) is the procedural template — v3 continues numbering at D12+ (in Phase 1, not Phase 0).
+
+#### Decisions
+
+| topic | decision |
+|---|---|
+| Strategy | Option 2: descriptions + axis-in-ID renames; **no schema-axis-field**. Future evidence may reopen as v1.5 if needed |
+| ID convention | `<DOMAIN>_<SUBJECT>_<AXIS>_<SPECIFIER>` where axis applies; absence permitted for axis-less rows |
+| Audit flow | Three phases: P0 concerns sweep (full 141 rows) → P1 solution design → P2 apply fixes in batches |
+| Sweep scope | Full 141 rows up front; cross-domain patterns inform per-domain axis vocabulary harmonization |
+| Plan staging | Ship P0 plan only this session; P1 plan written after concerns doc exists; P0 plan has "Follow-up stages" footer |
+| Concerns-doc tags | 8 starting-point tags including `other-issue` escape hatch; severity field dropped |
+| Confidence field | Concerns table includes `confidence: high\|medium\|low` per concern (resolved at plan-acceptance) |
+| Spot-check | Folded into P0 (full sweep is the spot-check at scale); no separate 5–10-row deliverable |
+| Schema recommendation | Standing answer: Option 2 stands; v3 doesn't reopen unless P0 surfaces evidence-of-need |
+| Phase 0 execution | Hand off to a fresh agent for context-budget + plan-as-contract + independence reasons |
+
+#### Next Steps
+
+Spawn a fresh general-purpose agent against the Phase 0 plan to execute the 141-row concerns sweep. Output: `results/20260502_compendium_audit_concerns.md` (or sweep-date filename if execution slips). Once that lands, write the Phase 1 plan (solution design) informed by what the concerns doc actually shows. Phase 0 execution is independent of the iter-2/iter-3 harness work — both can proceed in parallel, since Phase 0 only reads the compendium.
+
 ### 2026-05-01 (eve → 05-02) — Issue #6: post-laptop-crash data restoration
 
 **Convo:** [`convos/20260501_eve_issue6_data_restoration.md`](convos/20260501_eve_issue6_data_restoration.md)
