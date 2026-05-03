@@ -1,6 +1,8 @@
 # lobby_analysis
 
-**US State Lobbying Data LLM Pipeline** — open-source infrastructure to make state-level lobbying disclosure data usable as an up-to-date input for democracy measurement.
+**LobbyView, for all 50 states.**
+
+`lobby_analysis` is open-source infrastructure to make state-level lobbying disclosure data usable as an up-to-date input for democracy measurement — filling the state-side gap that LobbyView (MIT, federal-LDA only) and OpenSecrets (federal-only / 31-state summary scorecard) leave open.
 
 Group project of the **Corda Democracy Fellowship**. Project lead: Suhan Kacholia (Co-Founder, Analogy Group). Multiple fellows contribute to this repo.
 

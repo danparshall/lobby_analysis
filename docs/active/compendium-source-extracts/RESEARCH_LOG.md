@@ -16,6 +16,62 @@ Carry-forward signals (informational, not gates):
 
 (Newest first.)
 
+### 2026-05-03 — Per-paper extraction execution
+
+**Convo:** [`convos/20260503_per_paper_extraction_execution.md`](convos/20260503_per_paper_extraction_execution.md)
+**Spawning artifact:** the locked plan at [`plans/20260502_per_paper_source_extraction.md`](plans/20260502_per_paper_source_extraction.md)
+
+#### Topics Explored
+
+- Plan modifications at session start: no template-first; predecessor citation-collection + download wave before extraction; README headline → "LobbyView for 50 states".
+- Citation-collectors against FOCAL 2024 (26 entries) and Newmark 2017 (25 entries) → deduplicated download-target list ~37 candidates.
+- Predecessor-paper download wave: 17 retrieved (14 PDFs + 2 HTML + 1 text), 3 verified-on-disk, 13 paywalled, 1 not-found, 3 books.
+- User author-page hunt round 1: 5 additional papers retrieved (Strickland 2014, Mihut 2008, Chung 2024, LaPira & Thomas 2014, CPI 2015 SII Kusnetz article).
+- Test set of 3 extractions (Opheim 1991, CPI Hired Guns 2007, Sunlight 2015) → format validated across three rubric shapes.
+- Wave 1+2+3a+3b: 23 more papers extracted in parallel batches of ~6.
+- 26 papers extracted total. All TSV+MD pairs at `results/items_<Paper>.{tsv,md}`.
+
+#### Provisional Findings
+
+- **BoS-tradition runs deeper than expected.** 5 of 26 papers are pure secondary-source-coding rather than own statute reading: Opheim 1991 (21/22 BoS-defined), Newmark 2005 (18/18 = 100% BoS-defined), Newmark 2017 (hybrid: BoS structure / paper-coded values), Strickland 2014 (extends Newmark with COGEL Blue Books + State Capital Law Firm Group handbook), Flavin 2015 (uses Newmark unchanged). Operational definitions live in CSG / COGEL / State Capital reference works, not the papers themselves.
+- **Many "predecessors" are not rubrics.** Only ~13 of 26 are independent measurement instruments. Rest split into empirical applications (Strickland, Flavin, Chung, Mihut), survey studies (Hogan/Murphy/Chari 2008), subset-displays of multiple rubrics (Bednařová), construct-defining work (LaPira & Thomas 2014), federal-data infrastructure (Kim 2018), methodological scoping reviews (Lacy-Nichols 2023), empirical evaluations (McKay & Wozniak 2020).
+- **FOCAL Table 2 is not authoritative on category structure.** Right (10): Opheim, Newmark 2017, Hired Guns, FOCAL self, ALTER-EU, AccessInfo, IBAC, GDB-within-scope, CoE (within tolerance), SOMO. Wrong (3): Newmark 2005 (3 vs 4 categories), Carnstone 2020 (FOCAL conflated with Roth — wrong category labels + wrong count), TI 2016 ("methodological touchstone" overstates a 4-bullet TI-UK lens). Not-a-rubric (3): Bednařová, Hogan/Murphy/Chari, Kim 2018.
+- **FOCAL 2024 is unweighted.** 50-indicator checklist; all `scoring_rule = "Not specified"`. Authors flag weighting as future Delphi work. Gives compendium-2.0 the field universe but not the grading rubric.
+- **Federal-vs-state cross-walk gap is consistent across federal-data papers** (Kim 2018, Chung 2024, LaPira & Thomas 2014). Federal-only infrastructure (single LDA statute, canonical bill IDs, CRS bill database, LegiStorm, CQ First Street, CRP, SOPR, Compustat) is what makes federal lobbying analysis tractable. State equivalents don't exist. README's "LobbyView for 50 states" framing names exactly this gap. LaPira & Thomas: LDA self-reporting captures only 29.7% of the 51.7% verified revolving-door rate.
+- **CDoH parallel measurement universe.** Lacy-Nichols 2023 cites 7 frameworks from public-health discipline with **zero overlap** with FOCAL 2024's 15 reviewed: Mialon 2015, Savell 2014 (CPA), Ulucanlar 2016 (Policy Dystopia), Madureira Lima 2019 (CPI), Allen 2022 (CFII), Lee 2022 (CDoH Index), OECD 2021. Different lens (corporate-actor side vs regulatory-disclosure side).
+
+#### Decisions
+
+| topic | decision |
+|---|---|
+| Plan modifications | No template-first; predecessor citation + download before extraction; README headline → "LobbyView for 50 states" |
+| Extraction scope | 26 papers extracted = 7 originals + 14 retrieved predecessors + 5 author-hunt-round-1. Federal trio (LaPira 2020, GAO 2025) deferred. Roth 2020 deferred (text-only summary). Newmark & Vaughan 2014 dropped (not lobbying). Lacy-Nichols 2025 skipped (FOCAL application) |
+| New acquisition list | Task #11 expanded: CSG Blue Book + BoS volumes + COGEL Blue Books + State Capital handbook; CII methodology source; GDB Research Handbook; TI-UK open-data rubric; Piotrowski & Liao 2012; Keeling et al. 2017; Chari/Murphy/Hogan 2007 PQ; CDoH 7-framework corpus; new candidates from extraction lit reviews (Pross 2007, Chari & Murphy 2006, Malone 2004, Hamm/Weber/Anderson 1994, Brasher/Lowery/Gray 1999, Lowery & Gray 1993/1994/1996 vintages, LaPira 2016, Rosenthal 2001) |
+| Email-authors list | Task #10 maintained: post-2000 still-missing papers (Witko 2005/2007, Ozymy 2010/2013, Laboutková & Vymětal 2022/23, Vaughan & Newmark 2008, Roth 2020 thesis, plus Chari/Murphy/Hogan 2007 PQ ask) |
+| Compendium-2.0 design | Still deferred. Not part of this session. User reviews the 26 extracts personally before design begins |
+
+#### Mistakes recorded
+
+1. **Working-directory confusion** — assistant's bash cwd was the main worktree rather than `compendium-source-extracts/` for several commands mid-session. Caused 5 PDFs to land in main's `papers/` instead of the worktree's. Recovered by copying across, but should have used absolute paths from the start.
+2. **Spec error on Sunlight 2015** — prompt told the agent "Sunlight uses 4-tier ordinal scales per indicator." Wrong; only 2/5 are 4-tier, 1 is 5-tier, 2 are 2-tier. Agent caught the error and captured actual structure verbatim.
+3. **CPI Hired Guns path inaccuracy** in agent prompt — recovered fine.
+4. **`papers/extracts/` stray artifacts from prior session** — never cleaned up; still untracked, not committed.
+
+#### Results
+
+- 3 predecessor / manifest docs at `results/predecessors_FOCAL_2024.md`, `results/predecessors_Newmark_2017.md`, `results/predecessor_download_manifest.md`.
+- 26 per-paper extracts at `results/items_*.{tsv,md}`.
+
+#### Next Steps
+
+- User reviews the 26 TSV+MD pairs.
+- Compendium-2.0 design plan (separate plan, after review).
+- Task #10: email-authors flow for missing post-2000 papers.
+- Task #11: CSG Blue Book + Book of States + COGEL Blue Books + State Capital handbook acquisition (likely via Adam Newmark contact + library/HathiTrust hunt).
+- Optional: CDoH-corpus expansion (7 frameworks); federal-extension extracts (LaPira 2020 / GAO 2025).
+
+---
+
 ### 2026-05-02 (pm) — Branch creation + per-paper extraction plan
 
 **Convo:** [`convos/20260502_pm_compendium_rebuild_pivot.md`](convos/20260502_pm_compendium_rebuild_pivot.md)
