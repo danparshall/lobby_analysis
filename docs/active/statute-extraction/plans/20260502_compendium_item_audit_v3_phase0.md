@@ -10,7 +10,9 @@
 
 **Confidence:** Exploratory. The latent-axis-bug rate is N=1 by accident. Phase 0 *is* the population estimate. The 8-tag taxonomy locked in this plan is starting-point posture; Phase 1 may split, merge, or rename tags after seeing the distribution.
 
-**Architecture:** Pure analysis task. No code changes, no schema changes. Auditor reads source rubrics in `papers/text/` per the row's `framework_references` (resolved via `compendium/framework_dedup_map.csv`), evaluates each row against five criteria, and writes a structured Markdown concerns doc to `results/`. The concerns doc is the sole Phase 0 deliverable.
+**Audit is run twice.** The full 141-row sweep is executed by two independent fresh-context agents producing two concerns docs (`*_compendium_audit_concerns_run1.md` and `*_run2.md`). A third reconciliation step diffs the two and produces the canonical concerns doc (`*_compendium_audit_concerns.md`) plus a short reconciliation note recording where the two runs disagreed and how the canonical doc resolved each disagreement. Rationale: Phase 0's job is to give Phase 1 a high-signal input; a second independent pass is cheap insurance against false-positive concerns polluting Phase 1's pattern-detection. Two runs also surface auditor-judgment-call boundaries (e.g., `axis-ambiguous-name` vs `name-misleading`) that single-run Phase 0 would silently lock in.
+
+**Architecture:** Pure analysis task. No code changes, no schema changes. Auditor reads source rubrics in `papers/text/` per the row's `framework_references` (resolved via `compendium/framework_dedup_map.csv`), evaluates each row against five criteria, and writes a structured Markdown concerns doc to `results/`. Phase 0 deliverables are: two `*_runN.md` + two `*_runN.csv` (one per auditor) + a canonical `*.md` + canonical `.csv` + a reconciliation note.
 
 **Branch:** `statute-extraction` (worktree: `/Users/dan/code/lobby_analysis/.worktrees/statute-extraction/`).
 
@@ -70,10 +72,13 @@ For each row, the auditor records every concern that applies. A row may have zer
 2. For each `framework_reference` on the row, look up the rubric item in `compendium/framework_dedup_map.csv` (per-rubric audit trail), then in the source paper text under `papers/text/<paper>.txt`.
 3. Compare: does the description capture the rubric items' question, or has it drifted (broader, narrower, or differently-scoped)?
 
-**Tags:**
-- `description-rubric-drift` — description says X, source rubric items asked Y; X ≠ Y in a way that affects extraction.
+**Tags (subdivided — pick the most specific that fits):**
+- `description-broader-than-rubric` — description's scope is wider than what the source rubric items asked (e.g., rubric asked about lobbyist compensation, description extends to all employee compensation).
+- `description-narrower-than-rubric` — description's scope is narrower than what the rubric items asked (e.g., rubric asked about all financial reporting, description limits to expenditure only).
+- `description-misscoped` — description and rubric items address different-but-overlapping subjects; not a pure broader/narrower relationship (e.g., rubric asked about reporting cadence, description addresses reporting trigger).
+- `rubric-source-ambiguous` — the source rubric item *itself* is ambiguous in the paper text; description fidelity can't be cleanly evaluated. Record evidence; defer resolution to Phase 1; don't reinterpret the paper.
 
-**Edge case — source rubric ambiguity.** If the rubric item *itself* is ambiguous (the paper's wording is unclear), flag as `description-rubric-drift` with evidence noting "rubric-side ambiguity, not curation error" — defer the resolution to Phase 1, but record the observation. Don't try to reinterpret the paper.
+**Why subdivided.** The starting taxonomy lumped all four into `description-rubric-drift`, but each implies a different Phase 1 fix shape: broader → tighten description, narrower → loosen or split, misscoped → likely rewrite + possibly split, ambiguous → re-read paper or escalate. Phase 1's pattern-detection needs them separated; lumping hides which fix-shape dominates.
 
 **Edge case — empty `framework_references`.** A row with no source rubric items can't be C2-evaluated. Tag as `other-issue` with note "missing framework_references — curation gap from v2 audit".
 
@@ -135,31 +140,24 @@ Output: `docs/active/statute-extraction/results/<SWEEP_DATE>_compendium_audit_co
 
 ## 1. Concerns
 
-| # | row_id | criterion | tag | confidence | evidence | note |
-|---|---|---|---|---|---|---|
-| 1 | DEF_ADMIN_AGENCY_LOBBYING_TRIGGER | C1 | axis-ambiguous-name | high | name says "trigger"; description says "contact with administrative... agencies as a registration trigger" — target-axis. ID could read as actor-axis. | reference example from iter-1 |
-| 2 | ... | ... | ... | ... | ... | ... |
+| # | row_id | criterion | tag | evidence | note |
+|---|---|---|---|---|---|
+| 1 | DEF_ADMIN_AGENCY_LOBBYING_TRIGGER | C1 | axis-ambiguous-name | name says "trigger"; description says "contact with administrative... agencies as a registration trigger" — target-axis. ID could read as actor-axis. | reference example from iter-1 |
+| 2 | ... | ... | ... | ... | ... |
 
-(One row per concern. A row with N concerns appears N times here.)
+(One row per concern. A row with N concerns appears N times here. This table is canonical; per-row coverage is derived from it — a compendium row with no entries here is implicitly "ok" on every criterion.)
 
-## 2. Per-row coverage
-
-| row_id | C1 | C2 | C3 | C4 | C5 | concern_count | notes |
-|---|---|---|---|---|---|---|---|
-| DEF_ADMIN_AGENCY_LOBBYING_TRIGGER | flag | ok | ok | flag | ok | 2 | — |
-| DEF_PUBLIC_EMPLOYEE_AS_LOBBYIST | ok | ok | ok | ok | ok | 0 | — |
-| ... | | | | | | | |
-
-(One row per compendium row. `flag` / `ok` / `n/a` per criterion. "n/a" means the criterion doesn't apply — e.g., C1 on an axis-less enforcement row.)
-
-## 3. Aggregate counts
+## 2. Aggregate counts
 
 ### By tag
 | tag | count |
 |---|---|
 | axis-ambiguous-name | N |
 | name-misleading | N |
-| description-rubric-drift | N |
+| description-broader-than-rubric | N |
+| description-narrower-than-rubric | N |
+| description-misscoped | N |
+| rubric-source-ambiguous | N |
 | cluster-asks-two-questions | N |
 | cross-row-overlap | N |
 | wrong-domain | N |
@@ -180,31 +178,42 @@ Output: `docs/active/statute-extraction/results/<SWEEP_DATE>_compendium_audit_co
 | 2 | M |
 | 3+ | M |
 
-## 4. Observed candidate axis vocabularies (informational, not locked)
+## 3. Observed candidate axis vocabularies (informational, not locked)
 
 For each domain, list the axes that appeared in C1 flags. Phase 1 uses this as input to the per-domain vocabulary lock; Phase 0 does not lock.
 
-## 5. Notable patterns flagged for Phase 1
+## 4. Notable patterns flagged for Phase 1
 
 5–10 free-text observations the auditor wants Phase 1 to engage with first. E.g., "All 7 `definitions` rows whose description mentions 'lobbying' need axis-in-ID encoding"; "3 rows reference rubric items that don't appear in `papers/text/<paper>.txt` — cross-check needed".
 ```
 
 The "5 notable patterns" section satisfies the spawning handoff's "first 5–10 highest-confidence issues" deliverable, surfaced inside the same concerns doc rather than as a separate artifact.
 
+A companion CSV `<SWEEP_DATE>_compendium_audit_concerns.csv` is also produced from the canonical Concerns table (same columns) so Phase 1 can sort/filter/group programmatically without re-parsing markdown.
+
 ---
 
 ## Sequencing within Phase 0
 
-A single agent can run Phase 0 end-to-end in one session (target ≤4 hours wall time given 141 rows × five criteria + paper lookups). Suggested order:
+Phase 0 runs the full sweep **twice** with two independent fresh-context agents, then a third reconciliation step produces the canonical concerns doc. The two auditor agents are dispatched **in parallel** (single message, two `Agent` tool uses), each pointed at this plan with their respective `runN` output filenames. Agents do not see each other's output until reconciliation. Each individual run follows the steps below.
+
+### Per-run sequence (run 1, run 2)
 
 1. **Pre-flight reads** (per Nori workflow): `CLAUDE.md`, `STATUS.md`, `README.md`, this branch's `RESEARCH_LOG.md`, the spawning convo, this plan, `docs/COMPENDIUM_AUDIT.md`, `results/iter-1_analysis.md`.
 2. **Load source data**: `compendium/disclosure_items.csv`, `compendium/framework_dedup_map.csv`, `src/lobby_analysis/models/compendium.py` (for the `CompendiumDomain` Literal), `src/scoring/chunk_frames/definitions.md` (for the iter-2 axis vocabulary precedent).
-3. **First pass — C1 + C5 (cheap, ID-only + description-only)**: walk all 141 rows; record `axis-ambiguous-name` / `name-misleading` / `wrong-domain` flags. No paper lookups yet. Aim ~1 minute per row.
-4. **Second pass — C2 + C3 (expensive, paper lookups)**: walk all 141 rows; for each, resolve `framework_references` to source rubric items and check fidelity + cohesion. Aim ~2 minutes per row.
-5. **Third pass — C4 (cross-row scans)**: scan within each domain for scope overlaps; cross-domain only where topic keywords match. Aim ~30 minutes total.
-6. **Aggregate**: build the three count tables and the candidate-axis-vocabulary section.
+3. **First pass — C1 + C5** (ID-only + description-only): walk all 141 rows; record `axis-ambiguous-name` / `name-misleading` / `wrong-domain` flags. No paper lookups yet.
+4. **Second pass — C2 + C3** (paper lookups): walk all 141 rows; for each, resolve every `framework_reference` to its source rubric item via `compendium/framework_dedup_map.csv` and `papers/text/<paper>.txt`, then check fidelity (C2) and cohesion (C3). Read **every** ref on the row, not a sample — C2/C3 quality depends on full coverage.
+5. **Third pass — C4 (cross-row scans)**: scan within each domain for scope overlaps; cross-domain only where topic keywords match.
+6. **Aggregate**: build the count tables and the candidate-axis-vocabulary section.
 7. **Notable patterns**: write the 5–10 "highest-confidence concerns" section last, after seeing the full distribution.
-8. **Surface to user**: post a summary to the user (paste the aggregate tables + the notable patterns section). Phase 0 deliverable is shipped.
+8. **Output**: write `results/<SWEEP_DATE>_compendium_audit_concerns_runN.md` (where `N` is 1 or 2) and the matching `_runN.csv`. Do not surface to user yet.
+
+### Reconciliation step (after both runs ship)
+
+9. **Diff the two run docs**. For each row that appears in either run's Concerns table, classify: (a) both runs flag with same tag → carry into canonical; (b) both flag with different tags → record both in canonical with note "tag-disagreement run1=X / run2=Y", let Phase 1 resolve; (c) one flags, the other doesn't → carry into canonical with note "single-run flag, runN only". Same procedure for §3 (candidate axes) and §4 (notable patterns) — union with attribution.
+10. **Write the canonical concerns doc** at `results/<SWEEP_DATE>_compendium_audit_concerns.md` plus its companion `.csv`. Recompute aggregate counts from the canonical Concerns table.
+11. **Write the reconciliation note** at `results/<SWEEP_DATE>_compendium_audit_reconciliation.md`: 1 short paragraph on overall agreement rate (concerns-in-both / concerns-in-either), then a table of every disagreement (row_id, criterion, run1 verdict, run2 verdict, canonical resolution).
+12. **Surface to user**: paste the canonical aggregate tables + notable patterns + reconciliation summary. Phase 0 deliverable is shipped.
 
 If iter-2 of the statute-extraction harness is dispatched in parallel during Phase 0 execution, that's fine — Phase 0 reads the compendium, doesn't write to it. No conflict.
 
@@ -228,20 +237,22 @@ If iter-2 of the statute-extraction harness is dispatched in parallel during Pha
 This is a **pure analysis task**. No TDD applies. Per the `write-a-plan` skill's exception clause: "Pure analysis or exploration tasks ... need a clear description of what to run, what outputs to check, and what constitutes a surprising result."
 
 **What to run:**
-- The 8-step sequence above.
+- Two parallel auditor agents executing the per-run sequence above, then the reconciliation step.
 
 **What outputs to check:**
-- The concerns doc exists at the planned path.
-- The Concerns table is non-empty (we already know `DEF_ADMIN_AGENCY_LOBBYING_TRIGGER` should produce at least one C1 concern).
-- The Per-row coverage table has exactly 141 rows, one per compendium row.
-- The aggregate counts sum correctly (concerns count by tag = total rows in Concerns table).
-- The candidate axis vocabularies section names at least 1 axis for `definitions`.
-- The 5–10 notable patterns section exists.
+- Both `*_runN.md` and `*_runN.csv` exist at the planned paths.
+- Each run's Concerns table is non-empty (we already know `DEF_ADMIN_AGENCY_LOBBYING_TRIGGER` should produce at least one C1 concern in both runs; if only one run flags it, that itself is a signal worth surfacing).
+- Aggregate counts in each run sum correctly (concerns count by tag = total rows in that run's Concerns table).
+- Each run's candidate axis vocabularies section names at least 1 axis for `definitions`.
+- Each run's 5–10 notable patterns section exists.
+- The canonical concerns doc + CSV exist; the reconciliation note exists and reports an agreement rate.
+- The canonical Concerns table's row count = (concerns-in-both) + (concerns-in-either-but-not-both) — sanity check the reconciliation arithmetic.
 
 **What constitutes a surprising result:**
-- **Concern rate < 5/141 (~3%).** Means iter-1's surfaced bug was a true outlier and v3's full-sweep posture was over-scoped. Phase 1 plan should reflect a much narrower remediation.
-- **Concern rate > 50/141 (~35%).** Means curation has structural drift that Phase 1's solution design needs to triage aggressively (not all 50 fixes can land at once).
-- **Tag distribution heavily skewed.** If 80%+ of concerns are `description-rubric-drift` (not axis), the v3 strategy refocuses away from axis-in-ID and toward description rewrites. Phase 1 plan changes shape.
+- **Concern rate (canonical doc) < 5/141 (~3%).** Means iter-1's surfaced bug was a true outlier and v3's full-sweep posture was over-scoped. Phase 1 plan should reflect a much narrower remediation.
+- **Concern rate (canonical doc) > 50/141 (~35%).** Means curation has structural drift that Phase 1's solution design needs to triage aggressively (not all 50 fixes can land at once).
+- **Two-run agreement rate < ~60%.** Means tag boundaries are too fuzzy and Phase 1 needs to lead with taxonomy refinement before pattern-grouping.
+- **Tag distribution heavily skewed.** If 80%+ of concerns are description-fidelity tags (any of the four `description-*` tags), the v3 strategy refocuses away from axis-in-ID and toward description rewrites. Phase 1 plan changes shape.
 - **Domain skew.** If concerns concentrate in 1–2 domains, Phase 2's batching simplifies massively.
 - **Cross-row-overlap clusters of 3+ rows.** Suggests deeper scope-design issue beyond per-row rename.
 
@@ -251,12 +262,13 @@ The "surprising result" categories above are flags for the Phase 0 → Phase 1 h
 
 ## Implementation Details
 
-- **Auditor agent type:** general-purpose or a fresh Claude Code session works. The task is reading-heavy (CSV + papers), not code-heavy.
+- **Auditor agent type:** general-purpose subagent. Two are dispatched in parallel as a single message with two `Agent` tool uses.
+- **Reconciliation agent:** can be the parent session or a third subagent; its job is purely diff + canonical-doc construction, no fresh judgment on rows.
 - **Paper text access:** `papers/text/<paper>.txt` files are pre-extracted; `grep` works directly.
 - **Dedup map structure:** each row in `framework_dedup_map.csv` maps a (rubric, rubric_item_id) to a (compendium_row_id, decision); use it as the audit trail for C2/C3.
-- **No commits during Phase 0 except the concerns doc + this plan + the convo file.** No fixes, no schema changes, no chunk-frame edits.
-- **The concerns doc is checkpointable.** Auditor can save partial drafts mid-sweep (e.g., after pass 1 of 3) and commit; subsequent passes amend the doc.
-- **Multiple sessions are fine.** Phase 0 doesn't have to land in one session; if it splits across sessions, the second session re-reads the partial concerns doc and continues.
+- **No commits during Phase 0 except the audit artifacts + this plan + the convo file.** No fixes, no schema changes, no chunk-frame edits. Artifacts: `*_runN.md` × 2, `*_runN.csv` × 2, canonical `*.md`, canonical `.csv`, reconciliation note.
+- **Run docs are checkpointable.** Each auditor can save partial drafts mid-sweep and commit; subsequent passes amend.
+- **Multiple sessions are fine for the auditor work.** Reconciliation should happen in one session once both runs ship.
 - **No new code modules.** No `tests/` additions. No `src/` additions. No model changes.
 
 ---
@@ -267,7 +279,7 @@ If Phase 0's findings shift the framing, downstream plans adjust:
 
 - **If concern rate is low (<5%)**: Phase 1's plan downgrades to a narrow remediation pass (just `definitions` + the obvious cross-domain neighbors). Phase 2 may be a single PR.
 - **If concern rate is high (>35%)**: Phase 1's plan adds a triage step (not all fixes land at once); Phase 2 batches by severity *and* cascade cohesion.
-- **If tag distribution is dominated by `description-rubric-drift`** (not axis): the v3 strategy emphasis shifts to description rewrites; axis-in-ID renames become a smaller piece. The user-proposed `<DOMAIN>_<SUBJECT>_<AXIS>_<SPECIFIER>` convention may apply to fewer rows than the brainstorm assumed.
+- **If tag distribution is dominated by description-fidelity tags** (any combination of `description-broader-than-rubric` / `description-narrower-than-rubric` / `description-misscoped` / `rubric-source-ambiguous`, not axis): the v3 strategy emphasis shifts to description rewrites; axis-in-ID renames become a smaller piece. The user-proposed `<DOMAIN>_<SUBJECT>_<AXIS>_<SPECIFIER>` convention may apply to fewer rows than the brainstorm assumed.
 - **If `cluster-asks-two-questions` shows up frequently**: row splits become a major Phase 2 workstream, with its own cascade cost (one source row → two compendium rows + redistributed `framework_references`).
 - **If Phase 0 surfaces evidence that schema-axis-field is needed after all** (e.g., per-domain natural-language axis vocabularies turn out to be unwieldy at scale): Phase 1 reopens the Option 1 vs 2 decision with new evidence. The brainstorm's Option 2 leaning was conditional on iter-1's N=1; Phase 0 supplies the population estimate.
 
@@ -276,8 +288,10 @@ If Phase 0's findings shift the framing, downstream plans adjust:
 ## Resolved decisions (locked at plan-acceptance, 2026-05-02)
 
 1. **Orphan dedup-map auditing is out of scope.** Dedup-map integrity is v2's responsibility. If a missing/orphaned dedup-map entry blocks C2/C3 evaluation on a row, flag the row as `other-issue` with note "dedup-map gap blocks C2/C3"; do not chase the orphan further.
-2. **Concerns table includes a `confidence: high | medium | low` column** per concern. Confidence ≠ severity; it captures the auditor's certainty in the flag itself (useful when distinguishing "ambiguous" from "terse"). Phase 1 uses it as a secondary sort within concern groups.
+2. **No `confidence` and no `severity` column on the Concerns table.** Both were considered; `severity` was dropped in the brainstorm because Phase 1's cluster-level grouping produces prioritization signal naturally; `confidence` was dropped as a follow-up because (a) it's orthogonal to severity, not a substitute, (b) two-run reconciliation already exposes auditor-certainty (one-run flags surface as "single-run flag" in the canonical doc), and (c) Phase 1 can ask either auditor agent to re-rate any subset of concerns if it needs the signal.
 3. **All 141 rows are audited at the same depth** — including the 33 `accessibility`-domain rows. Concerns are recorded only, not acted on; no churn risk to `oh-portal-extraction` or other accessibility-side work. The Phase 0 → Phase 1 handoff should explicitly note any accessibility-domain concerns so other fellows have visibility before Phase 1's plan engages them.
+4. **Audit runs twice in parallel; reconciliation is a third independent step.** Two auditor agents dispatched in parallel against this plan; their `runN` outputs feed a separate reconciliation pass that produces the canonical concerns doc + a reconciliation note. Single-run audit was rejected — false-positive concerns pollute Phase 1, and tag-boundary judgment calls (e.g., `axis-ambiguous-name` vs `name-misleading`) are auditor-dependent.
+5. **Description-rubric-drift tag is split into four** (`description-broader-than-rubric`, `description-narrower-than-rubric`, `description-misscoped`, `rubric-source-ambiguous`). Each implies a different Phase 1 fix shape; lumping them under one tag would hide which fix-shape dominates.
 
 ---
 
@@ -306,10 +320,27 @@ The branch lifecycle (active → historical) for `statute-extraction` does not d
 
 **Testing Details:** N/A — pure analysis task. Output validation criteria documented under "What outputs to check" above.
 
-**Implementation Details:** No code changes. Three artifact additions: this plan + the convo file (already shipped this session) + the concerns doc (Phase 0 deliverable). Single-session execution feasible; multi-session checkpointing supported by writing partial-draft concerns doc and committing.
+**Implementation Details:** No code changes. Artifact additions: this plan + the convo file (already shipped this session) + 2× run docs + 2× run CSVs + canonical concerns doc + canonical CSV + reconciliation note. Two auditors run in parallel; reconciliation lands once both ship.
 
-**What could change:** Documented in detail under "What could change" above. Headline: tag distribution + concern rate determine Phase 1's plan shape.
+**What could change:** Documented in detail under "What could change" above. Headline: tag distribution + concern rate + two-run agreement rate determine Phase 1's plan shape.
 
-**Questions:** None open. Three plan-time questions resolved under "Resolved decisions" above.
+**Questions:** None open. Five plan-time decisions resolved under "Resolved decisions" above.
+
+---
+
+## ⛔ SUPERSEDED 2026-05-02 (pm)
+
+**Phase 0 of this plan shipped** (canonical concerns doc + reconciliation note at `docs/active/statute-extraction/results/20260502_compendium_audit_*`). However, **Phase 1 and Phase 2 of this plan are superseded** — do not execute.
+
+The walkthrough of Phase 0's findings revealed that the compendium is structurally PRI-shaped (row count, atomization, descriptions all derive from PRI's question hierarchy), not just lexically PRI-flavored. Patches to row names / descriptions / domain assignments would leave the structural PRI-shape intact. The user pivoted from "audit + patch" to "rebuild from sources, no PRI" on a new branch: [`compendium-source-extracts`](../../compendium-source-extracts/).
+
+**For future agents:**
+- Phase 0's deliverables are historical evidence that the rebuild was warranted, **not a fix-list to execute**.
+- Phase 1 (solution design) and Phase 2 (apply fixes in cascade-cohesion batches) **are not to be written or executed against the existing compendium**.
+- Compendium-2.0 design is a separate plan written on `compendium-source-extracts` after per-paper source extracts ship.
+- See `docs/active/compendium-source-extracts/plans/20260502_per_paper_source_extraction.md` for the rebuild plan.
+- See top-of-file `⛔ AGENT-CRITICAL` block in `STATUS.md` for the PRI-out-of-bounds posture that constrains all downstream work.
+
+This footer is removed when compendium-2.0 lands and the user explicitly clears the PRI bar.
 
 ---

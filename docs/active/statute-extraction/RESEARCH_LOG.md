@@ -15,6 +15,46 @@ Carry-forward signals from prior branches (informational, not gates):
 
 (Newest first.)
 
+### 2026-05-02 (pm) — Phase 0 audit executed → rebuild pivot, harness paused
+
+**Convo:** captured on the new `compendium-source-extracts` branch at [`docs/active/compendium-source-extracts/convos/20260502_pm_compendium_rebuild_pivot.md`](../../compendium-source-extracts/convos/20260502_pm_compendium_rebuild_pivot.md).
+**Audit results (this branch):** [`results/20260502_compendium_audit_concerns.md`](results/20260502_compendium_audit_concerns.md) (canonical) + [`.csv`](results/20260502_compendium_audit_concerns.csv), [`results/20260502_compendium_audit_concerns_run1.{md,csv}`](results/), [`_run2.{md,csv}`](results/), [`results/20260502_compendium_audit_reconciliation.md`](results/20260502_compendium_audit_reconciliation.md).
+**Plan superseded:** [`plans/20260502_compendium_item_audit_v3_phase0.md`](plans/20260502_compendium_item_audit_v3_phase0.md) — Phase 0 deliverable shipped; Phase 1/2 superseded by `compendium-source-extracts`.
+
+#### Topics Explored
+
+- Phase 0 audit execution: dispatched two parallel general-purpose auditor subagents against the locked plan. Each ran the per-run 8-step sequence (pre-flight reads → load source data → C1+C5 first pass → C2+C3 second pass → C4 third pass → aggregate → notable patterns → output). Reconciliation step (third subagent) produced the canonical concerns doc + reconciliation note.
+- Walk-through of tag-disagreements with the user. Three clusters examined: `RPT_*_NON_COMPENSATION × C2` (broader vs narrower opposite-direction calls — symptom of cluster heterogeneity, real tag is C3); `DEF_PUBLIC_ENTITY` family + `EXEMPT_GOVT_OFFICIAL_CAPACITY × C1` (axis-ambiguous-name vs name-misleading — both wrong tag, rows aren't axis-typed; real concern is C5 wrong-domain on the DEF family, no flag warranted on EXEMPT_GOVT); `DEF_ADMIN_AGENCY × C2` (rubric-source-ambiguous vs description-broader-than-rubric — both correct, capturing different concerns; retain both).
+- Recognition of structural PRI privilege: 4-row `DEF_PUBLIC_ENTITY` family (PRI Q-C parent + 3 sub-criteria), 12-row `FREQ_*` (PRI E1h/E2h enumeration), 11-row `REG_*-A-series` (PRI A1–A11), 8-row `RPT_*_NON_COMPENSATION/OTHER_COSTS/etc.` (PRI E1f i/ii/iii/iv split × 2 sides), and a literal `?.` formatting artifact on ~24 rows (mechanical evidence of script-translated PRI rubric text). The compendium's *atomization* is PRI's, not just its vocabulary.
+- Pivot: rebuild the compendium from non-PRI source papers on a new branch.
+
+#### Provisional Findings
+
+- **Phase 0 audit results:** 186 canonical concerns / 109 of 141 rows flagged / 24.2% inter-auditor agreement. Three "surprising-result" thresholds tripped: structural drift (>35%), fuzzy tag boundaries (<60% agreement), cross-row-overlap clusters of 3+ rows. Headline pattern: PRI-verbatim descriptions are the dominant C2 driver (~40% of concerns).
+- **Audit's role inverted mid-session:** from "input to Phase 1 fix-design" to "evidence the compendium needs structural rebuilding." Phase 1 and Phase 2 of the v3 audit are superseded; the canonical concerns doc + reconciliation note remain as historical artifacts only.
+- **Compendium 1.x is unsalvageable as a foundation.** Patches to row names, descriptions, or domain assignments leave the structural PRI-shape intact. D9's vocabulary fix was necessary but not sufficient.
+
+#### Decisions
+
+| topic | decision |
+|---|---|
+| Phase 1/2 of v3 audit | **Superseded.** Plan footer added pointing at `compendium-source-extracts` |
+| Phase 0 audit results | **Retained as historical evidence**, not a fix-list |
+| Harness work on this branch (iter-2 onward) | **Paused** until compendium-2.0 lands |
+| New branch | `compendium-source-extracts` off `origin/main` (already created and pushed) |
+| PRI 2010 status | **Fully excluded** project-wide. Top-of-file `⛔ AGENT-CRITICAL` block added to STATUS.md on this branch as well as on `compendium-source-extracts` |
+| Auto-memory `feedback_pri_not_privileged.md` | Updated to extend the rule from vocabulary to structure (handled in this session) |
+
+#### Commits this session
+
+- `0f33d34` (compendium-source-extracts) — Branch creation: per-paper rebuild, no PRI
+- This branch's commit — Phase 0 audit results + RESEARCH_LOG + Phase 0 plan supersession + STATUS.md PRI bar
+
+#### Next Steps
+
+- All harness work on this branch is paused. Do not iterate iter-2 / iter-3 / etc.
+- Future work resumes only after compendium-2.0 lands on `compendium-source-extracts` and the user explicitly clears the PRI bar.
+
 ### 2026-05-02 — Compendium Audit v3 brainstorm + Phase 0 plan
 
 **Convo:** [`convos/20260502_compendium_audit_v3_brainstorm.md`](convos/20260502_compendium_audit_v3_brainstorm.md)
