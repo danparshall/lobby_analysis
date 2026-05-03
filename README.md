@@ -32,8 +32,8 @@ We do **not** publish a "Corda Rubric" or composite ranking. Researchers can re-
 ## Project state
 
 - **Active branches** and current focus: see `STATUS.md`.
-- **Compendium rebuild** is in progress on `compendium-source-extracts` — extracting items independently from each non-PRI source framework, then synthesizing a core item-set for the data layer.
-- **Schema (data model v1.1)** is shipped: `CompendiumItem`, `FieldRequirement` with availability axes, `MatrixCell`, `ExtractionCapability`, generic `FrameworkReference`. Lives in `src/lobby_analysis/models/`.
+- **Compendium + schema rebuild** is in progress on `compendium-source-extracts`. The 2026-05-02 v3 audit on the predecessor branch found that the v1 compendium was structurally shaped by a single rubric (PRI 2010); a parallel audit in 2026-05-03 found the same shape baked into the `src/lobby_analysis/models/` Literal types (registration roles enumerated as PRI's A1–A11; reporting frequency enumerated as PRI's E1h/E2h list; named `de_minimis_*` fields on the SMR). **Compendium 2.0 + schema v2.0 will be a complete overhaul**, not an incremental fix on v1. Every source framework (currently 14 fully extracted; more pending acquisition) is treated on an even basis; the core item set will be derived from cross-rubric synthesis, not anchored to any single rubric's atomization.
+- **What v1 is and is not.** Pydantic models exist at `src/lobby_analysis/models/` (data model v1.1: `CompendiumItem`, `FieldRequirement` with availability axes, `MatrixCell`, `ExtractionCapability`, generic `FrameworkReference`). They are the working scaffold that produced the `statute-retrieval` MVP, and the *abstractions* (FrameworkReference, availability axes, the SMR row shape) carry forward. **They are not the foundation for v2.0.** The Literal enumerations and named SMR fields will be rebuilt from scratch alongside the compendium item set.
 - **Initial state coverage:** field rollout starts with 5–8 priority states selected for data quality and political significance, with the architecture built to support all 50 over time.
 
 ## Repo layout
