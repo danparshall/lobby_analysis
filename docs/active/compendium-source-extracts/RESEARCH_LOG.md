@@ -16,6 +16,65 @@ Carry-forward signals (informational, not gates):
 
 (Newest first.)
 
+### 2026-05-03 (pm cont'd) — Acquisition mapping (Blue Book / BoS / COGEL) + cross-rubric descriptive stats
+
+**Convo:** [`convos/20260503_pm_acquisition_and_descriptives.md`](convos/20260503_pm_acquisition_and_descriptives.md)
+**Spawning artifact:** Plan Step 4 of [`plans/20260504_compendium_2_0_synthesis.md`](plans/20260504_compendium_2_0_synthesis.md), invoked early after a direct user request to (a) map acquisition options for the three reference works and (b) produce a cross-rubric descriptive pass to test the user's hypothesis about near-duplicate paraphrasing across rubrics.
+
+#### Topics Explored
+
+- **Acquisition mapping for Plan Step 4 / Task #11.** Bibliographic verification via WorldCat, Stanford SearchWorks, HathiTrust, COGEL CDN. The "CSG Blue Book" cited by Opheim 1991 and the "COGEL Blue Books" cited by Strickland 2014 are the same publication series — *Campaign Finance, Ethics, Lobby Law & Judicial Conduct: COGEL Blue Book*, jointly published by Council of State Governments and Council on Governmental Ethics Laws (OCLC 80682979). Series structure: Phase 1 single comprehensive volume (~1982–early 1990s; 1990 8th edition `mdp.39015077214750` is public-domain, Google-digitized on HathiTrust); Phase 2 split (~1996/1997–) into thematic annual Updates (Ethics, Lobbying, Campaign Finance, FOI). The 2024 Ethics Update (626pp, retrieved from `cdn.ymaws.com/www.cogel.org/.../cogel_blue_book_2024_ethics_.pdf`) confirms Phase-2 format is self-reported ethics-agency narratives, not the comparative-tables structure Strickland used.
+- **1990 8th edition Lobby Laws TOC recovered from HathiTrust catalog snippets**: Tables 28 (Lobbyists: Definition, Registration and Prohibited Activities), 29 (Lobbyists: Reporting Requirements), 30 (Lobbying: Report Filing), 31 (Lobbying: Compliance of Selected Agencies = enforcement powers), 32 (Education and Training: Lobbying Regulation). Cell-level content not retrieved from this environment (HathiTrust babel returns 403 even on PD content).
+- **Strickland 2014 methodology re-read**. He applies Newmark 2005's 18 items unchanged + extends 1988-2003 via biennial COGEL Blue Books + CSG *Book of the States*, 2004-2013 via State Capital Law Firm Group's *50 State Handbook*. Does not read statutes. Decomposition into Definitions/Prohibitions/Reporting sub-scales is a regression-specification choice, not an item-level change. Strickland's empirical finding (registration counts respond to prohibitions but not consistently to reporting; opposite-signed effects across the three sub-scales) is documented as a compendium-design caveat against single-index aggregation.
+- **State Capital Handbook**: structurally compatible with Newmark categories per marketing copy (definitions / prohibitions / disclosure + contact info); commercial only (~$200, Thomson Reuters / SCG Legal); 2025 edition is 1860pp.
+- **Cross-rubric descriptive stats**. Atomic-item filter applied to 26 TSVs → 661 atomic items (509 in 17 rubrics + 152 in 9 non-rubric extracts). Topic taxonomy of 47 topics across 14 meta-domains, regex-tagged. TF-IDF (1-2 grams, sublinear, English stops, min_df=1, max_df=0.5) + cosine + greedy single-link union-find clustering at thresholds 0.20-0.50. Sentence-embedding fallback (`all-MiniLM-L6-v2`) attempted but blocked by egress proxy at HuggingFace (only github / pypi / npmjs / ubuntu / etc. allowed).
+
+#### Provisional Findings
+
+- **CSG Blue Book = COGEL Blue Book** (joint-series finding). Reduces the three-publication acquisition target to two — the same series at different vintages, plus *Book of the States*, plus the (commercial) State Capital Handbook.
+- **The 1990 Blue Book has 5 lobby-specific tables. Two are unused by the older state-rubric tradition.** Table 31 (Compliance of Selected Agencies) is exactly Opheim's 7 enforcement items; Newmark dropped them in 2005 and Strickland inherited the drop. Table 32 (Education and Training) is unused by all three.
+- **Cross-rubric paraphrase variants are real but cluster within author-family or geographic tradition.** TF-IDF at sim≥0.30 surfaces 20 cross-rubric clusters; 13 of 20 are Newmark2005↔Newmark2017 (same author, near-identical wording — expected); only 1 cluster spans ≥3 rubrics. Across the broader 17-rubric corpus, **items are expressed in idiosyncratic vocabulary even when measuring the same thing**. The European-tradition rubrics (AccessInfo / CouncilEurope / ALTER_EU / FOCAL) and the state-tradition rubrics (Opheim / Newmark2005 / Newmark2017) use largely non-overlapping vocabulary, and TF-IDF mostly fails to bridge them.
+- **The topic-frequency histogram has no natural elbow.** Topics-by-rubric-count distribution (1=8, 2=4, 3=7, 4=10, 5=4, 6=3, 7=4, 8=4, 9=2, 10=1, 11=1) is closer to a power-law than stepped. **Method A (frequency threshold) in the synthesis plan is on weaker ground than the plan acknowledged**; the user's prior intuition that frequency-based filtering over-indexes on uninformative items is supported.
+- **Long-tail diagnostic candidates surfaced**: `enforce_subpoena` (Opheim only, 4 items), `enforce_review_quality` (Opheim only, 1 item), `disc_leg_footprint` (SOMO only, 5 items — corporate-actor "lobby paragraaf" lens), `e_filing` (HiredGuns only, 3 items), `disc_funding_pubmoney` (AccessInfo only, 2 items), `disc_exp_threshold` (Sunlight only, 1 item). These are exactly the kinds of items that distinguish state regimes informationally — they didn't make the high-frequency cut precisely because they're hard to ask consistently.
+- **Universal topics (≥10 rubrics): only `disc_gifts` (11 rubrics, 18 items) and `reg_org_subsidiary` (10 rubrics, 36 items).** Second tier (8-9 rubrics) is the predictable battery: timeliness, definition of lobbying activity, revolving-door disclosure, business associations, penalties, searchable access.
+- **FOCAL has zero items in Prohibitions and minimal Personnel content.** Method B (FOCAL-anchored expansion) inherits these blind spots — anchoring on FOCAL would systematically underweight contingent-fee bans, gift bans, campaign-contribution bans, revolving-door cooling-off rules. Compendium 2.0 should be **assembled, not filtered** — frequency does not produce a natural core, and lexical clustering recovers within-author repetition rather than cross-tradition convergence.
+
+#### Decisions
+
+| topic | decision |
+|---|---|
+| Blue Book acquisition path | Adam Newmark email is highest expected value per unit effort; ILL for HathiTrust 1990 8th ed. is the most direct path to actual cell-level content; used-copy purchase via eBay/AbeBooks is the cheapest acquisition; defer State Capital Handbook indefinitely unless project subscription budget supports it (~$200/yr) |
+| Book of the States acquisition | De-prioritized per user (item labels already in `items_Newmark2005.tsv` / `items_Opheim.tsv`); re-evaluate only if Blue Book path delivers and operational thresholds become the binding gap |
+| Method A (frequency threshold) | Documented as on weaker ground than the synthesis plan acknowledged; histogram has no natural elbow; should not be applied alone |
+| Method C (discriminative-strength) | Strengthened by long-tail finding; the 1-rubric topics list is exactly the kind of items the user previously identified as diagnostically strong |
+| Method B (FOCAL-anchored) | Carries explicit blind spots: zero Prohibitions items, minimal Personnel; would need a structural-anchor parallel run from another rubric to mitigate |
+| Sentence-embedding fallback | Blocked by egress proxy; flagged as "what would unblock better analysis" in the descriptive doc; recommended for next session via either a model already in the repo or a pre-downloaded HF cache |
+| Compendium 2.0 design plan | Still deferred per the synthesis plan; nothing in this session changes that, but the descriptive evidence sharpens the input |
+
+#### Mistakes recorded
+
+1. **Same user message arrived twice.** Likely an artifact of conversation compaction between session resume points; treated the second instance as a continuation rather than a re-initialization. No content harm but worth noting for future-session awareness.
+2. **Initial topic taxonomy over-fired on `bills_subjects`** because the regex matched bare "issues?". Caught on first inspection; tightened to require actual bill/legislation references; rerun produced clean coverage. Documented in the descriptive doc's methodology section.
+3. **HathiTrust public-domain content not retrievable from this environment.** `babel.hathitrust.org` returns 403 even on `mdp.39015077214750` (1990 8th ed., public-domain Google-digitized). Egress proxy / no-institutional-auth combination. Worked around by recovering structure from search-engine snippets but no cell-level content recovered.
+4. **`cdn.ymaws.com` blocked from bash but accessible via web_fetch.** Not a mistake per se but a useful note for future sessions: the Anthropic egress proxy is more permissive than the bash-tool proxy. URL-pattern probing for older COGEL editions did not find files (CDN URLs likely have unique tokens, not just predictable filename patterns).
+
+#### Results
+
+- `docs/active/compendium-source-extracts/results/20260503_blue_book_bos_cogel_acquisition.md` — acquisition findings doc (~131 lines)
+- `docs/active/compendium-source-extracts/results/20260503_cross_rubric_descriptive.md` — descriptive stats doc (~220 lines)
+- `docs/active/compendium-source-extracts/results/cross_rubric_topic_x_rubric.csv` — 47 topics × 17 rubrics + n_rubrics
+- `docs/active/compendium-source-extracts/results/cross_rubric_domain_x_rubric.csv` — 14 meta-domains × 17 rubrics + n_rubrics + total_items
+- `docs/active/compendium-source-extracts/results/cross_rubric_items_clustered.csv` — 509 rubric atomic items × topic tags
+
+#### Next Steps
+
+- User reviews the two results docs and decides which acquisition paths to pursue.
+- Email-author skill (Task #10) — bundle Adam Newmark email with Blue Book / BoS ask + Vaughan & Newmark 2008 retrieval ask.
+- If sentence embeddings become available (proxy whitelist or pre-cached model in repo), re-run the cross-rubric clustering pass; current TF-IDF result understates semantic equivalence across European↔state-tradition rubrics.
+- Compendium 2.0 design plan — still deferred per the synthesis plan, but inputs are sharper now.
+
+---
+
 ### 2026-05-03 — Per-paper extraction execution
 
 **Convo:** [`convos/20260503_per_paper_extraction_execution.md`](convos/20260503_per_paper_extraction_execution.md)
@@ -134,3 +193,4 @@ For honesty + future-session protection:
 - User reviews the locked plan at `plans/20260502_per_paper_source_extraction.md` and resolves its 7 open questions, especially Open Question 1 (the universe of source papers — now potentially much larger than 7 given the ~16 untracked additions).
 - After plan acceptance, fresh-context implementing agent executes per the plan: dispatches one template paper, surfaces for user format review, then dispatches the remaining papers in parallel.
 - After all per-paper reviews are in, a follow-up plan is written for compendium-2.0 design (not part of this plan).
+
