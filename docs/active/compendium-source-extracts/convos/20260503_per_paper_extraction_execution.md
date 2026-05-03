@@ -1,7 +1,7 @@
 # 2026-05-03 — Per-paper extraction execution
 
 **Branch:** `compendium-source-extracts`
-**Status:** Closed (extractions complete; user review pending)
+**Status:** Closed (extractions complete; user reviewed; next-session plan written)
 **Originating plan:** [`plans/20260502_per_paper_source_extraction.md`](../plans/20260502_per_paper_source_extraction.md)
 **Originating convo:** [`convos/20260502_pm_compendium_rebuild_pivot.md`](20260502_pm_compendium_rebuild_pivot.md)
 
@@ -166,4 +166,39 @@ All artifacts at `docs/active/compendium-source-extracts/results/`:
 
 ## Plan produced
 
-None this session — compendium-2.0 design plan deferred per the locked plan until after user review of these 26 extracts.
+[`plans/20260504_compendium_2_0_synthesis.md`](../plans/20260504_compendium_2_0_synthesis.md) — written end-of-session per user request. Goals: (1) acquire missing papers per Tasks #10 + #11; (2) extract additional rubric items from newly-acquired measurement-framework papers; (3) cross-rubric descriptive statistics (intersection / union / items-by-rubric-count histogram / per-cluster coverage); (4) brainstorm principled-subset selection methods + item-family clustering. Compendium-2.0 design itself + schema-v2.0 stay deferred to follow-up plans written after this plan ships.
+
+---
+
+## Post-checkpoint addendum (2026-05-03 late session)
+
+After the initial finish-convo commit (`e2ce6a2`), the session continued with three more substantive items worth recording:
+
+### README rewrite
+
+The README's "Why this exists" + Scope sections were stale relative to the architectural pivot. Headline already said "LobbyView, for all 50 states"; Scope section said "5–8 priority states" — direct contradiction. Body didn't articulate (a) common data structure as the deliverable, (b) rubric-stripping / researcher-weighting story, (c) Popolo / Open Civic Data compatibility, (d) the diagnostic-extraction benefit (knowing what *should* exist in a filing makes LLM extraction tractable).
+
+Rewrote with new "Why this exists" (names the rubric-soup landscape + the Newmark 2017 r=0.04 PRI/CPI finding as evidence that no single rubric should be privileged), new "What we deliver" (field compendium + per-state record + pull pipelines + Popolo/OCD compatibility + explicit non-goal: no Corda Rubric), new "Project state" section. "5-8 priority states" reframed as initial rollout scope, not project scope. Committed `6cef788`.
+
+### Schema audit — v1.1 is PRI-shaped under the hood
+
+User asked whether the data model v1.1 is still "PRI, lol" structurally. Audit of `src/lobby_analysis/models/` confirmed:
+
+- `RegistrationRequirement.role` Literal — 11 specific values matching PRI's A1-A11 atomization (lobbyist / volunteer_lobbyist / principal / lobbying_firm / governors_office / executive_agency / legislative_branch / independent_agency / local_government / government_lobbying_government / other_public_entity). Same atomization the v3 audit identified as a structural-PRI red flag in the compendium (the 11-row REG_*-A-series).
+- `ReportingFrequency` Literal — 7 cadences (monthly / quarterly / tri_annually / semi_annually / annually / session_based / other) = exactly PRI E1h/E2h's enumerated list (the 12 FREQ_* compendium rows × 2 sides). Newmark uses one categorical; FOCAL doesn't atomize at this granularity.
+- Named scalar SMR fields `de_minimis_financial_threshold` + `de_minimis_time_threshold` + their `_citation` companions — PRI exemption-frame vocabulary that D9 fixed at the row level but not on the SMR top-level fields.
+- `FrameworkId` Literal lists `pri_2010_disclosure` + `pri_2010_accessibility` as the first two values; `focal_2024` + `focal_2026` is the only other framework with multiple vintages.
+
+Generic pieces that carry forward: `FrameworkReference` (the row-level v1.1 fix works correctly), `CompendiumItem`, `MatrixCell`, `FieldRequirement` row-level (uses dot-paths, not PRI-shaped at the row), `LegalAvailability` + `PracticalAvailability` Literals (look like sensible synthesis).
+
+**Verdict:** Same vocabulary-vs-structure pattern as the compendium audit. D9 fixed surface vocabulary; structural choices (Literal enumerations, named scalar fields) remain PRI's. The `RegistrationRequirement.role` 11-role enumeration is the *same* atomization the audit identified as a structural-PRI red flag, faithfully reproduced as a type-level constraint. Conclusion: schema v2.0 must rebuild these Literals + drop the named `de_minimis_*` fields alongside compendium 2.0 atomization. README updated to make this explicit (`9682efd`).
+
+### Rubric inventory
+
+Settled at **14 rubrics extracted in full** (Opheim 1991, Newmark 2005, CPI Hired Guns 2007, Holman & Luneburg 2012, ALTER-EU 2013, Sunlight 2015, AccessInfo Standards 2015, SOMO 2016, Council of Europe 2017, Newmark 2017, Carnstone 2020, IBAC 2022, OpenSecrets 2022, FOCAL 2024) + **12 non-rubric extracts** (empirical applications, surveys, scoping reviews, federal-data infrastructure, construct-defining work, comparative narratives) = 26 papers total. Plus **4 known-of-but-not-fully-retrieved rubrics**: TI-UK 4-criterion open-data rubric (referenced in TI 2016 only); CII methodology (applied in Bednařová 2020; source in Chari et al. books); Roth 2020 Robustness Index (text summary only; full thesis at d-nb.info); Chari et al. 2010/2020 books.
+
+The rubric inventory + the user's strategic framing (data layer is the deliverable; researchers bring their own weights; common items derived from cross-rubric synthesis) drove the next-session plan.
+
+### Next-session plan
+
+Plan written and saved to `plans/20260504_compendium_2_0_synthesis.md`. Four goals: acquire missing papers (Tasks #10 + #11), extract newly-acquired rubric items, generate cross-rubric descriptive stats, brainstorm principled-subset selection methods + item-family clustering. Six open questions for user resolution at session start. Compendium 2.0 + schema v2.0 stay deferred to follow-up plans.

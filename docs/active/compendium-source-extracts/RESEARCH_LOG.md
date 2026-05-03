@@ -70,6 +70,17 @@ Carry-forward signals (informational, not gates):
 - Task #11: CSG Blue Book + Book of States + COGEL Blue Books + State Capital handbook acquisition (likely via Adam Newmark contact + library/HathiTrust hunt).
 - Optional: CDoH-corpus expansion (7 frameworks); federal-extension extracts (LaPira 2020 / GAO 2025).
 
+#### Plan produced (post-checkpoint)
+
+[`plans/20260504_compendium_2_0_synthesis.md`](plans/20260504_compendium_2_0_synthesis.md) — for next session. Four goals: acquire missing papers (Tasks #10 + #11); extract newly-acquired rubric items; cross-rubric descriptive stats (intersection / union / items-by-rubric-count histogram / per-cluster coverage); brainstorm principled-subset selection methods (4 candidate approaches articulated) + item-family clustering (4 candidate dimensions). Six open questions for user resolution at session start. Compendium 2.0 + schema v2.0 stay deferred to follow-up plans.
+
+#### Post-checkpoint findings
+
+- **README rewrite** — dropped the "5–8 priority states" / "all 50 states" headline contradiction; new "What we deliver" section names the data-layer-not-rubric framing; new "Project state" section makes explicit that v1 is *not* the foundation for v2.0. Commits `6cef788`, `9682efd`.
+- **v1.1 schema audit** — confirmed structurally PRI-shaped despite the row-level `FrameworkReference` abstraction. PRI-shaped: `RegistrationRequirement.role` 11-role Literal (= PRI A1-A11), `ReportingFrequency` 7-cadence Literal (= PRI E1h/E2h), named scalar SMR fields `de_minimis_financial_threshold` + `de_minimis_time_threshold`, `FrameworkId` Literal lists PRI first. Carry-forward: `FrameworkReference`, `CompendiumItem`, `MatrixCell`, `FieldRequirement` row-level, availability axes. Schema v2.0 must rebuild these Literals + drop named `de_minimis_*` fields alongside compendium-2.0 atomization. Same vocabulary-vs-structure pattern the compendium audit caught.
+- **Rubric inventory settled at 14 + 12 + 4-pending** — 14 rubrics fully extracted, 12 non-rubric extracts (empirical applications / surveys / scoping reviews / federal-data infrastructure / construct-defining work / comparative narratives), 4 known-of-but-not-fully-retrieved (TI-UK 4-criterion, CII methodology, Roth 2020 thesis, Chari et al. books). 26 papers total.
+- **Strategic framing clarified by user**: data layer is the deliverable, not a rubric or scorecard; researchers, activists, and journalists bring their own weights and rankings; common items derived from cross-rubric synthesis with informativeness as the actual selection criterion (frequency-of-use is just a starting filter); compatible with Popolo for entities + complementary OCD-style schema for filings since Popolo doesn't cover filings.
+
 ---
 
 ### 2026-05-02 (pm) — Branch creation + per-paper extraction plan
