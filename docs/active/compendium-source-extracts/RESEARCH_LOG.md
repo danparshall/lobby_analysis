@@ -75,6 +75,16 @@ Carry-forward signals (informational, not gates):
 
 ---
 
+#### Post-session continuation (2026-05-06)
+
+The 2026-05-03 work landed (commit `a857965c`). Resumed 2026-05-06 with two minor follow-ups documented in the convo summary's Post-session continuation block:
+1. HathiTrust path (catalog record `https://catalog.hathitrust.org/Record/002470321`; 1990 8th edition `https://babel.hathitrust.org/cgi/pt?id=mdp.39015077214750`, ID `mdp.39015077214750`) documented for the user's personal-machine retrieval.
+2. **Sentence-embedding script committed at `tools/embed_cross_rubric.py`** (commit `4eed8f5f`). Local-machine companion to the 2026-05-03 TF-IDF analysis — sandboxed env couldn't reach `huggingface.co`. Runs `all-MiniLM-L6-v2` over the 509-item rubric-atomic-items CSV, produces similarity matrix + threshold summary + cluster dump. Designed to run from the user's desktop (`pip install sentence-transformers pandas numpy && python tools/embed_cross_rubric.py`). Predictions to falsify in the script docstring.
+
+The cross-rubric clustering re-run is unblocked; user is handing it off to a desktop agent.
+
+---
+
 ### 2026-05-03 — Per-paper extraction execution
 
 **Convo:** [`convos/20260503_per_paper_extraction_execution.md`](convos/20260503_per_paper_extraction_execution.md)
@@ -193,4 +203,5 @@ For honesty + future-session protection:
 - User reviews the locked plan at `plans/20260502_per_paper_source_extraction.md` and resolves its 7 open questions, especially Open Question 1 (the universe of source papers — now potentially much larger than 7 given the ~16 untracked additions).
 - After plan acceptance, fresh-context implementing agent executes per the plan: dispatches one template paper, surfaces for user format review, then dispatches the remaining papers in parallel.
 - After all per-paper reviews are in, a follow-up plan is written for compendium-2.0 design (not part of this plan).
+
 

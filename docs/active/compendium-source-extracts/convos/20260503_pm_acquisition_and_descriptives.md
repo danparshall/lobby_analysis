@@ -81,3 +81,61 @@ Outcome: Acquisition options mapped (with realistic effort/yield estimates per p
 ## Plan produced
 
 None. This session executed an early portion of the existing [`plans/20260504_compendium_2_0_synthesis.md`](../plans/20260504_compendium_2_0_synthesis.md) and surfaced findings that sharpen its Method A/B/C/D brainstorm without producing a new plan.
+
+---
+
+## Post-session continuation (2026-05-06)
+
+The 2026-05-03 work landed (commit `a857965c`). Session resumed 2026-05-06 with two minor follow-ups that didn't justify their own convo:
+
+1. **HathiTrust path documented inline.** Catalog record at `https://catalog.hathitrust.org/Record/002470321`; 1990 8th edition direct link `https://babel.hathitrust.org/cgi/pt?id=mdp.39015077214750` (HathiTrust ID `mdp.39015077214750`); page-structure shortcuts (Section 7 / scan #121 for Lobby Laws Tables 28-32). Browser access is gated by HathiTrust-member institutional auth; user has the path documented for personal-machine retrieval.
+
+2. **Sentence-embedding script committed at `tools/embed_cross_rubric.py`** (commit `4eed8f5f`). Purpose: enable the cross-rubric clustering re-run with semantic embeddings that the 2026-05-03 sandboxed env couldn't do (egress proxy excludes `huggingface.co`). Default model `all-MiniLM-L6-v2` (~80MB, 384-dim, fast on CPU). Reads `docs/active/compendium-source-extracts/results/cross_rubric_items_clustered.csv` (the 509-item rubric atomic-items file from 2026-05-03), writes three artifacts: `embed_similarity_matrix.npy` (NxN cosine-sim), `embed_clusters_at_thresholds.csv` (summary stats), `embed_clusters_full.txt` (cluster contents). Designed to run from a local machine; `pip install sentence-transformers pandas numpy` then `python tools/embed_cross_rubric.py`.
+
+   **Threshold guidance** (sentence-embedding cosine-sim is not directly comparable to TF-IDF cosine-sim): 0.30 ~ noise; 0.50 ~ probably-same-concept (default starting threshold); 0.70 ~ near-paraphrase; 0.85 ~ essentially-identical-wording. The script defaults to `0.50,0.60,0.70,0.80`.
+
+   **Predictions to falsify** (script docstring also lists these for the next agent):
+   - Does the European<->state-tradition vocabulary divide bridge under semantic embeddings? TF-IDF caught only 1 cross-tradition cluster spanning >=3 rubrics ("lobbyist definition," and only because the literal word "lobbyist" appeared in all five). Embeddings should produce more.
+   - Does the "expenditures benefiting public officials" concept consolidate? Currently scattered across Opheim / FOCAL / Newmark / HiredGuns / Sunlight in non-overlapping vocabulary; TF-IDF caught Newmark<->Opheim<->FOCAL but missed HiredGuns and Sunlight.
+   - Does the meeting-log family form? SOMO `disc_leg_footprint`, IBAC ministerial-diary, AccessInfo "duty to keep a true and detailed record of meetings", CouncilEurope "Recorded contacts", FOCAL contact-log category, TI_2016 "Lobby meeting record" — same concept, near-zero lexical overlap.
+
+   **If MiniLM does NOT bridge these, that itself is a finding** — would mean the vocabulary divide reflects genuinely different conceptual decompositions, not just different words for the same thing. Either way, worth recording into a follow-up results doc next session.
+
+## Handoff to next agent (desktop)
+
+**Branch:** `compendium-source-extracts`. HEAD as of this writing: `4eed8f5f`. 6 commits ahead of `main`. Multi-committer rules apply (pull-before-push; never force-push; never merge to main without explicit user ask).
+
+**Pre-flight reading order for the next agent:**
+1. `CLAUDE.md` (worktree root)
+2. `STATUS.md` (note the top-of-file PRI-out-of-bounds block — non-negotiable)
+3. `README.md`
+4. `docs/active/compendium-source-extracts/RESEARCH_LOG.md`
+5. `docs/active/compendium-source-extracts/convos/20260503_per_paper_extraction_execution.md`
+6. This convo (`20260503_pm_acquisition_and_descriptives.md`) — particularly the **Post-session continuation** block above for the local-execution context
+7. `docs/active/compendium-source-extracts/plans/20260504_compendium_2_0_synthesis.md`
+8. `docs/active/compendium-source-extracts/results/20260503_blue_book_bos_cogel_acquisition.md`
+9. `docs/active/compendium-source-extracts/results/20260503_cross_rubric_descriptive.md`
+10. `tools/embed_cross_rubric.py` (the script's docstring summarizes the predictions)
+
+**What's runnable locally without further setup:**
+- `python tools/embed_cross_rubric.py` — produces three local outputs (similarity matrix, threshold summary, cluster dump). Should run in 30-60 seconds on CPU after the one-time MiniLM download.
+
+**What the user has decided NOT to do this round:**
+- Acquire State Capital Handbook (commercial-only, ~$200/yr; deferred indefinitely unless project subscription budget materializes).
+- Acquire Book of the States 2005 (item labels already in `items_Newmark2005.tsv`/`items_Opheim.tsv`; revisit only if Blue Book path delivers and operational thresholds become the binding gap).
+
+**What the user has flagged as runnable from their personal machine:**
+- HathiTrust 1990 8th edition reader (catalog record above) — they have the path documented; institutional auth dependent.
+- The embedding script (committed today).
+
+**Open questions for the next agent to confirm at session start:**
+1. Did the local sentence-embedding run produce useful cross-tradition bridges? (Predictions in the script docstring.) If yes, integrate into a follow-up results doc; if no, that null result is itself worth a short addendum to `20260503_cross_rubric_descriptive.md`.
+2. Has the user retrieved any Blue Book content from HathiTrust personally? If yes, the next step is extracting Tables 28-32 cell content into TSV form following the 2026-05-03 extraction template (`paper_id`, `indicator_id`, `indicator_text`, `section_or_category`, `indicator_type`, `scoring_rule`, `source_quote`, `notes`) under `docs/active/compendium-source-extracts/results/items_CSG_BlueBook_1990.{tsv,md}`.
+3. Has the Adam Newmark email gone out? (Task #10 / Task #11 of `plans/20260504_compendium_2_0_synthesis.md`.) If yes, check responses; if no, the user may want the next agent to draft a single combined ask covering Vaughan & Newmark 2008 retrieval + Blue Book/BoS questions.
+
+**What is OUT of scope until compendium 2.0 lands:**
+- Reading PRI 2010 in any form (the ⛔ block in STATUS.md).
+- Reopening compendium 1.x or schema v1.1 for "fixes" (frozen pending v2.0).
+- Iter-2 or further work on the `statute-extraction` harness (paused).
+
+**Hot-take takeaway for the next agent in two sentences:** Frequency-based filtering will not produce a clean compendium 2.0 core (the histogram has no elbow), and lexical clustering only catches within-author paraphrasing, not cross-tradition convergence — so the immediate question the embedding pass tries to answer is whether SEMANTIC clustering can do the bridging that TF-IDF could not. If it can, the path forward is hybrid Method D (anchor + frequency + discriminative-strength). If it cannot, the project will need to confront that the European-tradition and state-tradition rubrics are measuring genuinely different things, not just expressing the same things differently.
