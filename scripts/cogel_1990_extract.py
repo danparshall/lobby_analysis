@@ -295,44 +295,57 @@ def assign_rows(
 ) -> dict[Token, str]:
     """Assign each non-jurisdiction token to its nearest jurisdiction by y.
 
-    Tokens above the first anchor are labelled '_header'; below the last,
-    '_footer'.
+    Each row's y-band runs from the midpoint to the previous anchor up to
+    the midpoint to the next anchor. The topmost row extends *upward* by
+    half the inter-row gap, because asterisk and dash glyphs sit a fair
+    distance above the letter baseline of the jurisdiction label and would
+    otherwise be misclassified as header. Same logic mirrored for the
+    bottom row.
     """
     if not anchors:
         return {t: "_unknown" for t in tokens}
 
     anchor_ys = [a[0].cy for a in anchors]
     anchor_names = [a[1] for a in anchors]
-    first_y, last_y = anchor_ys[0], anchor_ys[-1]
-    # Row band: each anchor owns [midpoint to prev anchor, midpoint to next].
+    n = len(anchor_ys)
+
+    # Median inter-row gap; falls back to a reasonable default if there's
+    # only one anchor on the page.
+    if n >= 2:
+        gaps = [anchor_ys[i + 1] - anchor_ys[i] for i in range(n - 1)]
+        gaps.sort()
+        median_gap = gaps[len(gaps) // 2]
+    else:
+        median_gap = 120  # ~one row at 300 DPI on this corpus
+
     midpoints = [
-        (anchor_ys[i] + anchor_ys[i + 1]) // 2 for i in range(len(anchor_ys) - 1)
+        (anchor_ys[i] + anchor_ys[i + 1]) // 2 for i in range(n - 1)
     ]
+    upper_bound = anchor_ys[0] - median_gap // 2
+    lower_bound = anchor_ys[-1] + median_gap // 2
 
     assignments: dict[Token, str] = {}
     anchor_token_set = {a[0] for a in anchors}
     for t in tokens:
         if t in anchor_token_set:
-            # Tag the anchor itself with its own name.
             for a_tok, a_name in anchors:
                 if a_tok is t:
                     assignments[t] = a_name
                     break
             continue
-        if t.cy < first_y - 50:
+        if t.cy < upper_bound:
             assignments[t] = "_header"
             continue
-        if t.cy > last_y + 100:
+        if t.cy > lower_bound:
             assignments[t] = "_footer"
             continue
-        # Find the anchor whose band contains t.cy.
         idx = 0
         for i, mp in enumerate(midpoints):
             if t.cy < mp:
                 idx = i
                 break
         else:
-            idx = len(anchor_ys) - 1
+            idx = n - 1
         assignments[t] = anchor_names[idx]
     return assignments
 
