@@ -16,6 +16,63 @@ Carry-forward signals (informational, not gates):
 
 (Newest first.)
 
+### 2026-05-06 (late) — 3-method × 3-run consensus design (supersedes regex assembly plan)
+
+**Convo:** [`convos/20260506_3way_consensus_design.md`](convos/20260506_3way_consensus_design.md)
+**Plan produced:** [`plans/20260506_comp_assembly_3way_consensus.md`](plans/20260506_comp_assembly_3way_consensus.md)
+**Plan superseded:** [`plans/20260506_comp_assembly_via_regex.md`](plans/20260506_comp_assembly_via_regex.md) (SUPERSEDED banner added)
+**Spawning artifact:** the regex-assembly handoff plan from earlier the same day; user opened a critical review and pivoted twice during the conversation.
+
+#### Topics Explored
+
+- Critical review of the regex assembly plan; framing-strip mechanics traced through `tools/normalize_state_items.py` (the existing prototype already does HG `"Is X required?"` → `"X"` and Newmark `"Disclosure required: X"` → `"X (disclosure)"` — token-overlap dedup would catch these, but PRI rules don't exist yet and Newmark suffix interaction is non-trivial).
+- LobbyView-for-states framing made explicit: the compendium IS the per-state question set; recognition that two rubrics ask the same question with different framing is what enables the per-state matrix to be coherent.
+- Method-independence as the basis for triangulation: 2 methods that are too similar produce correlated outputs and triangulation buys nothing.
+- M3 candidate selection: top-down taxonomy → paraphrase-then-group → FOCAL-anchored. User chose FOCAL after correcting the assistant's mischaracterization of FOCAL's "zero Prohibitions, minimal Personnel" as a blind spot — those aren't disclosure-mechanism items, so anchoring on FOCAL biases toward what the project actually cares about.
+- Local subagent dispatch via Claude Code Task tool (MAX plan); cost concern drops, parallel dispatch is fine.
+
+#### Provisional Findings
+
+- The regex plan's cross-method-comparison framing was implicitly treating embedding as ground truth. User's reframing made clear that disagreement is symmetric and the more useful product of multiple methods is identifying ambiguity, not validating one method against another.
+- Manual (LLM-judgment-based) grouping is plausibly stronger than the regex pipeline for this corpus, because the hard parts of regex (PRI rules, Newmark suffix, CPI filter) are all judgment calls dressed as engineering. Long-format output preserves provenance automatically.
+- 3-method × 3-run separates two distinct sources of variance: method instability (within-method, across 3 runs) and method disagreement (between-method). 9 runs of one method only measure the former.
+- FOCAL anchoring is well-aligned with project scope (disclosure-mechanism focus, what populates StateMasterRecord cells).
+- The `~150 items` expected output is gut anchor only, not derived. Plan flags this explicitly.
+
+#### Decisions
+
+| topic | decision |
+|---|---|
+| Method set | M1 cluster-anchored / M2 blind / M3 FOCAL-anchored. |
+| Replication | 3 runs per method = 9 dispatches. |
+| Dispatch mechanism | Claude Code Task tool, `subagent_type="general-purpose"`, parallel — NOT Anthropic API. |
+| Output schema | Long-format `source_paper, source_id, source_text, group_id, group_label`. Uniform across all 9 runs. |
+| Consensus tool | `tools/consensus_grouping.py` per-pair agreement count → strict (≥8/9) / loose (≥6/9) / human-review (3–5/9) views. |
+| CPI_2015 | Filter upfront in pre-stage; 15/16 rows are non-lobbying-domain noise. |
+| PRI | IN scope per 2026-05-06 partial clearance; loaded from `items_PRI_2010.tsv` separately, joined with the 8-rubric corpus from `cross_rubric_items_clustered.csv`. |
+| Regex plan | Superseded; banner added; preserved for traceability. |
+
+#### Mistakes recorded
+
+1. Assistant over-engineered the regex plan critique with methodological perfectionism that the user's "we don't need rigorous justification" framing made misplaced.
+2. Assistant confabulated derivation math for the ~150 expected-size estimate; user clarified it was gut instinct only.
+3. Assistant initially mischaracterized FOCAL's category coverage gaps as a blind spot; corrected by user — those gaps are out of project scope.
+
+#### Results
+
+- Plan doc: [`plans/20260506_comp_assembly_3way_consensus.md`](plans/20260506_comp_assembly_3way_consensus.md)
+- Convo: [`convos/20260506_3way_consensus_design.md`](convos/20260506_3way_consensus_design.md)
+- Regex plan (superseded): [`plans/20260506_comp_assembly_via_regex.md`](plans/20260506_comp_assembly_via_regex.md) — banner added at top.
+
+No code or data artifacts produced this session — this was a planning conversation; the plan is the deliverable.
+
+#### Next Steps
+
+- Next agent (possibly user from the road) executes the 3-way consensus plan: pre-stage input CSV, write briefs, dispatch 9 Task subagents in parallel, validate outputs, run `tools/consensus_grouping.py`, surface results in `report.md`.
+- After results return: user reviews strict-consensus clusters + human-review pile; canonical question list approved; compendium 2.0 schema design plan written as a follow-up.
+
+---
+
 ### 2026-05-06 — Compendium assembly via embeddings (te3-large) + first candidate item set
 
 **Convo:** [`convos/20260506_comp_assembly_via_embeddings.md`](convos/20260506_comp_assembly_via_embeddings.md)

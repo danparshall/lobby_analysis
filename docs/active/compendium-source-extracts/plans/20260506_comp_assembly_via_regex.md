@@ -1,12 +1,33 @@
 # Compendium assembly via regex/python — Implementation Plan
 
-**Goal:** Produce a parallel candidate item set for compendium 2.0 (`comp_assembly_regex_v1.{tsv,md}`) by regex/string-based normalization + dedup, scoped to USA-tradition rubrics. This is one assembly *method*; the actual compendium 2.0 emerges from reconciling this output against the existing embedding-based candidate set, not from this output alone.
+> **⚠️ SUPERSEDED 2026-05-06.** Replaced by [`20260506_comp_assembly_3way_consensus.md`](20260506_comp_assembly_3way_consensus.md), which generalizes regex into one of three triangulating methods. The framing-strip / per-rubric-rule discussion below is preserved as historical context but is NOT the current execution path. Do not run this plan.
+
+## Why this matters (project context)
+
+This repo is **"LobbyView, for all 50 states"** (`README.md` line 3) — a rubric-agnostic *data layer* where every state's record answers the same fixed set of disclosure questions, so researchers, activists, and journalists can apply their own weights and rankings on top of it.
+
+**The compendium IS that fixed question set.** Each canonical row in compendium 2.0 = one disclosure question we will ask of every state's regime, with answers along two axes: "does the statute require it?" (legal availability) and "does the portal expose it?" (practical availability). Every rubric in `papers/text/` is a different prior attempt at this same question set, with author-specific framing scaffolds wrapped around the same underlying concepts:
+
+- Newmark phrases items as `"Disclosure required: lobbyist principal"`.
+- HiredGuns phrases the same item as `"Is the lobbyist principal required to be reported?"`.
+- Opheim writes `"lobbyist principal"` bare.
+- PRI writes `"Is the lobbyist required to disclose the principal?"`.
+
+These are **one question**. The compendium has to recognize that — otherwise the per-state matrix asks every state the same question N times under different rubric names, which inflates the evaluation cost and corrupts the availability/accessibility scoring that downstream consumers will derive their rankings from. Recognizing that one question = one row across rubric-specific framing variants is exactly what this assembly run does mechanically; that's why regex/string methods are well-suited (the framing scaffolds are syntactic and rule-stripable) and why the output size is expected to be ~half the input.
+
+## Goal
+
+Produce a candidate compendium-2.0 item set (`comp_assembly_regex_v1.{tsv,md}`) by stripping per-rubric framing scaffolds (prototype in `tools/normalize_state_items.py`) and deduplicating on the underlying noun-phrase concept.
+
+**Expected output:** **~150 canonical questions** covering the USA-tradition rubric universe. This is the user's gut-instinct estimate, not derived from a model — the intuition is "rubrics overlap heavily, so 287 input items collapses to roughly half." Treat it as a soft anchor, not a target. A result wildly outside this ballpark is a smell to investigate (≥250 likely means framing-strip rules are too narrow / under-merging; ≤80 likely means single-link chaining is over-running). But if the actual collapse rate is 30% or 70% of input rather than ~half, that's fine — the eyeball-check protocol decides whether the clusters are real, not the count.
+
+This output is parallel to the embedding-based candidate set (`comp_assembly_embed_v{1,2}.tsv`); reconciling the two methods produces the actual compendium-2.0 input. The next session is reconciliation.
 
 **Originating conversation:** [`docs/active/compendium-source-extracts/convos/20260506_comp_assembly_via_embeddings.md`](../convos/20260506_comp_assembly_via_embeddings.md)
 
-**Context:** A 2026-05-06 session ran an OpenAI `text-embedding-3-large` pass over the 509 rubric atomic items and produced two embedding-based candidate sets (`comp_assembly_embed_v{1,2}.tsv`). The embedding approach has known weaknesses for the USA-tradition rubrics: it loses signal on short-label items (Newmark2005, Sunlight) and can mismatch on lexical-noise highest-similarity arguments (e.g. Opheim "lobbyist's total spending" argmaxed onto an HG frequency-of-reporting question). The regex approach is expected to be stronger on those exact edge cases — short labels lexically match each other, and explicit per-rubric framing-strip rules (already prototyped in `tools/normalize_state_items.py`) expose the underlying noun-phrase concept directly. Running both methods and reconciling is the user's intended path to compendium 2.0.
+**Context:** A 2026-05-06 session ran an OpenAI `text-embedding-3-large` pass over the 509 rubric atomic items and produced two embedding-based candidate sets (`comp_assembly_embed_v{1,2}.tsv`). The embedding approach has known weaknesses for the USA-tradition rubrics: it loses signal on short-label items (Newmark2005, Sunlight) and can mismatch on lexical-noise highest-similarity arguments (e.g. Opheim "lobbyist's total spending" argmaxed onto an HG frequency-of-reporting question). The regex approach is expected to be stronger on those exact edge cases — short labels lexically match each other, and explicit per-rubric framing-strip rules expose the underlying noun-phrase concept directly. Running both methods and reconciling is the user's intended path to compendium 2.0.
 
-**Confidence:** Exploratory — testing whether regex/string methods produce a comparable or stronger USA-tradition candidate set than embeddings. The two methods are expected to disagree on some items; that disagreement is the most informative signal.
+**Confidence:** Load-bearing for compendium 2.0, therefore load-bearing for the per-state data layer that is this repo's deliverable. Not "exploratory" in the sense of "let's see what falls out" — the framing-strip operation itself is well-understood and the prototype already handles HG/Newmark2017/Opheim/OpenSecrets reasonably. Exploratory only in the sense that the similarity threshold + canonical-text choice within each cluster need tuning against the eyeball-check protocol.
 
 **Architecture:** Assemble candidates from `items_*.tsv` of USA-tradition rubrics → apply per-rubric framing-strip (extending the prototype in `tools/normalize_state_items.py`) → cluster by string similarity (token overlap, n-gram, edit distance — implementer's choice) → for each cluster produce one canonical row that links back to all source items. Output a TSV in the same schema as `comp_assembly_embed_v*` plus a methodology note.
 
