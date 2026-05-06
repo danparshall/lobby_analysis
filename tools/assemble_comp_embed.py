@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """
-Assemble the comprehensive item set (compendium 2.0 working draft).
+Assemble a candidate item set for compendium 2.0 via embedding-based coverage
+analysis. This is one assembly *method*, not THE answer — there will be
+parallel assemblies (e.g. comp_assembly_regex) using different methods.
+Outputs are named `comp_assembly_embed_v{n}.{tsv,md}` to make the method-vs-
+conclusion distinction durable in the file system.
 
 v1 (initial): Core 3 (HG + FOCAL + Newmark2017) + Opheim coverage extension.
 v2 (this script): adds all PRI 2010 items (accessibility 22 + disclosure-law 61
@@ -25,8 +29,8 @@ Inputs (read from docs/active/compendium-source-extracts/results/):
   - embed_index__openai__text-embedding-3-large.csv
 
 Output (written to results/):
-  - <date>_comprehensive_set_v2.tsv
-  - <date>_comprehensive_set_v2.md   (assembly note)
+  - <date>_comp_assembly_embed_v2.tsv
+  - <date>_comp_assembly_embed_v2.md   (assembly note)
 
 Selection logic for Opheim coverage extension:
   Items below sim=0.55 to anything in HiredGuns + FOCAL + Newmark2017 (clear
@@ -141,8 +145,8 @@ def best_core_match(paper_id: str, indicator_id: str, sim: np.ndarray,
 
 def main():
     today = dt.date.today().strftime('%Y%m%d')
-    out_tsv = RESULTS / f'{today}_comprehensive_set_v2.tsv'
-    out_md  = RESULTS / f'{today}_comprehensive_set_v2.md'
+    out_tsv = RESULTS / f'{today}_comp_assembly_embed_v2.tsv'
+    out_md  = RESULTS / f'{today}_comp_assembly_embed_v2.md'
 
     # Load similarity + index for best-core-match annotation on extensions
     sim = np.load(RESULTS / 'embed_similarity_matrix__openai__text-embedding-3-large.npy')

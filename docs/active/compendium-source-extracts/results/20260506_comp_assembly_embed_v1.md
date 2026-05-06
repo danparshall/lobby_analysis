@@ -1,22 +1,22 @@
-# Comprehensive item set — v2  (20260506)
+# Compendium assembly via embeddings — v1  (20260506)
 
+> **Caveat:** one candidate item set produced by ONE assembly method
+> (embedding-based coverage analysis with manually-selected Opheim
+> extensions). NOT the comprehensive set / NOT THE answer for compendium
+> 2.0. Parallel assemblies (`comp_assembly_regex`, possibly others) will
+> produce alternate candidate sets; the comprehensive set is whatever
+> falls out of comparing/reconciling those, not what any single method
+> produces.
 
-Working draft for compendium 2.0. Assembled from per-rubric source 
-extracts shipped 2026-05-03, a coverage-gap extension from Opheim 
-1991 (identified via OpenAI `text-embedding-3-large` similarity 
-analysis), and all PRI 2010 items (added 2026-05-06 per explicit 
-user clearance to use PRI as a non-default coverage source).
-
-> **PRI inclusion note:** PRI 2010 items are tagged 
-> `ext_pri_2010_*` to make their non-default status durable. 
-> PRI is NOT a structural anchor here. The STATUS.md ⛔ block 
-> on PRI remains in force for all OTHER uses (no PRI-derived 
-> seeding, no "match PRI" calibration, no bootstrapping new 
-> artifacts from PRI rubric structure).
+Assembled from per-rubric source extracts shipped 2026-05-03, plus a
+coverage-gap extension from Opheim 1991 identified via OpenAI
+`text-embedding-3-large` similarity analysis. Vectors at
+`embed_vectors__openai__text-embedding-3-large.npy`; index at
+`embed_index__openai__text-embedding-3-large.csv`.
 
 ## Composition
 
-- **Total items:** 209
+- **Total items:** 126
 
 | compendium_role | n | source rubric |
 |---|---:|---|
@@ -27,8 +27,6 @@ user clearance to use PRI as a non-default coverage source).
 | ext_opheim_income | 2 | Opheim 1991 — income disclosure (distinct from compensation) |
 | ext_opheim_oversight | 1 | Opheim 1991 — review intensity dimension |
 | ext_opheim_catchall | 1 | Opheim 1991 — influence-peddling catch-all |
-| ext_pri_2010_disclosure | 61 | PRI 2010 disclosure-law rubric (61 atomic items; transcribed 2026-04-13 from PRI 2010 §III) |
-| ext_pri_2010_accessibility | 22 | PRI 2010 accessibility rubric (22 atomic items; transcribed 2026-04-13 from PRI 2010 §IV) |
 
 ## Method
 
@@ -53,19 +51,14 @@ US-state-lobbying-disclosure scope. A future pass may flag a small
 subset (e.g. IBAC MP-meeting-disclosure cluster) for 
 coverage-comparison reference; not in this round.
 
-PRI 2010 added in v2 (this round) per explicit user clearance 
-2026-05-06: "include all PRI items, now that we aren't locked 
-onto them". All 83 PRI atomic items pulled in unfiltered (22 
-accessibility + 61 disclosure-law). They are NOT in the 509-item 
-embedding space (PRI was excluded from the 26-paper extraction 
-round), so `best_core_match_*` columns are blank for PRI rows. A 
-follow-up coverage analysis could embed them and identify which 
-PRI items are redundant with existing rows; for now all are kept 
-verbatim.
+PRI 2010 deliberately excluded per STATUS.md ⛔ block. Future task: 
+after this set is in shape, scan PRI for items uniquely capturing 
+government-funded lobbying that the core 3 + Opheim extension 
+miss. PRI is a non-default coverage source only.
 
 ## Files
 
-- TSV: `20260506_comprehensive_set_v2.tsv`  (209 rows × 13 cols)
+- TSV: `20260506_comp_assembly_embed_v1.tsv`  (126 rows × 13 cols)
 - Source extracts: `items_HiredGuns.tsv`, `items_FOCAL.tsv`, 
   `items_Newmark2017.tsv`, `items_Opheim.tsv`
 - Embedding artifacts: `embed_*__openai__text-embedding-3-large.{npy,csv,txt}`
