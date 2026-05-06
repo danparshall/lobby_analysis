@@ -16,7 +16,85 @@ Carry-forward signals (informational, not gates):
 
 (Newest first.)
 
-### 2026-05-03 (pm cont'd) — Acquisition mapping (Blue Book / BoS / COGEL) + cross-rubric descriptive stats
+### 2026-05-06 — Compendium assembly via embeddings (te3-large) + first candidate item set
+
+**Convo:** [`convos/20260506_comp_assembly_via_embeddings.md`](convos/20260506_comp_assembly_via_embeddings.md)
+**Plan produced:** [`plans/20260506_comp_assembly_via_regex.md`](plans/20260506_comp_assembly_via_regex.md) (handoff for the parallel regex assembly)
+**Spawning artifact:** the 2026-05-06 post-session continuation block in `convos/20260503_pm_acquisition_and_descriptives.md` had committed `tools/embed_cross_rubric.py` for desktop execution; this session ran it.
+
+#### Topics Explored
+
+- OpenAI `text-embedding-3-large` embedding run over the 509-item rubric atomic-items corpus. Vectors + index + similarity matrix preserved.
+- Threshold tuning for single-link clustering (sweet spot at sim ≥ 0.68: 28 clusters / 106 items / 10 spanning ≥3 rubrics / 3 spanning ≥5 rubrics).
+- Tradition-tagged cluster analysis (state / euro / cross). Counted clusters per tradition combination; identified the rare cross-tradition bridges.
+- Coverage analysis: HiredGuns + FOCAL + Newmark2017 vs the rest of the state-tradition corpus.
+- Normalization side-experiment: per-rubric regex framing-strip (HG interrogative, Newmark2017 "Disclosure required:", etc.) re-embedded over the 134 state-tradition items; modest tightening of within-tradition clusters; not load-bearing for the candidate set.
+- Built first compendium-2.0 candidate item set via embedding-based coverage analysis. v1 = 126 items (HG + FOCAL + Newmark2017 + 10 Opheim coverage extensions). v2 = 209 items (v1 + all 83 PRI atomic items, added per explicit user clearance).
+- Renamed deliverables from `comprehensive_set` → `comp_assembly_embed_v{n}` after user pushback that the original name pre-claimed an answer the artifact didn't have. Saved naming lesson to memory.
+
+#### Provisional Findings
+
+- Within-tradition consolidation works well at sim ≥ 0.68 (state side: HG+Newmark2017+Opheim+Sunlight on qualification thresholds, 8×4 cluster; multiple Newmark2005↔Newmark2017↔Opheim 3-rubric consolidations on definition triggers. Euro side: 5-rubric "what to register" cluster, 5-rubric "open-data accessibility" cluster, 4-rubric "code of conduct" cluster).
+- Cross-tradition (state↔euro) bridging is sparse even at frontier embedding quality. Only 1 cross-tradition cluster forms at sim ≥ 0.68 ("timely disclosure / reporting frequency," 5 rubrics). Many additional state↔euro pairs cluster at sim 0.60-0.66 but get blocked by single-link chaining considerations.
+- The European↔state vocabulary divide appears structural, not just lexical. Each rubric organizes items around a different conceptual frame (declarative-disclosure-inventory vs spending-report-itemization-audit vs normative-completeness vs meeting-record-schema vs public-official-duty). Stripping framing helps within-tradition but not cross-tradition.
+- HG + FOCAL + Newmark2017 cover the state-tradition well: 79% at sim ≥ 0.70, 84% at sim ≥ 0.65, 89% at sim ≥ 0.55 across 184 state+cross atomic items. Real coverage gap is Opheim's enforcement battery (6 items, COGEL Blue Book Table 31 — Newmark dropped these in 2005 and Strickland inherited the drop) plus Opheim's income-disclosure pair (2 items, distinct from compensation).
+- Newmark2005 and Sunlight residual gaps appear to be short-label artifacts rather than missing concepts.
+- CPI_2015 SII is mostly out of scope for compendium-2.0 (multi-domain integrity scorecard; only 1 of 16 items is lobbying-specific).
+- European-tradition rubrics are largely out of US-state-lobbying-disclosure scope (right-to-participate frameworks, Dutch consultation reform, EU MEP declarations, EU operational specifics). A small subset (e.g. IBAC MP-meeting-disclosure) might be worth flagging as `cmp_*` reference items in a future pass.
+
+#### Decisions
+
+| topic | decision |
+|---|---|
+| Embedding provider | OpenAI te3-large for production; sentence-transformers MiniLM kept as offline fallback. |
+| Embedding artifacts | Save raw vectors + index + similarity matrix; preserve all so downstream re-clustering / UMAP / centroid work doesn't require API re-calls. |
+| `comp_assembly_embed_v1` | HG + FOCAL + Newmark2017 + 10 Opheim items = 126. |
+| `comp_assembly_embed_v2` | v1 + all 83 PRI = 209. PRI sourced from historical pri-2026-rescore transcriptions, NOT re-extracted from paper text. |
+| PRI clearance | Partial clearance recorded 2026-05-06: PRI may be ADDED as `ext_pri_2010_*` coverage extension. Still blocked: structural anchoring, "match PRI" calibration, PRI-shaped row-frame seeding. STATUS.md ⛔ block remains for everything else. |
+| File naming | `comp_assembly_<method>_v{n}.{tsv,md}` — names by method, not conclusion. Slot reserved for parallel `comp_assembly_via_regex` next. |
+| Old (141-row PRI-shaped) compendium | Not a target / baseline / benchmark. Memory entry added. |
+
+#### Mistakes recorded
+
+1. Volunteered comparison against the old compendium when user asked a sizing question. Memory `feedback_dont_volunteer_comparisons.md` added.
+2. Named files `comprehensive_set.tsv` / `_v2.tsv` (claims-to-be-the-answer naming). Memory `feedback_name_by_method_not_conclusion.md` added; files renamed.
+3. Initial coverage analysis used wrong framing (within-set dedup instead of "% of each parent rubric covered by the set"). User redirected; recovered same turn.
+4. Worktree-venv mismatch initially loaded main worktree's venv. Fixed via `unset VIRTUAL_ENV && uv sync && uv pip install` against worktree-local venv.
+
+#### Results
+
+Embedding artifacts (raw, full corpus):
+- `results/embed_vectors__openai__text-embedding-3-large.npy` — 509×3072 float32
+- `results/embed_index__openai__text-embedding-3-large.csv`
+- `results/embed_similarity_matrix__openai__text-embedding-3-large.npy`
+- `results/embed_clusters_full__openai__text-embedding-3-large.txt`
+- `results/embed_clusters_at_thresholds__openai__text-embedding-3-large.csv`
+
+Embedding artifacts (state-only normalized side-experiment):
+- `results/cross_rubric_items_state_normalized.csv`
+- `results/state_normalized/embed_*__openai__text-embedding-3-large.{npy,csv,txt}`
+
+PRI items in standard schema:
+- `results/items_PRI_2010.tsv` — 83 atomic items
+
+Candidate item sets:
+- `results/20260506_comp_assembly_embed_v1.tsv` + `.md` — 126 items
+- `results/20260506_comp_assembly_embed_v2.tsv` + `.md` — 209 items
+
+Tools:
+- `tools/embed_cross_rubric.py` (extended with OpenAI provider + raw-vector preservation)
+- `tools/normalize_state_items.py`
+- `tools/assemble_comp_embed.py`
+
+#### Next Steps
+
+- Next agent runs `comp_assembly_via_regex` per the handoff plan: parallel candidate set produced via regex/python framing-normalization + dedup, scoped to USA-tradition rubrics only (Europe out of scope per user). Output: `comp_assembly_regex_v1.{tsv,md}`.
+- After both candidate sets exist, reconcile: items present in both / present in only embed / present in only regex. The reconciled set is the actual compendium 2.0 input candidate, not either method's output alone.
+- Open follow-ups parked in the convo's Open Questions section: borderline Opheim items, European-tradition coverage-comparison flagging, PRI-in-embedding-space dedup analysis.
+
+---
+
+
 
 **Convo:** [`convos/20260503_pm_acquisition_and_descriptives.md`](convos/20260503_pm_acquisition_and_descriptives.md)
 **Spawning artifact:** Plan Step 4 of [`plans/20260504_compendium_2_0_synthesis.md`](plans/20260504_compendium_2_0_synthesis.md), invoked early after a direct user request to (a) map acquisition options for the three reference works and (b) produce a cross-rubric descriptive pass to test the user's hypothesis about near-duplicate paraphrasing across rubrics.
