@@ -4,13 +4,22 @@ Last updated: 2026-05-07
 
 ## ⭐ Compendium 2.0 success criterion (load-bearing)
 
-> **Given a populated compendium for a state, we must be able to use the compendium data to populate every source rubric's per-state score.**
+The deliverable is a **populated data layer** — N canonical-question rows × 50 states × M vintages × {legal_availability, practical_availability} cells. The architecture commits to:
 
-Compendium 2.0 is judged by whether each source rubric is **fully reconstructible** from compendium cells via per-rubric projection logic. Falsifiable round-trip test on real data: populate compendium → apply each rubric's projection → compare to the published per-state score. All 9 source rubrics must pass.
+1. **ONE compendium.** A single canonical row set; no rubric-specific compendium variants.
+2. **ONE extraction pipeline.** A single extraction methodology — same prompt structure, same model, same retrieval approach — applied uniformly across rows, states, and years. Not 9 different pipelines per rubric. The compendium row schema must be uniform enough that one extraction approach works for every row.
+3. **Multi-year reliability.** The pipeline must extract reliably across vintages (e.g., OH 2010 + OH 2015 + OH 2024 + OH 2025), not just at one vintage.
+4. **Per-rubric projections are SANITY CHECKS on extraction accuracy, not the goal.** Each source rubric (PRI 2010, CPI 2015, FOCAL 2024, Sunlight 2015, Newmark2005/2017, Opheim, HiredGuns, OpenSecrets) has a small projection function `f_rubric(compendium_cells_for_state_year) → rubric_score`. The published rubric per-state scores are **independent ground-truth yardsticks** against our extraction.
 
-**Goal:** minimize compendium size while keeping the floor (all 9 rubric-projections functional) intact. Rows used by no rubric's projection are deletion candidates; rubrics that fail to project force new rows in.
+**Multi-rubric × multi-year validation = redundant per-row ground truth.** The same compendium row gets validated by every rubric that reads it (e.g., "expenditures benefitting officials" is read by Newmark2005 + Newmark2017 + Opheim + FOCAL.financials.10 — that's 4 independent checks on that one row's extraction). Different rubric vintages (PRI 2010, Sunlight 2015, CPI 2015, FOCAL 2024) validate different extraction vintages.
 
-This criterion was articulated 2026-05-07 after the 3-way × 3-run consensus pass and the CPI 2015 C11 fold-in. It is consistent with (and sharpens) the 2026-04-29 reframe ("compendium is the universe, rubrics are projections of it"). See `docs/active/compendium-source-extracts/RESEARCH_LOG.md` 2026-05-07 entry and the compare/contrast at `docs/active/compendium-source-extracts/results/20260507_cpi_2015_c11_vs_consensus.md` for the full reasoning.
+**Falsifiable test:** populate compendium for state S in vintage Y via the single extraction pipeline → apply each rubric's projection → compare each projected per-state score to the rubric's published score for (S, Y). Match within tolerance ⇒ extraction is sound on the rows that rubric reads, in vintage Y. **All rubrics must pass for the vintages they cover, on a sample of states.**
+
+**Goal: minimum compendium where all rubrics still project correctly across all vintages.** Rows used by no rubric's projection are deletion candidates; rubrics that fail to project force missing rows in. Rows that pass on some rubrics but fail on others surface either a row-design issue or an extraction-pipeline issue — both are debuggable signals.
+
+If we have a single compendium, with a single extraction prompt, that extracts reliably across multiple years, and every row is validated against multiple prior human-generated rubrics — we're in great shape.
+
+This criterion was articulated 2026-05-07 after the 3-way × 3-run consensus pass and the CPI 2015 C11 fold-in. It sharpens the 2026-04-29 reframe ("compendium is the universe, rubrics are projections of it"). See `docs/active/compendium-source-extracts/RESEARCH_LOG.md` 2026-05-07 entry and the compare/contrast at `docs/active/compendium-source-extracts/results/20260507_cpi_2015_c11_vs_consensus.md`.
 
 ## Current Focus
 
