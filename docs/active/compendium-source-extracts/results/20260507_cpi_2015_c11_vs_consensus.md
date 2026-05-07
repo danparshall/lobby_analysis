@@ -8,24 +8,34 @@
 
 ## ⭐ Success criterion for compendium 2.0 (this is the load-bearing principle)
 
-> **Given a populated compendium for a state, we must be able to use the compendium data to populate every source rubric's per-state score.**
+The deliverable is a **populated data layer** — N canonical-question rows × 50 states × M vintages × {legal_availability, practical_availability} cells. The architecture commits to:
 
-The compendium 2.0 is judged by whether each source rubric is **fully reconstructible** from compendium cells. This is a falsifiable round-trip test:
+1. **ONE compendium.** A single canonical row set; no rubric-specific variants.
+2. **ONE extraction pipeline.** A single extraction methodology — same prompt structure, same model, same retrieval approach — applied uniformly across rows, states, and years. Not 9 different pipelines per rubric. The compendium row schema must be uniform enough that one extraction approach works for every row.
+3. **Multi-year reliability.** The pipeline must extract reliably across vintages (e.g., OH 2010 + OH 2015 + OH 2024 + OH 2025), not just at one vintage.
+4. **Per-rubric projections are SANITY CHECKS on extraction accuracy, not the goal.** Each source rubric has a small projection function `f_rubric(compendium_cells_for_state_year) → rubric_score`. The published rubric per-state scores are **independent ground-truth yardsticks** against our extraction.
 
-1. Populate compendium cells for some sample of states (1, 5, eventually 50).
-2. Apply each source rubric's projection logic to the cells.
-3. Compare the projected per-rubric per-state score to the published rubric's actual score.
-4. Match (within rubric-specific tolerance) ⇒ that rubric is covered.
-5. **All 9 source rubrics must pass this test.**
+**Multi-rubric × multi-year validation gives us redundant per-row ground truth.** The same compendium row is read by every rubric that asks the equivalent question. Example: "expenditures benefitting officials" is read by Newmark2005 + Newmark2017 + Opheim + FOCAL.financials.10 — 4 independent checks on that one row's extraction. Different rubric vintages (PRI 2010, Sunlight 2015, CPI 2015, FOCAL 2024) validate different extraction vintages.
 
-This criterion gives compendium 2.0 a clear floor and ceiling:
+**Falsifiable test on real data:**
 
-- **Floor (additive):** every source rubric must be projectable. If any rubric needs a row the compendium doesn't have, that row gets added. New rubrics that pass through this branch later expand the floor as needed.
-- **Ceiling (subtractive):** **goal — minimize compendium size while keeping the floor intact.** A row that no rubric's projection logic ever reads is deletable. The minimum compendium is the smallest set of canonical rows where all 9 rubrics still project correctly.
+1. Populate compendium for state S in vintage Y via the single extraction pipeline.
+2. Apply each rubric's projection function to the populated cells.
+3. Compare each projected per-state score to the rubric's published score for (S, Y).
+4. Match within rubric-specific tolerance ⇒ extraction is sound on the rows that rubric reads, in vintage Y.
+5. **All rubrics must pass for the vintages they cover, on a sample of states.**
 
-The 24 strict consensus clusters from the 3-way run are **not the compendium 2.0 by themselves** — consensus is a discovery aid, not a sufficiency test. The sufficiency test is projection-round-trip.
+**Goal: minimum compendium where all rubrics still project correctly across all vintages.**
 
-**Architectural framing (consistent with the 2026-04-29 reframe):** the compendium is the universe of canonical questions; PRI/Sunlight/FOCAL/CPI/Newmark/Opheim/HiredGuns/OpenSecrets are *projections* from a populated compendium, each with its own scoring layer that takes compendium cells as input. The compendium itself does not score; it provides the cells.
+- **Floor (additive):** every source rubric must be projectable from compendium cells. If any rubric needs a row the compendium doesn't have, that row gets added.
+- **Ceiling (subtractive):** rows used by no rubric's projection are deletion candidates. The minimum compendium is the smallest row set where all rubrics still pass.
+- **Diagnostic value:** rows that pass on some rubrics but fail on others surface either a row-design issue or an extraction-pipeline issue — both are debuggable signals.
+
+If we have a single compendium, with a single extraction prompt, that extracts reliably across multiple years, and every row is validated against multiple prior human-generated rubrics — we're in great shape.
+
+The 24 strict consensus clusters from the 3-way run are **not the compendium 2.0 by themselves** — consensus is a discovery aid, not a sufficiency test. The sufficiency test is per-row, per-rubric, per-vintage projection-round-trip against published ground truth.
+
+**Architectural framing (consistent with the 2026-04-29 reframe):** the compendium is the universe of canonical questions; PRI / Sunlight / FOCAL / CPI / Newmark / Opheim / HiredGuns / OpenSecrets are *projections* from a populated compendium, each with its own scoring layer that takes compendium cells as input. The compendium itself does not score; it provides the cells. The rubrics, in turn, do not extract; they validate.
 
 CPI 2015 C11 is the test case for this section. The rest of this doc walks through whether/how CPI 2015's 14 items are projectable from our existing consensus output.
 

@@ -61,7 +61,7 @@
 | Stability metric | Two metrics computed and reported separately: within-method instability (per method, across 3 runs) and between-method disagreement (cross-method spread). |
 | CPI 2015 atomic-item extraction | Pulled from official `PublicI/state-integrity-data` GitHub repo, sheet ` Lobbying Disclosure`. Saved xlsx + scores.csv to `papers/`. Extracted 14 items to `results/items_CPI_2015_lobbying.tsv`. |
 | CPI 2015 fold-in vs re-dispatch | Manual fold-in (cheaper). 9-subagent re-dispatch with CPI items added is not warranted. |
-| **Projection-success criterion** | **Compendium 2.0 success = compendium can populate every source rubric's per-state score. Goal: minimize compendium size while keeping all 9 rubric-projections functional.** |
+| **Projection-success criterion (sharpened)** | **Four commitments: (1) ONE compendium (single canonical row set), (2) ONE extraction pipeline (single methodology applied uniformly across rows / states / years), (3) multi-year reliability (vintages, not single-year), (4) source rubrics as SANITY CHECKS on extraction accuracy, not goals. Multi-rubric × multi-year coverage gives redundant per-row ground truth. Goal: minimum compendium size where all rubrics still project correctly across all vintages.** |
 | Compendium 2.0 design plan | Still deferred. Per-rubric projection logic for each of the 9 rubrics is the natural follow-on; CPI 2015 C11 is a small concrete first target (14 items × 50 states). |
 
 ## Mistakes recorded
