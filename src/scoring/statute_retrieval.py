@@ -298,10 +298,13 @@ def retrieve_statute_bundle(
         artifacts.append(
             {
                 "url": url,
-                "role": "statute",
+                "role": "core_chapter",
                 "sha256": hashlib.sha256(raw).hexdigest(),
                 "bytes": len(raw),
                 "local_path": f"sections/{filename}",
+                "retrieved_because": "curated core lobbying chapter",
+                "hop": 0,
+                "referenced_from": "",
             }
         )
 
@@ -319,6 +322,63 @@ def retrieve_statute_bundle(
         json.dumps(manifest, indent=2) + "\n", encoding="utf-8"
     )
     return manifest_path
+
+
+def ingest_crossrefs(
+    client: "Client",
+    *,
+    bundle_dir: Path,
+    crossrefs_path: Path,
+) -> list[Path]:
+    """Read agent cross-reference output, fetch support chapters, update manifest.
+
+    Reads the agent's JSON output from `crossrefs_path`, fetches each
+    cross-referenced URL that isn't already in the bundle, writes the
+    statute text to `bundle_dir/sections/`, and appends the new artifacts
+    to the existing `manifest.json`.
+
+    Returns the list of newly written section file paths.
+    """
+    manifest_path = bundle_dir / "manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    existing_urls = {a["url"] for a in manifest["artifacts"]}
+
+    crossrefs = json.loads(crossrefs_path.read_text(encoding="utf-8"))
+    hop = int(crossrefs.get("hop", 1))
+
+    sections_dir = bundle_dir / "sections"
+    sections_dir.mkdir(parents=True, exist_ok=True)
+
+    new_files: list[Path] = []
+    for ref in crossrefs.get("cross_references", []):
+        url = ref["justia_url"]
+        if url in existing_urls:
+            continue
+
+        html = client.fetch_page(url)
+        text = parse_statute_text(html)
+        filename = _filename_from_url(url)
+        path = sections_dir / filename
+        path.write_text(text, encoding="utf-8")
+        raw = path.read_bytes()
+
+        manifest["artifacts"].append({
+            "url": url,
+            "role": "support_chapter",
+            "sha256": hashlib.sha256(raw).hexdigest(),
+            "bytes": len(raw),
+            "local_path": f"sections/{filename}",
+            "retrieved_because": f"{ref['section_reference']} — {ref.get('relevance', '')}",
+            "hop": hop,
+            "referenced_from": ref.get("referenced_from", ""),
+        })
+        existing_urls.add(url)
+        new_files.append(path)
+
+    manifest_path.write_text(
+        json.dumps(manifest, indent=2) + "\n", encoding="utf-8"
+    )
+    return new_files
 
 
 def _audit_to_row(audit: StateAudit) -> dict[str, str]:

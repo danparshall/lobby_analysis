@@ -40,11 +40,37 @@ Use one of: `high`, `medium`, `low`.
 - `medium` — evidence is present but requires light interpretation (e.g., FAQ language implies the rule; statute section isn't directly quoted).
 - `low` — evidence is indirect or partial; you inferred from adjacent material. Consider whether `unable_to_evaluate` is more honest than a low-confidence score.
 
-### 5. Notes.
+### 5. Read the full statute before scoring any item.
+
+Do NOT score an item based on the first relevant clause you find. Read ALL the statute files in the bundle first, then score. Lobbying statutes are structured as layers: a general rule, then exemptions, then exceptions to the exemptions, then separate disclosure requirements that apply to non-exempt entities. If you stop reading at the exemption layer, you will systematically under-score.
+
+In particular:
+- An exemption for *some* entities does not mean *all* entities of that type are exempt. Check who is NOT covered by the exemption.
+- Registration triggers based on expenditure thresholds or compensation apply regardless of entity type unless the entity is explicitly exempted. If anyone who spends $X lobbying must register, that includes government employees unless a specific exemption removes them.
+- If item E1a asks whether principals must disclose, and you find an exemption for *some* principals, check whether non-exempt principals must still disclose. Do not cascade E1a=0 to all E1 sub-items without verifying that NO principals are covered.
+- Do not treat "the definition of person doesn't list government entities" as equivalent to "government entities are exempt." The registration trigger may be activity-based (anyone who spends/receives above a threshold), not entity-based.
+
+### 6. Interpreting registration coverage (PRI disclosure-law A-series and C-series).
+
+When scoring statute text for PRI disclosure-law items:
+
+**A5–A11 (who is required to register):** These items ask whether entity types are *covered by the registration regime* — meaning the law's requirements apply to them when they engage in lobbying. This is NOT asking whether they must register as traditional lobbyists. The key test: does the registration trigger (expenditure threshold, compensation, or activity) apply to this entity type? If the trigger is activity-based and entity-agnostic, score 1 unless the entity is explicitly exempted. If the definition of "person" includes government agencies, score 1 even with narrow exemptions. Blanket exclusion from the definition AND no activity-based trigger that would catch them = score 0.
+
+**C0 (does the law define "public entity"):** Look for *functional* definitions, not just literal labels. A functional definition counts as `1` ONLY when the statute uses the public-entity boundary to scope a substantive disclosure obligation — i.e., the definition determines who *must* disclose. A definition that exists solely to scope an *exemption* (e.g., "quasi-governmental agency" defined only to carve some agencies BACK INTO a regime that otherwise exempts government, or "political subdivision" defined only to limit what local governments may *do* with public funds) does NOT count — score 0. The PRI question is whether the law affirmatively brings public entities into the disclosure regime via a definition, not whether the law uses public/private boundaries anywhere in its text.
+
+If the state defines "person" (or another coverage term) to include specific categories of public bodies (departments, agencies, political subdivisions, universities, etc.) and that definition is what brings them under the registration/disclosure obligation, score 1.
+
+If the only public-entity definitions in the statute appear in exemption clauses or in clauses regulating what public entities may do with funds (rather than in clauses defining who must disclose), score 0 — even if the definitions are detailed and functional.
+
+### 6. Notes.
 
 Use `notes` to capture anything the scoring audit will need: threshold values the rubric asked you to record, artifact conflicts, language that partially supports the score, etc. Keep notes concise (≤80 words).
 
-### 6. No preamble, no summary, no prose outside the output format.
+### 7. Files-read enumeration is mandatory for statute runs.
+
+For statute-bundle runs (PRI calibration), the brief will tell you to write a separate `files_read.json` listing every statute file you Read before scoring. You MUST Read every file in the bundle's artifact index — partial reads systematically under-score. If a file truly isn't relevant to any rubric item (rare — most chapters are cross-referenced for a reason), still list it in `statute_files_read` and add a one-line reason in `notes`. The orchestrator validates this against the bundle and fails finalization if any file is unread without explanation.
+
+### 8. No preamble, no summary, no prose outside the output format.
 
 Your response must be a single JSON array conforming to the output schema below. Nothing else.
 
