@@ -112,3 +112,86 @@ A companion application phase is forthcoming but not in this paper: "In a comple
 7. **Priority recommendation (not weights).** Scope and Contact log are flagged as the highest-priority categories for resource-constrained jurisdictions (lines 1153–1167). This is a soft heuristic, not formal weighting.
 8. **Financials category is acknowledged as US-centric.** This is relevant for this project's US-state-level application — it suggests FOCAL Financials items will map well to US state disclosures, but international comparison would be complicated.
 9. **Health-policy framing.** The paper is published in IJHPM and frames the work in terms of commercial determinants of health (tobacco, alcohol, food). This is upstream motivation; the framework itself is health-agnostic and applies to any lobbying disclosure regime.
+
+## 8. Lacy-Nichols 2025 application — scoring rules and per-country values
+
+**Discovery (2026-05-07):** The "complementary study" referenced in line 834–836 of the 2024 paper has been published as Lacy-Nichols J, Baradar H, Crosbie E, Cullerton K. *Lobbying in the shadows: a global review of lobbying disclosures.* Milbank Quarterly 2025;103(3) (DOI: 10.1111/1468-0009.70033). This 2025 application paper APPLIES FOCAL to **28 countries' national lobbyist registers**, including the **US federal LDA register (scored 81/182 = 45%)**.
+
+### Linkage between FOCAL 2024 and FOCAL 2025
+
+FOCAL's structure is essentially preserved in the 2025 application, with two adjustments:
+
+1. **Timeliness 1 + 2 merged.** The 2024 paper treats `timeliness.1` (changes/registering) and `timeliness.2` (lobbying activities disclosed real-time) as separate indicators. The 2025 application combines them: "we combined two of the timeliness indicators (around updating changes in general versus activities), as the answers were the same across all registers" (Lacy_Nichols_2025 main text line 202–204).
+2. **New "Lobbyist list" indicator added** to the Relationships category in 2025: "We created an additional indicator for listing the lobbyists employed by a company or lobby firm, as we found this was inconsistently disclosed" (line 213). Net indicator count remains 50.
+
+### Scoring rule (verbatim, main text line 195–196)
+
+> "creating a set of notes to assign a value of yes, no, or partly for each of the indicators, weighted two, one, and zero, respectively (Supplementary File 1 Table 3)"
+
+Each indicator carries a per-indicator weight in {1, 2, 3}, applied to the base score (no=0, partly=1, yes=2). Cell values in the published Figure 3 are therefore in {0, 1, 2, 3, 4, 6}, matching the colour legend ("0, red; 1, pink; 2, orange; 3, yellow; 4, light green; 6, dark green").
+
+### Verbatim per-indicator weights (Suppl File 1 Table 4) — replaced inferred values 2026-05-07 (pm)
+
+The 2025 paper's **Supplementary File 1** has now been retrieved and extracted to
+`papers/text/Lacy_Nichols_2025__lobbying_in_the_shadows__suppl_001.txt`. The verbatim
+"Our weights" column from Suppl Table 4 has been written into items_FOCAL.tsv,
+**replacing the prior Figure-3-inferred weights**.
+
+Verbatim weight distribution across 50 indicators:
+
+| Verbatim weight | # indicators | Cell-value range (no/partly/yes) |
+|---|---|---|
+| 1 | 20 | 0 / 1 / 2 |
+| 2 | 19 | 0 / 2 / 4 |
+| 3 | 11 | 0 / 3 / 6 |
+
+Sum of weight × 2 = 91 × 2 = **182 points** (matches the published total max exactly).
+
+**8 UNKNOWN-weight indicators closed** (verbatim values from Suppl Table 4):
+- `descriptors.6` (type of lobbyist contract) — verbatim weight 1
+- `revolving_door.2` (cooling-off period database) — verbatim weight 1
+- `relationships.4` (direct business associations) — verbatim weight 2
+- `financials.5` (amount of time on lobbying) — verbatim weight 2
+- `financials.7` (compensated/uncompensated) — verbatim weight 2
+- `financials.9` (expenditure on membership/sponsorship) — verbatim weight 1
+- `financials.10` (expenditures benefitting officials) — verbatim weight 2
+- `contact_log.8` (materials shared in meetings) — verbatim weight 1
+
+**Figure-3-inferred-weight consistency check:** 40 of 42 inferred weights match Suppl Table 4 verbatim. Two conflicts found and resolved (verbatim wins):
+- `financials.3` (Income sources): Figure-3-inferred 1, verbatim 2. (Canada and Germany score raw=1 = weighted 2 in Figure 3; the previous extractor read this as weighted-2 with implicit weight 1 = raw 2. Verbatim weight 2 → raw 1 produces the same weighted=2 cell value.)
+- `financials.8` (Expenditure per issue): Figure-3-inferred 1, verbatim 2. (France scores raw=1 = weighted 2; same situation.)
+
+In both cases the published Figure 3 weighted cell values were correct in the per-country CSV; only the decomposition into (weight × raw) was wrong. Substantive raw values for these three cells were updated 2->1 in the CSV; weighted values are unchanged.
+
+### Per-country CSV cell-by-cell consistency check (Figure 3 vs Suppl Table 5)
+
+The previous per-country CSV (1,400 cells) was built from Figure 3 visual reading. Cross-checking against verbatim Suppl Table 5:
+
+- **1,327 cells matched exactly** (raw 0/1/2 values).
+- **45 cells differed**, all in one of three patterns:
+  - **27 cells: blank in CSV → "/" in Suppl** (= "could not be assessed"). These are mostly Ministerial-diary-related rows (timeliness.3, openness.2) where countries lacking a diary system have a single empty cell in Figure 3.
+  - **2 cells: blank in CSV → 0 in Suppl** (Georgia financials.1 and financials.2 — Suppl has a literal blank cell, but the column total of 2 implies these were counted as 0).
+  - **3 cells (substantive raw-value differences)**: Canada/financials.3, Germany/financials.3, France/financials.8 — already covered by the weight-conflict resolution above. Weighted Figure-3 values are unchanged.
+  - **13 cells: Finland descriptors/revolving-door/relationships/contact-log rows**. Suppl Table 5 marks these "/" (Finland is among the newest registers and many fields couldn't be assessed at the time). The previous Figure-3 read recorded concrete 0s and 2s. **Suppl Table 5 is authoritative — these are now NA in the CSV.** This reduces Finland's weighted total from 70 (existing CSV) to 46 (verbatim).
+
+After updates, every country's verbatim weighted total reproduces the published Figure 3 percentages exactly:
+
+  Canada 89/182=49%, Chile 88/182=48%, US 81/182=45%, Ireland 79/182=43%,
+  France 79/182=43%, Scotland 73/182=40%, Estonia 57/182=31%, Australia 56/182=31%,
+  Lithuania 55/182=30%, Germany 52/182=29%, Peru 50/182=27%, Greece 49/182=27%,
+  Latvia 49/182=27%, Slovenia 49/182=27%, Montenegro 49/182=27%, Italy 48/182=26%,
+  Finland 46/182=25%, Austria 42/182=23%, UK 41/182=22%, Serbia 41/182=23%,
+  Romania 37/182=20%, Belgium 37/182=20%, Colombia 33/182=18%, Mexico 30/182=16%,
+  Poland 30/182=16%, Georgia 22/182=12%, Israel 20/182=11%, Netherlands 16/182=9%.
+
+(NOTE: The "TOTAL (out of 100pts)" row at the top of Suppl Table 5 itself appears to be erroneous — its values are off by 2-7 percentage points from Figure 3 for most countries. Figure 3 in the main paper is the authoritative source for percentages; my computed per-country totals match Figure 3 exactly. This is a discrepancy WITHIN the supplement.)
+
+### Cross-references — files written in this branch
+
+- **`focal_2025_lacy_nichols_per_country_scores.csv`** — 28 countries × 50 indicators = 1,400 rows. Updated 2026-05-07 (pm) to use verbatim Suppl Table 5 raw values + verbatim Suppl Table 4 weights.
+- **`focal_2025_lacy_nichols_prior_framework_mapping.csv`** — verbatim Suppl Table 4 (replaced stub 2026-05-07 pm). 50 rows × {bednarova_cii, cpi_normalised, cpi_original, roth_normalised, roth_original, total_unweighted, our_weight}.
+- **`20260507_focal_a4_audit.md`** — full audit including 2026-05-07 (pm) followup section documenting the Suppl File 1 extraction.
+
+### Implications for Phase C cross-rubric validation
+
+FOCAL is now a **regular contributing rubric** (no longer "design-only"). The US-federal-LDA row in the 28-country matrix is the project-relevant calibration anchor. For 49 of 50 indicators (excluding the merged timeliness pair, which now reads as a single 2025 indicator), the US gets a verbatim Figure 3 weighted score; the unweighted (yes/partly/no = 2/1/0) base is in column `raw_score` of the per-country CSV.

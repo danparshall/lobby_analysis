@@ -16,6 +16,74 @@ Carry-forward signals (informational, not gates):
 
 (Newest first.)
 
+### 2026-05-07 (pm) — Phase A atomic-item audits + Lacy-Nichols 2025 supplementary extraction
+
+**Convo:** [`convos/20260507_atomic_item_audits_and_focal_supplement.md`](convos/20260507_atomic_item_audits_and_focal_supplement.md)
+**Plan executed:** [`plans/20260507_atomic_items_and_projections.md`](plans/20260507_atomic_items_and_projections.md) — Phase A only.
+**Spawning artifact:** the morning's plan. Phase A was the first concrete step; Phase B + C remain.
+
+#### Topics Explored
+
+- 4 parallel `general-purpose` subagents executed Phase A1-A4 (OpenSecrets / LobbyView / Sunlight / Lacy-Nichols 2025 supplementary).
+- A1 OpenSecrets — first audit verdict "drop"; user pushback forced recheck specifically asking whether tier definitions or worked examples exist anywhere in the article. Recheck found 5 named worked-example states + statistical anchors in the Rankings narrative. Verdict overturned to KEEP (75% score-mass projectable).
+- A2 LobbyView — agent walked Kim 2018 + Kim 2025 + LobbyView Python package GitHub source; 46 schema fields written. Three ambiguities flagged.
+- A3 Sunlight — agent confirmed the 5 items are simultaneously headline categories AND atomic scoring units. Per-item judgment surfaced item 4's near-typo + dimensional conflation; user applied "drop what we can't cleanly map" rule, locking 4-of-5 scope.
+- A4 Lacy-Nichols — three-pass execution. (1) First pass: Figure 3 max-observed weight inference, US row sanity check passed at 81/182 = 45%. (2) Second pass attempted Wiley web-fetch — blocked on every route (403 / timeout / archive.org refused / PMC embargoed). (3) User manually downloaded Suppl File 1 + 2 as docx; pandoc-converted to text; second extraction agent populated all 50 indicators with verbatim weights, closed all 8 weight-UNKNOWNs, caught 2 weight-decomposition conflicts, populated 50-row prior-framework mapping CSV, reconciled 1,372-cell per-country matrix.
+- Internal supplement-vs-Figure-3 discrepancy: Suppl Table 5's "TOTAL out of 100pts" row doesn't match Figure 3 percentages. Computing Table 5 raw × Table 4 weights reproduces Figure 3 exactly for all 28 countries → Figure 3 is authoritative; Table 5 TOTAL row is wrong. Documented in audit.
+- Phase B handoff written capturing what's locked since the plan was authored.
+
+#### Provisional Findings
+
+- **Contributing-rubric set locked:** HiredGuns 2007 (47), FOCAL 2024 (50), Newmark 2017 (19), Newmark 2005 (18), Opheim 1991 (22), PRI 2010 (83), CPI 2015 C11 (14), OpenSecrets 2022 (4 cats partial — 75% mass), Sunlight 2015 (4 of 5), LobbyView (46 schema fields). 9 score-projection rubrics + 1 schema-coverage rubric.
+- **OpenSecrets's article narrative is structurally informative beyond the methodology block.** When a methodology says "depending on circumstances", the article's per-state rankings often pin the ordinal via worked examples. First audit missed this; recheck found it. Lesson generalizes to any shallow rubric.
+- **Sunlight's 5-criterion structure is intentionally shallow** by design — not "headline categories with atomic items waiting to be found". The compendium-mapping question is per-item: can the rubric tier be a deterministic function of compendium cells? Yes for 4 of 5; no for item 4 (compound + near-typo).
+- **L-N 2025 Suppl File 1 is dramatically richer than the plan anticipated** — contains all three target tables (verbatim per-indicator scoring rules with P/N criteria, cross-rubric weight mapping, 28×50 per-country score matrix). Phase A4's "may need to fall back to Option C" was overkill.
+- **First A4 pass's Figure-3-inferred weights were 40/42 correct** vs verbatim Suppl Table 4. Two conflicts (`financials.3`, `financials.8`, both 1→2) were weight-decomposition errors; the published Figure 3 weighted-cell values were already correct.
+- **Finland's published total drops 70 → 46 weighted** after Suppl Table 5 reconciliation (13 cells previously read as 0 in Figure 3 are actually "/" / unassessable per verbatim source). Figure-3-visual-reading error, not a rubric meta-finding.
+- **Wiley web-fetch is solidly blocked.** For future Wiley supplementaries, plan for manual user download.
+- **Pandoc handles Wiley supplementary docx cleanly** — preserved enough table structure that a downstream agent extracted verbatim cell content without round-trips.
+
+#### Decisions
+
+| topic | decision |
+|---|---|
+| OpenSecrets 2022 | KEEP — partial (75% mass projectable). Cat 1 binary, Cats 2/3 few-shot anchored, Cat 4 decomposed. |
+| LobbyView | KEEP — schema-coverage rubric (different shape from score-projection rubrics). 46 fields. |
+| Sunlight 2015 | KEEP items 1, 2, 3, 5; DROP item 4 from projection layer. Source-extract TSV unchanged. |
+| FOCAL 2024 | KEEP — fully populated from verbatim L-N 2025 Suppl File 1 weights. US row anchor 81/182 = 45%. |
+| Phase C order | CPI 2015 C11 first (smallest), PRI 2010 second (largest, hardest aggregation), other rubrics in plan order. |
+| Phase C scaffolding | `tests/fixtures/projection_inputs/<rubric>_<state>_<vintage>.json` + `src/lobby_analysis/projections/<rubric>.py`. |
+| Phase B handoff | Written at `plans/_handoffs/20260507_phase_b_handoff.md`. Supplements plan with what's locked since Phase A. |
+
+#### Mistakes recorded
+
+1. Pre-flight misidentification of `Lacy-Nichols-Supple-File-1-IJHPM.pdf`. The "IJHPM" token in the filename was a giveaway it was the 2024 paper's supplementary, not the 2025 Milbank paper's. Cost: one wasted agent dispatch + one Wiley web-fetch attempt destined to fail. Mitigation: read the first page of any "already-on-disk" supplementary file before asserting it's the right one.
+2. Used `cd+git` compound early in session despite CLAUDE.md explicitly calling out the heuristic that blocks it. User pushback led to memory entry `feedback_use_preapproved_bash_patterns.md`. Switched to `git -C <path>` for the rest of the session.
+3. First A1 OpenSecrets audit was incomplete — only walked the methodology block, not the Rankings narrative. User pushback forced a recheck that overturned the drop verdict. Useful precedent: methodology blocks can be misleading on shallow rubrics; the article narrative often pins the ordinal via worked examples.
+
+#### Results
+
+- `results/items_LobbyView.tsv` (46 schema fields) + `.md`
+- `results/items_FOCAL.tsv` (updated: 50/50 verbatim weights from Suppl File 1) + `.md`
+- `results/focal_2025_lacy_nichols_per_country_scores.csv` (1,372 cells, verbatim Suppl Table 5)
+- `results/focal_2025_lacy_nichols_prior_framework_mapping.csv` (50 rows, verbatim Suppl Table 4)
+- `results/opensecrets_worked_examples_2022.csv` (18 rows of state-level anchors)
+- `results/20260507_opensecrets_atomic_audit.md` (original drop audit, kept as appendix)
+- `results/20260507_opensecrets_recheck.md` (supersedes drop verdict)
+- `results/20260507_sunlight_atomic_audit.md` (audit + user 4-of-5 decision)
+- `results/20260507_focal_a4_audit.md` (covers all three passes + Table-5-vs-Figure-3 discrepancy)
+- `papers/Lacy_Nichols_2025__lobbying_in_the_shadows__suppl_{001,002}.docx` (Wiley supplementaries)
+- `papers/text/Lacy_Nichols_2025__lobbying_in_the_shadows__suppl_{001,002}.txt` (pandoc extracts)
+- `plans/_handoffs/20260507_phase_b_handoff.md` (Phase B handoff for next implementing agent)
+
+#### Next Steps
+
+1. **Phase B** — per-rubric projection mapping docs. Read `plans/_handoffs/20260507_phase_b_handoff.md` first, then the plan. Start with CPI 2015 C11. Union of `compendium_rows` across mappings → `results/projections/disclosure_side_compendium_items_v1.tsv`.
+2. **Phase C** — projection function implementations under TDD. Order: CPI first, PRI second, then plan order.
+3. Open option: OpenSecrets state-map widget JS pull would close Cat 1 projectability. Currently sufficient for Phase B mapping; revisit only if Phase C validation shows the binary doesn't reach published Cat-1 scores.
+
+---
+
 ### 2026-05-07 — 3-way consensus execution + CPI 2015 C11 atomic-item addition + projection-success criterion
 
 **Convo:** [`convos/20260507_3way_consensus_execution_and_cpi_addition.md`](convos/20260507_3way_consensus_execution_and_cpi_addition.md)
