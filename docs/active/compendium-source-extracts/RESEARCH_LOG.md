@@ -16,6 +16,50 @@ Carry-forward signals (informational, not gates):
 
 (Newest first.)
 
+### 2026-05-07 (late eve) — Phase B continued: PRI 2010 projection mapping
+
+**Convo:** [`convos/20260507_pri_2010_phase_b_mapping.md`](convos/20260507_pri_2010_phase_b_mapping.md)
+**Plan executed:** [`plans/20260507_atomic_items_and_projections.md`](plans/20260507_atomic_items_and_projections.md) Phase B (second rubric — PRI 2010, after CPI 2015 C11).
+**Spawning artifact:** the predecessor convo `convos/20260507_phase_b_projection_mappings.md` (CPI mapping that locked the conventions PRI inherits).
+
+#### Topics Explored
+
+- All 83 PRI 2010 atomic items mapped per the locked Phase B template: 22 accessibility (Q1-Q6 binaries + Q7a-o 15-criteria search-filter battery + Q8 ordinal_0_to_15) + 61 disclosure-law (A1-A11 actor-side registrant taxonomy + B1-B4 government-exemption + C0-C3 public-entity-def + D0/D1/D2 materiality with typed cells + E1a-E1j 19 principal-side + E2a-E2i 18 lobbyist-side).
+- Conceptual distinction recorded: PRI A is **actor-side** ("who must register as a lobbyist"); CPI #196 is **target-side** ("definition recognizes communications with X as lobbying"). Two distinct row families (`actor_*` vs `def_target_*`).
+- E1/E2 parallelism preserved: PRI's principal-side and lobbyist-side atomization yields 2 compendium rows per pair (`principal_*` + `lobbyist_*`), per granularity-bias — regimes can regulate the two actors asymmetrically. Consensus method correctly identified all parallel pairs as paired loose clusters (loose-c_028 through c_039 are mostly E1*/E2* mirrors).
+- Typed-cell pattern at PRI granularity: D1_present + D1_value collapse into ONE row carrying typed `Optional[Decimal]`; D2 same with `Optional[float]`. Two PRI atomic items, one compendium cell, two projections (presence-flag vs raw-value).
+- E1h/E2h cadence representation: PRI's 6-binary atomization conflicts with CPI #202's enum cell. Resolution adopted: PRI's binary representation is canonical; CPI's enum becomes a derived projection. Flagged as Open Issue 4 (retroactive change to CPI mapping; design-team review).
+- Q8's 0-15 ordinal partition treated as Open Issue analogous to CPI's 25/75 partial-credit (per user direction a2). Cell carries raw ordinal; partition decision deferred to Phase C.
+- Aggregation rule structure verified empirically: accessibility max=22, disclosure-law max=37; spot-check Alabama/Alaska percentages match published values to ≤0.2%.
+
+#### Provisional Findings
+
+- The per-item template scales to PRI's atomic resolution (83 items) without modification. Compound items, parallel pairs, typed-with-presence-flag, free-text companions all fit cleanly.
+- PRI adds **~52 NEW compendium rows** on top of CPI's 21, matching the handoff's prediction (30-50 new). Total compendium rows touched after CPI + PRI: ~85 distinct rows.
+- Compendium row design is converging across rubrics. PRI adds rows but doesn't *contradict* CPI's design — every CPI row PRI touches reads the same observable. Validates the projection-driven row-design approach.
+- PRI's published per-state ground truth is **sub-aggregate-level only** (5 disclosure-law sub-aggregates + 8 accessibility sub-components × 50 states = 650 ground-truth values). Per-atomic-item validation impossible against PRI's published data alone — Phase C tolerance for PRI must be at sub-aggregate granularity, with per-item validation via CPI's 700-cell ground truth where rows overlap.
+- Within-E1/E2 rollup ambiguity confirmed: PRI paper does NOT specify how E1f_i-iv (4 binaries) → E1f sub-aggregate slot. Phase C empirical fit against per-state E_info_disclosed values is the resolution path; historical pri-calibration's "9 methodology differences" doc is the input.
+
+#### Decisions
+
+| topic | decision |
+|---|---|
+| Second Phase B target | PRI 2010, completed (single-pass per user direction a1) |
+| PRI A vs CPI #196 | Distinct: A is actor-side, #196 target-side. Two row families. |
+| E1/E2 parallel pairs | Two compendium rows per pair (principal_* + lobbyist_*); regimes may regulate asymmetrically |
+| D1/D2 representation | One typed `Optional[Decimal]` (D1) / `Optional[float]` (D2) cell per threshold; D_present is `IS NOT NULL` projection |
+| C1-C3 in compendium | Captured as compendium rows even though PRI projection doesn't read them |
+| E1h/E2h cadence | 6 binary rows per actor (canonical); CPI's enum becomes derived projection (retroactive flag) |
+| E1h_vi/E2h_vi "Other" | 2-row pair: binary indicator + free-text specification companion |
+| Q8 partition | Open Issue (analogous to CPI 25/75); deferred to Phase C |
+| B1/B2 scoring direction | Provisional +1 for True; Phase C empirical fit confirms or flips |
+
+#### Mistakes recorded
+
+None — single-pass execution; no rework cycles. Conventions from CPI session were tight enough that all 83 items resolved deterministically.
+
+---
+
 ### 2026-05-07 (eve) — Phase B kickoff: CPI 2015 C11 projection mapping
 
 **Convo:** [`convos/20260507_phase_b_projection_mappings.md`](convos/20260507_phase_b_projection_mappings.md)
