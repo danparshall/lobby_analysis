@@ -16,6 +16,84 @@ Carry-forward signals (informational, not gates):
 
 (Newest first.)
 
+### 2026-05-07 — 3-way consensus execution + CPI 2015 C11 atomic-item addition + projection-success criterion
+
+**Convo:** [`convos/20260507_3way_consensus_execution_and_cpi_addition.md`](convos/20260507_3way_consensus_execution_and_cpi_addition.md)
+**Plan executed:** [`plans/20260506_comp_assembly_3way_consensus.md`](plans/20260506_comp_assembly_3way_consensus.md)
+**Spawning artifact:** locked plan from 2026-05-06 evening, written for the implementing agent to execute the 9-subagent dispatch.
+
+#### Topics Explored
+
+- Pre-flight check on plan ambiguities (CPI in-scope filter, M1 cluster-file scope, stability-metric formula); user confirmed M1 USA-only filter and asked for both stability metrics distinct.
+- 9-subagent parallel dispatch via Claude Code Task tool (M1×3 / M2×3 / M3×3); ~9 min wall clock total.
+- Validation pass + consensus tool execution.
+- CPI 2015 atomic-item discovery: realized C11 placeholder was an artifact of CPI's atomic items not being in our local archive. Located `PublicI/state-integrity-data` GitHub repo via web search; pulled `2015/criteria.xlsx` ` Lobbying Disclosure` sheet. 14 atomic indicators (#196-#209), 5 sub-categories, explicit de jure / de facto labels.
+- Compare/contrast against the 9-rubric consensus output: per-item fold-in mapping for all 14 CPI items.
+- **Projection-success criterion landed (user direction):** compendium 2.0 is judged by whether each source rubric is fully reconstructible from compendium cells via per-rubric projection logic. Goal: minimum compendium that lets all 9 rubrics project correctly.
+
+#### Provisional Findings
+
+- **24 strict consensus clusters / 63 items** (25%); **39 loose / 106 items** (42%); **146 items (58%) appear in NO loose cluster**; 40 items never co-grouped by any of the 9 runs. 468 pairs in human-review band.
+- Per-method group counts and within-method spread: M1 cluster-anchored 153/189/201 (spread 48; 19.1% instability); M2 blind 159/180/195 (spread 36; 14.4% — most stable); M3 FOCAL-anchored 92/110/120 (spread 28; 45.6% within-method instability driven by big groups).
+- M1 was supposed to be the most stable thanks to its shared embedding-cluster prior; it wasn't. Different runs gave the prior very different weight. M2 blind was the most stable.
+- Per-paper consensus coverage is asymmetric: Newmark2005/2017 + Opheim heavily in strict (predicted by plan — same author / near-identical wording); PRI 3/83 in strict (atomic items too fine-grained to find consensus).
+- Top disagreement pairs are FOCAL ↔ PRI semantic mismatches — filer-direction-and-granularity tradeoffs that compendium 2.0 design has to make a call on.
+- **CPI 2015 C11 has 14 atomic items** (6 de jure + 8 de facto). Far smaller and higher-abstraction than HG 2007's 47 items — confirms CPI 2015 = HG 2007 successor at higher abstraction.
+- **CPI 2015's de jure / de facto pairing is its distinctive contribution** — no other rubric makes this distinction explicit at item level. The 8 de facto items map onto the v1.1 schema's `practical_availability` axis rather than creating new compendium rows. **Direct empirical validation that the two-axis schema design is the right architecture.**
+- **CPI 2015 is fully projectable** from a populated compendium 2.0, with two caveats: compendium must capture cell values not just row presence (for IND_197 threshold-zero, IND_199 annual cadence), and must include the principal-side spending-report row (IND_203, currently a PRI singleton in consensus).
+- 50 states × 14 CPI items × 2015 vintage = a usable ground-truth dataset for cross-validating any practical_availability pipeline downstream.
+
+#### Decisions
+
+| topic | decision |
+|---|---|
+| **Compendium 2.0 success criterion** | **Compendium 2.0 must be sufficient input to populate every source rubric's per-state score via per-rubric projection logic. Falsifiable round-trip test on real data: populate compendium → apply projection → compare to published rubric score. All 9 source rubrics must pass. Goal: minimum compendium size where all 9 rubrics still project correctly.** |
+| 3-way consensus run | Done. 9 subagents dispatched, all valid, consensus tool run, report written. |
+| CPI 2015 atomic items | Extracted 14 C11 items from `PublicI/state-integrity-data` GitHub repo. xlsx + scores.csv saved to `papers/`. Items added to `results/items_CPI_2015_lobbying.tsv`. |
+| CPI 2015 fold-in vs re-dispatch | Manual fold-in (cheaper). 9-subagent re-dispatch with CPI items added is not warranted. |
+| Per-rubric projection logic | Becomes the natural follow-on. CPI 2015 C11 (14 items × 50 states, with published per-state ground truth) is the smallest concrete first target. |
+
+#### Mistakes recorded
+
+1. Initial CPI filter framing missed the bigger picture — filtered to C11 placeholder per the plan, then mid-session realized atomic items live elsewhere. Plan was right within scope; scope was incomplete. Recovery: extracted from GitHub.
+2. Subagents left scratch files in worktree (3 of 9: `build_groups.py`, `.tmpwork/`, `.scratch/`). Cleaned up post-hoc. Future briefs should explicitly forbid out-of-output writes.
+3. M3 within-method instability headline (45.6%) is misleading without group-size context. Big groups amplify pair-level variance. Report.md decomposes this but the headline number can be misread.
+
+#### Results
+
+**Code:**
+- `tools/build_usa_tradition_input.py` — pre-stages 252-item input CSV
+- `tools/consensus_grouping.py` — per-pair agreement + strict/loose/human-review views + both stability metrics
+
+**Run artifacts** (`results/3way_consensus/`):
+- `usa_tradition_items.csv` (252 items input)
+- `m{1,2,3}_*_run{1,2,3}.csv` (9 grouping outputs)
+- `consensus_summary.csv` (1,034 pairs)
+- `consensus_clusters_strict.csv` (24 clusters / 63 items at ≥8/9)
+- `consensus_clusters_loose.csv` (39 clusters / 106 items at ≥6/9)
+- `consensus_human_review.csv` (468 pairs at 3-5/9)
+- `method_instability_report.md`
+- `report.md` (headline + analysis)
+- `briefs/` (the four brief files used for dispatch)
+
+**CPI 2015 addition:**
+- `papers/CPI_2015__sii_criteria.xlsx` — full 13-sheet codebook (7.6 MB; 245 indicators total across 13 categories)
+- `papers/CPI_2015__sii_scores.csv` — per-state scores
+- `results/items_CPI_2015_lobbying.tsv` — 14 atomic C11 items in standard schema
+
+**Compare/contrast doc:**
+- `results/20260507_cpi_2015_c11_vs_consensus.md` — per-item fold-in, projection-success criterion as load-bearing principle, recommendations, open work
+
+#### Next Steps
+
+1. Per-rubric projection logic for each of the 9 source rubrics. CPI 2015 C11 (14 items × 50 states) is the smallest concrete target — start there as proof-of-concept.
+2. Round-trip validation harness — once a projection exists, run it on populated compendium cells for some states and compare to published rubric scores.
+3. Cell-value schema decisions for compendium 2.0 (which rows carry binary cells, which carry typed values).
+4. Compendium 2.0 design plan, written with the projection-success criterion as the formal acceptance test.
+5. Optional: re-run the 9-subagent dispatch with CPI 2015's 14 items added. Tightens consensus marginally but doesn't change architecture.
+
+---
+
 ### 2026-05-06 (late) — 3-method × 3-run consensus design (supersedes regex assembly plan)
 
 **Convo:** [`convos/20260506_3way_consensus_design.md`](convos/20260506_3way_consensus_design.md)
