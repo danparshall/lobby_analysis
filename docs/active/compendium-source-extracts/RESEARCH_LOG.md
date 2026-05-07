@@ -85,6 +85,11 @@ Carry-forward signals (informational, not gates):
 **Compare/contrast doc:**
 - `results/20260507_cpi_2015_c11_vs_consensus.md` — per-item fold-in, projection-success criterion as load-bearing principle, recommendations, open work
 
+**Late-session additions** (post-checkpoint, same day; see convo's "Post-checkpoint continuation" section for narrative):
+- Lacy-Nichols 2025 verified — `papers/Lacy_Nichols_2025__lobbying_in_the_shadows.pdf` applies FOCAL to 28 countries; US federal LDA scored 81/182 = 45%; per-indicator per-country scores in Figure 3 + Suppl. File 1 Table 5 ≈ 1,400 cells of ground truth. **FOCAL flips from Option C to standard validation rubric.**
+- Jurisdiction scope expanded: `{50 US states} ∪ {Federal_US (LDA)}`. Federal LDA extraction added; validation = FOCAL score + LobbyView schema coverage + raw LDA fields, all on the same federal data. LobbyView confirmed federal-only (no state aggregations exist).
+- Plan written: `plans/20260507_atomic_items_and_projections.md` (commit `cdea880` + update `e51bc48`). Three phases — Phase A atomic-item audits (incl. new A4 for L-N 2025 Suppl. File 1 retrieval), Phase B disclosure-first projection mappings, Phase C projection function implementations + integration tests against published prior data.
+
 #### Next Steps
 
 1. Per-rubric projection logic for each of the 9 source rubrics. CPI 2015 C11 (14 items × 50 states) is the smallest concrete target — start there as proof-of-concept.

@@ -102,3 +102,56 @@
 3. **Cell-value schema decisions for compendium 2.0.** Which rows carry binary cells, which carry typed values (dollars, days, enumerated cadences). The projection-test makes this concrete and testable.
 4. **Compendium 2.0 design plan.** Still deferred. The projection-success criterion gives that plan a clear acceptance test that did not exist before today.
 5. **Optional: re-run the 9-subagent dispatch with CPI 2015's 14 items added** (would tighten the consensus picture marginally but doesn't change the architecture).
+
+---
+
+## Post-checkpoint continuation (same session, late)
+
+After the initial commits (consensus run + CPI extraction + criterion v1), the session continued and produced four substantive additions:
+
+### Criterion sharpened to four explicit commitments
+
+User direction: the "compendium → rubric projection" framing committed earlier was correct but incomplete. Sharpened to:
+
+1. **ONE compendium** (single canonical row set; no rubric-specific variants).
+2. **ONE extraction pipeline** (single methodology applied uniformly across rows / states / years; row schema must be uniform enough that one prompt approach works for every row).
+3. **Multi-year reliability** (vintages: e.g., OH 2010 + 2015 + 2024 + 2025; not single-year).
+4. **Source rubrics are SANITY CHECKS on extraction accuracy, not the goal.** Published rubric scores are independent ground-truth yardsticks. The compendium does not score; it provides cells. The rubrics do not extract; they validate.
+
+Multi-rubric × multi-year coverage gives redundant per-row ground truth — same compendium row read by multiple rubrics, each providing an independent check. Updated STATUS.md ⭐ block, RESEARCH_LOG, compare/contrast doc, and the project-memory file. User confirmed framing "feels right and unlikely to change" — memory updated to reflect criterion stability.
+
+### Lacy-Nichols 2025 verified — FOCAL flips from Option C to standard validation rubric
+
+User asked whether the 2025 FOCAL-application paper exists in our corpus. Confirmed: `papers/Lacy_Nichols_2025__lobbying_in_the_shadows.pdf` (with text extraction). Read it.
+
+Findings:
+- Applied FOCAL's 50 indicators to **28 countries** with online national-level lobbyist registers.
+- Yes/no/partly scoring per indicator, weighted aggregation; 0-100% per country.
+- **US federal LDA scored 81/182 = 45%** (third-highest, after Canada 89/49% and Chile 88/48%).
+- Per-indicator per-country scores published in Figure 3 + Supplementary File 1 Tables 3 + 5 = ~1,400 cells of cell-level ground truth.
+- **Subnational registers explicitly excluded** — no US state-level scoring, but US federal is in scope.
+
+Implication: FOCAL flips from Option C (design-only) to a standard validation rubric. Phase C9 reinstated. US federal LDA becomes the project-relevant validation anchor.
+
+### Federal_US added as extraction jurisdiction
+
+User direction: "use the Federal LDA law as our extraction target (with the FOCAL result as the labelled ground truth)." Jurisdiction scope expanded from `{50 US states}` to `{50 US states} ∪ {Federal_US (LDA)}`. Federal LDA extraction validates three independent ways on the same data: FOCAL score (target 81/182), LobbyView schema coverage, raw LDA field correctness. LobbyView scope stays federal-only (resolved Q5).
+
+### Plan written
+
+`plans/20260507_atomic_items_and_projections.md` produced and committed. Three phases:
+- **Phase A:** atomic-item audit for OpenSecrets / LobbyView / Sunlight, plus Phase A4 extracting Lacy-Nichols 2025 Suppl. File 1 (per-indicator scoring methodology + 28-country cell-level ground truth).
+- **Phase B:** disclosure-first projection mappings for surviving rubrics. Disclosure-side compendium item set falls out as union.
+- **Phase C:** projection function implementations + integration tests against published prior data per (jurisdiction, vintage). Suggested order: CPI 2015 C11 first (smallest validation set), FOCAL last with US-federal anchor.
+
+Plan resolves Q4 (FOCAL = standard validation rubric) and Q5 (LobbyView = federal-only). Three implementation-detail questions remain open for next-session start.
+
+### Decisions (added to original Decisions table)
+
+| topic | decision |
+|---|---|
+| FOCAL 2024 status | Standard validation rubric (Phase C9 reinstated). Anchor: L-N 2025 per-country dataset, US federal LDA as project-relevant validation point (target 81/182). |
+| Jurisdiction scope | `{50 US states} ∪ {Federal_US (LDA)}`. Federal extraction added; not just states. |
+| LobbyView scope | Federal LDA only. No state-level LobbyView aggregations exist; that gap is what this project fills. |
+| Plan | `plans/20260507_atomic_items_and_projections.md` written, committed (`cdea880` + plan-update `e51bc48`). |
+| Criterion stability | Memory updated — criterion is settled enough that future sessions should treat it as stable, not provisional. |
