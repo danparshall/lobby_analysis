@@ -12,7 +12,7 @@
 
 **Branch:** `oh-portal-extraction` (worktree at `.worktrees/oh-portal-extraction/`)
 
-**Tech Stack:** Python 3.12, `requests` (already a dep), `pydantic` (already a dep), `anthropic` (NEW dep — flagged below), `claude-opus-4-7` for parity with Track A.
+**Tech Stack:** Python 3.12, `requests` (already a dep), `beautifulsoup4` (already a dep — used for HTML text extraction; see Plan Revisions), `pydantic` (already a dep), `anthropic` (NEW dep — flagged below), `claude-opus-4-7` for parity with Track A.
 
 ---
 
@@ -52,8 +52,8 @@ NOTE: I will write *all* tests before I add any implementation behavior.
 10. Create `src/lobby_analysis/oh_portal/provenance.py` with a `build_provenance(fetch_meta)` function returning a `Provenance` instance. Re-run pytest; the provenance test should pass.
 11. Run the full suite: `uv run --active pytest`. Confirm 305+/3-pre-existing-failures (the `data/portal_snapshots/CA/...` fixture errors are unrelated and pre-existing — do not chase them).
 12. Commit: `oh_portal: implement extraction_brief + provenance`.
-13. Create `src/lobby_analysis/oh_portal/fetch.py` with `fetch_olac_pdf(url) -> Path`. Behavior: GET with Chrome UA per Dan's snapshot pattern, fail loudly on non-200 (no retry), write bytes to `data/oh_portal/raw/<report_id>/<fetched_at_iso>/raw.pdf`, write sibling `meta.json` with URL/sha256/timestamp/content-type/HTTP status, return the raw.pdf Path. No fancy abstractions — one function.
-14. Create `src/lobby_analysis/oh_portal/extract.py` with `extract_oh_legislative_filing(pdf_path, brief, provenance) -> LobbyingFiling`. Behavior: call `anthropic.Anthropic().messages.create()` with `claude-opus-4-7`, attach the PDF as a document block, pass a tool whose `input_schema` is generated from `LobbyingFiling.model_json_schema()`, and require the model to call that tool. Validate the tool-call's `input` through `LobbyingFiling.model_validate(...)`. Attach the passed-in `provenance` to the returned filing. On any error (HTTP, tool-call missing, Pydantic validation fail), dump the full response to `data/oh_portal/extracted/<report_id>/<run_id>/error.json` and raise — no graceful fallback at (A') scale.
+13. Create `src/lobby_analysis/oh_portal/fetch.py` with `fetch_olac_aer(url) -> Path`. Behavior: GET with Chrome UA per Dan's snapshot pattern, fail loudly on non-200 (no retry), write bytes to `data/oh_portal/raw/<report_id>/<fetched_at_iso>/raw.html`, write sibling `meta.json` with URL/sha256/timestamp/content-type/HTTP status, return the raw.html Path. No fancy abstractions — one function. (See Plan Revisions: HTML, not PDF.)
+14. Create `src/lobby_analysis/oh_portal/extract.py` with `extract_oh_legislative_filing(html_path, brief, provenance) -> LobbyingFiling`. Behavior: parse the HTML with BeautifulSoup, extract the text content of the AER body (the `View Agent Legislative AER` block — discard nav/footer chrome), call `anthropic.Anthropic().messages.create()` with `claude-opus-4-7` passing the extracted text as a regular user message alongside the brief, pass a tool whose `input_schema` is generated from `LobbyingFiling.model_json_schema()`, and require the model to call that tool. Validate the tool-call's `input` through `LobbyingFiling.model_validate(...)`. Attach the passed-in `provenance` to the returned filing. On any error (HTTP, tool-call missing, Pydantic validation fail), dump the full response to `data/oh_portal/extracted/<report_id>/<run_id>/error.json` and raise — no graceful fallback at (A') scale.
 15. Create `src/lobby_analysis/oh_portal/__main__.py` that takes a URL on the CLI, runs fetch → brief → extract → write JSON, and prints the output path. Single-file script, ~30 lines.
 16. Commit: `oh_portal: fetcher, extractor, CLI entrypoint`.
 
@@ -76,7 +76,9 @@ NOTE: I will write *all* tests before I add any implementation behavior.
 
 ## Edge cases
 
-- **PDF is image-only / scanned.** OLAC's older PDFs may be scanned. Fall back to the HTML detail page once. If both fail, swap sample. Do not introduce OCR at (A') scale.
+- **AER HTML is JS-rendered or behind a cookie wall.** Sample selection on 2026-05-07 confirmed the chosen sample (`/olac/AERs/1427844/View`) is plain server-rendered HTML accessible to curl + Chrome UA. If a future fetch hits a session-bound URL or JS-rendered shell, that is a (B') concern, not (A'); document and pause.
+- **HTML has structural variation between AER form types.** The chosen sample is a Legislative AER. Executive and Retirement AERs may have different section layouts. (A') is single-form-type; if a future sample disagrees, that is a finding for (B'), not a fix for (A').
+- **Section D non-itemized aggregate doesn't fit `LobbyingExpenditure`.** Per `results/20260507_a_prime_sample_selection.md`, OH's Section II.D splits a single dollar total across three sub-rows (Meals Under $50, Speaking Engagements, National Conference Meals). The schema can't represent this — collapse to one `LobbyingExpenditure(category="entertainment")` row at (A') and tag in the validation log as `SCHEMA-GAP`. **Do not bump the schema unilaterally.**
 - **Anthropic SDK tool-use rejects `LobbyingFiling` schema.** The model has nested optionals and `Literal` enums. If `model_json_schema()` produces a tool-input schema the SDK rejects, simplify by emitting a flat dict from the LLM and calling `LobbyingFiling.model_validate(dict)` post-hoc. Document the workaround in the convo summary; this is a real signal about model-vs-SDK fit.
 - **OLAC requires a session cookie / CAPTCHA.** Dan's 2026-04-13 snapshot didn't flag this, but he was scraping discovery pages, not per-report PDFs. If the fetch fails with a redirect to a login page, document it in the sample-selection results doc and either (a) find a publicly downloadable equivalent or (b) flag as a Track B blocker for team discussion.
 - **Report URL is not stable.** OLAC may serve PDFs through a session-bound URL (e.g., `download.aspx?token=...`). If so, record the *report ID* and the *search query that produces it*, not just the URL — future re-runs need a path back.
@@ -99,7 +101,7 @@ NOTE: I will write *all* tests before I add any implementation behavior.
 - New tests: `tests/test_oh_portal_extraction_brief.py`, `tests/test_oh_portal_provenance.py`.
 - New dep: `anthropic>=0.40` in `pyproject.toml`.
 - New gitignore entry: `data/oh_portal/` (verify first).
-- Output landing (gitignored): `data/oh_portal/raw/<report_id>/<fetched_at_iso>/{raw.pdf,meta.json}`, `data/oh_portal/extracted/<report_id>/<run_id>/{filing.json,extraction_run.json}`.
+- Output landing (gitignored): `data/oh_portal/raw/<report_id>/<fetched_at_iso>/{raw.html,meta.json}`, `data/oh_portal/extracted/<report_id>/<run_id>/{filing.json,extraction_run.json}`.
 - Branch deliverables (committed): convo summary, this plan, validation results doc, RESEARCH_LOG entry, STATUS.md one-liner.
 - Use `claude-opus-4-7` to match Track A's model choice.
 - Provenance fields populated: source URL, sha256, fetched-at ISO timestamp, extractor identity (`oh-portal-extraction/v0.1`), model ID (`claude-opus-4-7`), prompt sha256.
@@ -115,5 +117,30 @@ NOTE: I will write *all* tests before I add any implementation behavior.
 **Questions:**
 - Convo summary's open question about v1.4 schema-gap handling protocol — RFC-style or convo+review? Raise at next weekly sync.
 - Are there OH-specific filing types the team wants (A') to NOT cover (e.g., late filings, amendments)? Plan currently picks an unambiguous Activity & Expenditure Report from a normal filer; amendments are deferred to (B') by virtue of the sample-selection criteria.
+
+---
+
+## Plan Revisions
+
+### 2026-05-07 — PDF intake → HTML intake
+
+**Trigger:** Sample-selection (Phase 0.4) on 2026-05-07 found that OH OLAC AERs publish only as HTML view pages at `/olac/AERs/{report_id}/View`. No PDF download endpoint exists. See [`results/20260507_a_prime_sample_selection.md`](../results/20260507_a_prime_sample_selection.md).
+
+**Change:**
+- `fetch.py` saves `raw.html` (not `raw.pdf`).
+- `extract.py` parses the fetched HTML with `beautifulsoup4`, extracts the AER body text (skipping nav/footer/JLEC chrome), and passes the extracted text as message content to `claude-opus-4-7` — *not* as a `document` block.
+- Tool-use schema enforcement (generating the tool's `input_schema` from `LobbyingFiling.model_json_schema()`) is unchanged.
+- `beautifulsoup4` is already a dep — no `pyproject.toml` change required for this revision.
+
+**No-op for:**
+- Provenance shape (sha256 over the fetched HTML bytes, same as it would have been over PDF bytes).
+- Test plan (extraction_brief and provenance unit tests are format-agnostic).
+- Output landing layout (only the file extension on the raw artifact changes).
+
+### 2026-05-07 — Sample-criteria deviation accepted
+
+**Trigger:** Same sample-selection session. Original criterion was "5–20 bills × 5–20 expenditure lines." Selected sample (Aichele/ARC Gaming/May–Aug 2025) has 4 bills × 1 expenditure line. Domain finding: the modal OH legislative-agent A&E report has near-zero activity at single-(agent, employer, regime, window) granularity — the original criterion was calibrated against an unrealistic typical filing.
+
+**Change:** None to plan tasks; criterion-deviation tagged in the results doc and accepted. (A') validation will explicitly note that `LobbyingExpenditure` is exercised only on a single $20 aggregate, and (B') sampling design should profile the real activity distribution before picking batch criteria.
 
 ---
