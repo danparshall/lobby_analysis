@@ -25,7 +25,7 @@ Not the absolute final set; this is the round-N set. New rubrics can join later 
 | rubric | items | published per-state ground truth | atomic-item status |
 |---|---:|---|---|
 | HiredGuns 2007 | 47 | yes — CPI's predecessor scoring, 50 states | atomic, OK |
-| FOCAL 2024 | 50 | no per-state scores (rubric is a checklist; not yet scored at scale) | atomic, OK |
+| FOCAL 2024 | 50 | **YES — per-country per-indicator scores in Lacy-Nichols 2025 Suppl. File 1 Table 5** (28 countries × 50 indicators ≈ 1,400 cells of cell-level ground truth; US federal LDA scored at 81/182 = 45%) | atomic, OK; **scoring rubric extraction needed (Phase A4)** |
 | Newmark 2017 | 19 | yes — 50 states | atomic, OK |
 | Newmark 2005 | 18 | yes — 50 states | atomic, OK |
 | Opheim 1991 | 22 | yes — limited states (BoS Tables 28-32 for the 1990 vintage) | atomic, OK |
@@ -36,6 +36,14 @@ Not the absolute final set; this is the round-N set. New rubrics can join later 
 | **LobbyView (Kim 2018/2025)** | unknown | n/a (LobbyView is federal-only data infrastructure, not state-scored; treated as "rubric" in the sense that LobbyView's schema fields are questions a state-level data layer should also answer) | **NEW — Phase A audit needed** |
 
 The "drop rule" per user direction: any rubric where atomic items don't exist after a reasonable effort is **excluded from the contributing-rubric set** — by definition, you can't use a rubric for compendium construction if you can't read its atomic questions.
+
+## Jurisdiction scope (UPDATED 2026-05-07 mid-session)
+
+The compendium and extraction pipeline target **{50 US states} ∪ {Federal_US (LDA)}** — federal LDA is added as a 51st extraction jurisdiction, not just states. The reason: Lacy-Nichols 2025 provides FOCAL ground truth for US federal LDA (81/182 = 45%) — by extracting federal LDA into the same compendium row schema, we get an additional cross-validated jurisdiction with a well-labeled FOCAL anchor. Federal extraction also aligns with LobbyView's scope (Kim 2018/2025 is federal LDA infrastructure).
+
+**Implication for compendium row schema:** rows must accommodate both state-statute-driven and federal-LDA-driven cells. Some federal-only rows (e.g., the 20%-time / $3K / $13K LDA thresholds) may surface during Phase B; they are kept in the compendium and simply unpopulated for non-federal jurisdictions.
+
+Other countries from L-N 2025 (Canada, Chile, Ireland, etc., 27 total) are out of scope for this round but each is a potential future validation anchor — flagged for record-keeping, not action.
 
 ## Scope qualifier (disclosure-first)
 
@@ -112,6 +120,27 @@ Three rubrics audited. For each: either (a) atomic items captured in `items_<Rub
 
 After Phase A, the contributing-rubric set for Phase B is the survivors.
 
+#### Phase A4 — Lacy-Nichols 2025 supplementary extraction (FOCAL scoring methodology + per-country cell-level data)
+
+**What it is:** Lacy-Nichols 2025 *Lobbying in the Shadows* applied FOCAL's 50 indicators to 28 countries' national lobbyist registers, including US federal LDA (which scored 81/182 = 45%, third-highest in the dataset). The supplementary file contains per-indicator scoring rules (Table 3) and per-country per-indicator scores (Table 5). This turns FOCAL from a "scoring_rule = Not specified" checklist into a fully-scored rubric with cell-level published ground truth.
+
+**Where the data lives:**
+- Paper PDF + text: `papers/Lacy_Nichols_2025__lobbying_in_the_shadows.pdf` and `papers/text/Lacy_Nichols_2025__lobbying_in_the_shadows.txt`
+- Figure 3 in the paper main text has per-country per-indicator scoring matrix (degraded readability after PDF→text — original PDF preserves it cleanly).
+- Supplementary File 1 (Tables 1-5) — referenced by paper, separate file. Likely available as `https://onlinelibrary.wiley.com/action/downloadSupplement?...` from Milbank Quarterly. **The implementing agent will need to retrieve this supplementary file** (web fetch + saving to `papers/Lacy_Nichols_2025__lobbying_in_the_shadows__supplementary_1.pdf` or similar).
+
+**Steps:**
+1. Read the existing `results/items_FOCAL.tsv` (50 indicators with `scoring_rule = "Not specified"` placeholder).
+2. Retrieve Supplementary File 1 (web fetch the URL from the paper's online version on Wiley).
+3. From Suppl. Table 3, populate the `scoring_rule` and `indicator_type` columns of `items_FOCAL.tsv` per indicator. Possible cell types: yes/no/partly (per the methods text) with weighted aggregation per indicator.
+4. From Suppl. Table 5, build `results/focal_2025_lacy_nichols_per_country_scores.csv` with columns: `country, indicator_id, raw_score, weighted_score`. 28 countries × 50 indicators = ~1,400 cells. The US row is the project-relevant calibration anchor.
+5. Optionally also extract Suppl. Table 4 (mapping of 3 prior weighted frameworks against FOCAL's 50 indicators) — supports cross-rubric validation in Phase C.
+6. Update `items_FOCAL.md` with a methodology note describing the L-N 2025 scoring application + the link between FOCAL 2024 (the framework definition paper) and L-N 2025 (the framework application paper).
+
+**Stop condition:** `items_FOCAL.tsv` has populated `scoring_rule` per indicator + `focal_2025_lacy_nichols_per_country_scores.csv` exists with 28 × 50 cells. If the supplementary file is genuinely unavailable, document and fall back to Option C for FOCAL (design-only contribution, no Phase C9 implementation).
+
+**Importance:** this unlocks FOCAL as a regular contributing rubric in Phase C with US-federal-LDA as the explicit US-relevant validation anchor. Without A4, FOCAL stays in Option C.
+
 ### Phase B — Projection mappings (disclosure-first)
 
 For each surviving rubric, walk every disclosure-side atomic item. For each item, write down:
@@ -176,8 +205,8 @@ Smallest validation set first:
 6. **Opheim 1991** (22 items × limited states × 1991 vintage).
 7. **HiredGuns 2007** (47 items × 50 states × 1 vintage).
 8. **PRI 2010** (83 items × 50 states × 1 vintage) — most items, hardest aggregation rule.
-9. **FOCAL 2024** — checklist, not scored at scale; projection produces an indicator-coverage summary, not a single score. May not have published ground truth at the per-state level; deprioritized.
-10. **LobbyView** — schema-coverage check rather than score projection. Different shape; tackled separately.
+9. **FOCAL 2024** (50 items × 28 countries × 1 vintage; per-indicator + aggregate ground truth from Lacy-Nichols 2025 — assuming Phase A4 extracted Suppl. Tables 3 + 5). **Validation jurisdiction = US federal LDA (target: 81/182 = 45%)** plus optional cross-validation against the other 27 countries. State-level FOCAL projection runs the same logic on state cells; no published state-level ground truth, but methodology is validated at federal level.
+10. **LobbyView** — schema-coverage check rather than score projection. Different shape; tackled separately. Federal-LDA-based, so aligned with the same Federal_US extraction jurisdiction as the FOCAL anchor — both validate on the same underlying federal data.
 
 #### Phase C — done condition
 
@@ -237,6 +266,8 @@ The tests test BEHAVIOR (does the projection produce the right rubric score give
 - **The cell-type schema** — Phase B will surface places where binary cells are insufficient and typed values are required. The schema may need a v1.6 or v2.0 bump to support new typed-value cell types. Coordinate with the v1.1 / v1.2 / v1.3 history (live in `src/lobby_analysis/models/`).
 - **The integration-test scaffolding** (hand-population for projection validation) is a stop-gap. Once Phase D extraction pipeline (separate plan) lands, integration tests run end-to-end from extraction → projection → published-data comparison.
 - **OpenSecrets / Sunlight may drop.** If atomic items don't exist, the contributing-rubric set shrinks. Plan adjusts in Phase B accordingly.
+- **FOCAL ground truth depends on Suppl. File 1 retrieval (Phase A4).** If retrieval fails (paywall, broken link, file gone), FOCAL falls back to Option C (design-only). Plan adjusts Phase C9 accordingly. Mitigation: Wiley supplementary files are typically open-access; the paper is open-access (CC BY-NC).
+- **Federal_US extraction** is a new jurisdiction added to the pipeline scope (was state-only). Federal LDA's statutory text + filing system differ from state statutes; extraction prompt must generalize across both. If they don't generalize cleanly, may need a per-jurisdiction-class prompt variant (not desirable — would relax the "ONE pipeline" commitment).
 
 ---
 
@@ -245,8 +276,11 @@ The tests test BEHAVIOR (does the projection produce the right rubric score give
 1. **Phase C order — is CPI 2015 C11 first the right call?** It's the smallest concrete target with cleanest published ground truth (50-state × 14-item), but it's also the most recent rubric — projecting it well doesn't necessarily generalize to older rubrics with different scoring conventions. Alternative: start with PRI 2010 (largest, most-studied, per-item per-state ground truth available) to stress-test the projection architecture earlier.
 2. **Hand-population scaffolding — where does it live in code?** Suggest `tests/fixtures/projection_inputs/<rubric>_<state>_<vintage>.json` so it's discoverable and re-usable. Confirm or override.
 3. **`src/lobby_analysis/projections/` directory creation** — confirm this layout, or use a different module path. Verify against the existing `src/lobby_analysis/models/` structure when implementing.
-4. **FOCAL 2024 — projection or schema-coverage check?** Treating FOCAL as a checklist (no per-state score, just an indicator-coverage map) is one option; treating it as score-able by counting "yes" indicators per state is another. User decision needed before Phase C9.
-5. **LobbyView scope — federal schema only, or include state lobbying databases like LobbyView's public profiles?** Plan currently scopes to federal LDA schema (Kim 2018). State-level extensions (where LobbyView aggregates state portals) might also be relevant. Confirm Phase A2 scope.
+
+**Resolved (2026-05-07 mid-session):**
+
+- ~~Q4 — FOCAL projection or schema-coverage check?~~ **RESOLVED:** FOCAL is now a standard validation rubric (not Option C). Phase A4 extracts the L-N 2025 supplementary file containing per-indicator scoring methodology + 28-country × 50-indicator cell-level ground truth. Phase C9 implements the FOCAL projection function. Validation anchor for the project = US federal LDA (target score 81/182 = 45%). State-level FOCAL projection uses the same validated logic on state cells; no published state-level ground truth.
+- ~~Q5 — LobbyView scope, federal vs state?~~ **RESOLVED:** federal LDA only. LobbyView is federal-only data infrastructure; there are no state-level LobbyView aggregations. Phase A2 audits federal LDA schema only.
 
 ---
 
