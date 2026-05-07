@@ -16,6 +16,61 @@ Carry-forward signals (informational, not gates):
 
 (Newest first.)
 
+### 2026-05-07 (eve) — Phase B kickoff: CPI 2015 C11 projection mapping
+
+**Convo:** [`convos/20260507_phase_b_projection_mappings.md`](convos/20260507_phase_b_projection_mappings.md)
+**Plan executed:** [`plans/20260507_atomic_items_and_projections.md`](plans/20260507_atomic_items_and_projections.md) Phase B (first rubric only).
+**Spawning artifact:** the Phase B handoff at `plans/_handoffs/20260507_phase_b_handoff.md` written at end of (pm) session.
+
+#### Topics Explored
+
+- First Phase B per-rubric projection-mapping doc shipped: CPI 2015 C11 (smallest concrete first target per locked Phase C order). All 14 items mapped per the plan's per-item template.
+- Three iteration cycles with user surfaced reusable conventions: (1) granularity-bias (split rows on every distinguishing case for max downstream flexibility) → 5 separate `def_target_*` rows from IND_196 alone; (2) typed-cell-on-`MatrixCell.value` pattern wins over named-scalar-with-citation for v2.0 schema migration; (3) evidence-companion field already exists in v1.1 (`FieldRequirement.evidence_source` + `legal_citation`) — Open Issue 5 retracted as misdiagnosis.
+- Mid-session re-extraction of CPI scoring rules from `papers/CPI_2015__sii_criteria.xlsx`. Previous TSV truncated at ~300 chars; full text now in `items_CPI_2015_lobbying.tsv`. **Bonus:** xlsx contains per-state per-indicator scores for all 50 states × 14 indicators — extracted to `results/cpi_2015_c11_per_state_scores.csv` (700 cells of ground truth, not just category aggregate).
+- Discovery: **8 de-facto items use 5-tier scoring (0/25/50/75/100), not the 3-tier as published criteria text suggests.** CPI graders awarded 25 and 75 as scorer-judgment partial credit between the 100/50/0 anchors documented in the rubric. Boundary semantics for 25/75 not in published criteria — Phase C question.
+
+#### Provisional Findings
+
+- 14 CPI items map to **21 distinct compendium rows** when granularity-bias is applied (5 per-target-type def rows from IND_196, compound-item decompositions for #201/#205, etc.).
+- v1.1 schema already partially supports compendium 2.0: `RegistrationRequirement.role` Literal enumerates exactly the granular target-type roles needed; `CompendiumItem.data_type` declares typed cells. Gap is `MatrixCell.value` (typed value carrier missing) and the PRI-shape vestigial `StateMasterRecord.de_minimis_*` named scalars (should be retired in v2.0).
+- All 6 de-jure CPI items are 2-tier or 3-tier; all 8 de-facto items are 5-tier — direct empirical validation of the v1.1 two-axis design (legal_availability / practical_availability) and of the typed-cell decision.
+- The Phase B per-item template handles compound items (1 rubric-item → N compendium-rows) cleanly without modification — IND_201 reads 3 rows, IND_205 reads 3 rows, no exception needed.
+- Per-state per-indicator data has 6 / 700 (~0.9%) cell-level glitches: 4 mixed-case typos ("Yes"/"No") + 2 numeric values where YES/MODERATE/NO expected (IND_199, IND_203 — 1 each). Phase C consumption layer should normalize.
+- Cluster IDs from 3-way consensus are useful provenance hints, NOT authoritative row identifiers (user reminder mid-session: "earlier embedding groups aren't sacred, just guidelines. The real test will be this compendium-rubric mapping").
+
+#### Decisions
+
+| topic | decision |
+|---|---|
+| First Phase B target | CPI 2015 C11, completed |
+| Granularity convention | Split on every distinguishing case (binary cells per case, Boolean projection composition); locked into doc-conventions block |
+| Typed-cell pattern | `MatrixCell.value: Any` constrained by `CompendiumItem.data_type`; v2.0 schema bump retires named-scalar `de_minimis_*` fields |
+| De-facto cell type | 5-tier typed int {0,25,50,75,100}, not 3-tier enum (correction from realized xlsx data) |
+| Enforcement-adjacent items #207/208/209 | Kept in scope — measure whether enforcement exists at all, not enforcement strictness |
+| Source-quote re-extraction | Done from xlsx; updated TSV with full text, no more 300-char truncation |
+| Per-state per-indicator scores | Extracted to CSV (700 cells, 6 cells with data-quality glitches noted) |
+| Cluster ID notation | `strict-c_NNN` / `loose-c_NNN` to disambiguate the two consensus files using independent numbering |
+
+#### Mistakes recorded
+
+1. 3-tier vs 5-tier mis-spec on first draft. Initial doc had 3-tier enum cell types based on published criteria text; realized data uses 5 tiers. Caught only when re-extracting per-state scores. Corrected doc-wide before commit.
+2. Misdiagnosed an evidence-companion schema concern as a v1.1 gap; user noted the field exists in v1.1 already. Retracted; replaced Open Issue 5 with the actual hard concern (evidence circularity in 2015 round-trip).
+3. Compound-item framing as exception in first draft. User confirmed compound is normal. Softened.
+4. Cluster-ID conflation across strict/loose files. Doc now disambiguates explicitly.
+
+#### Results
+
+- [`results/projections/cpi_2015_c11_projection_mapping.md`](results/projections/cpi_2015_c11_projection_mapping.md) — 251-line Phase B mapping (14 items, 21 compendium rows, 6 open issues)
+- [`results/cpi_2015_c11_per_state_scores.csv`](results/cpi_2015_c11_per_state_scores.csv) — 700 ground-truth cells
+- [`results/items_CPI_2015_lobbying.tsv`](results/items_CPI_2015_lobbying.tsv) — updated with full scoring-rule text
+
+#### Next Steps
+
+1. **PRI 2010 Phase B mapping.** 83 items × 50 states. Stress-test the template at scale; will likely add 30-50 new compendium rows that CPI's higher-abstraction atomization didn't surface (PRI E1f_i-iv itemization, E1h/E2h cadence options, A1-A11 registrant taxonomy at finer granularity).
+2. **Phase C scaffolding decision when ready** — `tests/fixtures/projection_inputs/cpi_2015_<state>.json` hand-population from the per-state-scores CSV is one-liner for de-jure half (clean ground truth, no circularity). De-facto half held per Open Issue 5 (evidence circularity).
+
+---
+
 ### 2026-05-07 (pm) — Phase A atomic-item audits + Lacy-Nichols 2025 supplementary extraction
 
 **Convo:** [`convos/20260507_atomic_item_audits_and_focal_supplement.md`](convos/20260507_atomic_item_audits_and_focal_supplement.md)
