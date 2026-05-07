@@ -100,8 +100,28 @@ The (A') extraction will use the collapse approach. The schema-gap is flagged fo
 
 ## Out-of-Scope but Useful Context Found
 
-- **Aichele has multiple engagements.** Beyond ARC Gaming, he files for Board of Lucas County Commissioners (Sep–Dec 2025 AER, 8 bills, 0 expenditures). This tells us (B') will need to handle multiple `LobbyingFiling` rows per agent — one per (agent, employer, regime, period) tuple — and the 12,170-engagement universe stat above implicitly already reflects that.
+- **Aichele has multiple engagements.** Beyond ARC Gaming, he files for Board of Lucas County Commissioners (Sep–Dec 2025 AER, 8 bills, 0 expenditures), Holistic Alternative Recovery Trust / HART (Sep–Dec 2025 AER, 1 bill, $3.50 in Section D), LKQ Corporation (Jan–Apr 2025 AER, 3 bills, $21.94 in Section D), and others. This tells us (B') will need to handle multiple `LobbyingFiling` rows per agent — one per (agent, employer, regime, period) tuple — and the 12,170-engagement universe stat above implicitly already reflects that.
 - **Aichele also has an Initial filing.** `View Legislative Initial / Confirmation 20250505LINA479498 / Date Filed 2025-05-05`. This is OH's Engagement Registration form (separate form type, filed once per engagement). For (B') we'll need to handle Initial separately from AER — likely a different `LobbyingFiling.filing_action` value or a different model entirely. Out of scope for (A').
+
+### Pre-Vetted (B') Candidate Seeds
+
+In addition to the (A') sample (1427844), the same sample-selection session vetted two more Aichele filings of the same shape (Section D only). These are ready to use as (B') smoke-test inputs without re-doing the discovery work:
+
+| Report ID | Confirmation | Employer | Period | Bills | Sec D Total |
+|---|---|---|---|---|---|
+| **1427844** ((A') sample) | 20250903LUPA1427844 | ARC Gaming & Technologies | May–Aug 2025 | 4 | $20.00 |
+| 1459616 | 20260106LUPA1459616 | Holistic Alternative Recovery Trust (HART) | Sep–Dec 2025 | 1 | $3.50 |
+| 1405684 | 20250522LUPA1405684 | LKQ Corporation | Jan–Apr 2025 | 3 | $21.94 |
+
+URLs follow `/olac/AERs/{report_id}/View`.
+
+### Strengthened Domain Finding: Section D Dominates Real Filings
+
+All three above populate **only Section II.D (non-itemized aggregate)**; Sections A (Gifts), B (Itemized Meals), C (Functions for all members) are empty in every case. Combined with Mike Abrams's three 2025 AERs (all "no expenditures"), the provisional pattern is:
+
+- The modal OH legislative-agent expenditure disclosure is **non-itemized meals under $50** (Section D).
+- Itemized reporting (A/B/C) is **rare in practice**, presumably because per-event thresholds are seldom triggered.
+- This sharpens the v1.4 schema-gap conversation: `LobbyingExpenditure`'s inability to represent Section D's three sub-row structure (Meals Under $50 / Speaking Engagements / National Conference Meals) isn't an edge case — it's the **common shape** for actually-populated expenditures. Worth raising at the next weekly sync as a higher-priority gap than the rate-limited itemized cases.
 
 ## Status
 
