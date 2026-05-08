@@ -20,6 +20,77 @@ whose OCR text layer dropped the asterisk and em-dash glyphs that encode
 most of the binary cell content. Without a working extractor, the source
 is unusable for the compendium pipeline.
 
+## Session: 2026-05-07 — v2_grid_implementation
+
+### Topics Explored
+
+- Why tesseract reads sub-column headers as garbage despite reading
+  group headers cleanly (vertical text faces opposite rotation axis
+  after 90-deg-CW page rotation).
+- 1-D agglomerative gap-threshold sweep on data tokens: no single
+  threshold yields a clean schema-matched cluster count without
+  filtering out stray clusters.
+- Vertical-text bbox filter (`h > 2*max(w, 30)`) drops `SITYIY`-class
+  rotated-header garbage but keeps real markers.
+- Conf filter redesign: keep markers + conf ≥ 40 + digit-bearing
+  tokens. Catches OCR artifact `"3-reports"` at conf=29.
+- Multi-line free-text cells reconstructed via `(cy // 30, x)` sort
+  ordering.
+- Per-scan x-offset analysis: ±5 to ±25 px shifts across scans of the
+  same table from manual page placement during HathiTrust scanning.
+- Cross-validation candidate analysis: PRI 2010 vs Newmark 2005 vs
+  Newmark 2017 vs Opheim 1991. Opheim wins on vintage match,
+  oversight-dimension coverage, and items per dimension.
+
+### Provisional Findings
+
+- v2 grid pipeline shipped end-to-end: 4 per-table CSVs covering 50
+  states + DC + provinces, tested via 25-test suite (all green).
+- Missouri ground truth: **16/16 cells correct** (up from v1's
+  15/16 via the `_` → `—` dash normalisation and the multi-line cell
+  `"3 times a year"` reconstructed correctly).
+- Total marker preservation across emission: 1,496 marker cells in
+  the 4 v2 CSVs vs 1,495 in the v1 TSV (within 1).
+- Per-scan offsets are real and varied: +8.3 to -13.4 (T29);
+  +24.1 to -19.2 (T31, manual-placement drift accumulates over 6
+  scans). Uniform shift fits well; no scaling needed yet.
+- Hand-curated boundaries beat auto-detection on this corpus.
+  Auto-clustering retained as fallback.
+- Two open extraction issues: (a) Alabama-style content-width
+  overflow leaks tokens into adjacent cells; (b) California and
+  Florida missing from Table 30 emission despite being in v1 TSV.
+- Opheim 1991 confirmed sourced from CSG Blue Book 1988-89; clean
+  external ground truth at two-year vintage offset.
+
+### Decisions Made
+
+- Hand-curated `boundaries` field on `Table` schema is the primary
+  path for boundary detection. Auto-clustering is fallback only.
+- Cell reading order uses `cy`-bucket-then-x sort to handle
+  multi-line free-text cells.
+- Per-scan x-offset adjustment matches scan markers to reference
+  column centers and applies the mean delta.
+- Plan doc for Opheim 1991 cross-validation captured at
+  `plans/20260507_opheim_cross_validation.md`.
+
+### Results
+
+- `results/cogel_1990_table28.csv` — 40 jurisdictions × 23 columns
+- `results/cogel_1990_table29.csv` — 38 jurisdictions × 16 columns
+- `results/cogel_1990_table30.csv` — 46 jurisdictions × 18 columns
+- `results/cogel_1990_table31.csv` — 58 jurisdictions × 10 columns
+- `results/cogel_1990_grid_warnings.tsv` — 475 warnings (per-scan
+  offsets, unknown-marker flags, no-anchor scans).
+
+### Next Steps
+
+- Execute `plans/20260507_opheim_cross_validation.md`: encode
+  Opheim's 22 items, score 47 states, compare to her published
+  index, diagnose disagreements.
+- Fix the missing CA/FL in Table 30 (filter cascading suspected).
+- Address Alabama-style content-width overflow (per-row boundary
+  reslicing or content-overlap detection).
+
 ## Session: 2026-05-05 — blue_book_v1_extractor
 
 ### Topics Explored
