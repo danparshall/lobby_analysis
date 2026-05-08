@@ -293,14 +293,91 @@ def boundaries_from_markers(
     return midpoint_boundaries(centroids), warnings
 
 
+def _column_centers_from_boundaries(
+    boundaries: list[float] | tuple[float, ...],
+) -> list[float]:
+    """Approximate column-center x positions from inter-cell boundaries.
+
+    Outer columns extend by half the median inter-boundary gap on each side.
+    Used as a reference frame to compute per-scan offsets.
+    """
+    if not boundaries:
+        return []
+    bs = list(boundaries)
+    gaps = [bs[i + 1] - bs[i] for i in range(len(bs) - 1)] if len(bs) >= 2 else []
+    median_gap = sorted(gaps)[len(gaps) // 2] if gaps else 150.0
+    half = median_gap / 2
+    centers = [bs[0] - half]
+    for i in range(len(bs) - 1):
+        centers.append((bs[i] + bs[i + 1]) / 2)
+    centers.append(bs[-1] + half)
+    return centers
+
+
+def _scan_offset_to_reference(
+    scan_markers: list[GridToken],
+    ref_centers: list[float],
+    tolerance: float = 90.0,
+) -> tuple[float, int]:
+    """Compute mean x-shift of scan markers' cluster centroids vs reference.
+
+    Returns (mean_delta, n_matched). Markers are clustered then matched to
+    nearest reference center within `tolerance`; tokens with no reference
+    within tolerance don't contribute (likely spurious clusters).
+    """
+    if not scan_markers or not ref_centers:
+        return 0.0, 0
+    xs = [m.cx for m in scan_markers]
+    clusters = cluster_x(xs, gap_threshold=25)
+    dense_centroids: list[float] = []
+    for c in clusters:
+        rows = {m.row for m in scan_markers if m.cx in c}
+        if len(rows) >= 2:
+            dense_centroids.append(_centroid(c))
+    deltas: list[float] = []
+    for sc in dense_centroids:
+        nearest = min(ref_centers, key=lambda r: abs(r - sc))
+        if abs(sc - nearest) <= tolerance:
+            deltas.append(sc - nearest)
+    if not deltas:
+        return 0.0, 0
+    return sum(deltas) / len(deltas), len(deltas)
+
+
 def _detect_boundaries_for_scan(
     scan_tokens: list[GridToken], table: Table,
 ) -> tuple[list[float], dict]:
-    """Resolve column boundaries: hand-curated schema field if present, else
-    auto-cluster marker tokens and interpolate.
+    """Resolve column boundaries with per-scan offset adjustment.
+
+    Page placement during scanning was manual, so each scan's columns are
+    shifted by a few pixels relative to the table-canonical boundaries. We
+    compute a single mean offset between this scan's marker centroids and
+    the reference column centers, then apply it to the table boundaries.
     """
     if table.boundaries:
-        return list(table.boundaries), {}
+        markers = [
+            t for t in scan_tokens
+            if t.is_marker and not t.row.startswith("_")
+            and not _is_state_name_token(t)
+        ]
+        ref_centers = _column_centers_from_boundaries(table.boundaries)
+        offset, n_matched = _scan_offset_to_reference(markers, ref_centers)
+        warning: dict = {}
+        if n_matched >= 2:
+            return [b + offset for b in table.boundaries], (
+                {} if abs(offset) < 1.0 else {
+                    "flag": "scan_offset_applied",
+                    "scan_page": scan_tokens[0].scan_page if scan_tokens else None,
+                    "table": table.table_number,
+                    "offset_px": round(offset, 1),
+                    "n_matched": n_matched,
+                }
+            )
+        return list(table.boundaries), {
+            "flag": "scan_offset_no_anchors",
+            "scan_page": scan_tokens[0].scan_page if scan_tokens else None,
+            "table": table.table_number,
+        }
 
     # Auto-clustering fallback. Use only marker tokens (most reliable signal)
     # and require ≥ 2 contributing rows per cluster to suppress page-margin
