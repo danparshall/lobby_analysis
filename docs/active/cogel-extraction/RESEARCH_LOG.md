@@ -20,6 +20,57 @@ whose OCR text layer dropped the asterisk and em-dash glyphs that encode
 most of the binary cell content. Without a working extractor, the source
 is unusable for the compendium pipeline.
 
+## Session: 2026-05-10 — opheim_cross_validation (kickoff)
+
+### Topics Explored
+
+- Worktree provisioning for cogel-extraction. Branch was previously
+  checked out in the main repo; flipped main checkout to `main` and
+  added `.worktrees/cogel-extraction` per the use-worktree skill.
+- `data/` symlink fit for this repo. `data/compendium/` is tracked,
+  so `data/` exists naturally on checkout — the skill's symlink
+  advice doesn't apply. Initial `ln -s` accidentally produced a
+  nested `data/data` symlink; removed.
+- Test baseline on worktree: 328 passed / 5 skipped / 3 pre-existing
+  failures in `tests/test_pipeline.py` (missing
+  `data/portal_snapshots/`; reproduce on main; unrelated to cogel).
+- Read of `plans/20260507_opheim_cross_validation.md` and pushback
+  on five points before encoder code is written.
+
+### Provisional Findings
+
+- Worktree at `/Users/dan/code/lobby_analysis/.worktrees/cogel-extraction`
+  is operational. `uv sync --extra dev` succeeded.
+- Three load-bearing open questions in the plan need paper-text
+  resolution: (1) "review of all reports" — ALL vs any-of;
+  (2) Opheim's `disclose_sources_of_income` vs COGEL T29
+  `disclose_compensation_by_employer` overlap; (3) frequency item
+  is sourced by Opheim from Book of States 1988-89, not the Blue
+  Book — known cross-source ambiguity.
+- 47-state count and the 3-state exclusion list (plan asserts MT/
+  SD/VA) need to be verified from paper text in Phase 0.
+
+### Decisions Made
+
+- Worktree adopted. Phase 0 of the Opheim plan (read paper text +
+  lift Table 1 + settle the three open questions) is the next
+  concrete step on resume.
+- Pre-existing `test_pipeline.py` failures flagged but not
+  addressed on this branch — they are a `main`-line infrastructure
+  issue.
+
+### Results
+
+- None this session. Setup + pushback only; no Opheim code.
+
+### Next Steps
+
+- Phase 0: read Opheim paper text, lift the 47 published scores
+  into `data/compendium/opheim_1991_published_scores.csv`, settle
+  the three open coding-rule questions.
+- Update plan doc to remove stale "no worktree" line.
+- Then Phase 1 (encoder TDD).
+
 ## Session: 2026-05-07 — v2_grid_implementation
 
 ### Topics Explored
