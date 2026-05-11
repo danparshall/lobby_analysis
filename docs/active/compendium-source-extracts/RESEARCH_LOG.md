@@ -16,6 +16,62 @@ Carry-forward signals (informational, not gates):
 
 (Newest first.)
 
+### 2026-05-11 — Phase B continued: Sunlight 2015 projection mapping (3rd rubric)
+
+**Convo:** [`convos/20260511_sunlight_phase_b_mapping.md`](convos/20260511_sunlight_phase_b_mapping.md)
+**Plan executed:** [`plans/20260507_atomic_items_and_projections.md`](plans/20260507_atomic_items_and_projections.md) Phase B (third rubric, after CPI 2015 C11 and PRI 2010).
+**Plan handoff for remaining 7:** [`plans/_handoffs/20260511_phase_b_continued_remaining_7.md`](plans/_handoffs/20260511_phase_b_continued_remaining_7.md)
+
+#### Topics Explored
+
+- All 4 in-scope Sunlight items mapped (item 4 excluded per 2026-05-07 audit decision): item 1 (Lobbyist Activity 4-tier) → 6 rows with α split; item 2 (Expenditure Transparency 4-tier) → 3 rows (2 reused from CPI mapping); item 3 (Expenditure Reporting Thresholds 2-tier) → 1 typed cell shared with HG Q15 at finer granularity; item 5 (Lobbyist Compensation 2-tier) → 3 rows (2 reused from CPI mapping). **13 distinct compendium rows touched; 11 of 13 have cross-rubric readers.**
+- α (form-type split for content cells) executed for item 1: 3 disclosure-detail levels × 2 form types (reg form / spending report) = 6 rows. HG Q5 vs Q20 is the canonical motivating case.
+- β (Opheim AND-projection) confirmed by user. Opheim's `disclosure.legislation_supported_or_opposed` is one binary in source TSV; projection reads `bill_id AND position` from compendium. Source not re-atomized.
+- Three threshold concepts named distinctly for the first time: lobbyist-status (CPI #197), filing-de-minimis (PRI D1), itemization-de-minimis (Sunlight #3 / HG Q15). Must stay separate in compendium 2.0.
+- Cross-rubric grep workflow surfaced as a fix for an error pattern in this session — proposing rows as if Sunlight-unique before checking other rubrics. Mandatory grep BEFORE drafting from this point forward.
+- Non-Sunlight side artifact: bash-loop permissions investigation. User-flagged recurring failure mode (agents reaching for `for`-loops that trigger permission prompts) → project-level memory file + dotfiles note documenting four existing loop-backdoor rules (`xargs *`, `find *`, `awk *`, `sed *`) and proposing addition of `Bash(for *)` / `Bash(while *)` to DENY rules.
+
+#### Provisional Findings
+
+- **Sunlight's compendium contribution is cross-rubric redundancy, not novel structure.** 11/13 rows it touches are already read by other rubrics (HG, Newmark 17/05, CPI, PRI, FOCAL, Opheim). Per the projection-success criterion's "validated by many rubrics" pattern, these are the rows most likely to survive compendium-2.0 dedup.
+- **"Collect once, map to many" annotation discipline is well-supported empirically.** Cross-rubric grep over the 8 rubric TSVs + historical PRI surfaced extensive overlap that single-rubric mapping would have missed. The `[cross-rubric: <other readers>]` annotation seeds the dedup pass.
+- **Sunlight cannot reproduce its published `Total` or `Grade`** because item 4 is excluded. Per-item validation against the 4 in-scope per-criterion columns of the per-state CSV is the recommended Phase C scope.
+- **Three threshold concepts must stay distinct.** Naming them surfaced a latent conflation risk; documented in Sunlight mapping doc's "CRITICAL distinction" block for design-team awareness.
+- **Per-state distribution skew observed across 50 states:** item 1 mode tier 0 (50%, general subjects only); item 3 mode tier −1 (66%, threshold exists); item 5 split 46/54 (compensation disclosed / not).
+
+#### Decisions
+
+| topic | decision |
+|---|---|
+| Third Phase B target | Sunlight 2015, completed (4-of-5 in scope) |
+| α form-type split | LOCKED for content-cell rows across remaining 7 mappings |
+| β Opheim conflation | Reading (1) confirmed: AND projection at compendium layer, source TSV unchanged |
+| "Collect once, map many" | LOCKED as annotation discipline (`[cross-rubric: …]` next to every row entry) |
+| Three threshold concepts | Stay distinct in compendium 2.0; documented in Sunlight mapping doc |
+| Sunlight Phase C validation | RECOMMENDED per-item only (cannot reproduce Total/Grade); user final lock-in pending |
+| Cross-rubric grep workflow | MANDATORY before drafting any compendium row entry |
+| Next-session handoff | Written at `plans/_handoffs/20260511_phase_b_continued_remaining_7.md` |
+
+#### Mistakes recorded
+
+1. Used a `for f in ...; do wc -l "$f"; done` bash loop for a simple multi-file inventory, triggering a permission prompt. The CLAUDE.md permission table explicitly lists `ls path/*` and explicit-args calls as pre-approved chain prefixes; `for` is not. User pushed back: "this comes up at least once a session, and it's really annoying." Wrote a project-level memory file (`~/.claude/projects/-Users-dan-code-lobby-analysis/memory/feedback_use_preapproved_bash_patterns.md`) leading with three rules-of-thumb at the moment-of-temptation: (1) explicit list or glob in one call; (2) parallel Bash calls; (3) Python script via `uv run python`. Also wrote a dotfiles note (`~/code/dotfiles/notes_bash_loop_permissions.md`) documenting four existing loop-backdoor rules.
+2. Drafted Sunlight item 1 as if it introduced novel "bill discussed + position" rows without cross-checking. User pushback ("are you telling me Sunlight is the ONLY rubric that has an item capturing that? REALLY?") surfaced 11 cross-rubric items across HG Q5/Q20, Newmark 2017/2005, Opheim, FOCAL contact_log.10/11, PRI E1g_i/ii / E2g_ii, plus Sunlight #1 — the row family is one of the most-redundantly-validated in the entire corpus. Workflow fix: cross-rubric grep before drafting, not after.
+
+#### Results
+
+- [`results/projections/sunlight_2015_projection_mapping.md`](results/projections/sunlight_2015_projection_mapping.md) — Sunlight 2015 projection mapping doc (13 rows × 4 items, all annotated with cross-rubric overlap).
+- [`../../../tools/sunlight_distributions.py`](../../../tools/sunlight_distributions.py) — 30-line Python script for per-state distribution table in the mapping doc (footnote-stripped tier counts across 50 states for all 5 indicators).
+- Non-repo: `~/.claude/projects/-Users-dan-code-lobby-analysis/memory/feedback_use_preapproved_bash_patterns.md` (project memory); `~/code/dotfiles/notes_bash_loop_permissions.md` (dotfiles note).
+
+#### Next Steps
+
+1. **OpenSecrets 2022 projection mapping** (4 cats, smallest of the remaining; per locked Phase C order). Watchpoints in `plans/_handoffs/20260511_phase_b_continued_remaining_7.md`: Cat 2 reuses Sunlight #5 compensation rows; Cat 4 maps to CPI #205-206 / HG Q28-34 / FOCAL openness.* portal-availability stack.
+2. **Confirm Sunlight Phase C validation strategy** (per-item only is recommended).
+3. Continue Phase B for remaining 6 rubrics: Newmark 2017, Newmark 2005, Opheim, HiredGuns, FOCAL, LobbyView (last; schema-coverage shape).
+4. Dotfiles note's recommendation (add `Bash(for *)` / `Bash(while *)` to DENY rules) — decide whether to incorporate into `update_claude_permissions.py`.
+
+---
+
 ### 2026-05-07 (late eve) — Phase B continued: PRI 2010 projection mapping
 
 **Convo:** [`convos/20260507_pri_2010_phase_b_mapping.md`](convos/20260507_pri_2010_phase_b_mapping.md)
