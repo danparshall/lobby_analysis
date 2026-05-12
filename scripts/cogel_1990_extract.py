@@ -53,8 +53,17 @@ import pdfplumber
 import pytesseract
 from PIL import Image
 
+REPO_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(REPO_ROOT / "src"))
+
+from lobby_analysis.cogel.ocr_merge import merge_token_passes  # noqa: E402
+
 RENDER_DPI = 300
-TESSERACT_PSM = 3  # auto layout — best asterisk recovery on probe
+TESSERACT_PSM = 3  # primary: auto layout — best asterisk recovery on probe
+TESSERACT_PSM_SECONDARY = 6  # secondary uniform-block pass; recovers row bands
+# that PSM 3 segments out (e.g., California/Florida on scan 169). Tokens
+# from the two passes are merged by spatial proximity via
+# `lobby_analysis.cogel.ocr_merge.merge_token_passes`.
 # Rotation needed to bring the table into natural reading orientation.
 # PIL.Image.rotate uses CCW positive, so 90 deg CW = -90.
 ROTATE_DEG = -90
@@ -144,11 +153,11 @@ def render_page(pdf_path: Path, page_index: int = 0) -> Image.Image:
     return img.rotate(ROTATE_DEG, expand=True)
 
 
-def ocr_tokens(img: Image.Image, page_id: int) -> list[Token]:
+def ocr_tokens(img: Image.Image, page_id: int, psm: int = TESSERACT_PSM) -> list[Token]:
     """Run tesseract on a rotated page image and return Token records."""
     data = pytesseract.image_to_data(
         img,
-        config=f"--psm {TESSERACT_PSM}",
+        config=f"--psm {psm}",
         output_type=pytesseract.Output.DICT,
     )
     tokens: list[Token] = []
@@ -351,9 +360,17 @@ def assign_rows(
 
 
 def extract_pdf(pdf_path: Path, page_id: int) -> list[dict]:
-    """Process one PDF and yield TSV-shaped row dicts."""
+    """Process one PDF and yield TSV-shaped row dicts.
+
+    Runs tesseract twice (PSM 3 primary, PSM 6 secondary) and merges the
+    token streams by spatial proximity. PSM 3 has the higher asterisk
+    recall but on some scans segments specific row bands out (e.g., the
+    California and Florida rows on scan 169); PSM 6 reads those bands.
+    """
     img = render_page(pdf_path)
-    tokens = ocr_tokens(img, page_id)
+    primary = ocr_tokens(img, page_id, psm=TESSERACT_PSM)
+    secondary = ocr_tokens(img, page_id, psm=TESSERACT_PSM_SECONDARY)
+    tokens = merge_token_passes(primary, secondary)
     anchors = find_jurisdiction_anchors(tokens)
     row_for = assign_rows(tokens, anchors)
     rows = []
