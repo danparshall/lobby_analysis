@@ -20,6 +20,83 @@ whose OCR text layer dropped the asterisk and em-dash glyphs that encode
 most of the binary cell content. Without a working extractor, the source
 is unusable for the compendium pipeline.
 
+## Session: 2026-05-11 → 2026-05-12 — opheim_phase0_and_dual_psm_recovery
+
+### Topics Explored
+
+- Opheim Phase 0 execution: located Table 1 in PDF (page 5 is a
+  scanned bitmap; pdfplumber's text layer skipped the body); OCR'd
+  the page with tesseract `--psm 6` at 300 DPI; parsed rank/state/
+  score triplets with predictable artifact normalisation (`i0`→`10`,
+  `il`→`11`, `Towa`→`Iowa`, `[Illinois`→`Illinois`).
+- Settled the three open coding-rule questions from
+  `plans/20260507_opheim_cross_validation.md` by reading the
+  methodology section: "review of all reports" is any-of mechanism
+  with scope=all; `disclose_sources_of_income` has no exact COGEL
+  T29 column, best-fit `disclose_compensation_by_employer`; the
+  frequency item is sourced by Opheim from Book of States 1988-89
+  (not Blue Book) — irreducible cross-source artifact.
+- Investigated CA/FL absence from v2 T30. Confirmed CA had 2 tokens
+  in v1 TSV (label + rotated-header garbage), FL had 1 (label only).
+  Bug is in v1 OCR, not v2 grid filtering.
+- Cropped scan 169 around the CA/FL y-bands and re-OCR'd with PSMs
+  3/6/11/12. PSM 6 cleanly recovers CA's full data row (~17 tokens)
+  and FL's row partially (~7 tokens). PSM 3 misses both. The v1
+  probe at branch start compared PSM 3 vs 11/12 only; PSM 6 was
+  not evaluated.
+- Designed `merge_token_passes` for spatial-proximity dedup between
+  two OCR passes; 15-px Chebyshev radius is set just above the
+  half-width of the smallest in-corpus marker glyph.
+
+### Provisional Findings
+
+- Opheim's 47 published scores: range 0-18, total 454, mean 9.66.
+  Top: NJ/WA/WI=18. Bottom: AR=0. Missouri=5 (Phase 2 smoke-test
+  anchor in the plan).
+- Dual-PSM merge outcomes (regenerated v1 TSV + all 4 v2 CSVs):
+  v1 TSV 7,198 → 8,443 tokens; T30 jurisdictions 46 → **48** (+CA
+  +FL); marker cells 1,523 → 1,648. ~80% of the +125 marker gain
+  is PSM 6 filling in missed markers across many state rows beyond
+  CA/FL alone.
+- Missouri T29 row unchanged before/after dual-PSM fix — no
+  regression. Test suite: 339 passed (+11 new merge tests), 5
+  skipped, 3 pre-existing failures unrelated to cogel.
+- Alabama overflow is a different mechanism (cell-boundary
+  collision on AL's wide "Monthly during legislative session" T29
+  freq col 5) — not affected by the dual-PSM fix; deferred.
+
+### Decisions Made
+
+- Opheim Phase 0 complete; the curated CSV
+  `data/compendium/opheim_1991_published_scores.csv` is the
+  authoritative published-score reference for the Phase 2 driver.
+- Worktree provisioned at `.worktrees/cogel-extraction`; plan doc's
+  stale "no worktree" line corrected during this checkpoint.
+- Diagnostic scripts kept committed: `scripts/inspect_scan169_ca_fl.py`,
+  `scripts/diagnose_v1_token_gaps.py`. Investigation reproducible.
+- AL overflow scoped to a separate session — fix design is open.
+- Pre-existing 3 failures in `tests/test_pipeline.py` (missing
+  portal-snapshot data) remain flag-only; not addressed on this
+  branch.
+
+### Results
+
+- `data/compendium/opheim_1991_published_scores.csv` — Opheim Table 1
+- `results/20260511_opheim_table1_ocr.txt` — raw OCR provenance
+- `results/20260511_dual_psm_ca_fl_recovery.md` — CA/FL fix report
+
+Commits: `db4a1d1` (Opheim Phase 0), `c3ec36f` (dual-PSM recovery).
+
+### Next Steps
+
+- Alabama overflow fix on T29 (per-row content-width detection
+  / boundary reslicing) — OR Opheim Phase 1 encoders (22-item
+  encoder set + TDD suite). User's call.
+- Two-state spot-check on `disclose_compensation_by_employer` vs
+  Opheim's "sources of income" during Phase 1 encoder dev.
+- Trivial: add `=` to grid marker-normalisation aliases (FL T30
+  col-1 cell).
+
 ## Session: 2026-05-10 — opheim_cross_validation (kickoff)
 
 ### Topics Explored

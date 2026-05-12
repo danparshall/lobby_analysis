@@ -37,8 +37,8 @@ sums to an index score per state, and emits a comparison table
 breakdown. The encoders are the auditable artifact — each one
 documents Opheim's rule and how we mapped it.
 
-**Branch:** `cogel-extraction` (no worktree — implement in
-`/Users/dan/code/lobby_analysis/`).
+**Branch:** `cogel-extraction` (worktree at
+`/Users/dan/code/lobby_analysis/.worktrees/cogel-extraction/`).
 
 **Tech Stack:** Python 3.12, stdlib `csv`, no new dependencies.
 
