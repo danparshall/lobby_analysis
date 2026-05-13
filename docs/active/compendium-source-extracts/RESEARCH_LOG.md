@@ -16,6 +16,70 @@ Carry-forward signals (informational, not gates):
 
 (Newest first.)
 
+### 2026-05-13 (late eve) — Phase B continued: FOCAL 2024 projection mapping (8th rubric)
+
+**Convo:** [`convos/20260513_focal_phase_b_mapping.md`](convos/20260513_focal_phase_b_mapping.md)
+**Plan executed:** [`plans/20260507_atomic_items_and_projections.md`](plans/20260507_atomic_items_and_projections.md) Phase B (FOCAL 2024 — 8th rubric, immediately after HG shipped earlier this evening; LobbyView is the final remaining mapping).
+**Handoff (most recent, with this rubric's watchpoints):** [`plans/_handoffs/20260511_phase_b_continued_remaining_7.md`](plans/_handoffs/20260511_phase_b_continued_remaining_7.md)
+
+#### Topics Explored
+
+- All 48 in-scope FOCAL atomic items mapped per the locked Phase B per-item template: 4 scope + 3 timeliness (2025 merges .1+.2) + 9 openness + 6 descriptors + 4 relationships (+ 1 2025-only Lobbyist-list documented) + 11 financials + 11 contact_log. 2 `revolving_door.*` items DEFERRED per strict plan reading (revolving_door.1 flagged as Open Issue FOCAL-1 for compendium 2.0 freeze reconsideration; revolving_door.2 is enforcement-adjacent).
+- Cross-rubric grep BEFORE drafting per the locked 2026-05-11 workflow. Three parallel greps: FOCAL refs across 7 existing mapping docs; contact_log + descriptors + relationships concepts in PRI/HG; financials concepts across all mapping docs. Surfaced ~22 reusable rows out of 48 in-scope items + 35 NEW rows.
+- α form-type split applied to descriptors (5 NEW reg-form-side cells; PRI E2b's spending-report-side cell is the existing α-pair).
+- β AND-projection applied to contact_log.10 (`bill_id AND position` β pair from Sunlight #1, reused by Opheim + FOCAL).
+- `def_target_*` family EXTENDED to 4 cells (NEW `def_target_legislative_or_executive_staff`) per FOCAL scope.3 partly-tier discrimination.
+- Watchpoint walked: **`contributions_from_others` parallel in FOCAL `financials.*` battery** — the 2026-05-11 handoff's strongest remaining promotion candidate for Newmark 2017's row. **NO PARALLEL** across all 11 FOCAL financials items. Newmark 2017's `lobbyist_or_principal_report_includes_contributions_received_for_lobbying` row stays single-rubric across 8 of 9 contributing rubrics. LobbyView is last check.
+- Per-meeting contact_log atomization: 9 NEW rows (beneficiary-org, official-name, institution/dept, attendees, date, communication-form, location, materials-shared, topics-discussed). PRI's coarse `_includes_contacts_made` (E1i/E2i) is the only existing parent row. FOCAL-distinctive at this granularity.
+- 2024 → 2025 application differences encoded in projection logic: timeliness.1+.2 merged (read same compendium cell); 2025-only Lobbyist-list indicator added (NEW `principal_report_lists_lobbyists_employed` row, parallel to HG Q9 on principal side). Source TSV stays 2024.
+- 2 FOCAL-distinctive set-typed cells proposed: `lobbyist_definition_included_actor_types` (9 organizational types, scope.1) + `lobbying_definition_included_activity_types` (8 activity types, scope.4). Atomization to 9+8=17 binary cells flagged as Open Issue FOCAL-2 for compendium 2.0 freeze.
+- Scope-qualifier deviation documented in mapping doc: `revolving_door.1` (lobbyist's prior public offices disclosed on reg form) is statutorily disclosure-shaped but deferred per strict plan reading. Known Phase C tolerance: US federal LDA projects to 75/175 = 43% max vs published 81/182 = 45% — 6-point known under-scoring fully attributable to revolving_door.1 deferral.
+
+#### Provisional Findings
+
+- **Row reuse rate by item: 22/57 = 38.5%.** Lowest reuse rate of any Phase B mapping so far. Below HG's ≥70% prediction because FOCAL's per-meeting contact_log atomization (9 NEW rows) and per-lobbyist descriptors atomization (5 NEW rows) introduce row families that no other contributing rubric reads. Reuse breakdown by battery: scope 37.5%, timeliness 50%, openness 50%, descriptors 16.7%, relationships 60%, financials 54.5%, contact_log 25%.
+- **35 NEW compendium rows introduced** — surpasses HG's 22 new rows, becoming the largest new-row contribution of any single Phase B mapping. Concentration: 9 contact_log + 5 descriptors + 5 openness + 5 financials + 1 staff target + 1 actor-types set + 1 activity-types set + 1 timeliness ministerial diary + 1 openness ministerial diary + 1 2025-only Lobbyist list + 5 misc.
+- **`lobbyist_spending_report_includes_total_compensation` stays at 7-rubric-confirmed** (FOCAL is the 7th reader; most-validated row in compendium). Other promotions: bill_or_action_identifier α-pair to 5-rubric-confirmed; position_on_bill to 3-rubric-confirmed (Sunlight + Opheim + FOCAL via β AND); employment_type (HG Q10) to 2-rubric-confirmed; business_associations_with_officials (HG Q22) to 2-rubric-confirmed; campaign_contributions (HG Q24) to 2-rubric-confirmed.
+- **The `contributions_from_others` row is now single-rubric across 8 of 9 contributing rubrics** (Newmark 2017 only). LobbyView is the last remaining promotion check; LDA's LD-203 captures OUTGOING contributions, not third-party-INCOMING-for-lobbying. Likely 1-rubric-confirmed at end of Phase B. **Compendium 2.0 freeze recommendation: KEEP** per Newmark-distinctive-observable rationale (MA principal reports list earmarked dues; some states explicitly require disclosure; observable is real but unusual).
+- **FOCAL is the first contributing rubric where projection's max for US federal LDA is structurally < published score** (a 6-point known under-scoring from revolving_door.1 deferral). Other contributing rubrics either had no federal data (Newmark/Opheim — state-only) or aligned naturally with extraction scope.
+- **9 NEW contact_log rows + 5 NEW descriptors rows complete the disclosure-side row backbone** for compendium 2.0 freeze. After FOCAL, LobbyView's schema-coverage check will validate the contact_log + descriptors atomization choices (LobbyView fields populate FOCAL contact_log.1/3/9/11 cells; rest will be uniformly NULL for federal jurisdiction).
+
+#### Decisions
+
+| topic | decision |
+|---|---|
+| Eighth Phase B target | FOCAL 2024, completed (48 atomic items in scope; 2 `revolving_door.*` deferred) |
+| Row reuse | 22 of 57 distinct rows = 38.5% (lowest single-mapping rate) |
+| New rows introduced | 35 distinct new rows (most of any single Phase B mapping) |
+| Scope-qualifier — revolving_door deferral | DEFERRED per strict plan reading; revolving_door.1 flagged Open Issue FOCAL-1 |
+| Phase C tolerance — known under-scoring | +6 pts on US federal LDA (revolving_door.1 deferral); other tolerances minor |
+| Watchpoint — `contributions_from_others` in FOCAL financials.* | NO PARALLEL; row stays single-rubric across 8 of 9 contributing rubrics |
+| α form-type split for descriptors | APPLIED (5 NEW reg-form-side cells) |
+| `def_target_*` family extension | EXTENDED with `def_target_legislative_or_executive_staff` (4th cell) |
+| 2024 → 2025 application differences | Encoded in projection logic; 2025-only Lobbyist-list row added |
+| Per-meeting contact_log atomization | 9 NEW rows; FOCAL-distinctive |
+| Set-typed cells (scope.1 + scope.4) | Set-typed retained; atomization to 17 binary cells flagged Open Issue FOCAL-2 |
+| Phase C utility of FOCAL | Federal LDA per-indicator + 28-country ground truth; US states have NO FOCAL ground truth (state-level cross-rubric validation only) |
+| Next target | LobbyView (final Phase B mapping — schema-coverage, different shape) |
+
+#### Mistakes recorded
+
+None significant. Workflow ran cleanly. One reasonable counter-argument flagged: 35 NEW rows may be over-atomizing contact_log + descriptors batteries — but granularity-bias rule supports atomization; LobbyView's schema-coverage will validate by checking which FOCAL-distinctive cells the federal LDA schema populates.
+
+#### Results
+
+- [`results/projections/focal_2024_projection_mapping.md`](results/projections/focal_2024_projection_mapping.md) — FOCAL 2024 projection mapping doc (957 lines; 48 atomic items × 57 distinct compendium row families; 22 reused / 35 new; 38.5% reuse — lowest single-mapping rate; includes 11 Open Issues for compendium 2.0 freeze + 3 Corrections to predecessor mappings + Promotions section + 2025-only Lobbyist-list documentation).
+
+#### Next Steps
+
+1. **LobbyView 2018/2025 schema-coverage check** — final Phase B mapping. Different shape (schema-coverage, not score-projection). 46 schema fields per Kim 2018 + Kim 2025. Target: ~100% federal LDA jurisdiction coverage against the now-rich 110+ compendium row set.
+2. **`contributions_from_others` final promotion check** against LobbyView's federal LDA schema. If absent (likely), the row is single-rubric across the entire contributing set; Compendium 2.0 freeze: KEEP per Newmark-distinctive rationale.
+3. **After Phase B closes** (FOCAL done; LobbyView next): union of 8 score-projection mapping docs + 1 schema-coverage doc → `results/projections/disclosure_side_compendium_items_v1.tsv`. Compendium 2.0 row-freeze brainstorm (separate plan).
+4. **Phase C: code projections under TDD.** Order locked: CPI 2015 C11 first; PRI 2010 second; remaining 7 in mapping order; FOCAL last (after federal-LDA jurisdiction extraction is in place).
+5. **Resolve Open Issue FOCAL-1** (revolving_door.1 scope decision) at user review.
+
+---
+
 ### 2026-05-13 (eve) — Phase B continued: HiredGuns 2007 projection mapping (7th rubric)
 
 **Convo:** [`convos/20260513_hiredguns_phase_b_mapping.md`](convos/20260513_hiredguns_phase_b_mapping.md)
