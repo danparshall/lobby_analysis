@@ -92,19 +92,30 @@ is unusable for the compendium pipeline.
 - `tests/test_cogel_opheim.py` — 60-case TDD suite (59 pass, 1 xfail)
 - `results/20260512_opheim_phase2_preview.csv` — per-state preview (47 rows)
 - `results/20260512_opheim_phase2_preview.md` — preview narrative + diagnosis hypotheses
+- `plans/20260513_t28_t29_coverage_gap.md` — diagnosis-and-fix plan for the 12-state T28/T29 gap (Phase 0 multimodal inspection → Phase 1 fix conditional on Hypothesis A/E/F → Phase 2 verify XPASS → Phase 3 re-preview)
 
-### Next Steps
+### Post-checkpoint plan creation
 
-Three paths for the next session (user choice deferred):
-- Phase 2 driver script (`scripts/cogel_1990_opheim_score.py`)
-  — produces the authoritative per-state delta table; inherits the
-  12-state gap as a caveat.
-- Close the 12-state T28/T29 gap — same conceptual category as the
-  2026-05-11 CA/FL fix; once closed, the coverage test XPASSes and
-  Phase 2 becomes authoritative.
-- Alabama T29 overflow fix (carried from 2026-05-11) — structurally
-  similar to the AR over-scoring hypothesis surfaced here, so
-  resolving AL may shed light on AR/WY/NH simultaneously.
+After running finish-convo, user asked for a plan on the T28/T29
+gap before ending the session. Targeted diagnostic against the
+post-dual-PSM v1 TSV revealed:
+
+- **All 12 missing states have ZERO state-name text tokens on
+  T28/T29 scans** (not even mis-attributed to neighbor rows).
+- **Same states recover fine on T30/T31 scans** — so the v1 row
+  labeler is sound when state-name OCR succeeds; pathology is
+  specific to T28/T29 scans.
+- **Opheim non-zero scores for AZ=11, IL=15, PA=14, OH+** rule out
+  source omission for those states.
+- **Alphabetical alternation pattern** on scans 159-167 (every
+  other state captured) strongly suggests **two-column-state page
+  layout** in the COGEL Blue Book T28/T29 that the v1 single-
+  column anchor logic doesn't handle.
+
+Plan committed at `plans/20260513_t28_t29_coverage_gap.md` —
+Phase-0-gated, three conditional fix branches (A: source omission,
+E: two-column layout, F: PSM blind spot), success criterion =
+existing xfail coverage test transitioning to XPASS.
 
 ## Session: 2026-05-11 → 2026-05-12 — opheim_phase0_and_dual_psm_recovery
 

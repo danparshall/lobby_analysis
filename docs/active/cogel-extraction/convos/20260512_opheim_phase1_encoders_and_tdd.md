@@ -181,3 +181,40 @@ pick one of these three paths.)
   cell-boundary collision pathology is structurally similar to the
   AR over-scoring hypothesis here, so resolving AL may shed light
   on AR/WY/NH simultaneously.
+
+## Plan created (post-checkpoint, same session)
+
+User asked to write a plan for the T28/T29 coverage gap before
+ending the session. Did a targeted diagnostic on the post-dual-PSM
+v1 TSV (`results/20260505_v1_tokens.tsv`, 8,442 tokens) to anchor
+the plan:
+
+- **None of the 12 missing states appear in T28/T29 scans of the
+  v1 TSV** — including as text tokens labeled `_header` or
+  `_footnote`. So the gap is not v1 row-mis-attribution; the
+  state-name OCR didn't pick them up at all on those scans.
+- **The same states are recovered on T30/T31 scans** (169, 170,
+  172-175), so the v1 row labeler works when state names appear in
+  the OCR output. The pathology is specific to T28/T29 scans.
+- **Opheim non-zero scores for AZ=11, IL=15, PA=14, OH (positive
+  oversight in Phase 2 preview)** partially falsify the source-
+  omission hypothesis — these states must appear in the source.
+- **State coverage on scans 159-167 alternates** alphabetically
+  (AZ between Alaska/Arkansas captured, then CO between CT-ish
+  states, then DE between Connecticut/Florida, etc.) — strongly
+  suggestive of a **two-column-state page layout** that the v1
+  extractor's left-column-only anchor logic doesn't handle.
+
+Plan committed: `plans/20260513_t28_t29_coverage_gap.md`.
+Structure: Phase 0 multimodal-inspect 4 PDFs to resolve mechanism;
+Phase 1 implements the fix with three conditional branches keyed to
+Hypothesis A (source omission), E (two-column layout — most
+probable), or F (PSM blind spot); Phase 2 verifies via the existing
+xfail coverage test XPASSing; Phase 3 re-runs the Phase 2 preview
+and reports the delta-pattern shift.
+
+The plan is deliberately Phase-0-gated — no fix architecture is
+committed to before the multimodal PDF inspection decides between
+the hypotheses. The 12 missing states are tabulated; Iowa flagged
+as a separate single-table case; DE/RI/SC flagged as
+multi-table cases.
