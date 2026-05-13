@@ -16,6 +16,70 @@ Carry-forward signals (informational, not gates):
 
 (Newest first.)
 
+### 2026-05-13 (eve) — Phase B continued: HiredGuns 2007 projection mapping (7th rubric)
+
+**Convo:** [`convos/20260513_hiredguns_phase_b_mapping.md`](convos/20260513_hiredguns_phase_b_mapping.md)
+**Plan executed:** [`plans/20260507_atomic_items_and_projections.md`](plans/20260507_atomic_items_and_projections.md) Phase B (HG 2007 — 7th rubric, the largest of the three rubrics remaining after Opheim shipped earlier on 2026-05-13).
+**Handoff (most recent, with this rubric's watchpoints):** [`plans/_handoffs/20260511_phase_b_continued_remaining_7.md`](plans/_handoffs/20260511_phase_b_continued_remaining_7.md)
+
+#### Topics Explored
+
+- All 38 in-scope HG atomic items mapped per the locked Phase B per-item template (2 def + 8 ind-reg + 15 ind-spending + 2 emp-spending + 3 e-filing + 8 pub-access; 9 enforcement + 1 cooling-off OOS).
+- Cross-rubric grep BEFORE drafting per locked 2026-05-11 workflow: 4 parallel greps across the 9 contributing-rubric TSVs + historical PRI 2010 disclosure-law CSV, plus targeted greps of CPI and PRI projection mapping docs. Surfaced 16 reusable rows out of 38 items + 22 NEW rows.
+- α form-type split applied to Q5 vs Q20 (the canonical motivating case for the split locked 2026-05-11). HG reads both sides distinctly at 3-tier categorical projection on the pre-existing 6 Sunlight α rows.
+- 5-tier ordinal magnitude reads on typed cells: HG Q2 (compensation threshold) and HG Q15 (itemization de-minimis threshold) are the FINEST readers of these typed cells in the contributing-rubric set; CPI #197 / Sunlight #3 read at coarser granularity on the same cells.
+- Conditional-cascade pattern (Q15 gates Q16-Q19): 4 NEW itemized-detail cells (employer / recipient / date / description); cascade lives in the projection logic, not in the cells.
+- Practical-availability granularity battery (Q28-Q38, 11 items) introduces the FINEST atomization of portal observables in the contributing-rubric set. Q31/Q32 access-tier ordinals decompose into 4 binary cells each (photocopies / pdf / searchable / downloadable, lobbyist-directory side and spending-report side). Sunlight item-4's underlying observables (kept in compendium 2.0 even though Sunlight item-4 itself was excluded from projection) get their FIRST projection-friendly reader here.
+- Composite quirks: Q23 mixes disclosure (1 pt) + limits (2 pt) + prohibition (3 pt); Q24 has 5 labels / 3 distinct point values (allowed/disclosed/session crosstab). Disclosure-only projection caps at 1 pt of 3 for Q23, 1 pt of 2 for Q24. Maximum systematic under-scoring from disclosure-only scope = 3 pts per state on the 100-point scale.
+- Watchpoint walks: (1) `contributions_from_others` parallel in HG — NO PARALLEL (Q24 is OUTGOING campaign contributions disclosure, not third-party-contributions INCOMING — the Newmark 2017 observable; row remains single-rubric across 7 of 9 contributing rubrics now); (2) `def_actor_class_*` 4th-reader check — HG is NOT a 4th reader (HG Q1/Q2/Q3/Q4 read target/threshold/gateway/deadline, not actor-class definitional inclusion; row family stays 3-rubric-confirmed).
+- Discovered: the locked plan and 2026-05-11 handoff both reference HG as a 47-item rubric with "Q1-Q38 + Q49-Q56 in scope." Both numbers are incorrect — `items_HiredGuns.tsv` has 48 items (Q1-Q48), no Q49+. Disclosure-side in scope = Q1-Q38 = 38 items, not 47. Documented as Correction 1 in mapping doc.
+- 7 row-design questions (HG-1 through HG-7) + 3 systemic issues (Q23/Q24 partial-scope tolerance; practical-availability cell Phase C strategy; convergence-of-atomization observation) flagged as Open Issues for compendium 2.0 freeze planning.
+
+#### Provisional Findings
+
+- **Row reuse rate by item: 16/38 = 42%.** Lowest reuse rate of any Phase B mapping so far. Expected: HG is the largest remaining rubric AND atomizes practical-availability finer than any contributing rubric. The reuse pattern is **HG-introduces-the-fine-cells; other rubrics read at coarser granularities** — the inverse of the Newmark/Opheim 100%-reuse pattern.
+- **22 NEW compendium rows introduced** — the most of any single mapping. 14 new legal-axis rows + 8 new practical-axis rows (Q31/Q32 access-tier underlying cells) + supplementary practical cells (Q28-Q38). HG is the LAST significant batch of new disclosure-side observables; FOCAL (next) is expected to be ≥70% reuse.
+- **`lobbyist_spending_report_includes_total_compensation` is now the most-validated row in the compendium: 7-rubric-confirmed** (Sunlight + Newmark 2017 + Newmark 2005 + Opheim + HG Q13 + CPI #201 + PRI E2f_i). Other promotions to 5+ rubric-confirmed: `lobbyist_spending_report_categorizes_expenses_by_type` (6), `lobbyist_spending_report_includes_itemized_expenses` (6), `compensation_threshold_for_lobbyist_registration` at multiple granularities (5), gifts/entertainment/transport/lodging bundle (5+).
+- **Q12 (filings per 2-year cycle) requires a NEW metadata cell** to make the projection deterministic from cadence binaries alone — `state_legislative_session_calendar` (structured) OR `lobbyist_spending_reports_implied_per_2yr_cycle: int` (direct derived). Latter is YAGNI-cleaner; defer to compendium 2.0 freeze.
+- **Q23/Q24 disclosure-only projection caps at partial scope** — Q23 reaches 1 of 3 pts; Q24 reaches 1 of 2 pts. Maximum systematic under-scoring vs published HG totals = 3 pts of 100. Documented as Phase C validation tolerance issue, not a Phase B blocker.
+- **`lobbyist_or_principal_report_includes_contributions_received_for_lobbying` is now single-rubric across 7 of 9 contributing rubrics.** Remaining promotion checks: FOCAL `financials.*` battery and LobbyView. If both fail, the row is single-rubric across the entire contributing set — that becomes a compendium 2.0 freeze question (real Newmark-distinctive observable, or over-atomization?).
+
+#### Decisions
+
+| topic | decision |
+|---|---|
+| Seventh Phase B target | HiredGuns 2007, completed (38 atomic items in scope; 10 OOS = 9 enforce.* + 1 cooling-off) |
+| Row reuse | 16 of 38 = 42% (lowest Phase B mapping so far) |
+| New rows introduced | 22 distinct new rows (14 legal-axis + 8 practical-axis Q31/Q32 family) |
+| α form-type split on Q5/Q20 | APPLIED — canonical motivating case |
+| 5-tier reads on Q2 / Q15 typed cells | APPLIED — finest granularity in contributing set |
+| Q16-Q19 itemized-detail cascade | 4 NEW cells; conditional-on-Q15 logic in projection |
+| Q31/Q32 cell decomposition | 4 binary cells per side × 2 form types = 8 NEW practical cells; granularity bias over single typed-enum |
+| Watchpoint — `contributions_from_others` | NO PARALLEL in HG; single-rubric across 7 of 9 |
+| Watchpoint — `def_actor_class_*` 4th reader | NOT a 4th reader; stays 3-rubric-confirmed |
+| HG item-count correction | Plan/handoff said 47; TSV has 48 (Q1-Q48); 38 in scope (not 47) |
+| Q23/Q24 partial-scope projection | DOCUMENTED as Phase C tolerance issue (3 pts max under-scoring per state) |
+| Q12 session-calendar question | Flagged Open Issue HG-5 for compendium 2.0 freeze |
+| Phase C utility of HG | Per-state per-question scorecard retrieval is the unlock (1,900 cells potential); statute-extraction populates ~22 legal cells, portal observation populates ~13 practical cells (Phase D dependency) |
+| Next target | FOCAL 2024 (50 indicators; weighted aggregation; 1,372-cell L-N 2025 ground truth) |
+
+#### Mistakes recorded
+
+None significant. Cross-rubric grep workflow ran cleanly with 4 parallel greps; no rework cycles. One minor friction: HG's TSV has 48 items but plan/handoff said 47 — caught early during reading, documented as a correction; not a workflow mistake (source-of-truth discrepancy was in predecessor docs).
+
+#### Results
+
+- [`results/projections/hiredguns_2007_projection_mapping.md`](results/projections/hiredguns_2007_projection_mapping.md) — HG 2007 projection mapping doc (38 atomic items × ~38 distinct compendium row families; 16 reused / 22 new; longest mapping doc in the contributing set after PRI; includes "Corrections to predecessor mappings" section flagging the 48-not-47 item-count correction + non-`def_actor_class_*`-reader confirmation + Phase B mapping count update 6 → 7).
+
+#### Next Steps
+
+1. **FOCAL 2024 projection mapping** — 8th of 9 score-projection rubrics (LobbyView 9th, different shape). 50 indicators with weighted aggregation. Per L-N 2025 supplementary file: max 182 pts; US federal LDA scored 81/182 = 45% (project's primary validation anchor for federal jurisdiction). FOCAL `financials.*` battery is the strongest remaining check for the `lobbyist_or_principal_report_includes_contributions_received_for_lobbying` row.
+2. After Phase B completes (FOCAL + LobbyView): union of all 9 score-projection mapping docs + 1 schema-coverage doc → `results/projections/disclosure_side_compendium_items_v1.tsv`; compendium 2.0 row-freeze brainstorm (separate plan).
+3. Phase C: code projections under TDD per locked plan §Phase C. Order locked: CPI 2015 C11 first; PRI 2010 second; remaining 7 in mapping order.
+4. **7 row-design Open Issues from HG (HG-1 through HG-7)** + 3 systemic issues all flagged for compendium 2.0 freeze planning; non-blocking for remaining 2 Phase B mappings.
+
+---
+
 ### 2026-05-13 (pm late) — Phase B continued: Opheim 1991 projection mapping (6th rubric)
 
 **Convo:** [`convos/20260513_opheim_phase_b_mapping.md`](convos/20260513_opheim_phase_b_mapping.md)

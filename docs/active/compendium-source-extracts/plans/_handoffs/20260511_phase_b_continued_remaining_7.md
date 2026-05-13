@@ -69,7 +69,7 @@ Casual usage often conflates these. **The remaining rubric mappings must check**
 
 **Correction logged 2026-05-13 (Newmark 2017 mapping session):** Earlier wording in this doc collapsed the three lobbyist-status threshold cells into a single row (with the readers column saying "Newmark/Opheim def.*_standard" as a family abbreviation). That collapse is wrong on its face — compensation / expenditure / time are independently extant in state statutes (federal LDA itself has compensation + time thresholds but no expenditure threshold), so the three cannot share one cell. Three separate typed cells, each read by the corresponding rubric binary via `IS NOT NULL`. The handoff's earlier per-rubric Newmark 2017 watchpoint ("Should read the existing CPI #197 cell ... Don't propose new binary rows") was shorthand for "follow the CPI #197 typed-cell-with-IS-NOT-NULL pattern" — not a literal claim that all three Newmark items read CPI #197. Corrected here for the Newmark-2005 and Opheim implementing agents who will encounter the same three concepts.
 
-### Six Phase B mappings done (as of 2026-05-13 pm late)
+### Seven Phase B mappings done (as of 2026-05-13 eve)
 
 - [`../../results/projections/cpi_2015_c11_projection_mapping.md`](../../results/projections/cpi_2015_c11_projection_mapping.md) — 21 rows
 - [`../../results/projections/pri_2010_projection_mapping.md`](../../results/projections/pri_2010_projection_mapping.md) — 69 rows touched (~52 new)
@@ -77,30 +77,37 @@ Casual usage often conflates these. **The remaining rubric mappings must check**
 - [`../../results/projections/newmark_2017_projection_mapping.md`](../../results/projections/newmark_2017_projection_mapping.md) — 14 rows (8 reused, 6 new) — added 2026-05-13
 - [`../../results/projections/newmark_2005_projection_mapping.md`](../../results/projections/newmark_2005_projection_mapping.md) — 14 rows (14 reused, 0 new; **100% reuse**) — added 2026-05-13 pm
 - [`../../results/projections/opheim_1991_projection_mapping.md`](../../results/projections/opheim_1991_projection_mapping.md) — 14 rows (14 reused, 0 new; **100% reuse**); 1 item un-projectable (`disclosure.other_influence_peddling_or_conflict_of_interest` catch-all → `unable_to_evaluate`) — added 2026-05-13 pm late
+- [`../../results/projections/hiredguns_2007_projection_mapping.md`](../../results/projections/hiredguns_2007_projection_mapping.md) — **38 rows touched (16 reused, 22 new; 42% reuse, lowest of any single mapping)** — added 2026-05-13 eve. HG-distinctive observable cluster: Q7 amendment deadline, Q8 photograph, Q9 reg-form employer list, Q10 employment type, Q16-Q19 itemized-detail × 4, Q21 household members, Q22 business associations, Q24 outgoing campaign contributions disclosure, Q25 null/no-activity report, Q28-Q30 e-filing portal, Q31/Q32 access-tier 4-cell decomposition × 2 form types, Q33-Q37 portal/cost/aggregate cells, Q38 update cadence. **Plan/handoff figure of "47 items, Q1-Q38 + Q49-Q56" is incorrect** — HG has 48 items (Q1-Q48); disclosure-side scope = Q1-Q38 = 38 items. Documented as Correction 1 in the mapping doc.
 
 ---
 
-## Remaining Phase B order (3 rubrics)
+## Remaining Phase B order (2 rubrics)
 
 > **Update 2026-05-13:** OpenSecrets 2022 has been **tabled** (was item 1 in the original 7-rubric order). See [`../../results/_tabled/opensecrets_2022_tabled.md`](../../results/_tabled/opensecrets_2022_tabled.md) for the tabling rationale (no published per-tier scoring definition; the recheck's "few-shot calibratable" criterion is softer than the branch's projection-vs-published bar) and the 3 OS-distinctive row candidates also tabled pending organic pickup by other rubrics or project-internal justification. Drop is reversible per reinstatement triggers documented there.
 >
 > **Update 2026-05-13 (pm):** Newmark 2005 shipped at 100% row reuse (14/14, zero new rows). **The Newmark 2017 mapping's speculation that Newmark 2005 confirms `lobbyist_or_principal_report_includes_contributions_received_for_lobbying` as a cross-rubric row is FALSIFIED** — Newmark 2005 has only 6 disclosure items (vs 2017's 7), no `contributions_from_others` parallel.
 >
-> **Update 2026-05-13 (pm late):** Opheim 1991 shipped at 100% row reuse (14 row families / 15 in-scope items; 14 projectable, 1 catch-all un-projectable). Phase B order below renumbered to 3 rubrics. Two structural promotions to flag for the remaining mappings:
+> **Update 2026-05-13 (pm late):** Opheim 1991 shipped at 100% row reuse (14 row families / 15 in-scope items; 14 projectable, 1 catch-all un-projectable). Two structural promotions flagged for remaining mappings:
 > - **`def_actor_class_elected_officials` / `def_actor_class_public_employees` row family is now 3-rubric-confirmed** (Newmark 2017 + Newmark 2005 + Opheim). Per the explicit guidance below ("three rubrics reading the same row family is high enough confidence to lock its design"), **Open Issue 1 from the Newmark 2017 mapping is now resolved-in-principle** — pull forward to compendium 2.0 freeze planning rather than indefinitely deferred. HG/FOCAL/LobbyView mappings need not re-examine.
 > - **β AND-projection convention is now exemplified twice** (Sunlight 2026-05-11 locking + Opheim `disclosure.legislation_supported_or_opposed` 2026-05-13). Pattern is established: when a source bundles N conceptually-distinct observables into one item, encode the bundling in the projection logic, not in the source.
-> - **`lobbyist_or_principal_report_includes_contributions_received_for_lobbying` remains single-rubric** after the Opheim Watchpoint-4 walk (Opheim's 7-item info-category battery has no parallel; "sources of income" + "total income" map to compensation-broken-down + total-compensation rows, not third-party-contributions). Remaining promotion checks: HG 2007, FOCAL 2024, LobbyView. If all three also fail, the row is single-rubric across the entire contributing set — that's a compendium 2.0 freeze question, not a Phase B blocker.
+>
+> **Update 2026-05-13 (eve):** HiredGuns 2007 shipped at 42% row reuse (16 of 38 in-scope items reused; 22 NEW rows — most of any single mapping). Phase B order below renumbered to **2 rubrics** (FOCAL, LobbyView). Three structural updates to flag for the remaining mappings:
+> - **HG plan/handoff item-count correction.** Plan and prior handoff text say "47 items, Q1-Q38 + Q49-Q56." Both wrong — HG has 48 items (Q1-Q48); disclosure-side scope = Q1-Q38 = 38 items. Documented in HG mapping doc's "Corrections to predecessor mappings" section. The 50 × 38 = 1,900 per-cell HG ground-truth count (vs. the earlier 50 × 47 = 2,350) is the correct figure if CPI's per-state per-question scorecard is retrievable.
+> - **HG is NOT a 4th reader of `def_actor_class_*`.** Walked Q1/Q2/Q3/Q4 — target/threshold/gateway/deadline observables, not actor-class definitional inclusion. Row family stays 3-rubric-confirmed. The handoff's prior speculation ("could be a 4th reader") was tentative and is now falsified.
+> - **`lobbyist_or_principal_report_includes_contributions_received_for_lobbying` is now single-rubric across 7 of 9 contributing rubrics.** HG Q24 is OUTGOING campaign contributions disclosure (lobbyist → official), not the third-party-contributions INCOMING observable Newmark 2017 reads. Remaining promotion checks: **FOCAL `financials.*` battery and LobbyView** are the LAST chances to confirm this row cross-rubric. If both fail, the row is single-rubric across the entire contributing set — that's a compendium 2.0 freeze question (real Newmark-distinctive observable other rubrics miss, or Newmark over-atomization?).
+>
+> HG also surfaced 7 row-design Open Issues (HG-1 through HG-7) and 3 systemic issues all flagged for compendium 2.0 freeze planning; non-blocking for FOCAL and LobbyView.
 
 Per the locked Phase C order (which Phase B mirrors):
 
 1. ~~**Newmark 2017** (19 items)~~ — **DONE 2026-05-13**, see [`../../results/projections/newmark_2017_projection_mapping.md`](../../results/projections/newmark_2017_projection_mapping.md). 14 atomic items in scope (7 def + 7 disclosure; 5 `prohib.*` excluded); 14 distinct compendium rows touched (8 reused / 6 new).
 2. ~~**Newmark 2005** (18 items)~~ — **DONE 2026-05-13 pm**, see [`../../results/projections/newmark_2005_projection_mapping.md`](../../results/projections/newmark_2005_projection_mapping.md). 14 atomic items in scope (7 def + 1 freq + 6 disclosure; 4 `prohib.*` + 1 `penalty_stringency_2003` excluded); **100% row reuse, zero new rows.** All three handoff watchpoints walked (PRI A-family no-overlap, three-threshold-cell confirmed against 2005 paper, penalty excluded).
 3. ~~**Opheim 1991** (22 items, disclosure-side only)~~ — **DONE 2026-05-13 pm late**, see [`../../results/projections/opheim_1991_projection_mapping.md`](../../results/projections/opheim_1991_projection_mapping.md). 15 atomic items in scope (7 def + 1 freq + 6 information-category + 1 catch-all un-projectable; 7 `enforce.*` items excluded); **100% row reuse, zero new rows.** All four handoff watchpoints walked (β AND-projection applied as 2nd β use; `def_actor_class_*` 3-rubric-confirmed; cadence finer-cut confirmed; no contributions parallel).
-4. **HiredGuns 2007** (47 items, disclosure-side only) — **next**
-5. **FOCAL 2024** (50 items, weighted aggregation)
+4. ~~**HiredGuns 2007** (48 items, 38 in scope; Q39-Q47 enforce + Q48 cooling-off OOS)~~ — **DONE 2026-05-13 eve**, see [`../../results/projections/hiredguns_2007_projection_mapping.md`](../../results/projections/hiredguns_2007_projection_mapping.md). 38 atomic items in scope; **38 distinct compendium rows touched (16 reused / 22 new; 42% reuse — lowest single-mapping reuse rate).** All 7 handoff watchpoints walked (α split on Q5/Q20 applied; 5-tier reads on Q2/Q15 typed cells; Q23/Q24 partial-scope projection documented for Phase C tolerance; `contributions_from_others` no parallel; `def_actor_class_*` NOT a 4th reader; Q39-Q47 + Q48 OOS).
+5. **FOCAL 2024** (50 items, weighted aggregation) — **next**
 6. **LobbyView** (46 schema fields — schema-coverage rubric, different shape)
 
-You can probably handle 2-3 per session given the locked conventions. Each session: cross-rubric grep, draft, sanity-check against existing CPI/PRI/Sunlight/Newmark2017/Newmark2005/Opheim mappings for row reuse.
+You can probably handle 1-2 per session given FOCAL's size and the LobbyView shape difference. Each session: cross-rubric grep, draft, sanity-check against existing 7 mappings for row reuse.
 
 ---
 
@@ -164,18 +171,23 @@ See [`../../results/projections/opheim_1991_projection_mapping.md`](../../result
   - Gifts/entertainment/transport/lodging bundle (`lobbyist_report_includes_*` + `principal_report_includes_*`) — 4-rubric-confirmed at combined granularity (PRI + Newmark 2017 + Newmark 2005 + Opheim; plus FOCAL `financials.10`).
 - **One row family at maximum cross-rubric validation** (5 readers): `lobbyist_spending_report_includes_total_compensation` (Sunlight + Newmark 2017 + Newmark 2005 + Opheim + HG Q13 + CPI #201 + PRI E2f_i = 6+ readers). This is the most-validated row in the compendium going into HG mapping.
 
-### HiredGuns 2007 (47 items, disclosure-side only)
+### ~~HiredGuns 2007 (48 items total, 38 in scope)~~ — DONE 2026-05-13 eve
 
-**Largest single mapping** in the remaining set. Key cross-rubric anchors:
+See [`../../results/projections/hiredguns_2007_projection_mapping.md`](../../results/projections/hiredguns_2007_projection_mapping.md). 38 atomic items in scope (Q1-Q38: 2 def + 8 ind-reg + 15 ind-spending + 2 emp-spending + 3 e-filing + 8 pub-access); 10 OOS items (Q39-Q47 enforce + Q48 cooling-off); **38 distinct compendium rows touched, 16 reused / 22 new (42% reuse rate — lowest single-mapping rate).**
 
-- **Q5 (reg form) vs Q20 (spending report)** is the canonical α split case. Reuse the 6 form-type-split rows from Sunlight #1.
-- **Q11 (gateway) / Q14 (categorized) / Q15 (itemized + threshold magnitude)** is the canonical item-2 stack. Q15 reads the same cell as Sunlight #3 (`expenditure_itemization_de_minimis_threshold_dollars`) at finer granularity.
-- **Q13 (lobbyist compensation) / Q27 (principal compensation)** reuses Sunlight #5 / Newmark / CPI #201 / PRI E2f_i compensation rows.
-- **Q2 (lobbyist-status threshold, 5-tier ordinal)** reads the CPI #197 cell.
-- **Q39-Q47 enforcement is OUT** (plan: "Q39-Q47 enforcement = deferred"). **Q48 cooling-off is OUT**. Disclosure-only.
-- **Watch for `contributions_from_others` parallel.** Newmark 2017's `lobbyist_or_principal_report_includes_contributions_received_for_lobbying` row is **single-rubric across 6 of the 9 contributing rubrics** (CPI, PRI, Sunlight, Newmark 2005, Newmark 2017, Opheim — Newmark 2005 falsified the speculative parallel 2026-05-13 pm; Opheim's Watchpoint 4 walk 2026-05-13 pm late confirmed no parallel in Opheim's 7-item info-category battery either). Check if any HG question reads third-party-contributions-received-for-lobbying as a distinct observable from compensation/total-spending. **If HG also fails**, the only remaining promotion checks are FOCAL `financials.*` battery and LobbyView schema fields; if all three fail, the row is single-rubric in the entire contributing set and merits explicit compendium 2.0 freeze re-examination (real Newmark-2017-discovered observable that others miss, or over-atomization?).
-- **`def_actor_class_*` no longer in question.** Row family is 3-rubric-confirmed (Newmark 2017 + Newmark 2005 + Opheim) and Open Issue 1 is resolved-in-principle for compendium 2.0 freeze. HG mapping need not re-examine the row family's existence; just check if any HG question reads it (likely Q3 / Q4 area on individual lobbyist definition — could be a 4th reader but immaterial to row design).
-- Verify against the locked plan: disclosure-side scope per the plan §"Disclosure-side items (rough scope, by rubric)" gives HG Q1-Q38 + Q49-Q56 in scope; doublecheck Q49-Q56 are actually disclosure (accessibility-related per plan).
+**Seven handoff watchpoints resolved:**
+- **Q5/Q20 α form-type split:** APPLIED. Pre-existing 6 Sunlight α rows reused exactly.
+- **Q11/Q14/Q15 item-2 stack:** APPLIED. Q15's 5-tier ordinal reads `expenditure_itemization_de_minimis_threshold_dollars` (Sunlight #3) at finer granularity than Sunlight's 2-tier read.
+- **Q13/Q27 compensation pair:** APPLIED. Q13 reuses Sunlight `lobbyist_spending_report_includes_total_compensation` (now 7-rubric-confirmed, most-validated row in compendium); Q27 reuses PRI `principal_report_includes_direct_compensation`.
+- **Q2 5-tier on CPI #197 typed cell:** APPLIED. Finest read of `compensation_threshold_for_lobbyist_registration` in contributing set.
+- **Q23 disclosure-only partial projection:** DOCUMENTED. Disclosure read = 1 pt of 3 max (limits + prohibition tiers OOS).
+- **Q24 disclosure-only partial projection:** DOCUMENTED. Disclosure read = 1 pt of 2 max (prohibition tier OOS). HG Q24 is OUTGOING contributions disclosure — different observable from Newmark 2017's INCOMING third-party-contributions row.
+- **`def_actor_class_*` 4th reader check:** NOT a 4th reader. HG Q1/Q2/Q3/Q4 read target/threshold/gateway/deadline. Row family stays 3-rubric-confirmed.
+
+**Three structural findings worth carrying forward to FOCAL and LobbyView:**
+- **HG introduces 22 new rows — the most of any single mapping.** 14 new legal-axis (Q7 amendment deadline, Q8 photograph, Q9 reg-form employer list, Q10 employment type, Q16-Q19 itemized-detail × 4, Q21 household members, Q22 business associations, Q24 outgoing campaign contributions, Q25 null/no-activity report + Q12 session-calendar metadata) + 8 practical-axis Q31/Q32 access-tier underlying cells + 5 other practical cells (Q28-Q30, Q33-Q38). After HG, the contributing-rubric set has converged at HG's atomization granularity for disclosure-side observables. **FOCAL is expected to be ≥70% reuse rate;** the FOCAL `financials.*` battery, `contact_log.*` battery, and `openness.*` battery should mostly read pre-existing rows at FOCAL granularity rather than introduce new structure.
+- **`lobbyist_or_principal_report_includes_contributions_received_for_lobbying` is now single-rubric across 7 of 9 contributing rubrics.** Remaining checks: FOCAL `financials.*` battery (most likely candidate) and LobbyView. If both fail, the row is single-rubric across the entire contributing set — compendium 2.0 freeze question.
+- **Q31/Q32 access-tier cell decomposition is novel.** 4 binary cells per side × 2 form types = 8 NEW practical-availability cells. These are the FIRST projection-friendly readers of Sunlight item-4's underlying observables (which were kept in compendium 2.0 even though Sunlight item-4 itself was excluded from projection). FOCAL `openness.1/4/5` provide finer-FOCAL-granularity overlap; LobbyView API infrastructure cells (`api_bulk_download`, `full_text_search_index`) are federal-side parallels.
 
 ### FOCAL 2024 (50 items, weighted aggregation)
 
