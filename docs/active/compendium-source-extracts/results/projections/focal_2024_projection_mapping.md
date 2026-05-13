@@ -27,21 +27,28 @@ All six conventions from the prior mapping docs apply verbatim:
 
 **Expected reuse rate:** ~45% (not the ≥70% prediction from the HG mapping). The HG mapping anticipated FOCAL would "confirm rather than expand," but the per-meeting contact_log atomization (9 new rows) and per-lobbyist descriptors atomization (5 new rows) push the new-row count up. The remaining batteries (scope, openness, financials, relationships, timeliness) DO confirm at high reuse — only contact_log + descriptors expand the row set substantially.
 
-## Scope qualifier — 2 items OUT
+## Scope qualifier — 1 item OUT (FOCAL-1 resolved 2026-05-13: revolving_door.1 IN, revolving_door.2 OUT)
 
-Per the plan's disclosure-only Phase B qualifier ("FOCAL all `financials.*` / `descriptors.*` / `contact_log.*` / `openness.*` / `relationships.*` / `scope.*` / `timeliness.*`"), the plan enumerates 7 batteries and is **silent on `revolving_door.*`**. Strict reading: both revolving_door items are out, parallel to:
-- HG Q48 cooling-off → DEFERRED (HiredGuns mapping)
-- Newmark 2017 `prohib.revolving_door` → DEFERRED (Newmark 2017 mapping)
-- Newmark 2005 `prohib.*` battery → DEFERRED
+Per the plan's disclosure-only Phase B qualifier ("FOCAL all `financials.*` / `descriptors.*` / `contact_log.*` / `openness.*` / `relationships.*` / `scope.*` / `timeliness.*`"), the plan enumerates 7 batteries and is **silent on `revolving_door.*`**.
 
-| Excluded item | Why excluded |
-|---|---|
-| `revolving_door.1` (list of prior public offices that lobbyists have held) | Borderline. Statutorily this IS a disclosure-side observable (a state can require the lobbyist to disclose prior public service on the reg form, analogous to `descriptors.*`). But the plan groups it under "revolving_door" — the cooling-off / prohibition battery — which is deferred. Strict reading: DEFERRED, **flag as Open Issue FOCAL-1** for compendium 2.0 freeze reconsideration. |
-| `revolving_door.2` (database of officials in cooling-off period) | State-side meta-publication of an enforcement mechanism (which officials are currently restricted from lobbying). Enforcement-adjacent; not disclosure-side. Cleanly DEFERRED. |
+**Initial strict reading (drafted 2026-05-13 late eve):** both revolving_door items deferred, parallel to HG Q48 / Newmark `prohib.*` / Newmark 2005 `prohib.*`. Flagged as Open Issue FOCAL-1 for user review.
 
-**Implication for US federal LDA ground truth:** Federal LDA scored 6/6 = 3×2 on revolving_door.1 (yes; weight 3) and 0 on revolving_door.2 (no; weight 1). With both deferred, the projected partial reaches 75/182 = 41% (max) against published 81/182 = 45% — a known **6-point under-scoring tolerance** in Phase C validation, fully attributable to the scope deviation. Documenting tolerance now so Phase C doesn't surprise.
+**FOCAL-1 resolution (user decision 2026-05-13):** pull `revolving_door.1` IN; keep `revolving_door.2` OUT.
 
-If at end-of-session review the scope-qualifier deviation is rejected and `revolving_door.1` is brought in scope: the row `lobbyist_reg_form_includes_lobbyist_prior_public_offices_held` (NEW) reads the disclosure; projection is `cell == TRUE → 1 (partly) | only_one_listed → 1 (partly) | all_listed → 2 (yes)`. Adding this row reaches projected 81/182 for US.
+Rationale: the plan's "disclosure-only" qualifier defers prohibitions / penalties / enforcement / cooling-off. `revolving_door.1` asks whether the registration form requires a list of the lobbyist's prior public offices — that is a registration-form disclosure observable, same shape as the `descriptors.*` battery (already in scope), HG Q21 (household members, in scope), and PRI A-family actor descriptors. The FOCAL category label "revolving door" describes the policy concern Lacy-Nichols was grouping by, not the cell type. `revolving_door.2` is cleanly enforcement-adjacent and stays deferred.
+
+| Item | Disposition | Why |
+|---|---|---|
+| `revolving_door.1` (list of prior public offices that lobbyists have held, dates when left office) | **IN by FOCAL-1 resolution** | Registration-form disclosure observable. Adds **NEW row** `lobbyist_reg_form_includes_lobbyist_prior_public_offices_held` (binary; legal). See per-item mapping below. |
+| `revolving_door.2` (database of officials in cooling-off period) | DEFERRED | State-side meta-publication of an enforcement mechanism (which officials are currently restricted from lobbying). Enforcement-adjacent; not disclosure-side. |
+
+**Implication for US federal LDA ground truth:** Federal LDA scored revolving_door.1 = 6 (yes; raw 2 × weight 3) and revolving_door.2 = 0 (no; weight 1). With FOCAL-1 resolved:
+- In-scope max: 182 − 2 (revolving_door.2 weight 1 × max raw 2) = **180**
+- US LDA in-scope total: 81 − 0 = **81** (US scored 0 on revolving_door.2, so its exclusion changes the max but not the US total)
+- Projected percentage: 81 / 180 = **45.0%** vs published 81 / 182 = 44.5%
+- **Known Phase C tolerance: ≤1pp on percentage (denominator shift only); RAW POINTS MATCH EXACTLY (81 published == 81 projected).** The previously-documented +6pt under-scoring tolerance is **closed**.
+
+**Effect on contributing-rubric scope deference parallelism:** Newmark 2017's `prohib.revolving_door` and Newmark 2005's `prohib.*` battery stay deferred — those items read prohibition / cooling-off rules themselves (the policy), not the disclosure-on-registration-form observable. The two readings are distinguishable: FOCAL `revolving_door.1` reads what's listed on the lobbyist's reg form; Newmark `prohib.revolving_door` reads whether the state has a cooling-off rule. Pulling FOCAL `revolving_door.1` in does not retroactively reopen the Newmark `prohib.*` mappings.
 
 ## Aggregation rule
 
@@ -59,16 +66,16 @@ per_country_pct   = per_country_score / 182
 
 **Weight distribution:** 20 × weight-1 + 19 × weight-2 + 11 × weight-3 = 91, sum × 2 = **182 maximum**.
 
-**Phase C `project_focal_2024_disclosure_side(state_or_federal, vintage)` produces:**
+**Phase C `project_focal_2024_disclosure_side(state_or_federal, vintage)` produces (after FOCAL-1 resolution: revolving_door.1 IN, revolving_door.2 OUT):**
 
 ```
-focal_partial_score    = Σ per_indicator_score(i) for i in 48 in-scope indicators
-                       ∈ [0, 175]    (since revolving_door.1 weight 3 yes=6 + revolving_door.2 weight 1 yes=2 = 8 max excluded;
-                                      but ground-truth tolerance applies as +0..+8 for the excluded battery — typically +6 for jurisdictions like US that score revolving_door.1=yes)
-focal_partial_pct      = focal_partial_score / 175
+focal_partial_score    = Σ per_indicator_score(i) for i in 49 in-scope 2024 indicators
+                       ∈ [0, 180]    (revolving_door.2 weight 1 × max raw 2 = 2 max excluded;
+                                      ground-truth tolerance applies as +0..+2 for the excluded item — 0 for US LDA which scored revolving_door.2 = no)
+focal_partial_pct      = focal_partial_score / 180
 ```
 
-The 2 `revolving_door.*` items are **not projected**. Phase C validation tolerance against published FOCAL scores must add back the published revolving_door per-country values (or accept the systematic under-scoring on a published-vs-projected delta with known sign).
+The 1 `revolving_door.2` item is **not projected**. Phase C validation tolerance against published FOCAL scores must add back the published revolving_door.2 per-country value (or accept the systematic under-scoring on a published-vs-projected delta with known sign — at most 2 raw points or ~1.1pp). For the US LDA validation anchor, the delta is **exactly zero raw points** (US scored 0 on revolving_door.2 anyway).
 
 ## Per-state / per-country per-indicator data
 
@@ -81,11 +88,11 @@ Scope:          4 + 0 + 0 + 2  =  6
 Timeliness:     0 + 0          =  0
 Openness:       4 + 0 + 6 + 3 + 6 + 2 + 2 + 2 + 2  =  27
 Descriptors:    4 + 2 + 0 + 0 + 2 + 0  =  8
-Revolving_door: 6 + 0          =  6      (DEFERRED in this projection)
+Revolving_door: 6 + 0          =  6      (revolving_door.1 IN by FOCAL-1; revolving_door.2 OUT)
 Relationships:  6 + 2 + 0 + 0 + 0  =  8
 Financials:     4 + 4 + 0 + 0 + 0 + 4 + 0 + 0 + 0 + 0 + 4  =  16
 Contact_log:    2 + 0 + 2 + 0 + 0 + 0 + 0 + 0 + 3 + 0 + 3  =  10
-TOTAL:          81 / 182 = 45%           (projected: 75 / 175 = 43% after revolving_door deferral)
+TOTAL:          81 / 182 = 45%           (projected: 81 / 180 = 45% after revolving_door.2 deferral; raw points match exactly)
 ```
 
 **Other validation jurisdictions** (28 total, US row most relevant): Canada 49%, Chile 48%, Ireland 43%, France 43%, Scotland 40%, ... down to Netherlands 9%. The non-US rows are reference; the project's extraction pipeline is US-focused (50 states + Federal_US per the 2026-05-07 jurisdiction-scope landing).
@@ -94,11 +101,11 @@ TOTAL:          81 / 182 = 45%           (projected: 75 / 175 = 43% after revolv
 
 ## Phase C validation
 
-**Federal_US LDA:** 1 jurisdiction × 1 vintage (2024) × 49 merged 2025 indicators (after timeliness.1+.2 merge) = **49 per-cell ground-truth values**, plus aggregate 81/182 (45%).
+**Federal_US LDA:** 1 jurisdiction × 1 vintage (2024) × 49 merged 2025 indicators (after timeliness.1+.2 merge) = **49 per-cell ground-truth values**, plus aggregate 81/182 (45%). After FOCAL-1: 48 in-scope merged 2025 indicators (only revolving_door.2 excluded); raw-points target = 81 exactly.
 
 **Other countries:** 27 jurisdictions × 1 vintage × 49 indicators = 1,323 more cells if non-US validation is in scope (it's secondary; the pipeline is US-focused).
 
-**US states:** 50 jurisdictions × 1 vintage × 48 in-scope indicators = 2,400 projected cells, **NONE with FOCAL-published ground truth.** Cross-rubric is the only check: every shared row (e.g., `lobbyist_spending_report_includes_total_compensation` is read by FOCAL `financials.1` + Sunlight #5 + Newmark 2017/2005 + HG Q13 + CPI #201 + PRI E2f_i) lets us check that FOCAL's projection on a state cell matches the other rubrics' projections on the same cell.
+**US states:** 50 jurisdictions × 1 vintage × 49 in-scope 2024 indicators = 2,450 projected cells, **NONE with FOCAL-published ground truth.** Cross-rubric is the only check: every shared row (e.g., `lobbyist_spending_report_includes_total_compensation` is read by FOCAL `financials.1` + Sunlight #5 + Newmark 2017/2005 + HG Q13 + CPI #201 + PRI E2f_i) lets us check that FOCAL's projection on a state cell matches the other rubrics' projections on the same cell.
 
 ## Structural notes — Lacy-Nichols 2024 → 2025
 
@@ -492,6 +499,27 @@ FOCAL's "descriptions and identifying elements of individuals/organisations invo
 - **Source quote:** "We created an additional indicator for listing the lobbyists employed by a company or lobby firm, as we found this was inconsistently disclosed" (Lacy-Nichols 2025 main text line 213).
 - **Note:** Captured here for compendium 2.0 completeness. Phase C extracts this cell + projects via the 2025-only weight-3 reading; Phase C ground-truth uses per-country CSV cell `lobbyist_list` (2025 numbering — exact CSV column name TBD; verify in Phase C).
 
+### Revolving door battery (1 item IN by FOCAL-1 resolution; 1 item OUT)
+
+Added 2026-05-13 after FOCAL-1 resolution. See "Scope qualifier" above for rationale. `revolving_door.2` is OUT (enforcement-adjacent meta-publication) and is not mapped here.
+
+#### focal_2024.revolving_door.1 — List of prior public offices that lobbyists have held (weight 3)
+
+- **Compendium rows:** `lobbyist_reg_form_includes_lobbyist_prior_public_offices_held` (binary; legal) **NEW**
+  [cross-rubric: FOCAL-distinctive in the contributing-rubric set; structurally parallel to the `descriptors.*` battery (reg-form-side personal-info disclosure) and HG Q21 (household members on reg form). Newmark `prohib.revolving_door` is a different observable — the cooling-off-rule policy itself, not its reg-form disclosure.]
+- **Cell type:** binary. Phase C may upgrade to typed `Optional[List[OfficeRecord]]` if state extraction surfaces structured prior-office records (FOCAL's "partly" tier reads "only one position/date listed" vs full list — see scoring rule). Initial binary read is YAGNI-sufficient for FOCAL projection; finer typing is a compendium 2.0 freeze question.
+- **Axis:** `legal_availability`.
+- **Scoring rule:**
+  ```
+  cell == TRUE AND full_list_with_dates                          → 2 (yes)
+  cell == TRUE AND only_one_position_or_date_listed              → 1 (partly — verbatim "P=only one position/date listed")
+  cell == FALSE OR not_required                                  → 0 (no)
+  ```
+  The partly-tier discriminator ("only one position/date listed") is not extractable from a binary cell alone — it requires reading the state's filing instructions for completeness requirements. For initial Phase C, project at binary granularity: TRUE → 2, FALSE → 0. Refine to full 3-tier read when the compendium 2.0 freeze decides on typed `List[OfficeRecord]` vs binary.
+- **Source quote:** "List of all prior public offices that lobbyists have held, dates when left office" (FOCAL Table 3, Lacy-Nichols 2024:990); P/N: "P=only one position/date listed" (Suppl Table 3, via items_FOCAL.tsv).
+- **Note on US federal LDA scoring:** Federal LDA scored 6 (raw 2 × weight 3 = yes). LDA's LD-1 / LD-2 requires registrants to list "the name and contact information of the registrant, and a list of employees who have acted or are expected to act as lobbyists on behalf of the client and whose past employment includes service as a covered executive branch official or a covered legislative branch official in the previous 20 years" — i.e., prior covered service is a registration-form disclosure. This is what `revolving_door.1` reads.
+- **Note on FOCAL category labeling vs observable shape:** FOCAL categorizes this under "revolving_door" because the policy concern is revolving-door movement between public and private sector. The cell itself is a registration-form disclosure — structurally identical to other reg-form descriptor cells. Pulling it into the disclosure-only Phase B scope (FOCAL-1 resolution) reflects observable shape, not category label. See "Scope qualifier" above for full rationale.
+
 ### Financials battery (11 items, all in scope)
 
 FOCAL's "flow of money spent and earned" — strong overlap with HG / Sunlight / PRI / Newmark / CPI expenditure batteries. **The most US-centric FOCAL category** (paper line 1059-1062).
@@ -798,19 +826,21 @@ FOCAL's "activities of lobbyists" — per-meeting / per-contact granularity. Str
 | `lobbyist_spending_report_includes_bill_or_action_identifier` | binary | legal | contact_log.11 (spending-report side) | Sunlight #1, HG Q20, PRI E2g_ii, Opheim, FOCAL — 5-rubric-confirmed | existing (Sunlight mapping) |
 | `lobbyist_reg_form_includes_bill_or_action_identifier` | binary | legal | contact_log.11 (reg-form side) | Sunlight #1, HG Q5, FOCAL — 3-rubric-confirmed | existing (Sunlight mapping) |
 | `principal_report_lists_lobbyists_employed` | binary | legal | 2025-only "Lobbyist list" | HG Q9 (principal-side mirror) | **NEW (documented; not in 2024 TSV)** |
+| `lobbyist_reg_form_includes_lobbyist_prior_public_offices_held` | binary | legal | revolving_door.1 | FOCAL-distinctive in contributing-rubric set; structurally parallel to descriptors.* + HG Q21 | **NEW (FOCAL-1 resolution 2026-05-13)** |
 
-**Total distinct compendium rows touched: 57** across 48 in-scope 2024 indicators (some indicators read multiple rows; some rows are read by multiple indicators).
+**Total distinct compendium rows touched: 58** across 49 in-scope 2024 indicators (48 originally in scope + 1 from FOCAL-1 resolution; some indicators read multiple rows; some rows are read by multiple indicators).
 
-**Reuse breakdown:**
-- **Existing rows reused: 22** (38.5%)
-- **NEW rows added by this mapping: 35** (including 1 row for the 2025 "Lobbyist list" 2025-only addition)
+**Reuse breakdown (post FOCAL-1):**
+- **Existing rows reused: 22** (37.9%)
+- **NEW rows added by this mapping: 36** (including 1 row for the 2025 "Lobbyist list" 2025-only addition and 1 row for `revolving_door.1` per FOCAL-1)
 
-**Per-battery reuse rates:**
+**Per-battery reuse rates (post FOCAL-1):**
 - scope: 3/8 reused (37.5%; 3 threshold cells + 3 target cells reused, 4 new: 1 set-typed actor-types, 1 staff target, 1 set-typed activity-types, plus this is at row level not item level)
 - timeliness: 1/2 reused (50%)
 - openness: 5/10 reused (50%)
 - descriptors: 1/6 reused (16.7%) — FOCAL-distinctive battery
 - relationships: 3/5 reused (60%; including 2025 lobbyist_list)
+- revolving_door: 0/1 reused (0%; 1 NEW row from FOCAL-1 resolution)
 - financials: 6/11 reused (54.5%)
 - contact_log: 3/12 reused (25%) — FOCAL-distinctive battery (9 NEW contact_log cells)
 
@@ -865,11 +895,17 @@ The HG mapping introduced this row as form-agnostic (cell name pattern `lobbyist
 
 The plan and `STATUS.md` Active Research Lines table both reference "Phase B: 9 rubrics" — after OpenSecrets tabling (2026-05-13) and the OS-Distinctive 3 rows also tabled, the actual Phase B count is **8 rubrics done + 1 (LobbyView) remaining** = 9 mappings total but with OpenSecrets being a structured-tabling rather than a delivered mapping. After FOCAL ships this session, **Phase B is 8 of 9 complete; LobbyView is the final mapping** (a schema-coverage check rather than score-projection — different shape per plan).
 
+### Correction 4 — FOCAL scope-qualifier deviation, applied post-checkpoint (2026-05-13)
+
+The mapping shipped 2026-05-13 late eve with both `revolving_door.*` items deferred per strict plan reading. User review (next-session, same date) resolved FOCAL-1 by pulling `revolving_door.1` IN scope on the grounds that the cell is a registration-form disclosure observable (same shape as `descriptors.*`), regardless of FOCAL's "revolving door" category label. The mapping doc was updated in place — scope qualifier, aggregation rule, Phase C validation, per-item mapping, summary table, Open Issues, and these corrections. The previously-documented +6pt under-scoring tolerance on the US LDA validation anchor is **closed** (raw-points match exactly; the percentage denominator shift introduces ≤1pp residual, not a tolerance issue for cell-level validation).
+
+**Implication for the union step at Phase B done condition:** Compendium 2.0 row count picks up `lobbyist_reg_form_includes_lobbyist_prior_public_offices_held` from this mapping. Pre-FOCAL-1 expectation was ~110 rows; post-FOCAL-1 expectation is **~111 rows** going into LobbyView.
+
 ---
 
 ## Open issues surfaced by FOCAL 2024 (for compendium-2.0 freeze)
 
-1. **FOCAL-1 — `revolving_door.1` scope decision.** Plan defers all revolving_door items; this mapping follows strict plan reading. But `revolving_door.1` (lobbyist's prior public offices disclosed on reg form) is statutorily a disclosure observable. **Decision deferred to user.** If brought in scope, propose row `lobbyist_reg_form_includes_lobbyist_prior_public_offices_held` (binary; legal) with FOCAL projection partly/yes based on completeness.
+1. **FOCAL-1 — `revolving_door.1` scope decision.** ~~Decision deferred to user.~~ **RESOLVED 2026-05-13 (user decision):** pull `revolving_door.1` IN; keep `revolving_door.2` OUT. NEW row `lobbyist_reg_form_includes_lobbyist_prior_public_offices_held` (binary; legal) added to the per-item mappings under the new "Revolving door battery" section. Aggregation math, scope qualifier, Phase C validation totals, and summary table all updated accordingly. US LDA tolerance closes from +6pt to 0pt on raw points (denominator shift causes ≤1pp percentage delta only). See "Scope qualifier — 1 item OUT" section above for rationale. Newmark `prohib.revolving_door` items stay deferred (different observable: cooling-off rule itself, not its reg-form disclosure).
 
 2. **FOCAL-2 — set-typed cells vs atomized binary cells.** `lobbyist_definition_included_actor_types` (scope.1) and `lobbying_definition_included_activity_types` (scope.4) are proposed as set-typed cells. Granularity bias suggests 9 + 8 = 17 binary cells. **Tradeoff:** set-typed is YAGNI-cleaner for FOCAL's projection but doesn't atomize for downstream rubrics or future granularity. Decision deferred; the set-typed form is FOCAL-projection-sufficient.
 
