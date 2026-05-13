@@ -16,6 +16,69 @@ Carry-forward signals (informational, not gates):
 
 (Newest first.)
 
+### 2026-05-13 (late-late-late-late eve) — Compendium 2.0 row-freeze brainstorm (FREEZE LANDED)
+
+**Convo:** [`convos/20260513_row_freeze_brainstorm.md`](convos/20260513_row_freeze_brainstorm.md)
+**Plan executed:** [`plans/_handoffs/20260513_row_freeze_brainstorm.md`](plans/_handoffs/20260513_row_freeze_brainstorm.md) (full Phases 1–5).
+**Decision log produced:** [`results/projections/20260513_row_freeze_decisions.md`](results/projections/20260513_row_freeze_decisions.md) (30 decisions D1-D30 + Sections 1-7 + appendix).
+**Output TSV:** [`results/projections/disclosure_side_compendium_items_v2.tsv`](results/projections/disclosure_side_compendium_items_v2.tsv) (181 rows).
+**Generation script:** [`tools/freeze_canonicalize_rows.py`](../../../../tools/freeze_canonicalize_rows.py) (idempotent).
+
+#### Topics Explored
+
+- **Naming canonicalization (load-bearing).** Greped 9 mapping docs for cross-rubric naming drift on canonical observables. Surfaced: (a) compensation cluster naming drift (PRI E2f_i `lobbyist_report_includes_direct_compensation` + CPI #201 `lobbyist_spending_report_includes_compensation` are the same observable as `lobbyist_spending_report_includes_total_compensation`; doc narratives all cross-cite, mechanical union missed), (b) PRI E1/E2 prefix inconsistency (`lobbyist_report_includes_*` violates α form-split convention; should be `lobbyist_spending_report_includes_*`), (c) `materiality_threshold_*` (PRI D1) conflicts with Sunlight's three-threshold-concept framework (rename to `lobbyist_filing_de_minimis_threshold_*`), (d) `compensation_broken_down_by_client` vs `_by_employer` (Newmark Open Issue 2; rename to `_by_payer`), (e) `def_target_legislative_or_executive_staff` vs `def_target_legislative_staff` (granularity-bias supports split into `legislative_staff` + `executive_staff`), (f) `lobbyist_disclosure_*` prefix vs `lobbyist_reg_form_*` for descriptors-side rows.
+- **LobbyView freeze-candidates.** LV-1 IN as firm row (real distinguishing observable; LDA explicit; Kim 2025 GNN feature). LV-2 OUT (operational metadata). LV-3 OUT (user override of LobbyView mapping recommendation; YAGNI defers single-rubric typed-enum complexity). LV-4 OUT (operational; matches LobbyView mapping recommendation). All 4 candidate rows resolved.
+- **OpenSecrets-distinctive candidates.** OS-1 (`separate_registrations_for_lobbyists_and_clients`) IN under path-b (project-internal need; no current rubric reads but real distinguishing observable). OS-2 (compensation exact-vs-ranges) and OS-3 (per-individual-vs-aggregate) stay reversibly tabled.
+- **Atomization meta-rule.** User locked: keep current per-rubric atomization. PRI cadence binaries stay 12; PRI Q7a-o stays 15 binaries; FOCAL set-typed scope.1/.4 stays set-typed; FOCAL contact_log/descriptors stay atomized; HG Q31/Q32 stays 4 binaries. Source-rubric structure preserved; projection identical regardless.
+- **Single-rubric walk by family.** Per Decision Rule 1 + atomization meta-rule, all 132 single-rubric rows in v2 are KEEP (D25-D30 batch-resolve by family: actor_*, PRI E1/E2 contents, PRI exemptions/govt_agencies/public_entity_def/law_*, HG-distinctive practical-axis, FOCAL-distinctive, CPI-distinctive). No single-rubric drops.
+- **Per-doc Open Issues triage.** ~36 real freeze decisions per the handoff. ~12 resolved at freeze (D9-D24); ~7 deferred to Phase C as projection-logic questions (D24); ~70 of the 89 enumerated were status notes / promotions / watchpoints already covered.
+- **Cell-type semantic conflicts (3).** D9: `lobbying_data_downloadable_in_analytical_format` becomes single binary. D10: `lobbyist_registration_required` stays two-axis. D11: `registration_deadline_days_after_first_lobbying` stays two-axis.
+
+#### Provisional Findings
+
+- **Compendium 2.0 row set: 181 rows** (180 firm + 1 path-b unvalidated). Down from v1's 186 rows (182 firm + 4 freeze-candidates) — net change: **-5 rows**. The decline reflects merges (D1+D2 + D6 collapse half) outweighing additions (LV-1 + OS-1 + D6 split half).
+- **Single most-validated row: `lobbyist_spending_report_includes_total_compensation` at 8 rubrics** (cpi_2015 + pri_2010 + sunlight_2015 + newmark_2017 + newmark_2005 + opheim_1991 + hg_2007 + focal_2024). The mechanical TSV undercounted at 6-rubric; canonicalization revealed PRI E2f_i + CPI #201 + the existing 6-rubric set all read the same observable. This is the single load-bearing canonical row — every projection function will validate against it.
+- **Final tier distribution:** 8-rubric × 1, 6-rubric × 4, 5-rubric × 3, 4-rubric × 6, 3-rubric × 10, 2-rubric × 24, 1-rubric × 132, 0-rubric × 1. Single-rubric mass is 73% — same as before freeze (135/182 = 74%); freeze didn't deflate single-rubric tier because all those rows passed Decision Rule 1's "real observable" test.
+- **The freeze is a CONTRACT.** Three successor branches (OH retrieval, harness brainstorm, Phase C projection TDD) reference v2 as their row-set contract. Once `compendium-source-extracts` merges to main, row-set changes require a new branch.
+- **The decision log is the durable artifact.** `20260513_row_freeze_decisions.md` captures the 30 decisions + rationale + the post-freeze inventory + appendix on what's NOT addressed (v2.0 schema bump, practical-axis cell population deferred to Track B, paper-index audit, embedding-purge already done, provenance-header retrofit). Anti-loop artifact for future agents.
+- **Future freeze edits via the script + decision log.** `tools/freeze_canonicalize_rows.py` is idempotent — re-running reproduces v2 exactly. Future row-set adjustments encode in the script's data structures + this decision log, then re-run, rather than editing v2.tsv by hand.
+
+#### Decisions
+
+| topic | decision |
+|---|---|
+| Naming canonicalization | 30 decisions D1-D30 in the decision log. 4 row merges (D1+D2 + D6 collapse half) + 30 row renames (D3+D4+D5+D8) + 1 row split (D6 split half). |
+| LV freeze-candidate dispositions | LV-1 IN; LV-2/3/4 OUT. |
+| OS freeze-candidate dispositions | OS-1 IN under path-b; OS-2/3 stay tabled. |
+| Atomization meta-rule | Keep current per-rubric atomization (D20). |
+| Single-rubric walk | All 132 single-rubric rows KEEP per Decision Rule 1 (D25-D30). |
+| HG-1 (`def_target_executive_agency` carve-out split) | DEFER (D21). Single cell stays. |
+| HG-2 (Q2 'make/spend' projection) | `min(compensation_threshold, expenditure_threshold)` where both non-null (D22). No new compendium row. |
+| Opheim catch-all un-projectable | OUT-of-scope; document in Opheim mapping (D23). |
+| ~7 remaining Open Issues (Sunlight item-4, Newmark 2005 vintage-stability, Opheim cadence-monthly, HG Q12/Q23/Q24/itemized-detail, FOCAL partly-tier) | DEFERRED to Phase C as projection-logic questions (D24). |
+| 3 semantic cell_type conflicts | Resolved D9-D11. |
+| v2 row count | 181 (180 firm + 1 path-b unvalidated). |
+| Successor sequencing (carry-forward from prior session) | Option B confirmed: merge after this freeze; cut 3 successor branches in parallel. |
+
+#### Mistakes recorded
+
+- Initially over-confident about LV-3 (recommended IN with typed enum); user overrode to OUT. Lesson: single-rubric LobbyView additions need stronger affirmative case than "could be typed enum"; YAGNI properly defers.
+- Initial Section 6 row-tier-count math wrong (described 131 expected vs 132 actual as a discrepancy); re-derived correctly. Lesson: when applying multi-row merges, walk effect on each tier separately rather than netting end-to-end.
+
+#### Results
+
+- [`results/projections/disclosure_side_compendium_items_v2.tsv`](results/projections/disclosure_side_compendium_items_v2.tsv) — post-freeze canonical TSV (181 rows; tier distribution above).
+- [`results/projections/20260513_row_freeze_decisions.md`](results/projections/20260513_row_freeze_decisions.md) — decision log (30 decisions D1-D30; Sections 1-7 + appendix).
+- [`tools/freeze_canonicalize_rows.py`](../../../../tools/freeze_canonicalize_rows.py) — idempotent regeneration script (~250 lines).
+
+#### Next Steps
+
+1. **`auditing-paper-summaries` pass** — verify the 16+ branch-added papers are in PAPER_INDEX + PAPER_SUMMARIES (only remaining pre-merge audit per prior session's deferred items).
+2. **Merge `compendium-source-extracts` → main.** v2 row set becomes the contract.
+3. **Cut 3 successor branches in parallel** (per Option B locked 2026-05-13): OH statute retrieval (Track A), extraction harness brainstorm (Track B), Phase C projection TDD (locked order: CPI → PRI → Sunlight → Newmark 2017 → Newmark 2005 → Opheim → HG → FOCAL).
+
+---
+
 ### 2026-05-13 (late-late-late eve) — Union step + pre-merge audit (Phase B closure plumbing)
 
 **Convo:** [`convos/20260513_union_step_and_premerge_audit.md`](convos/20260513_union_step_and_premerge_audit.md)
