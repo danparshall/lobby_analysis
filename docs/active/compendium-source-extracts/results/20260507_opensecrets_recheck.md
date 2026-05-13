@@ -5,6 +5,14 @@
 **Supersedes (in part):** [`20260507_opensecrets_atomic_audit.md`](20260507_opensecrets_atomic_audit.md) — that note is preserved verbatim. This recheck does not erase it; it amends the verdict.
 **Recheck verdict:** **CASE 2 — worked examples found, no formal per-tier definitions.** The drop verdict is **OVERTURNED** for categories 2, 3, and 4. Category 1 alone fails the criterion; OpenSecrets 2022 is restored to the contributing-rubric set as a **partial** rubric (3 of 4 categories projectable via few-shot calibration).
 
+> ## ⚠️ REVERSAL — 2026-05-13: this recheck overturn was itself overturned. See [`_tabled/opensecrets_2022_tabled.md`](_tabled/opensecrets_2022_tabled.md).
+>
+> **Why reversed:** the "few-shot calibratable from worked examples" criterion this recheck applied is **softer than the branch's stated success criterion**, which requires projection functions `f_rubric(compendium_cells, vintage) → rubric_score` reproducible from extracted cells and validated against published prior data. Meeting the softer bar doesn't actually serve the branch's projection-vs-published-data sanity-check purpose — calibration-by-distribution can't diagnose extraction errors at row granularity, only at aggregate ordering.
+>
+> The 2026-05-12 Phase B mapping attempt against this recheck's verdict confirmed the structural finding the original [`20260507_opensecrets_atomic_audit.md`](20260507_opensecrets_atomic_audit.md) made: Cat 1 projects to {3, 4} only (no anchors for 0/1/2/5); Cats 2/3 partial-credit (scores 1-3) requires calibration-by-distribution rather than deterministic projection. The original Phase A1 verdict was structurally correct on the branch's actual criterion.
+>
+> **OpenSecrets 2022 is now tabled** — set aside pending reinstatement triggers (per-tier sub-anchor publication, state-map widget JS pull supplying per-state per-category numerics, or a third-party reverse-engineering of OS scoring). This is research; the tabling is reversible. See [`_tabled/opensecrets_2022_tabled.md`](_tabled/opensecrets_2022_tabled.md) for full reasoning, reinstatement triggers, and the 3 OS-distinctive row candidates also tabled.
+
 ## What changed since the prior audit
 
 The prior audit correctly characterized the methodology block (lines 196–216) as exposing only baseline anchors at score 4 and "depending on the individual circumstances" for scores 0–3 in categories 1, 2, and 3. That much stands.

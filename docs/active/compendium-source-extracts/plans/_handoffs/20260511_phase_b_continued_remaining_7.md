@@ -73,17 +73,18 @@ Casual usage often conflates these. **The remaining rubric mappings must check**
 
 ---
 
-## Remaining Phase B order (7 rubrics)
+## Remaining Phase B order (6 rubrics)
+
+> **Update 2026-05-13:** OpenSecrets 2022 has been **tabled** (was item 1 in the original 7-rubric order). See [`../../results/_tabled/opensecrets_2022_tabled.md`](../../results/_tabled/opensecrets_2022_tabled.md) for the tabling rationale (no published per-tier scoring definition; the recheck's "few-shot calibratable" criterion is softer than the branch's projection-vs-published bar) and the 3 OS-distinctive row candidates also tabled pending organic pickup by other rubrics or project-internal justification. Drop is reversible per reinstatement triggers documented there. Phase B order below renumbered to 6 rubrics.
 
 Per the locked Phase C order (which Phase B mirrors):
 
-1. **OpenSecrets 2022** (4 cats)
-2. **Newmark 2017** (19 items)
-3. **Newmark 2005** (18 items)
-4. **Opheim 1991** (22 items, disclosure-side only)
-5. **HiredGuns 2007** (47 items, disclosure-side only)
-6. **FOCAL 2024** (50 items, weighted aggregation)
-7. **LobbyView** (46 schema fields — schema-coverage rubric, different shape)
+1. **Newmark 2017** (19 items)
+2. **Newmark 2005** (18 items)
+3. **Opheim 1991** (22 items, disclosure-side only)
+4. **HiredGuns 2007** (47 items, disclosure-side only)
+5. **FOCAL 2024** (50 items, weighted aggregation)
+6. **LobbyView** (46 schema fields — schema-coverage rubric, different shape)
 
 You can probably handle 2-3 per session given the locked conventions. Each session: cross-rubric grep, draft, sanity-check against existing CPI/PRI/Sunlight mappings for row reuse.
 
@@ -91,19 +92,11 @@ You can probably handle 2-3 per session given the locked conventions. Each sessi
 
 ## Per-rubric watchpoints
 
-### OpenSecrets 2022 (next up)
+### ~~OpenSecrets 2022~~ — TABLED 2026-05-13
 
-**Read first:** [`../../results/20260507_opensecrets_recheck.md`](../../results/20260507_opensecrets_recheck.md) and [`../../results/20260507_opensecrets_atomic_audit.md`](../../results/20260507_opensecrets_atomic_audit.md) (the latter is the appendix; the recheck supersedes its drop verdict). Also [`../../results/opensecrets_worked_examples_2022.csv`](../../results/opensecrets_worked_examples_2022.csv) — 18 state-level worked examples + statistical anchors that calibrate the Cat 2 / Cat 3 few-shot projections.
+See [`../../results/_tabled/opensecrets_2022_tabled.md`](../../results/_tabled/opensecrets_2022_tabled.md). The mapping attempt empirically confirmed the original 2026-05-07 Phase A1 DROP audit's structural finding: Cat 1 projects to {3, 4} from cells (no anchors for 0/1/2/5); Cats 2/3 partial-credit requires calibration-by-distribution rather than deterministic projection. Reinstatement triggers documented in the tabling doc. The 3 OS-distinctive row candidates (`separate_registrations_for_lobbyists_and_clients`, `lobbyist_compensation_disclosed_as_exact_amount_vs_ranges`, `lobbyist_compensation_disclosed_per_individual_lobbyist_vs_aggregate`) are also tabled pending organic pickup or project-internal need. The in-session/out-of-session cadence split is **not** tabled — Opheim 1991 reads the same split, so Opheim's mapping will introduce it.
 
-**4 categories in scope:**
-- **Cat 1 (Registration):** baseline = 3 points + 1-point bonus for "separate registrations exist." Single binary cell. Watch: the binary might not be enough to reach the published per-state Cat 1 scores; if Phase C validation shows the binary is insufficient, the open option is to pull OpenSecrets's state-map widget JS for finer-grained per-state Cat 1 numerics (flagged but not unblocked this session).
-- **Cat 2 (Compensation):** 5-point ordinal (0 = no disclosure / 1-3 = partial / 4 = baseline / 5 = exceeds baseline). Cross-rubric overlap with Sunlight #5 / Newmark / HG Q13/Q27 / CPI #201 / PRI E2f_i. **Reuse Sunlight #5 rows** (`lobbyist_spending_report_includes_total_compensation`, `*_broken_down_by_client`, `*_reg_form_*`); OpenSecrets's finer granularity reads the same cells with a different scoring function.
-- **Cat 3 (Timely reporting):** few-shot anchored. Read the worked-examples CSV.
-- **Cat 4 (Search/access):** decomposed into 3 binaries (search=2pts, downloads=2pts, lists=1pt). Cross-rubric with CPI #205/#206, HG Q28-34 area, FOCAL openness.*.
-
-**Drop watch:** category 3's few-shot anchoring may not be projectable from compendium cells if the cell set doesn't capture cadence + lateness + audit-find frequencies. Possible Phase B finding: drop Cat 3 from projection layer (similar pattern to Sunlight item 4).
-
-### Newmark 2017 (19 items)
+### Newmark 2017 (19 items) — next up
 
 Mostly binary disclosure.* rows that map directly to existing compendium rows. Watch:
 

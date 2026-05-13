@@ -16,6 +16,57 @@ Carry-forward signals (informational, not gates):
 
 (Newest first.)
 
+### 2026-05-12 → 2026-05-13 — Phase B continued: OpenSecrets 2022 attempt → tabled
+
+**Convo:** [`convos/20260512_opensecrets_phase_b_tabled.md`](convos/20260512_opensecrets_phase_b_tabled.md)
+**Plan executed (partially):** [`plans/20260507_atomic_items_and_projections.md`](plans/20260507_atomic_items_and_projections.md) Phase B (was 4th rubric per locked order; ended tabled).
+**Handoff that pointed here (now updated):** [`plans/_handoffs/20260511_phase_b_continued_remaining_7.md`](plans/_handoffs/20260511_phase_b_continued_remaining_7.md)
+
+#### Topics Explored
+
+- Cross-rubric grep across 9 rubric TSVs + historical PRI 2010 disclosure-law CSV for OpenSecrets's 4-category concepts. Heavy overlap with existing compendium rows confirmed for Cats 2 (compensation) and 4 (portal); Cat 3 cadence covered by Opheim's in-session/out-of-session split.
+- Per-category projection logic drafted to completion before user check-in surfaced the structural problem.
+- User-driven critical re-read of OpenSecrets's published rubric: only 2-3 anchors per category (Cat 1: 3, 4; Cat 2: 0, 4, 5-undefined; Cat 3: 4, 5; Cat 4: sub-facet weights only). No per-tier definitions for scores 0–3; no inter-coder reliability; no per-state per-category numerical data in accessible form (behind JS-rendered state-map widget).
+- Re-anchoring against branch success criterion (STATUS.md ⭐ block): projection-vs-published-data validation requires reproducibility from cells. OpenSecrets fails. The original 2026-05-07 Phase A1 DROP verdict was structurally correct; the recheck's "few-shot calibratable" criterion was softer than the branch's bar.
+
+#### Provisional Findings
+
+- **OpenSecrets 2022 cannot serve as a Phase C projection-validation target under the branch's stated success criterion.** Empirically confirmed by mapping attempt: Cat 1 projects to {3, 4} only from cells; Cats 2/3 partial-credit (scores 1-3) requires calibration-by-distribution rather than deterministic projection.
+- **The original Phase A1 DROP verdict was structurally correct.** The recheck overturn applied a weaker criterion than what the branch actually requires.
+- **3 OS-distinctive row candidates were surfaced:** `separate_registrations_for_lobbyists_and_clients` (Cat 1 bonus), `lobbyist_compensation_disclosed_as_exact_amount_vs_ranges` (Cat 2 partial-credit), `lobbyist_compensation_disclosed_per_individual_lobbyist_vs_aggregate` (Cat 2 partial-credit). Real statutory observables; tabled alongside the rubric pending organic pickup or project-internal justification.
+- **Cadence in-session/out-of-session split is NOT OS-distinctive** — Opheim 1991 reads the same split. Opheim's mapping will introduce the row family. CPI Open Issue 4 (cadence representation) remains open.
+- **Cat 4 portal sub-facets fold into existing CPI/FOCAL/HG rows.** No new compendium rows needed for those; OS's contribution was only finer-granularity ordinal on the same cells.
+
+#### Decisions
+
+| topic | decision |
+|---|---|
+| OpenSecrets 2022 status | **TABLED 2026-05-13** (not permanently dropped). Reason: no published per-tier scoring definition; few-shot calibration doesn't meet projection-vs-published-data bar |
+| 3 OS-distinctive row candidates | Tabled. Two reinstatement paths: organic pickup by another rubric / project-internal need at compendium 2.0 freeze |
+| Phase B remaining order | Renumbered 7 → 6 rubrics. Next = **Newmark 2017** |
+| Reinstatement triggers | Documented in `results/_tabled/opensecrets_2022_tabled.md` (per-tier sub-anchor publication / state-map widget JS pull / third-party reverse-engineering / project's framing change) |
+
+#### Mistakes recorded
+
+1. Executed handoff without re-checking branch purpose at session start. Should have read the recheck doc with a critical eye and compared its "few-shot calibratable" criterion against STATUS.md's success criterion before drafting. The recheck explicitly applied a weaker criterion ("operationally too strict" about the original audit's framing) — that mismatch should have been a session-opening flag.
+2. Attempted `rm` on the projection-mapping doc instead of `git mv`-with-SUPERSEDED-banner. User pushed back ("are you deleting datafiles?"); the `rm` had been cancelled by parallel-tool rollback so the file was still on disk. Properly moved to `results/_tabled/opensecrets_2022_projection_mapping_superseded.md` with a banner. **Generalize:** prefer move-with-banner over delete for analytical artifacts, even un-committed — lesson is independent of the lucky outcome.
+3. "Agent overcorrection in response to prior user pushback" is a real failure mode in research workflows. The recheck doc was an example — keeping OS in on a weaker criterion than the branch's actual bar. Flag this pattern when reading prior session artifacts.
+
+#### Results
+
+- [`results/_tabled/opensecrets_2022_tabled.md`](results/_tabled/opensecrets_2022_tabled.md) — new tabling doc with reasoning, reinstatement triggers, and 3 OS-distinctive row candidates (each with per-row pickup possibilities documented).
+- Reversal addendum appended to [`results/20260507_opensecrets_recheck.md`](results/20260507_opensecrets_recheck.md).
+- Handoff [`plans/_handoffs/20260511_phase_b_continued_remaining_7.md`](plans/_handoffs/20260511_phase_b_continued_remaining_7.md) updated: 7 → 6 rubrics; OpenSecrets watchpoint replaced with tabling pointer; Newmark 2017 reordered to next.
+
+#### Next Steps
+
+1. **Newmark 2017 projection mapping** (19 items; mostly binary disclosure.* rows with strong existing-row reuse from CPI/Sunlight; key new row is `disclosure.expenditures_benefitting_officials` for the FOCAL/Newmark cross-rubric stack).
+2. Optional: reconstruct the projection-mapping doc as a research artifact (the analytical work is captured in the tabled doc's row-candidates section but per-category projection reasoning is summarized rather than preserved verbatim). Punt-able.
+3. Optional: state-map widget JS pull as a reinstatement attempt for OpenSecrets. Punt-able; not on critical path.
+4. Compendium 2.0 row freeze (separate post-Phase-B plan) must make an active decision on the 3 OS-distinctive row candidates and on CPI Open Issue 4 (cadence representation).
+
+---
+
 ### 2026-05-11 — Phase B continued: Sunlight 2015 projection mapping (3rd rubric)
 
 **Convo:** [`convos/20260511_sunlight_phase_b_mapping.md`](convos/20260511_sunlight_phase_b_mapping.md)
