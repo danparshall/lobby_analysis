@@ -16,6 +16,65 @@ Carry-forward signals (informational, not gates):
 
 (Newest first.)
 
+### 2026-05-13 (late-late-late eve) — Union step + pre-merge audit (Phase B closure plumbing)
+
+**Convo:** [`convos/20260513_union_step_and_premerge_audit.md`](convos/20260513_union_step_and_premerge_audit.md)
+**Plan executed:** [`plans/_handoffs/20260513_phase_b_close_and_post_b_plan.md`](plans/_handoffs/20260513_phase_b_close_and_post_b_plan.md) §§1-2 (union + audits); §3 (draft 3 successor plans) deferred per ordering pushback.
+**Handoff this session was executing:** [`plans/_handoffs/20260513_phase_b_close_and_post_b_plan.md`](plans/_handoffs/20260513_phase_b_close_and_post_b_plan.md).
+
+#### Topics Explored
+
+- **Sequencing pushback at session start.** Handoff scoped union + audits + draft 3 successor plans in one session. Surfaced internal tension: row-freeze brainstorm (next-next session per Option B) regenerates the union TSV → v2 → invalidates plan-doc row-set references → re-pass required. User scoped to union + audits only; defer plans + row-freeze to later.
+- **Union script (`tools/union_projection_rows.py`).** Parses `## Summary of compendium rows touched` section per doc; handles 3 table shape variants (5-col without Status, 6-col with Status, PRI's 2-subtable axis-implied form, LobbyView's coverage-summary form). Composite row entries (Opheim 2-cell monthly OR, Newmark 2005 8-cell more-frequent-than-annual OR) expanded into reads-of-constituent-PRI-rows rather than phantom row_ids. LobbyView's 4 candidate NEW rows hardcoded with `status=freeze-candidate`. Cell-type whitespace/backtick variants normalized.
+- **TSV produced.** `results/projections/disclosure_side_compendium_items_v1.tsv` — 186 rows (182 firm + 4 freeze-candidates). Columns: `compendium_row_id, cell_type, axis, rubrics_reading, n_rubrics, first_introduced_by, status, notes`.
+- **Headline gap finding.** Handoff's running estimate was ~111 disclosure-side rows; TSV shows **182 firm rows**. Gap (~73 rows) is NOT a dedup miss — dedup correctly collapsed 271 table-rows → 184 → 182 (one composite-row fix). The gap is that **mapping doc narratives systematically undercount their own NEW-row contributions vs what their tables actually carry**: PRI doc claims 47 distinct disclosure-law rows (table has 61; doc has internal arithmetic error 11+4+4+3+19+18=59); HG doc claims 22 NEW (table has 29; "8 practical Q31/Q32 only" undercount, omits Q28-Q30 + Q33-Q38); Newmark 2017 doc claims 14 (table has 15).
+- **Cross-rubric naming drift surfaced.** Same observable appears under 3 distinct row_ids across docs: CPI's `lobbyist_spending_report_includes_compensation`, PRI's `lobbyist_report_includes_direct_compensation` (E2f_i), and later docs' `lobbyist_spending_report_includes_total_compensation`. Doc narratives claim "7-rubric-confirmed" based on human-author canonical understanding; TSV's mechanical match counts 6 rubrics. The TSV's cross-rubric counts are lower bounds; canonicalization is row-freeze-brainstorm work.
+- **Single-rubric distribution:** 135 of 182 firm rows (74%) are single-rubric. Heavily driven by PRI (81 first-introduced rows, mostly fine-grained PRI-distinctive observables — A-family actors, B-family exemptions, Q7a-o search-filters, E-family principal/lobbyist parallels), FOCAL (34 first-introduced, mostly per-meeting contact_log + descriptors), and HG (29 first-introduced, mostly practical-availability access-tier cells).
+- **Top cross-rubric rows (n_rubrics ≥ 5):** 5 rows at 6-rubric (gifts/entertainment lobbyist+principal pair; def_target_executive_agency; compensation_threshold; total_compensation), 3 at 5-rubric (compensation_broken_down_by_client; categorizes_expenses; def_target_legislative_branch). These are the load-bearing observables — the rows freeze KEEPs automatically.
+- **Audit-docs findings.** All 17 convos referenced and all plans/handoffs linked. **Structural bug fixed**: `convos/20260503_pm_acquisition_and_descriptives.md` session entry body existed in RESEARCH_LOG but its `### 2026-05-03 (pm) — ...` heading was missing. Restored. RESEARCH_LOG now has 17 session entries matching 17 convos, all reverse-chronological. ~35 results .md files lack explicit `<!-- Generated during: X -->` provenance per skill literal; most have implicit provenance (`**Plan:**` / `**Source artifact:**` / methodology sections). Deferred — not blocking merge.
+- **Branch-hygiene findings.** ~9MB of embedding `.npy` binaries in branch history (`embed_vectors__openai__text-embedding-3-large.npy` 6.25MB + 1.6MB; `embed_similarity_matrix__openai__text-embedding-3-large.npy` 1MB + 72KB). Regeneratable from `tools/embed_cross_rubric.py`. **User decision: purge via `git filter-repo` after this checkpoint** (rationale: the embedding-based assembly approach was an early exploration superseded by the "one compendium to spawn them all" framing — the .npy outputs are not load-bearing). PAPER_INDEX 17 entries vs 18 PDFs flagged for a future `auditing-paper-summaries` session.
+
+#### Provisional Findings
+
+- **Compendium 2.0 disclosure-side inventory at Phase B close: 182 firm rows + 4 LobbyView freeze-candidates = 186 total.** Authoritative TSV count, supersedes the ~111 running estimate. Going into row-freeze with **more rows to consider than expected**.
+- **Single-rubric mass is heavy (74%).** Row-freeze should consider whether the high-atomization PRI rows (Q7a-o search filters; A-family per-actor-type registration; E-family per-cadence-option × principal/lobbyist; B-family exemption side) are auto-keep or get rolled up.
+- **Cross-rubric naming canonicalization is its own subtask.** ~3+ observables have multiple row_ids across docs (total_compensation observable is the load-bearing example). Pre-row-freeze, a `disclosure_side_compendium_items_v1_canonical.tsv` pass would consolidate these — could be ~½ session of judgment calls.
+- **The RESEARCH_LOG audit caught a real bug** (missing session header for 2026-05-03 pm). Audit-docs skill is doing its job at pre-merge.
+
+#### Decisions
+
+| topic | decision |
+|---|---|
+| Session scope | Union step + audits only this session; defer row-freeze and 3 successor plan drafts. |
+| Sequencing question (plans-before-vs-after row-freeze) | Surfaced as concern; implicitly resolved as plans-AFTER-row-freeze. |
+| Union TSV column set | Stayed close to handoff suggestion; added `n_rubrics` + `first_introduced_by` from script's hardcoded rubric order (CPI→PRI→Sunlight→Newmark 2017→Newmark 2005→Opheim→HG→FOCAL). |
+| Composite row entries (Opheim, Newmark 2005 cadence aggregates) | Hardcoded expansion in script; no new row_ids created; constituent PRI rows credited with the reading rubric. |
+| LobbyView freeze-candidates LV-1..LV-4 | Hardcoded in script with `status=freeze-candidate`. LV-5 omitted per LobbyView mapping doc's "recommended OUT" disposition. |
+| OpenSecrets-distinctive 3 candidates | NOT in TSV (not in any mapping doc); separate row-freeze brainstorm input. |
+| Missing 2026-05-03 (pm) session header in RESEARCH_LOG | Fixed: `### 2026-05-03 (pm) — Blue Book / COGEL acquisition + cross-rubric descriptive stats`. |
+| Provenance-header retrofit (~35 results .md files) | Deferred (low-priority busywork; existing implicit provenance adequate). |
+| Embedding `.npy` bloat (~9MB) | **User decision: purge via `git filter-repo` after this checkpoint.** Embeddings approach was an early exploration superseded by the current framing. |
+| Cross-rubric naming canonicalization | Deferred to row-freeze brainstorm (or a small pre-row-freeze canonicalization subtask). |
+| PAPER_INDEX 17 vs 18 + 16+ branch-added papers | Deferred to a future `auditing-paper-summaries` session before merge. |
+
+#### Mistakes recorded
+
+None significant. One script bug (returned-list vs append-vs-extend) caught on first run and fixed.
+
+#### Results
+
+- [`results/projections/disclosure_side_compendium_items_v1.tsv`](results/projections/disclosure_side_compendium_items_v1.tsv) — union of 8 score-projection mapping doc Summary tables + 4 LobbyView freeze-candidates. 186 rows total.
+- [`tools/union_projection_rows.py`](../../../../tools/union_projection_rows.py) — the union script (~360 lines incl. composite-row expansion + cell-type normalization).
+
+#### Next Steps
+
+1. **Purge embedding `.npy` files** from branch history via `git filter-repo` (user-decided this session). Verify cleanly, then force-push.
+2. **Row-freeze brainstorm** (next or later session). Inputs: this TSV + cross-rubric naming-canonicalization questions + the 4 LV candidates + 3 OS-distinctive candidates + each mapping doc's Open Issues section. Scope is heavier than the handoff anticipated (74% single-rubric mass to walk).
+3. **`auditing-paper-summaries`** pass to confirm the 16+ branch-added papers are in PAPER_INDEX + PAPER_SUMMARIES (separate before-merge audit).
+4. **Draft 3 successor plan docs** AFTER row-freeze (OH retrieval, harness brainstorm, Phase C projection TDD) — using the post-freeze canonical row set.
+
+---
+
 ### 2026-05-13 (late-late eve) — Phase B CLOSED: LobbyView 2018/2025 (9th + final mapping) + FOCAL-1 resolved
 
 **Convo:** [`convos/20260513_lobbyview_phase_b_final_and_focal1_resolution.md`](convos/20260513_lobbyview_phase_b_final_and_focal1_resolution.md)
@@ -862,7 +921,7 @@ Tools:
 
 ---
 
-
+### 2026-05-03 (pm) — Blue Book / COGEL acquisition + cross-rubric descriptive stats
 
 **Convo:** [`convos/20260503_pm_acquisition_and_descriptives.md`](convos/20260503_pm_acquisition_and_descriptives.md)
 **Spawning artifact:** Plan Step 4 of [`plans/20260504_compendium_2_0_synthesis.md`](plans/20260504_compendium_2_0_synthesis.md), invoked early after a direct user request to (a) map acquisition options for the three reference works and (b) produce a cross-rubric descriptive pass to test the user's hypothesis about near-duplicate paraphrasing across rubrics.
