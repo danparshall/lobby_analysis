@@ -98,3 +98,28 @@ None significant. FOCAL-1 resolution included an honest pushback on the strict p
 1. **Union step** — collect compendium-row references from all 9 mapping docs, dedupe, save as `results/projections/disclosure_side_compendium_items_v1.tsv`. Expected row count: ~111 (110 pre-FOCAL-1 + 1 from FOCAL-1 + 0 from LobbyView's freeze-deferred candidates).
 2. **Compendium 2.0 row-freeze brainstorm** (separate plan). Inputs: the union TSV + each mapping doc's Promotions/Open Issues sections + the 4 LobbyView candidate NEW rows + the OpenSecrets-distinctive 3 rows currently tabled.
 3. **Phase C: code projections under TDD.** Locked order: CPI 2015 C11 → PRI 2010 → Sunlight 2015 → Newmark 2017 → Newmark 2005 → Opheim 1991 → HiredGuns 2007 → FOCAL 2024 (federal-LDA validation last). LobbyView is not a Phase C target (no score to project).
+
+---
+
+## Post-checkpoint addendum (same session, after finish-convo)
+
+After the initial finish-convo checkpoint (commit `6cc8c3b`), the user and I worked through the post-Phase-B forward plan in detail. Three decisions landed:
+
+1. **Next session = union step.** Per the locked plan's Phase B done condition. The next-session agent produces `results/projections/disclosure_side_compendium_items_v1.tsv` (~111 firm rows + freeze-candidate annotations) plus runs pre-merge audits (`audit-docs` skill, paper-index sanity check, `git log --stat` glance for blob hygiene).
+
+2. **Three parallel successor tracks identified and confirmed post-union-independent.** After the union TSV exists, the following 3 tracks have no cross-dependencies:
+   - **OH statute retrieval pipeline** (Track A; extends archived `statute-retrieval` branch's `justia_client` + `LOBBYING_STATUTE_URLS`; adds OH 2007 + OH 2015 to existing OH 2010 + OH 2025 bundles; parallel sub-task = HG 2007 per-state ground-truth retrieval from Wayback Machine).
+   - **Extraction harness brainstorm** (Track B; brainstorm-then-plan; inherits prompt-architecture pieces from archived `statute-extraction` branch's iter-2 work but NOT the projection code from `statute-retrieval` which is wrong shape).
+   - **Phase C projection TDD — 8 rubrics** (not 9; LobbyView is schema-coverage not score-projection). Locked Phase C order CPI → PRI → Sunlight → Newmark 2017 → Newmark 2005 → Opheim → HG → FOCAL. Uses hand-populated synthetic cells for tests; independent of harness/extraction.
+
+3. **Option B chosen for row-freeze sequencing.** Small standalone row-freeze brainstorm session happens BEFORE merge. Rationale: "freeze" should actually mean frozen at merge, so the 3 successor tracks have a stable row-set contract. The ~5-10 freeze-candidate deltas (LV-1..LV-4; 3 OS-distinctive; FOCAL Open Issues 2-11; HG Open Issues 1-7; Newmark Open Issue 1) are small but real — they affect harness chunking, projection scoping, and OH extraction targets.
+
+**Sequencing through merge:**
+
+| Session | Work | Branch | Output |
+|---|---|---|---|
+| Next | Union step + pre-merge audit + draft 3 plan docs | `compendium-source-extracts` | Union TSV + 3 plan docs at `plans/20260514_*.md` |
+| Next-next | Row-freeze brainstorm | `compendium-source-extracts` | Freeze decisions; regenerate/update union TSV |
+| Then | Merge → main; cut 3 successor branches in parallel | main → 3 new branches | `oh-statute-retrieval` / `extraction-harness-design` / `phase-c-projections` |
+
+**Forward-planning handoff written:** [`../plans/_handoffs/20260513_phase_b_close_and_post_b_plan.md`](../plans/_handoffs/20260513_phase_b_close_and_post_b_plan.md). Self-contained brief for the next-session agent — captures Phase B closure, Option B decision, next-session scope (union + audits + 3 plan drafts), per-track plan-scaffolding notes, and 9 standing watchpoints carried forward (including the anti-pattern note about `statute-retrieval`'s `smr_projection` being the wrong shape for compendium 2.0). Supersedes the now-stale 2026-05-11 handoff which covered the now-completed Phase B work.

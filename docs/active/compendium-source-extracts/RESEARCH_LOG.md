@@ -66,9 +66,14 @@ None significant. FOCAL-1 resolution included an honest pushback on the strict p
 
 #### Next Steps
 
-1. **Union step** — collect compendium-row references from all 9 mapping docs, dedupe, save as `results/projections/disclosure_side_compendium_items_v1.tsv`. Expected row count: ~111.
-2. **Compendium 2.0 row-freeze brainstorm** (separate plan). Inputs: the union TSV + each mapping doc's Promotions/Open Issues sections + 4 LobbyView candidate NEW rows + 3 OS-distinctive tabled rows.
-3. **Phase C: code projections under TDD.** Locked order: CPI 2015 C11 → PRI 2010 → Sunlight 2015 → Newmark 2017 → Newmark 2005 → Opheim 1991 → HiredGuns 2007 → FOCAL 2024. LobbyView NOT a Phase C target.
+1. **Union step (next session)** — collect compendium-row references from all 9 mapping docs, dedupe, save as `results/projections/disclosure_side_compendium_items_v1.tsv`. Expected row count: ~111. Plus pre-merge audits (`audit-docs`, paper-index sanity, `git log --stat` blob check) + draft 3 plan docs for the parallel successor tracks.
+2. **Row-freeze brainstorm (next-next session; Option B decided 2026-05-13).** Small standalone session BEFORE merging this branch to main. Resolves freeze decisions on the ~5-10 freeze-candidate rows (LV-1..LV-4, 3 OS-distinctive, FOCAL Open Issues 2-11, HG Open Issues 1-7, Newmark Open Issue 1). Then merge `compendium-source-extracts` → main + cut 3 successor branches in parallel.
+3. **Three parallel successor tracks after merge** (post-union-independent):
+   - OH statute retrieval pipeline (Track A; adds OH 2007 + OH 2015 to existing OH 2010 + OH 2025 bundles; HG 2007 ground-truth retrieval sub-task)
+   - Extraction harness brainstorm (Track B; brainstorm-then-plan; inherits prompt-architecture from archived `statute-extraction` iter-2)
+   - Phase C projection TDD — **8 rubrics** not 9 (LobbyView is schema-coverage, not score-projection). Locked order CPI → PRI → Sunlight → Newmark 2017 → Newmark 2005 → Opheim → HG → FOCAL.
+
+**Forward-planning handoff:** [`plans/_handoffs/20260513_phase_b_close_and_post_b_plan.md`](plans/_handoffs/20260513_phase_b_close_and_post_b_plan.md) — self-contained brief for the next-session agent. Captures Phase B closure, Option B decision, next-session scope, per-track plan-scaffolding notes, 9 standing watchpoints. Supersedes the now-stale 2026-05-11 handoff (which covered the now-completed Phase B work).
 
 ---
 
