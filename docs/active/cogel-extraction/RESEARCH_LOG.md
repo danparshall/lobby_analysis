@@ -20,6 +20,92 @@ whose OCR text layer dropped the asterisk and em-dash glyphs that encode
 most of the binary cell content. Without a working extractor, the source
 is unusable for the compendium pipeline.
 
+## Session: 2026-05-12 → 2026-05-13 — opheim_phase1_encoders_and_tdd
+
+### Topics Explored
+
+- Phase 1 implementation per the plan: write tests-first, then
+  encoders. 22-item encoder list bound to actual CSV column names
+  (which diverge from the plan's encoder IDs on def_legislative_*
+  and def_administrative_* — handled by binding to columns, not by
+  renaming).
+- Four mid-implementation design calls: (a) freq encoder uses
+  lowercase-substring match on "monthly" / "in and out" rather than
+  an enumerated string-set; (b) penalties encoder accepts `*` OR any
+  digit (T31 column is amount-bearing); (c)
+  `disclose_other_influence_activities` uses any-of
+  (`disclose_contributions_for_lobbying`, `disclose_other`);
+  (d) `disclose_sources_of_income` keeps the Phase-0 provisional
+  best-fit to `disclose_compensation_by_employer` despite a WA
+  disconfirmation surfaced during this session.
+- Non-committed Phase 2 preview rollup across the 35 of 47 states
+  scoreable from the current v2 CSVs, to get a directional read on
+  agreement before designing the Phase 2 driver.
+
+### Provisional Findings
+
+- Phase 1 ships: `src/lobby_analysis/cogel/opheim.py` (267 lines,
+  22 entries) + `tests/test_cogel_opheim.py` (60 cases).
+- Full suite: **398 passed, 5 skipped, 1 xfailed (the 47-state
+  coverage test), 3 pre-existing failures** in
+  `tests/test_pipeline.py` unrelated to cogel.
+- Missouri smoke: ours=7, opheim=5, Δ=+2 — passes ±2 boundary.
+- Phase 2 preview over 35 scoreable states: mean Δ = −2.11,
+  stddev 3.96. Only 4/35 exact, 11/35 within ±1, 14/35 within ±2.
+  **Below plan's mid-agreement (60-90% within ±2) band** but
+  premature to declare low-agreement: the bidirectional error
+  pattern strongly implicates extraction, not encoder design.
+- **Strong directional pattern** — high-Opheim states under-score
+  (NJ −10, WI −8, MA −7, WA −7, IN −6); low-Opheim states
+  over-score (AR +8, WY +6, NH +5, WV +3). Hypotheses: missing-marker
+  OCR misreads on rich rows + row-band contamination on sparse rows.
+  Arkansas's garbled `freq_lobbyist` value is the smoking gun for
+  the latter.
+- 12-state coverage gap (T28/T29 dominant): AZ, CO, DE, GA, IL, IA,
+  KY, NM, OH, PA, RI, SC. Same conceptual bucket as the 2026-05-11
+  CA/FL fix but mechanically separate.
+
+### Decisions Made
+
+- Encoders bind to actual CSV column names. The plan's encoder ID
+  names for def_legislative_* / def_administrative_* are
+  Opheim-aligned but don't match the CSV headers; the dataclass
+  carries both for auditability.
+- 47-state coverage test marked `xfail(strict=False)` rather than
+  failing CI. Will XPASS automatically when v2 extraction closes
+  the gap. Documented in the test's reason string + this entry +
+  the convo summary.
+- `disclose_sources_of_income` mapping kept provisional. NJ/WI
+  confirm; WA disconfirms (Opheim 18 perfect, but our CSV has the
+  column blank). Either the mapping is wrong OR WA's row is
+  mis-extracted (under the dominant Phase-2-preview hypothesis,
+  the latter).
+- Phase 2 driver script deferred. User chose "checkpoint + push"
+  over "build Phase 2 driver next" or "close the 12-state gap first."
+- Plan doc NOT updated. Encoder-design provenance lives in the
+  encoder `description` strings and this convo; plan stays as the
+  high-level brief.
+
+### Results
+
+- `src/lobby_analysis/cogel/opheim.py` — 22 encoders + state_score rollup
+- `tests/test_cogel_opheim.py` — 60-case TDD suite (59 pass, 1 xfail)
+- `results/20260512_opheim_phase2_preview.csv` — per-state preview (47 rows)
+- `results/20260512_opheim_phase2_preview.md` — preview narrative + diagnosis hypotheses
+
+### Next Steps
+
+Three paths for the next session (user choice deferred):
+- Phase 2 driver script (`scripts/cogel_1990_opheim_score.py`)
+  — produces the authoritative per-state delta table; inherits the
+  12-state gap as a caveat.
+- Close the 12-state T28/T29 gap — same conceptual category as the
+  2026-05-11 CA/FL fix; once closed, the coverage test XPASSes and
+  Phase 2 becomes authoritative.
+- Alabama T29 overflow fix (carried from 2026-05-11) — structurally
+  similar to the AR over-scoring hypothesis surfaced here, so
+  resolving AL may shed light on AR/WY/NH simultaneously.
+
 ## Session: 2026-05-11 → 2026-05-12 — opheim_phase0_and_dual_psm_recovery
 
 ### Topics Explored
