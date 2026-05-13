@@ -16,6 +16,59 @@ Carry-forward signals (informational, not gates):
 
 (Newest first.)
 
+### 2026-05-13 (pm) — Phase B continued: Newmark 2005 projection mapping (5th rubric)
+
+**Convo:** [`convos/20260513_newmark_2005_phase_b_mapping.md`](convos/20260513_newmark_2005_phase_b_mapping.md)
+**Plan executed:** [`plans/20260507_atomic_items_and_projections.md`](plans/20260507_atomic_items_and_projections.md) Phase B (Newmark 2005 — 5th rubric, predecessor to Newmark 2017 which shipped earlier today).
+**Handoff (most recent, with this rubric's watchpoints):** [`plans/_handoffs/20260511_phase_b_continued_remaining_7.md`](plans/_handoffs/20260511_phase_b_continued_remaining_7.md)
+
+#### Topics Explored
+
+- All 14 in-scope Newmark 2005 atomic items mapped: 7 def + 1 freq + 6 disclosure. 4 `prohib.*` + 1 `penalty_stringency_2003` excluded per disclosure-only Phase B qualifier.
+- Three watchpoints from the handoff walked: (1) PRI A-family overlap check on `def_actor_class_*` — resolved as NO OVERLAP (institutional-actor vs individual-actor-class are distinct observables); (2) three-threshold-cell verification against 2005 paper text — CONFIRMED, lines 120–121 enumerate compensation + expenditure + time as three separate definitional components; (3) `penalty_stringency_2003` exclusion — DOCUMENTED in the mapping doc's scope-qualifier table.
+- 6-vs-7 disclosure-item delta between Newmark 2005 and Newmark 2017 surfaced. 2005 doesn't have `disc.contributions_from_others`; 2005 does have a standalone `freq_reporting_more_than_annual` item that 2017 omits (projects from existing PRI E1h/E2h cadence row family via 8-cell OR-projection, no new rows).
+- Cross-rubric grep across PRI 2010 items + historical PRI 2010 disclosure-law CSV for actor-class overlap. PRI A1–A11 are structural/institutional-actor (legislative branch as institution lobbying, governor's office as institution lobbying, etc.); Newmark's `def_actor_class_*` is individual-actor (does a state senator personally lobbying fall under the lobbyist definition). Distinct row families; both already in the compendium plan.
+- Per-state per-indicator data inventory for Newmark 2005. Paper Table 1 publishes per-state main-index totals across 6 panels (1990–91 through 2003); sub-aggregate breakdowns NOT published — weaker than Newmark 2017's Table 2 sub-aggregate publication.
+- Mid-session user reframe: PRI institutional-actor tracking is itself valuable for the SMR regardless of overlap with `def_actor_class_*`. Confirmed already operationalized via the PRI projection mapping's 11 `actor_*` rows.
+
+#### Provisional Findings
+
+- **Row reuse rate: 14/14 = 100%.** Zero new compendium rows introduced; exceeds the handoff's ≥90% expectation. Breakdown: 4 from CPI mapping, 4 from Sunlight mapping, 2 from PRI gifts-pair, 1 PRI cadence family (8 cells under it), 4 from Newmark 2017 mapping.
+- **Newmark 2017 mapping's `disc.contributions_from_others` parallel speculation falsified.** Newmark 2005 has only 6 disclosure items. `lobbyist_or_principal_report_includes_contributions_received_for_lobbying` stays Newmark-2017-distinctive. Pending: HG, FOCAL, LobbyView (OS tabled).
+- **Newmark 2005 Phase C utility is structurally weaker than Newmark 2017's.** Paper publishes per-state totals only. With disclosure-only scope, direct validation reduces to a weak inequality (`projected_partial ≤ paper_total`). Actual quality signal is **temporal-coverage validation** across 6 panels — only multi-vintage ground truth in the current set.
+- **The `def_actor_class_*` row family is now 3-rubric-load-bearing if Opheim confirms** (Newmark 2017 + Newmark 2005 + Opheim 1991, the next mapping). Open Issue 1 from the Newmark 2017 mapping should be pulled forward to compendium 2.0 freeze rather than indefinitely deferred.
+
+#### Decisions
+
+| topic | decision |
+|---|---|
+| Fifth Phase B target | Newmark 2005, completed (14 atomic items in scope; 5 OOS) |
+| Row reuse | 14 of 14 = 100% (zero new rows) |
+| Watchpoint 1 (PRI A-family) | NO OVERLAP; both row families valid and distinct |
+| Watchpoint 2 (three thresholds) | CONFIRMED in 2005 paper lines 120–121 |
+| Watchpoint 3 (penalty_stringency_2003) | EXCLUDED |
+| `freq_reporting_more_than_annual` projection | OR over 8 PRI cadence cells |
+| Newmark 2017 speculation on 2005 contributions parallel | FALSIFIED |
+| Open Issue 1 status | Increasingly load-bearing — pull forward to compendium 2.0 freeze planning |
+| PRI A-family value (user note) | CONFIRMED — institutional-actor tracking belongs in the compendium; already done via PRI mapping |
+| Next target | Opheim 1991 (last 4 disclosure-focused rubrics: Opheim → HG → FOCAL → LobbyView) |
+
+#### Mistakes recorded
+
+- Initially named the convo file with the `_projection_mapping` suffix in the mapping doc's link reference before the docs checkpoint surfaced the established `_phase_b_mapping` convention from prior sessions. Caught at update-docs time and corrected.
+
+#### Results
+
+- [`results/projections/newmark_2005_projection_mapping.md`](results/projections/newmark_2005_projection_mapping.md) — Newmark 2005 projection mapping doc (14 atomic items × 14 distinct compendium row families; 100% reuse; corrections to predecessor mappings noted).
+
+#### Next Steps
+
+1. **Opheim 1991 projection mapping** — last 4 disclosure-focused rubrics: Opheim → HG 2007 → FOCAL 2024 → LobbyView (schema-coverage, different shape, tackled last). Opheim is structurally adjacent to Newmark 2005 (Newmark explicitly invokes Opheim as the basis) so significant overlap expected.
+2. After Phase B completes: union of mapping docs → `results/projections/disclosure_side_compendium_items_v1.tsv`; compendium 2.0 row-freeze brainstorm.
+3. Open Issue 1 (`def_actor_class_*` row family) resolution should be pulled forward to compendium 2.0 freeze planning.
+
+---
+
 ### 2026-05-13 — Phase B continued: Newmark 2017 projection mapping (4th rubric)
 
 **Convo:** [`convos/20260513_newmark_2017_phase_b_mapping.md`](convos/20260513_newmark_2017_phase_b_mapping.md)

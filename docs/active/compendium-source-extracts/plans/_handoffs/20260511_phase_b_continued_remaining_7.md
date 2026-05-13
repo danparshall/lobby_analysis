@@ -69,29 +69,32 @@ Casual usage often conflates these. **The remaining rubric mappings must check**
 
 **Correction logged 2026-05-13 (Newmark 2017 mapping session):** Earlier wording in this doc collapsed the three lobbyist-status threshold cells into a single row (with the readers column saying "Newmark/Opheim def.*_standard" as a family abbreviation). That collapse is wrong on its face — compensation / expenditure / time are independently extant in state statutes (federal LDA itself has compensation + time thresholds but no expenditure threshold), so the three cannot share one cell. Three separate typed cells, each read by the corresponding rubric binary via `IS NOT NULL`. The handoff's earlier per-rubric Newmark 2017 watchpoint ("Should read the existing CPI #197 cell ... Don't propose new binary rows") was shorthand for "follow the CPI #197 typed-cell-with-IS-NOT-NULL pattern" — not a literal claim that all three Newmark items read CPI #197. Corrected here for the Newmark-2005 and Opheim implementing agents who will encounter the same three concepts.
 
-### Four Phase B mappings done (as of 2026-05-13)
+### Five Phase B mappings done (as of 2026-05-13 pm)
 
 - [`../../results/projections/cpi_2015_c11_projection_mapping.md`](../../results/projections/cpi_2015_c11_projection_mapping.md) — 21 rows
 - [`../../results/projections/pri_2010_projection_mapping.md`](../../results/projections/pri_2010_projection_mapping.md) — 69 rows touched (~52 new)
 - [`../../results/projections/sunlight_2015_projection_mapping.md`](../../results/projections/sunlight_2015_projection_mapping.md) — 13 rows (11 cross-rubric)
 - [`../../results/projections/newmark_2017_projection_mapping.md`](../../results/projections/newmark_2017_projection_mapping.md) — 14 rows (8 reused, 6 new) — added 2026-05-13
+- [`../../results/projections/newmark_2005_projection_mapping.md`](../../results/projections/newmark_2005_projection_mapping.md) — 14 rows (14 reused, 0 new; **100% reuse**) — added 2026-05-13 pm
 
 ---
 
-## Remaining Phase B order (6 rubrics)
+## Remaining Phase B order (4 rubrics)
 
-> **Update 2026-05-13:** OpenSecrets 2022 has been **tabled** (was item 1 in the original 7-rubric order). See [`../../results/_tabled/opensecrets_2022_tabled.md`](../../results/_tabled/opensecrets_2022_tabled.md) for the tabling rationale (no published per-tier scoring definition; the recheck's "few-shot calibratable" criterion is softer than the branch's projection-vs-published bar) and the 3 OS-distinctive row candidates also tabled pending organic pickup by other rubrics or project-internal justification. Drop is reversible per reinstatement triggers documented there. Phase B order below renumbered to 6 rubrics.
+> **Update 2026-05-13:** OpenSecrets 2022 has been **tabled** (was item 1 in the original 7-rubric order). See [`../../results/_tabled/opensecrets_2022_tabled.md`](../../results/_tabled/opensecrets_2022_tabled.md) for the tabling rationale (no published per-tier scoring definition; the recheck's "few-shot calibratable" criterion is softer than the branch's projection-vs-published bar) and the 3 OS-distinctive row candidates also tabled pending organic pickup by other rubrics or project-internal justification. Drop is reversible per reinstatement triggers documented there.
+>
+> **Update 2026-05-13 (pm):** Newmark 2005 shipped at 100% row reuse (14/14, zero new rows). Phase B order below renumbered to 4 rubrics. Most importantly, **the Newmark 2017 mapping's speculation that Newmark 2005 confirms `lobbyist_or_principal_report_includes_contributions_received_for_lobbying` as a cross-rubric row is FALSIFIED** — Newmark 2005 has only 6 disclosure items (vs 2017's 7), no `contributions_from_others` parallel. That row stays Newmark-2017-distinctive within the contributing-rubric set; whether HG, FOCAL, or LobbyView reads it is now an open watchpoint for those mappings (see updated per-rubric sections below).
 
 Per the locked Phase C order (which Phase B mirrors):
 
 1. ~~**Newmark 2017** (19 items)~~ — **DONE 2026-05-13**, see [`../../results/projections/newmark_2017_projection_mapping.md`](../../results/projections/newmark_2017_projection_mapping.md). 14 atomic items in scope (7 def + 7 disclosure; 5 `prohib.*` excluded); 14 distinct compendium rows touched (8 reused / 6 new).
-2. **Newmark 2005** (18 items) — **next**
-3. **Opheim 1991** (22 items, disclosure-side only)
+2. ~~**Newmark 2005** (18 items)~~ — **DONE 2026-05-13 pm**, see [`../../results/projections/newmark_2005_projection_mapping.md`](../../results/projections/newmark_2005_projection_mapping.md). 14 atomic items in scope (7 def + 1 freq + 6 disclosure; 4 `prohib.*` + 1 `penalty_stringency_2003` excluded); **100% row reuse, zero new rows.** All three handoff watchpoints walked (PRI A-family no-overlap, three-threshold-cell confirmed against 2005 paper, penalty excluded).
+3. **Opheim 1991** (22 items, disclosure-side only) — **next**
 4. **HiredGuns 2007** (47 items, disclosure-side only)
 5. **FOCAL 2024** (50 items, weighted aggregation)
 6. **LobbyView** (46 schema fields — schema-coverage rubric, different shape)
 
-You can probably handle 2-3 per session given the locked conventions. Each session: cross-rubric grep, draft, sanity-check against existing CPI/PRI/Sunlight/Newmark2017 mappings for row reuse.
+You can probably handle 2-3 per session given the locked conventions. Each session: cross-rubric grep, draft, sanity-check against existing CPI/PRI/Sunlight/Newmark2017/Newmark2005 mappings for row reuse.
 
 ---
 
@@ -123,21 +126,27 @@ See [`../../results/projections/newmark_2017_projection_mapping.md`](../../resul
 **Watch out (carry-forward to remaining rubrics):**
 - The `def_actor_class_*` row family is fragile. PRI A6 (or similar PRI A-family item) may overlap and force a fold. **Not directly walked in the Newmark 2017 session.** Newmark 2005 implementing agent should check PRI A-family content for `elected_officials` / `public_employees` reads before just reusing the new rows.
 
-### Newmark 2005 (18 items) — next up
+### ~~Newmark 2005 (18 items)~~ — DONE 2026-05-13 pm
 
-Essentially a subset/predecessor of Newmark 2017. After 2026-05-13's Newmark 2017 mapping ships, expected reuse rate for Newmark 2005 is ≥90% — almost all rows already exist in the Newmark 2017 mapping. Per `items_Newmark2005.tsv`: 4 def items (legislative_lobbying, administrative_agency_lobbying, elected_officials_as_lobbyists, public_employees_as_lobbyists) + threshold standards (compensation; check whether 2005 enumerates expenditure + time too — paper-text ambiguity from session-end greps) + 5 prohib (OUT) + 7 disc (all parallels of 2017's disclosure.* items) + 1 penalty_stringency_2003 (OUT — penalty/enforcement). Net disclosure-side scope ≈ 11–12 items, almost entirely reuse.
+See [`../../results/projections/newmark_2005_projection_mapping.md`](../../results/projections/newmark_2005_projection_mapping.md). 14 atomic items in scope (7 def + 1 freq + 6 disclosure; 5 OOS items: 4 `prohib.*` + 1 `penalty_stringency_2003`); **14 distinct row families touched, all reused (100%), zero new rows.**
 
-**Watch:**
-- **Open Issue 1 check (`def_actor_class_*` row family) is now load-bearing.** Newmark 2017 mapping proposed this family; Newmark 2005 reuses the same rows. Before reusing, **grep PRI 2010 A-family items (`items_PRI_2010.tsv` `disclosure.A*`) for "elected" / "public employees" / "officials"** to confirm there's no PRI overlap that would force a fold into PRI's `actor_*` family. If overlap found, surface to user — do not unilaterally restructure.
-- **Three threshold cells** (compensation / expenditure / time) now exist from Newmark 2017 mapping. Newmark 2005's threshold items reuse them via `IS NOT NULL`. Verify paper-text exact enumeration before mapping (the 2005 paper's verbatim is ambiguous in session-end greps).
-- **`penalty_stringency_2003`** is enforcement-side and OUT of scope per disclosure-only Phase B qualifier. Excluded without further analysis. Document the exclusion in the per-rubric mapping doc (mirror the way Newmark 2017 mapping handled the 5 `prohib.*` exclusions).
-- No FOCAL/Newmark cross-rubric stack design decision needed for 2005's `disc_expenditures_benefiting_officials` — the row design was locked during Newmark 2017 session (reuse PRI bundle, OR-projection over actor sides).
+**Three handoff watchpoints resolved:**
+- **PRI A-family overlap check on `def_actor_class_*`: NO OVERLAP.** PRI A1–A11 (the `actor_*` row family) are structural/institutional-actor observables — does *the Governor's office as an institution* register when it lobbies. Newmark's `def_actor_class_*` is an individual-actor observable — does *an individual elected official personally lobbying* fall under the lobbyist definition. Conceptually adjacent but distinct; a state can answer YES to A7 (institution must register) and NO to `def_actor_class_elected_officials` (in-capacity individuals exempted), or vice versa. Both row families belong in the compendium; both are already there.
+- **Three-threshold-cell verification against 2005 paper text: CONFIRMED.** Paper lines 120–121 enumerate "compensation standard, expenditure standard, and time standard in the deﬁnition of lobbying" as three separate components. Reuses the three typed cells the Newmark 2017 mapping introduced via `IS NOT NULL`.
+- **`penalty_stringency_2003` exclusion: DOCUMENTED.** Enforcement-side, 2003-only, opaque sub-rubric, CO/TN/WV missing. Excluded per the disclosure-only Phase B qualifier; documented in the mapping doc's "Scope qualifier — 5 items OUT" table.
 
-### Opheim 1991 (22 items, disclosure-side only)
+**Two structural findings worth carrying forward to the remaining rubrics:**
+- **Newmark 2005 has 6 disclosure items, not 7.** Newmark 2017 added `disc.contributions_from_others` in revision; **Newmark 2005 does not have a parallel.** The Newmark 2017 mapping's speculation that 2005 would confirm `lobbyist_or_principal_report_includes_contributions_received_for_lobbying` is **falsified.** That row remains Newmark-2017-distinctive within the contributing-rubric set; the open question is now whether HG 2007, FOCAL 2024, or LobbyView reads it — flagged in their respective per-rubric watchpoints below.
+- **Newmark 2005's `freq_reporting_more_than_annual`** projects from the existing PRI E1h/E2h cadence row family via an 8-cell OR-projection (lobbyist + principal × {monthly, quarterly, triannual, semiannual}). Opheim 1991 also reads this row family at a *finer* binary cut (monthly-during-session-or-in-and-out-of-session only → 1; quarterly/semi-annual/annual → 0). The cadence row family is now confirmed as having three readers with different binary cuts on the same underlying cells; CPI #202's enum reading is a fourth.
+
+### Opheim 1991 (22 items, disclosure-side only) — next up
 
 - **Apply β here.** `disclosure.legislation_supported_or_opposed` projection reads `bill_id AND position` from compendium (locked this session).
 - **Enforcement battery is OUT** (`enforce.*` items 23-27 — `file_independent_court_actions`, etc.). Disclosure-side only per plan.
-- Watch `disclosure.*` items for cross-rubric reuse against CPI/PRI/Sunlight rows.
+- Watch `disclosure.*` items for cross-rubric reuse against CPI/PRI/Sunlight/Newmark2017/Newmark2005 rows. Heavy overlap with Newmark expected — Newmark 2005's paper explicitly invokes "Similar to Opheim's (1991) measure" (paper line 117) as the basis for its definitions battery, and Newmark 2005 + 2017 both have a substantial subset of Opheim's items.
+- **`def_actor_class_*` row family is now 3-rubric-load-bearing** once Opheim 1991 ships (Opheim has `def.elective_officials` and `def.public_employees` per Newmark 2005 mapping cross-rubric annotations). At that point, **Open Issue 1 from the Newmark 2017 mapping should be pulled forward to compendium 2.0 freeze planning** rather than indefinitely deferred — three rubrics reading the same row family is high enough confidence to lock its design.
+- **Opheim's `disclosure.frequency` reads the PRI E1h/E2h cadence row family at a finer cut** than Newmark 2005's: only "monthly during session or both in-and-out-of-session" → 1; quarterly / semi-annual / annual → 0 (Opheim paper lines 115–118). Reuse the cadence cells; project at the finer binary cut. Don't introduce new compendium rows for this.
+- **Watch for `contributions_from_others` parallel.** Newmark 2017's `lobbyist_or_principal_report_includes_contributions_received_for_lobbying` row is currently single-rubric (after Newmark 2005 falsified the speculation). Check if Opheim's 7-item information-category battery includes any third-party-contributions-received observable. If so, that row becomes 2-rubric-confirmed.
 - Opheim is the oldest rubric (1991, CSG Blue Book 1988-89 baseline) — some compendium rows it reads may be obsolete (e.g., "fax disclosure" is not in Opheim but you might encounter equivalent obsolete observables). Treat obsolete rows as reading a NULL cell where appropriate.
 
 ### HiredGuns 2007 (47 items, disclosure-side only)
@@ -149,6 +158,7 @@ Essentially a subset/predecessor of Newmark 2017. After 2026-05-13's Newmark 201
 - **Q13 (lobbyist compensation) / Q27 (principal compensation)** reuses Sunlight #5 / Newmark / CPI #201 / PRI E2f_i compensation rows.
 - **Q2 (lobbyist-status threshold, 5-tier ordinal)** reads the CPI #197 cell.
 - **Q39-Q47 enforcement is OUT** (plan: "Q39-Q47 enforcement = deferred"). **Q48 cooling-off is OUT**. Disclosure-only.
+- **Watch for `contributions_from_others` parallel.** Newmark 2017's `lobbyist_or_principal_report_includes_contributions_received_for_lobbying` row is currently single-rubric (Newmark 2005 falsified the speculative parallel 2026-05-13 pm). Check if any HG question reads third-party-contributions-received-for-lobbying as a distinct observable from compensation/total-spending.
 - Verify against the locked plan: disclosure-side scope per the plan §"Disclosure-side items (rough scope, by rubric)" gives HG Q1-Q38 + Q49-Q56 in scope; doublecheck Q49-Q56 are actually disclosure (accessibility-related per plan).
 
 ### FOCAL 2024 (50 items, weighted aggregation)
@@ -169,6 +179,8 @@ Essentially a subset/predecessor of Newmark 2017. After 2026-05-13's Newmark 201
 - `revolving_door.*` (deferred per plan)
 
 **Watch:** Lacy-Nichols 2025 merged 2024's `timeliness.1` + `timeliness.2` into a single 2025 indicator. The TSV's per-row note flags this. Projection treats them as one merged indicator using the merged weight.
+
+**Watch for `contributions_from_others` parallel.** Newmark 2017's `lobbyist_or_principal_report_includes_contributions_received_for_lobbying` row is currently single-rubric (Newmark 2005 falsified the speculative parallel 2026-05-13 pm). FOCAL `financials.*` battery is the most likely candidate to capture third-party-contributions-received as a distinct observable from `financials.10` (gifts) and the compensation/total-spending rows.
 
 ### LobbyView (46 schema fields — DIFFERENT SHAPE)
 
