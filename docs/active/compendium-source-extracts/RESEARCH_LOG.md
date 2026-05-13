@@ -16,6 +16,61 @@ Carry-forward signals (informational, not gates):
 
 (Newest first.)
 
+### 2026-05-13 — Phase B continued: Newmark 2017 projection mapping (4th rubric)
+
+**Convo:** [`convos/20260513_newmark_2017_phase_b_mapping.md`](convos/20260513_newmark_2017_phase_b_mapping.md)
+**Plan executed:** [`plans/20260507_atomic_items_and_projections.md`](plans/20260507_atomic_items_and_projections.md) Phase B (Newmark 2017 — 4th rubric to ship, after CPI 2015 C11, PRI 2010, Sunlight 2015; OpenSecrets 2022 was tabled earlier on 2026-05-13).
+**Handoff (most recent, with this rubric's watchpoints):** [`plans/_handoffs/20260511_phase_b_continued_remaining_7.md`](plans/_handoffs/20260511_phase_b_continued_remaining_7.md)
+
+#### Topics Explored
+
+- All 14 in-scope Newmark 2017 atomic items mapped per the locked Phase B per-item template (7 def + 7 disclosure; 5 `prohib.*` items explicitly excluded per the disclosure-only Phase B qualifier).
+- Cross-rubric grep run BEFORE drafting per the locked 2026-05-11 workflow: 8 parallel greps across the 10 contributing-rubric files + historical PRI 2010 disclosure-law CSV + 3 existing projection mapping docs. Surfaced 8 reusable rows (5 from CPI, 2 from PRI, 1 from Sunlight at row-level; 4 additional pre-existing rows touched at compound granularity).
+- Three threshold-concept discipline applied: Newmark's three def.*_standard items (compensation/expenditure/time) → three separate typed cells with `IS NOT NULL` projection (not a single binary row each).
+- `disclosure.expenditures_benefiting_officials` row-design question (handoff watchpoint) resolved: keep existing PRI bundle (gifts ∪ entertainment ∪ transport ∪ lodging × lobbyist/principal), projected as OR over actor sides. HG Q23 gifts-specific granularity flagged for compendium 2.0 freeze, not split now.
+- New `def_actor_class_*` row family proposed (Newmark/Opheim treat "elected officials as lobbyists" / "public employees as lobbyists" as definitional inclusion criteria; distinct from CPI's `def_target_*` family and PRI's `actor_*` family).
+- Honest Phase C validation scope documented: Newmark 2017 publishes only sub-aggregate per-state data (Table 2). Direct Newmark validation is 50 states × 2 sub-aggregates = 100 ground-truth cells. Per-item validation requires cross-rubric overlap with PRI 2010 + CPI 2015 C11.
+
+#### Provisional Findings
+
+- **Reuse rate 8 of 14 = 57%.** Cumulative across 4 mappings, compendium-row growth is slowing as predicted — Newmark 2017's role is cross-rubric redundancy on the BoS-derived definitional-and-disclosure backbone, not novel observables (same role Sunlight plays).
+- **Single Newmark-distinctive observable:** `lobbyist_or_principal_report_includes_contributions_received_for_lobbying`. No other rubric in the current contributing set reads it directly; Newmark 2005's parallel item (next-up mapping) likely picks it up.
+- **The `def_actor_class_*` row family is a genuinely new third family** alongside `def_target_*` (CPI) and `actor_*` (PRI). Conceptually distinct but fragile — could be folded into one of the other two at compendium 2.0 freeze if PRI A-family overlap is established.
+- **Two no-variation items in Newmark 2017** (`def.legislative_lobbying`, `disclosure.expenditures_benefiting_officials`) — extracted normally; Phase C accounts for constant +2 contribution to the sub-aggregate ground truth.
+
+#### Decisions
+
+| topic | decision |
+|---|---|
+| Fourth Phase B target | Newmark 2017, completed (14 atomic items in scope) |
+| Row reuse | 8 of 14 = 57% |
+| New row family `def_actor_class_*` | PROPOSED for elected-officials and public-employees as lobbyists; Open Issue 1 at compendium 2.0 freeze |
+| `expenditure_threshold_for_lobbyist_registration` typed cell | PROPOSED (parallel to CPI #197's compensation cell) |
+| `time_threshold_for_lobbyist_registration` typed cell | PROPOSED with structured value type (magnitude + unit enum; accommodates federal LDA's 20%-of-work-time) |
+| `lobbyist_spending_report_includes_total_expenditures` (binary) | PROPOSED as separate from `_required` per granularity bias |
+| `lobbyist_or_principal_report_includes_contributions_received_for_lobbying` (binary) | PROPOSED. Newmark-distinctive |
+| `disclosure.expenditures_benefiting_officials` row design | RESOLVED: keep existing PRI bundle; HG Q23 gifts split deferred |
+| Pushback on handoff watchpoint #4 | Three def.*_standard items read THREE typed cells, not one. Handoff wording was shorthand for "follow the CPI #197 typed-cell pattern" |
+| Phase C validation scope for Newmark | Sub-aggregate-only against Newmark's published data (100 cells); per-item via cross-rubric overlap |
+| Next target | Newmark 2005 (predecessor; 18 items; expect heavy overlap) |
+
+#### Mistakes recorded
+
+None significant. Cross-rubric grep workflow (locked 2026-05-11) ran cleanly on first attempt; no rework cycles. One minor friction: PRI mapping doc exceeded the 25k-token Read limit; switched to grep-based interrogation of existing rows — predictable consequence of PRI being the largest mapping, independent of process discipline.
+
+#### Results
+
+- [`results/projections/newmark_2017_projection_mapping.md`](results/projections/newmark_2017_projection_mapping.md) — Newmark 2017 projection mapping doc (14 atomic items × 14 distinct compendium rows; 6 new, 8 reused; all rows annotated with `[cross-rubric: …]`).
+
+#### Next Steps
+
+1. **Newmark 2005 projection mapping** (18 items; predecessor; very heavy overlap expected with Newmark 2017's row set).
+2. Continue Phase B for remaining 4 rubrics: Opheim 1991, HiredGuns 2007, FOCAL 2024, LobbyView (schema-coverage, tackled last).
+3. After Phase B completes: union of all 9 score-projection mapping docs' `compendium_rows` → `results/projections/disclosure_side_compendium_items_v1.tsv`; compendium 2.0 row-freeze brainstorm (separate plan; resolves the 4 Open Issues from this session + open issues from prior mappings).
+4. Open Issue 4 (handoff threshold pushback — three typed cells vs one) needs design-team disposition at the next session start.
+
+---
+
 ### 2026-05-12 → 2026-05-13 — Phase B continued: OpenSecrets 2022 attempt → tabled
 
 **Convo:** [`convos/20260512_opensecrets_phase_b_tabled.md`](convos/20260512_opensecrets_phase_b_tabled.md)
