@@ -59,17 +59,22 @@ The Sunlight mapping surfaced and named these explicitly for the first time:
 
 | Threshold type | Row name (working) | Reads |
 |---|---|---|
-| Lobbyist-status | `compensation_threshold_for_lobbyist_registration` (CPI mapping) | CPI #197, HG Q2, Newmark/Opheim def.*_standard, FOCAL scope.2 |
+| Lobbyist-status (compensation) | `compensation_threshold_for_lobbyist_registration` (CPI mapping) | CPI #197, HG Q2, Newmark 2017/2005 `def.compensation_standard`, Opheim `def.compensation_standard`, FOCAL scope.2 (partial) |
+| Lobbyist-status (expenditure) | `expenditure_threshold_for_lobbyist_registration` (Newmark 2017 mapping, 2026-05-13) | Newmark 2017/2005 `def.expenditure_standard`, Opheim `def.expenditure_standard`, FOCAL scope.2 (partial) |
+| Lobbyist-status (time) | `time_threshold_for_lobbyist_registration` (Newmark 2017 mapping, 2026-05-13; typed structured value `{magnitude, unit}` to accommodate hours/days/percent variants) | Newmark 2017/2005 `def.time_standard`, Opheim `def.time_standard`, Federal LDA 20%-of-work-time rule, FOCAL scope.2 (partial) |
 | Filing-de-minimis | `lobbyist_filing_de_minimis_threshold_dollars` (PRI mapping; PRI D1) | PRI D1; possibly FOCAL scope.2 (combined) |
 | Itemization-de-minimis | `expenditure_itemization_de_minimis_threshold_dollars` (Sunlight mapping) | Sunlight #3, HG Q15 |
 
-Casual usage often conflates these. **The remaining rubric mappings must check** when they encounter a "threshold" item which of the three concepts is being read, and align with the corresponding compendium row. Don't propose new threshold rows without checking these three first.
+Casual usage often conflates these. **The remaining rubric mappings must check** when they encounter a "threshold" item which of the five concepts is being read, and align with the corresponding compendium row. Don't propose new threshold rows without checking these five first.
 
-### Three Phase B mappings done
+**Correction logged 2026-05-13 (Newmark 2017 mapping session):** Earlier wording in this doc collapsed the three lobbyist-status threshold cells into a single row (with the readers column saying "Newmark/Opheim def.*_standard" as a family abbreviation). That collapse is wrong on its face — compensation / expenditure / time are independently extant in state statutes (federal LDA itself has compensation + time thresholds but no expenditure threshold), so the three cannot share one cell. Three separate typed cells, each read by the corresponding rubric binary via `IS NOT NULL`. The handoff's earlier per-rubric Newmark 2017 watchpoint ("Should read the existing CPI #197 cell ... Don't propose new binary rows") was shorthand for "follow the CPI #197 typed-cell-with-IS-NOT-NULL pattern" — not a literal claim that all three Newmark items read CPI #197. Corrected here for the Newmark-2005 and Opheim implementing agents who will encounter the same three concepts.
+
+### Four Phase B mappings done (as of 2026-05-13)
 
 - [`../../results/projections/cpi_2015_c11_projection_mapping.md`](../../results/projections/cpi_2015_c11_projection_mapping.md) — 21 rows
 - [`../../results/projections/pri_2010_projection_mapping.md`](../../results/projections/pri_2010_projection_mapping.md) — 69 rows touched (~52 new)
 - [`../../results/projections/sunlight_2015_projection_mapping.md`](../../results/projections/sunlight_2015_projection_mapping.md) — 13 rows (11 cross-rubric)
+- [`../../results/projections/newmark_2017_projection_mapping.md`](../../results/projections/newmark_2017_projection_mapping.md) — 14 rows (8 reused, 6 new) — added 2026-05-13
 
 ---
 
@@ -79,14 +84,14 @@ Casual usage often conflates these. **The remaining rubric mappings must check**
 
 Per the locked Phase C order (which Phase B mirrors):
 
-1. **Newmark 2017** (19 items)
-2. **Newmark 2005** (18 items)
+1. ~~**Newmark 2017** (19 items)~~ — **DONE 2026-05-13**, see [`../../results/projections/newmark_2017_projection_mapping.md`](../../results/projections/newmark_2017_projection_mapping.md). 14 atomic items in scope (7 def + 7 disclosure; 5 `prohib.*` excluded); 14 distinct compendium rows touched (8 reused / 6 new).
+2. **Newmark 2005** (18 items) — **next**
 3. **Opheim 1991** (22 items, disclosure-side only)
 4. **HiredGuns 2007** (47 items, disclosure-side only)
 5. **FOCAL 2024** (50 items, weighted aggregation)
 6. **LobbyView** (46 schema fields — schema-coverage rubric, different shape)
 
-You can probably handle 2-3 per session given the locked conventions. Each session: cross-rubric grep, draft, sanity-check against existing CPI/PRI/Sunlight mappings for row reuse.
+You can probably handle 2-3 per session given the locked conventions. Each session: cross-rubric grep, draft, sanity-check against existing CPI/PRI/Sunlight/Newmark2017 mappings for row reuse.
 
 ---
 
@@ -96,19 +101,37 @@ You can probably handle 2-3 per session given the locked conventions. Each sessi
 
 See [`../../results/_tabled/opensecrets_2022_tabled.md`](../../results/_tabled/opensecrets_2022_tabled.md). The mapping attempt empirically confirmed the original 2026-05-07 Phase A1 DROP audit's structural finding: Cat 1 projects to {3, 4} from cells (no anchors for 0/1/2/5); Cats 2/3 partial-credit requires calibration-by-distribution rather than deterministic projection. Reinstatement triggers documented in the tabling doc. The 3 OS-distinctive row candidates (`separate_registrations_for_lobbyists_and_clients`, `lobbyist_compensation_disclosed_as_exact_amount_vs_ranges`, `lobbyist_compensation_disclosed_per_individual_lobbyist_vs_aggregate`) are also tabled pending organic pickup or project-internal need. The in-session/out-of-session cadence split is **not** tabled — Opheim 1991 reads the same split, so Opheim's mapping will introduce it.
 
-### Newmark 2017 (19 items) — next up
+### ~~Newmark 2017 (19 items)~~ — DONE 2026-05-13
 
-Mostly binary disclosure.* rows that map directly to existing compendium rows. Watch:
+See [`../../results/projections/newmark_2017_projection_mapping.md`](../../results/projections/newmark_2017_projection_mapping.md). 14 atomic items in scope (7 def + 7 disclosure; 5 `prohib.*` excluded); 14 distinct compendium rows touched.
 
-- **`def.compensation_standard` / `def.expenditure_standard` / `def.time_standard`** are binary (does the state have any such standard) — these are the **lobbyist-status threshold** type. Should read the existing CPI #197 cell (`compensation_threshold_for_lobbyist_registration`, typed Decimal) as `cell IS NOT NULL`. Don't propose new binary rows.
-- **`disclosure.influence_legislation_or_admin`** maps to `lobbyist_spending_report_includes_general_subject_matter` (existing Sunlight row, spending-report side).
-- **`disclosure.compensation_by_employer` / `disclosure.total_compensation`** map to existing Sunlight compensation rows.
-- **`disclosure.expenditures_benefitting_officials`** — important row for the FOCAL/Newmark cross-rubric stack. Check whether this should be one row or split by what counts as a benefit (gift, meal, etc.).
-- **The `prohib.*` battery is OUT OF SCOPE** (disclosure-only per plan).
+**Six new rows added to compendium 2.0 by this mapping** (Newmark 2005 will reuse all of them):
 
-### Newmark 2005 (18 items)
+| New row | Cell type | Used for |
+|---|---|---|
+| `def_actor_class_elected_officials` | binary; legal | elected-officials-as-lobbyists; Open Issue 1 — new third row family alongside `def_target_*` and `actor_*` |
+| `def_actor_class_public_employees` | binary; legal | public-employees-as-lobbyists; same row-family question |
+| `expenditure_threshold_for_lobbyist_registration` | typed `Optional[Decimal]`; legal | mirror of CPI #197 compensation cell |
+| `time_threshold_for_lobbyist_registration` | typed `Optional[{magnitude, unit}]`; legal | accommodates federal LDA's 20%-of-work-time |
+| `lobbyist_spending_report_includes_total_expenditures` | binary; legal | granularity-split from `_required` |
+| `lobbyist_or_principal_report_includes_contributions_received_for_lobbying` | binary; legal | Newmark-distinctive observable |
 
-Essentially a subset/predecessor of Newmark 2017. Most rows already proposed by 2017 mapping. Watch for the one Newmark 2005 item where the 2017 vintage doesn't have an exact parallel (`def_public_employees_as_lobbyists` is in both; check the others).
+**Row design decisions locked this session** (relevant for remaining mappings):
+- `disclosure.expenditures_benefiting_officials` reads the existing PRI bundle (gifts ∪ entertainment ∪ transport ∪ lodging × lobbyist/principal) projected as OR over the two actor sides. **Not split by benefit type.** HG Q23's gifts-specific granularity flagged for compendium 2.0 freeze, not now.
+- The three `def.*_standard` items read **three separate typed cells** (compensation/expenditure/time), each via `IS NOT NULL`. See "Correction logged 2026-05-13" note under the threshold-concepts table above. Earlier wording in this handoff that suggested all three read CPI #197 was shorthand for the typed-cell pattern, not a literal claim.
+
+**Watch out (carry-forward to remaining rubrics):**
+- The `def_actor_class_*` row family is fragile. PRI A6 (or similar PRI A-family item) may overlap and force a fold. **Not directly walked in the Newmark 2017 session.** Newmark 2005 implementing agent should check PRI A-family content for `elected_officials` / `public_employees` reads before just reusing the new rows.
+
+### Newmark 2005 (18 items) — next up
+
+Essentially a subset/predecessor of Newmark 2017. After 2026-05-13's Newmark 2017 mapping ships, expected reuse rate for Newmark 2005 is ≥90% — almost all rows already exist in the Newmark 2017 mapping. Per `items_Newmark2005.tsv`: 4 def items (legislative_lobbying, administrative_agency_lobbying, elected_officials_as_lobbyists, public_employees_as_lobbyists) + threshold standards (compensation; check whether 2005 enumerates expenditure + time too — paper-text ambiguity from session-end greps) + 5 prohib (OUT) + 7 disc (all parallels of 2017's disclosure.* items) + 1 penalty_stringency_2003 (OUT — penalty/enforcement). Net disclosure-side scope ≈ 11–12 items, almost entirely reuse.
+
+**Watch:**
+- **Open Issue 1 check (`def_actor_class_*` row family) is now load-bearing.** Newmark 2017 mapping proposed this family; Newmark 2005 reuses the same rows. Before reusing, **grep PRI 2010 A-family items (`items_PRI_2010.tsv` `disclosure.A*`) for "elected" / "public employees" / "officials"** to confirm there's no PRI overlap that would force a fold into PRI's `actor_*` family. If overlap found, surface to user — do not unilaterally restructure.
+- **Three threshold cells** (compensation / expenditure / time) now exist from Newmark 2017 mapping. Newmark 2005's threshold items reuse them via `IS NOT NULL`. Verify paper-text exact enumeration before mapping (the 2005 paper's verbatim is ambiguous in session-end greps).
+- **`penalty_stringency_2003`** is enforcement-side and OUT of scope per disclosure-only Phase B qualifier. Excluded without further analysis. Document the exclusion in the per-rubric mapping doc (mirror the way Newmark 2017 mapping handled the 5 `prohib.*` exclusions).
+- No FOCAL/Newmark cross-rubric stack design decision needed for 2005's `disc_expenditures_benefiting_officials` — the row design was locked during Newmark 2017 session (reuse PRI bundle, OR-projection over actor sides).
 
 ### Opheim 1991 (22 items, disclosure-side only)
 
