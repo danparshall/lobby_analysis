@@ -16,6 +16,62 @@ Carry-forward signals (informational, not gates):
 
 (Newest first.)
 
+### 2026-05-13 (pm late) — Phase B continued: Opheim 1991 projection mapping (6th rubric)
+
+**Convo:** [`convos/20260513_opheim_phase_b_mapping.md`](convos/20260513_opheim_phase_b_mapping.md)
+**Plan executed:** [`plans/20260507_atomic_items_and_projections.md`](plans/20260507_atomic_items_and_projections.md) Phase B (Opheim 1991 — 6th rubric, the explicit predecessor to Newmark 2005 which shipped earlier this afternoon).
+**Handoff (most recent, with this rubric's watchpoints):** [`plans/_handoffs/20260511_phase_b_continued_remaining_7.md`](plans/_handoffs/20260511_phase_b_continued_remaining_7.md)
+
+#### Topics Explored
+
+- All 15 in-scope Opheim atomic items mapped: 7 def + 1 freq + 6 information-category (+ 1 catch-all un-projectable, treated as `unable_to_evaluate`). All 7 `enforce.*` items excluded per disclosure-only Phase B qualifier.
+- Four watchpoints from the handoff walked: (1) β AND-projection on `disclosure.legislation_supported_or_opposed` — APPLIED, reads `bill_id AND position` from compendium (both pre-existing from Sunlight's α form-type split); this is the second concrete application of β after the 2026-05-11 Sunlight locking; (2) `def_actor_class_*` row family 3-rubric-confirmed — RESOLVED, Open Issue 1 pulled forward to compendium 2.0 freeze per handoff guidance; (3) `disclosure.frequency` finer-cut cadence projection — CONFIRMED, reads only PRI monthly cells (2 of the 8-cell family) vs Newmark 2005's >annual cut; (4) `contributions_from_others` parallel — NO PARALLEL in Opheim's 7-item info-category battery.
+- The catch-all `disclosure.other_influence_peddling_or_conflict_of_interest` item handling. Per `items_Opheim.md` §7 "the single most under-defined item in the index" — operationally undefined in the paper. First contributing-rubric item with `unable_to_evaluate` projection. Excluded from projected partial (not zeroed; not coerced to a closest-adjacent row). Phase C harness needs to support this outcome.
+- Cross-rubric grep across all 10 contributing-rubric files BEFORE drafting per the locked 2026-05-11 workflow. Confirmed bill_id and position rows already in compendium from Sunlight α split; confirmed no `contributions_from_others` parallel; confirmed the cadence row family is the right target for the frequency projection.
+- Structural delta from Newmark 2005 enumerated: Opheim has 7 enforcement items (all OOS) vs Newmark 2005's 4 prohibitions (also OOS); Opheim has the catch-all that Newmark 2005 drops; Opheim splits `legislation_supported_or_opposed` (β AND-projection on bill_id + position) where Newmark 2005 reads only the coarser subject-matter row.
+- Three row-family promotions identified for compendium 2.0 freeze: (a) `def_actor_class_*` 3-rubric-confirmed → Open Issue 1 resolved-in-principle; (b) three lobbyist-status threshold cells 3-rubric-confirmed; (c) gifts/entertainment/transport/lodging bundle 4-rubric-confirmed at combined granularity.
+
+#### Provisional Findings
+
+- **Row reuse rate: 14/14 distinct row families = 100%.** Zero new compendium rows introduced. Same headline as Newmark 2005, consistent with Opheim being the explicit predecessor. Breakdown: 4 from CPI mapping, 4 from Sunlight mapping (including the bill_id/position pair from α split), 2 from PRI gifts-pair, 2 cells from the PRI cadence family (monthly only), 3 from Newmark 2017 mapping.
+- **One item un-projectable.** Opheim's catch-all `disclosure.other_influence_peddling_or_conflict_of_interest` has no operational definition in the paper. First contributing-rubric item with `unable_to_evaluate` projection. Phase C harness must support this outcome.
+- **β AND-projection now established convention.** Second concrete application after the 2026-05-11 Sunlight session. Pattern: when source bundles N conceptually-distinct observables into one item, encode the bundling in projection logic (AND/OR/derived expression) rather than re-atomizing the source. Source TSV stays unedited.
+- **Three row-family promotions for compendium 2.0 freeze.** `def_actor_class_*` 3-rubric-confirmed (Open Issue 1 resolved-in-principle); three lobbyist-status threshold cells 3-rubric-confirmed; gifts bundle 4-rubric-confirmed at combined granularity. **`lobbyist_spending_report_includes_total_compensation` is now the most-validated row** in the compendium going into HG: 6+ readers (Sunlight + Newmark 2017 + Newmark 2005 + Opheim + HG Q13 + CPI #201 + PRI E2f_i).
+- **`lobbyist_or_principal_report_includes_contributions_received_for_lobbying` stays single-rubric** after Opheim. Single-rubric across 6 of 9 contributing rubrics now (CPI, PRI, Sunlight, Newmark 2005, Newmark 2017, Opheim). Remaining promotion checks: HG, FOCAL, LobbyView. If all three fail, the row is single-rubric across the entire contributing set — compendium 2.0 freeze question, not a Phase B blocker.
+- **Opheim's Phase C utility is temporal-depth validation.** 1988-89 vintage extends contributing-rubric coverage to ~28 years (1988-89 through 2015). Direct tolerance validation against Opheim's published totals reduces to a weak inequality (max projected partial = 14/22; 7 enforce + 1 catch-all OOS). Actual quality signal is cross-vintage stability check on BoS-derived rows that several rubrics read across multiple vintages.
+
+#### Decisions
+
+| topic | decision |
+|---|---|
+| Sixth Phase B target | Opheim 1991, completed (15 atomic items in scope; 7 OOS enforce.*; 14 of 15 projectable) |
+| Row reuse | 14 of 14 row families = 100% (zero new rows) |
+| Watchpoint 1 (β AND-projection on `legislation_supported_or_opposed`) | APPLIED — 2nd confirmed use of β |
+| Watchpoint 2 (`def_actor_class_*` 3rd reader) | CONFIRMED — Open Issue 1 resolved-in-principle |
+| Watchpoint 3 (`disclosure.frequency` finer cadence cut) | CONFIRMED — reads only PRI monthly cells; tri-annual → 0 |
+| Watchpoint 4 (`contributions_from_others` parallel) | NO PARALLEL — Newmark 2017 row stays single-rubric in current set |
+| Catch-all `disclosure.other_influence_peddling_or_conflict_of_interest` | UN-PROJECTABLE; `unable_to_evaluate`; excluded from partial |
+| Three row-family promotions for compendium 2.0 freeze | `def_actor_class_*` + three threshold cells + gifts bundle |
+| Phase C utility of Opheim | Temporal-depth validation; weak inequality only; cross-vintage stability check the actual quality signal |
+| Next target | HiredGuns 2007 (47 items, disclosure-side only; largest single remaining mapping) |
+
+#### Mistakes recorded
+
+None significant. Followed locked conventions throughout (cross-rubric grep before drafting; α form-type split via existing Sunlight rows; β AND-projection on bundled item; `unable_to_evaluate` for un-projectable catch-all).
+
+#### Results
+
+- [`results/projections/opheim_1991_projection_mapping.md`](results/projections/opheim_1991_projection_mapping.md) — Opheim 1991 projection mapping doc (15 atomic items × 14 distinct compendium row families; 100% reuse; 1 item un-projectable; includes "Corrections to predecessor mappings" section flagging Open Issue 1 resolution + handoff remaining-rubric count decrement 4 → 3).
+
+#### Next Steps
+
+1. **HiredGuns 2007 projection mapping** — last 3 disclosure-focused rubrics: HG → FOCAL → LobbyView (schema-coverage, different shape, last). HG is the largest single remaining mapping (47 items in scope per the handoff).
+2. After Phase B completes: union of mapping docs → `results/projections/disclosure_side_compendium_items_v1.tsv`; compendium 2.0 row-freeze brainstorm.
+3. Open Issue 1 (`def_actor_class_*`) is now resolved-in-principle for compendium 2.0 freeze. Three additional row-family promotions noted above also feed into freeze planning.
+4. Phase B is 67% complete (6 of 9 mappings done, OS tabled). A parallel compendium-2.0 row-freeze brainstorm could reasonably start scoping in parallel to HG/FOCAL/LobbyView.
+
+---
+
 ### 2026-05-13 (pm) — Phase B continued: Newmark 2005 projection mapping (5th rubric)
 
 **Convo:** [`convos/20260513_newmark_2005_phase_b_mapping.md`](convos/20260513_newmark_2005_phase_b_mapping.md)
