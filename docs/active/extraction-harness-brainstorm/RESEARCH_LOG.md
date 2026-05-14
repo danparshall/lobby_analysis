@@ -27,6 +27,33 @@ The `data/` symlink convention from `skills/use-worktree/SKILL.md` was **skipped
 
 (Newest first.)
 
+### 2026-05-14 (retrieval impl T1 + fixture decouple) — desktop T1 cleared; parser fixture decoupled from integration write path
+
+Convo: [`convos/20260514_retrieval_v2_t1_and_fixture_decouple.md`](convos/20260514_retrieval_v2_t1_and_fixture_decouple.md)
+Predecessor: [`convos/20260514_retrieval_implementation.md`](convos/20260514_retrieval_implementation.md) (laptop shipped retrieval_v2 at T0 with T1 deferred)
+Concurrent: [`convos/20260514_brief_writer_brainstorm.md`](convos/20260514_brief_writer_brainstorm.md) (parallel session; clean fast-forward, no file overlap)
+
+**Cleared the T1 smoke gate on the desktop machine.** Ran `uv run pytest tests/test_retrieval_v2_integration.py` against the real Anthropic Citations API: **3/3 passed in ~21s, ~$0.06** (three separate `messages.create` calls). Real API attaches citations to text blocks, fires `record_cross_reference` tool calls on the tiny statute fixture, and parser yields valid `RetrievalOutput` with non-empty `evidence_spans`. T1 cleared on first try; no SDK auth/schema/400 issues; Opus 4.7's adaptive `thinking` block confirmed present in real responses (parser passes through, matches plan's documented behavior).
+
+**Then 3 parser unit tests went red** — exactly the failure mode the laptop convo's "Open Questions" section pre-flagged. Diagnosis: NOT a parser bug; **test design coupling**. The integration test's side-effect-write to `sample_response.json` (same file parser unit tests consume) caused hand-crafted-shape-specific assertions to break against the new real-shape data: (1) hardcoded `§311.005` literal in pairing test where real fixture has `§99.005`; (2,3) two tests asserting on `unresolvable_references[0]` / `len == 1` where real fixture has zero unresolvable refs (agent didn't emit any — the tiny 2-sentence statute has no unresolvable cross-refs to emit).
+
+**Per Phase 7 of the retrieval impl plan ("pause-and-surface, don't silently patch"), surfaced to user with full diagnosis and 3 options.** User locked **Option A: split fixture paths**:
+
+- `tests/fixtures/retrieval_v2/sample_response_handcrafted.json` (committed, md5 `d2e3fe0a…` — pristine from laptop session) → parser unit tests pin here; exercises edge cases real API may not naturally produce on a tiny fixture (mixed tool types, multi-tool buffer reset invariant).
+- `tests/fixtures/retrieval_v2/sample_response_real.json` (gitignored) → T1 writes here as ad-hoc local-inspection aid; no test consumes it.
+
+**Did NOT silently patch the parser or dumb-down the unit tests to match the new fixture shape** — both would have lost real coverage signal. The optional shape-tolerant-against-real-fixture test was punted under YAGNI (T1 itself tests parser-against-real on every desktop run).
+
+**One commit** (`5f262e9`): rename `sample_response.json` → `sample_response_handcrafted.json` (100% similarity preserved in git), gitignore rule for `sample_response_real.json`, 2 test-file path edits + docstring cleanup, ruff clean. Post-fix state: parser unit suite 8/8, full retrieval_v2 unit suite 48/48, T1 re-run against new path 3/3 (verified the rename works end-to-end against real API; second ~$0.06 spent).
+
+**Surfaced for future work (NOT done this session):**
+
+- **`thinking` block in parser docs.** Now empirically confirmed in Opus 4.7 real responses; parser handles transparently but `parser.py` docstring may not mention this as a tested path. Quick fix when scoring_v2 next touches the parser.
+- **Unresolvable-reference live-test.** Currently un-exercised against real API; tiny_statute.txt is too clean. Would need a deliberately-messy fixture (phantom section reference, ambiguous "the act"). Worth raising in scoring impl, where `record_unscoreable_cell` has an analogous untested path.
+- **Permissions/uv-resolution finding.** `uv run pytest` from inside the worktree resolves to the worktree's `.venv` correctly (despite parent shell's `VIRTUAL_ENV` pointing at main) — uv emits a diagnostic warning then ignores the env var. Updated the prior memory note (`feedback_pytest_in_worktree.md`) with an addendum: the safe sequence is `uv sync --extra dev` from inside the worktree first, then `uv run pytest …`. Also matches the pre-approved `Bash(uv *)` rule, avoiding permission prompts that `.venv/bin/pytest` triggers.
+
+**Sequencing unchanged:** cells ✓ → chunks ✓ → **retrieval ✓ (T0 + T1)** → brief-writer (brainstorm done concurrently, impl plan write next per its handoff) → practical-axis sibling brainstorm.
+
 ### 2026-05-14 (brief-writer brainstorm) — all 10 Q's + 2 pushbacks locked; impl-plan-write handed off
 
 Plan sketch: [`plans/20260514_brief_writer_plan_sketch.md`](plans/20260514_brief_writer_plan_sketch.md)
