@@ -72,9 +72,7 @@ def test_registry_doubles_each_legal_plus_practical_row():
     }
     for row_id in combined_row_ids:
         assert (row_id, "legal") in registry, f"Missing ({row_id}, 'legal') in registry."
-        assert (row_id, "practical") in registry, (
-            f"Missing ({row_id}, 'practical') in registry."
-        )
+        assert (row_id, "practical") in registry, f"Missing ({row_id}, 'practical') in registry."
 
 
 # ---------------------------------------------------------------------------
@@ -186,9 +184,7 @@ def test_no_orphan_cell_types_in_tsv():
 
     # Sanity: every row in the TSV produces at least one registry entry.
     expected_min = len(raw_rows)
-    expected_max = len(raw_rows) + sum(
-        1 for r in raw_rows if r["axis"] == "legal+practical"
-    )
+    expected_max = len(raw_rows) + sum(1 for r in raw_rows if r["axis"] == "legal+practical")
     assert expected_min <= len(registry) <= expected_max
 
 

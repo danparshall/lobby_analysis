@@ -137,8 +137,7 @@ def _parse_combined_cell_type(
 
     if legal_class is None or practical_class is None:
         raise ValueError(
-            f"Combined cell_type {cell_type!r} did not yield both legal and "
-            f"practical halves."
+            f"Combined cell_type {cell_type!r} did not yield both legal and practical halves."
         )
     return legal_class, practical_class
 

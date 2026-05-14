@@ -98,9 +98,7 @@ class GradedIntCell(CompendiumCell):
     @classmethod
     def _value_on_grid(cls, v: int) -> int:
         if v < 0 or v > 100 or v % 25 != 0:
-            raise ValueError(
-                "GradedIntCell.value must be in {0, 25, 50, 75, 100}"
-            )
+            raise ValueError("GradedIntCell.value must be in {0, 25, 50, 75, 100}")
         return v
 
 
@@ -153,9 +151,7 @@ class FreeTextCell(CompendiumCell):
 # ---------------------------------------------------------------------------
 
 
-UpdateCadenceLiteral = Literal[
-    "daily", "weekly", "monthly", "semiannual_or_less_often", "none"
-]
+UpdateCadenceLiteral = Literal["daily", "weekly", "monthly", "semiannual_or_less_often", "none"]
 
 
 class UpdateCadenceCell(CompendiumCell):
