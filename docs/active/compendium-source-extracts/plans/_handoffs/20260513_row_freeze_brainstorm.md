@@ -50,15 +50,15 @@ Together these change the freeze session from "resolve ~10 candidate-row decisio
 
 The session is done when:
 
-- [ ] Every row in `disclosure_side_compendium_items_v1.tsv` has a freeze disposition: `keep` / `drop` / `merge-into:<canonical_row_id>`
-- [ ] A regenerated TSV (`disclosure_side_compendium_items_v2.tsv` OR `v1` updated in place — agent's call) reflects the freeze decisions
-- [ ] All 4 LV freeze-candidates (LV-1..LV-4) resolved
-- [ ] All 3 OS-distinctive tabled candidates (see [`../../results/_tabled/opensecrets_2022_tabled.md`](../../results/_tabled/opensecrets_2022_tabled.md)) resolved
-- [ ] All ~89 per-mapping-doc Open Issues triaged into: (a) resolved-at-freeze, (b) deferred-to-Phase-C with rationale, (c) deferred-to-harness-design with rationale
-- [ ] Naming canonicalization completed for at least the confirmed-load-bearing observables (total_compensation; gifts/entertainment/transport/lodging; threshold cells)
-- [ ] Decision log produced: `results/projections/20260514_row_freeze_decisions.md` (or similar) capturing each non-trivial decision + rationale
-- [ ] STATUS.md branch row updated + RESEARCH_LOG entry for the freeze session
-- [ ] Convo summary written + commit + push
+- [x] Every row in `disclosure_side_compendium_items_v1.tsv` has a freeze disposition: `keep` / `drop` / `merge-into:<canonical_row_id>` — done via D1-D30 in decision log; v2 TSV reflects all dispositions
+- [x] A regenerated TSV (`disclosure_side_compendium_items_v2.tsv` OR `v1` updated in place — agent's call) reflects the freeze decisions — `disclosure_side_compendium_items_v2.tsv` (181 rows; idempotent regen via `tools/freeze_canonicalize_rows.py`)
+- [x] All 4 LV freeze-candidates (LV-1..LV-4) resolved — D12 (LV-1 IN), D13/D14/D15 (LV-2/3/4 OUT)
+- [x] All 3 OS-distinctive tabled candidates resolved — D16 (OS-1 IN under path-b), D17/D18 (OS-2/3 stay tabled)
+- [x] All ~89 per-mapping-doc Open Issues triaged — ~12 resolved at freeze (D9-D24), ~7 deferred to Phase C as projection-logic questions (D24), remainder were status notes / promotions / watchpoints already covered
+- [x] Naming canonicalization completed for at least the confirmed-load-bearing observables — D1+D2 (compensation cluster), D3 (PRI E1/E2 prefix, ~30 rows), D4 (filing-de-minimis threshold), D5 (compensation-broken-down-by-payer), D8 (lobbyist_disclosure → reg_form)
+- [x] Decision log produced — [`../../results/projections/20260513_row_freeze_decisions.md`](../../results/projections/20260513_row_freeze_decisions.md) (D1-D30 + Sections 1-7 + appendix)
+- [x] STATUS.md branch row updated + RESEARCH_LOG entry for the freeze session — both updated in commit `9765e33`
+- [x] Convo summary written + commit + push — [`../../convos/20260513_row_freeze_brainstorm.md`](../../convos/20260513_row_freeze_brainstorm.md) (commits `9765e33`, `59c18d8`, `c70ac66`)
 
 **Out of scope for this session:**
 - Cell-type schema details (v2.0 schema bump is a separate plan)
