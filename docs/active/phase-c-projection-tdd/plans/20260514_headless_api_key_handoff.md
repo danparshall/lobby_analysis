@@ -39,16 +39,31 @@ You are most likely Sub-1 (Stream 1 plans). The user will confirm in their openi
 
 ### Where the key lives on the user's machines
 
-**The API key lives on the desktop machine (`Dans-MacBook-Pro`).** The user has not yet documented the exact path in this doc. Before doing rubric-planning work:
+**On `Dans-MacBook-Pro` (desktop):** the key is in `.env.local` at the repo root (`/Users/dan/code/lobby_analysis/.env.local`), covered by the `.env*` rule in `.gitignore`. The worktree's `.env.local` is a symlink to the main worktree's file per the `use-worktree` skill, so the same file is reachable from any worktree.
 
-1. Run `hostname` to confirm you're on `Dans-MacBook-Pro`.
-2. Ask the user: "Where on this machine is the work-project API key stored? Common candidates:
-   - `~/.config/anthropic/api_key` (or similar file)
-   - `~/.zshrc` / `~/.zshenv` (`export ANTHROPIC_API_KEY=...`)
-   - A password manager entry that you'd paste"
-3. Once located, the user can either (a) export it in the shell that launched Claude Code, or (b) tell you they've already done so, in which case go to "Verifying API-key auth."
+The line is single-quoted without an `export` prefix:
 
-**Do not** read the key, write it to any file, or include it in commits. The repo is shared with other Corda fellows.
+```
+ANTHROPIC_API_KEY='sk-ant-...'
+```
+
+This shape matters: plain `source .env.local` will set the var in the launching shell but **not** export it to child processes like `claude`. Use one of:
+
+```bash
+# auto-export everything sourced (recommended one-shot)
+set -a; source /Users/dan/code/lobby_analysis/.env.local; set +a
+claude
+```
+
+or add `export ` to the line in `.env.local` so plain `source` propagates.
+
+**Verify before launching `claude`:**
+
+```bash
+[ -n "$ANTHROPIC_API_KEY" ] && echo "set (${#ANTHROPIC_API_KEY} chars)" || echo "NOT set"
+```
+
+**Do not** read the key value, write it to any other file, or include it in commits. `.env.local` itself is gitignored; the *path* is safe to document but the key value is not. The repo is shared with other Corda fellows.
 
 ### Verifying API-key auth
 
@@ -196,4 +211,5 @@ Things I'm not 100% certain about that you should verify:
 - Whether `claude -p` (used in Sub-4's launch script) reliably executes a Nori-style plan end-to-end with TDD discipline. Sub-4's canary on Sunlight is supposed to find out — don't fan out to all 6 plans without seeing the canary result.
 - Whether the CPI 2007 per-state scorecard is actually retrievable from any current source. Could be fully lost; if so, HG falls back to weak-inequality validation. The retrieval task surfaces this answer.
 - Whether the user wants me/you to think harder about Track A's vintage scope (currently 4 vintages; Phase C across all 8 rubrics needs 12). That's a separate-branch conversation, not in scope for Sub-1+.
-- The exact location of the API key on the desktop. Ask the user.
+
+> **Resolved 2026-05-14 (later, on `Dans-MacBook-Pro`):** Key location documented under "Where the key lives on the user's machines" above — `.env.local` at repo root, single-quoted without `export`, load via `set -a; source ...; set +a`.
