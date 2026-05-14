@@ -1,13 +1,23 @@
-"""Build the compendium artifact + framework dedup map.
+"""Build the DEPRECATED v1 compendium artifact + framework dedup map.
 
-Stage A of `docs/active/statute-retrieval/plans/20260430_compendium_population_and_smr_fill.md`.
+**DEPRECATED 2026-05-14.** This script builds Compendium 1, which is
+structurally PRI-shaped and was superseded by Compendium 2.0 on the
+``compendium-source-extracts`` branch (archived; see
+``docs/historical/compendium-source-extracts/``). The active build tool
+for Compendium 2.0 is ``tools/freeze_canonicalize_rows.py``.
+
+This script is retained as historical reference. If rerun, it now writes
+to ``compendium/_deprecated/v1/`` rather than ``compendium/`` so it
+cannot overwrite the live v2 contract.
+
+Stage A of `docs/historical/statute-retrieval/plans/20260430_compendium_population_and_smr_fill.md`.
 
 Curation judgments are encoded as Python data structures in this file. The
 script reads the four source rubric CSVs (PRI 2010 disclosure, PRI 2010
 accessibility, FOCAL 2024, Sunlight 2015), applies the judgments, and emits:
 
-    compendium/disclosure_items.csv
-    compendium/framework_dedup_map.csv
+    compendium/_deprecated/v1/disclosure_items.csv
+    compendium/_deprecated/v1/framework_dedup_map.csv
 
 Idempotent: rerun any time. The CSVs are committed so reviewers can diff
 both the script and the output.
@@ -51,7 +61,7 @@ FOCAL = (
 )
 SUNLIGHT_DATA = REPO_ROOT / "papers" / "Sunlight_2015__state_lobbying_disclosure_scorecard_data.csv"
 
-OUT_DIR = REPO_ROOT / "compendium"
+OUT_DIR = REPO_ROOT / "compendium" / "_deprecated" / "v1"
 OUT_COMPENDIUM = OUT_DIR / "disclosure_items.csv"
 OUT_DEDUP_MAP = OUT_DIR / "framework_dedup_map.csv"
 
