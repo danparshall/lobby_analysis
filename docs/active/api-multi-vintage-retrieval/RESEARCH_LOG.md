@@ -10,6 +10,54 @@
 
 ## Session log (newest first)
 
+### 2026-05-14 — B3PW implementation + WY/FL canaries
+
+- **Convo:** [`convos/20260514_b3pw_implementation.md`](convos/20260514_b3pw_implementation.md)
+- **Plan executed:** [`plans/20260514_b3_two_pass_discovery_plan_playwright.md`](plans/20260514_b3_two_pass_discovery_plan_playwright.md) (Phases 1–4; step 26 10-pair canary deferred)
+- **Results:** [`results/20260514_b3pw_pilot_canaries.md`](results/20260514_b3pw_pilot_canaries.md)
+- **Commits:** `cc85a09` (prompts) → `1941bba` (RED tests) → `f72d62d` (orchestrator GREEN) → (post-canary fix commits pending)
+
+#### Topics Explored
+
+- Authored pass-1 (title-picker) + pass-2 (URL-proposer, evolved from B2) prompts
+- 7 RED behavioural tests at the `Client`-protocol mock boundary (FakeAsyncClient + FakeJustiaClient, no `respx`)
+- Implemented `discover_urls_for_pair_two_pass` + `Pass1Pass2Result` + `_parse_pass1_response` + `_build_justia_link_tsv` (3 Justia parent-page patterns) + async/sync bridge + `CostTracker` ($3/$15-per-M conservative pricing, hard `cap_usd`)
+- Real-Anthropic + real-Justia canaries on WY 2010 + FL 2010 under $1 budget cap
+- Three defects caught and fixed during canary work, each with a new unit test
+
+#### Provisional Findings
+
+- **B3PW works end-to-end on single-chapter-leaf states.** WY 2010 = 1/1 ground-truth hit, $0.023, 21.5s wall time, zero anti-bot incidents.
+- **FL 2010 hits the "chapter-TOC ceiling"** the original B3 plan anticipated. Pass-1 correctly named both parallel regimes (Title III/Ch.11 legislative + Title X/Ch.112 executive); pass-2 picked the right chapter URLs (`chapter11/chapter11.html`, `chapter112/chapter112.html`); but those pages are section TOCs (~5KB stripped text, section titles only), not statute leaves. The 6 ground-truth section bodies live one hop deeper.
+- **The model has correct section-level judgment when given the chapter-TOC** — pass-2's narrative on FL `chapter11.html` named all 6 ground-truth section numbers (11.045 etc.) even though Rule 6 prevented it from emitting them as URLs (they weren't in the title-page snapshot). Suggests B4 three-pass would close the gap cleanly without prompt-tuning.
+- **Multi-title pick is essential for split-regime states.** Pass-1's original "prefer single title" framing prevented the model from picking both Title III and Title X for FL even when its own narrative identified the split. Rewriting Rule 2 (now: "return ALL titles that contain a lobbying-disclosure regime") fixed it.
+- **Justia state-year-index uses different HTML patterns by state.** WY uses `<li><a>Title 28 - Legislature</a></li>` (anchor text informative); FL uses `<tr><td><a>TITLE III</a></td><td>LEGISLATIVE BRANCH; COMMISSIONS</td></tr>` (anchor uninformative; subject in sibling `<td>`). `_link_description` now walks up to the nearest `<tr>`/`<li>`/`<dt>` ancestor and uses its full text.
+- **WY state-year-index links use the 2-segment `Foo/Foo.html` pattern** (`/codes/wyoming/2010/Title28/Title28.html`), not the single-segment pattern. The TSV helper now accepts this narrow exception alongside the directory-parent case.
+- **No anti-bot incidents.** PlaywrightClient handled 5 distinct Justia URLs across both canaries in <60s wall time. The Cloudflare-challenge risk the plan worried about did not materialize at this scale.
+- **Cost projections are conservative.** Reported $0.07 spend used $3/$15-per-M pricing; actual is lower (Sonnet 4.6 is cheaper than my upper bound). $1 cap mechanism never close to triggering — ~10× headroom remains.
+
+#### Decisions Made
+
+- **B3PW orchestrator surface frozen** per the plan: 7 tests carried forward from original B3 plan; concurrency cap 4; one cost-tracker instance per run.
+- **Pass-1 prompt Rule 2 rewritten** to make multi-pick the default when parallel regimes are identified. Answers playwright-plan Question #1 ("Should pass-1 prompt cap multi-title picks at 2?"): no cap.
+- **`_build_justia_link_tsv` handles 3 patterns** + anchor-enrichment via parent-row walk-up. Tests pinned: `test_build_justia_link_tsv_directory_parent_with_foo_foo_html_children`, `test_build_justia_link_tsv_uses_parent_row_text_when_anchor_is_terse`.
+- **Canary loop stopped at FL** per the plan's step 26: "If B3 hit-rate is <50% on FL (chapter-TOC ceiling), surface a B4 design discussion before further work — the structural cost of three-pass may be worth it, but the user should weigh in."
+- **10-pair canary deferred.** Running it on B3PW as-is would produce misleading chapter-TOC-ceiling failures for any state whose chapter pages are section TOCs (likely a majority).
+
+#### Open Questions
+
+- **B3 vs B4 (three-pass) vs heuristic chapter→sections expansion** — three options laid out in [`results/20260514_b3pw_pilot_canaries.md`](results/20260514_b3pw_pilot_canaries.md) §"What this leaves open." Architecture decision the user owns. This implementer's lean: Option B (three-pass), because the cost delta is rounding error ($17 vs $25 for the 50-state × 7-vintage fan-out) and the model has shown the right judgment when given a section TOC.
+- **NY / TX / OH single-pair canaries** would help characterize how widespread the chapter-TOC ceiling is. If TX (full-chapter directory) and NY (single-page codified act) are clean, the ceiling is FL/OH-shaped specifically; if they too hit it, B4 is unambiguously the right call.
+- **Cross-vintage URL pattern stability** (playwright-plan Question #3) — untested this session because canaries were 2010-only. Worth testing once B3-vs-B4 is resolved.
+- **Whether the chapter-TOC page's section-title list is a useful downstream extraction artifact** — `parse_statute_text` on `chapter11.html` returned 5KB containing all section titles. Could feed Option A (heuristic enumeration) or Option C (hybrid).
+
+#### Next Steps
+
+- **Wait for user input on B3 vs B4 vs heuristic.** This is the surface the canary was supposed to land on; further canary work or fan-out is premature without that decision.
+- **If B4:** new plan doc; 4–6 new tests for the third pass; orchestrator extension; re-canary FL + add NY/TX/OH.
+- **If diagnostic-first:** run NY 2010, TX 2009, OH 2010 single-pair canaries (~$0.07 total) before committing to an architecture.
+- **If chapter-TOC URLs are acceptable for the data layer:** keep B3PW as-is; downstream extraction handles section enumeration via `parse_children_list`.
+
 ### 2026-05-14 — B3-with-Playwright pivot (supersedes the API-only subagent pivot)
 
 - **Convo:** [`convos/20260514_b3_with_playwright_pivot.md`](convos/20260514_b3_with_playwright_pivot.md)
