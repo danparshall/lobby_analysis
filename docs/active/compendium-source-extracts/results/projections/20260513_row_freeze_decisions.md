@@ -1,3 +1,5 @@
+<!-- Generated during: convos/20260513_row_freeze_brainstorm.md -->
+
 # Compendium 2.0 row-freeze decision log
 
 **Date:** 2026-05-13 (late-late-late-late eve / 2026-05-14 UTC)
