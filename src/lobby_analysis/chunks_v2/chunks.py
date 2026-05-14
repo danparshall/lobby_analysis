@@ -16,11 +16,12 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-from lobby_analysis.models_v2 import CompendiumCellSpec
+from lobby_analysis.models_v2 import CompendiumCellSpec, build_cell_spec_registry
 
 
 _CHUNK_ID_RE = re.compile(r"^[a-z][a-z0-9_]*$")
 _VALID_AXIS_SUMMARIES = frozenset({"legal", "practical", "mixed"})
+_AXES: tuple[str, str] = ("legal", "practical")
 
 
 @dataclass(frozen=True)
@@ -91,3 +92,84 @@ class ChunkDef:
             raise ValueError(
                 f"ChunkDef.member_row_ids for {self.chunk_id!r} must be non-empty"
             )
+
+
+def build_chunks(
+    registry: dict[tuple[str, str], CompendiumCellSpec] | None = None,
+    manifest: tuple[ChunkDef, ...] | None = None,
+) -> list[Chunk]:
+    """Resolve `manifest` (default: `CHUNKS_V2`) against `registry` (default:
+    the canonical 186-cell registry built from the v2 TSV) into a `list[Chunk]`.
+
+    Enforces:
+
+    - Every `(row_id, axis)` in `registry` appears in exactly one resulting
+      chunk's `cell_specs`. Cells missing from the manifest raise `ValueError`.
+    - Cells appearing in two different chunks raise `ValueError`.
+    - A `ChunkDef.member_row_ids` entry that the registry doesn't know about
+      raises `KeyError`.
+
+    A combined-axis row (i.e., a `row_id` present in `registry` under BOTH
+    `"legal"` and `"practical"`) contributes both cells to the chunk that
+    names it — both halves co-locate per the brainstorm's Q3 lock.
+
+    The returned `Chunk.axis_summary` is derived from the actual axes of the
+    chunk's resolved cells: `"legal"`, `"practical"`, or `"mixed"`.
+    """
+    if registry is None:
+        registry = build_cell_spec_registry()
+    if manifest is None:
+        # Lazy import: manifest.py imports ChunkDef from this module, so the
+        # default cannot be resolved at module-load time without a cycle.
+        from .manifest import CHUNKS_V2
+
+        manifest = CHUNKS_V2
+
+    chunks: list[Chunk] = []
+    seen_keys: set[tuple[str, str]] = set()
+    for chunk_def in manifest:
+        cell_specs: list[CompendiumCellSpec] = []
+        axes_in_chunk: set[str] = set()
+        for row_id in chunk_def.member_row_ids:
+            matched_keys = [(row_id, ax) for ax in _AXES if (row_id, ax) in registry]
+            if not matched_keys:
+                raise KeyError(
+                    f"ChunkDef {chunk_def.chunk_id!r}: row_id {row_id!r} "
+                    f"not present in registry under either axis"
+                )
+            for key in matched_keys:
+                if key in seen_keys:
+                    raise ValueError(
+                        f"Cell {key} assigned to multiple chunks "
+                        f"(latest: {chunk_def.chunk_id!r})"
+                    )
+                seen_keys.add(key)
+                cell_specs.append(registry[key])
+                axes_in_chunk.add(key[1])
+
+        if axes_in_chunk == {"legal"}:
+            axis_summary = "legal"
+        elif axes_in_chunk == {"practical"}:
+            axis_summary = "practical"
+        else:
+            axis_summary = "mixed"
+
+        chunks.append(
+            Chunk(
+                chunk_id=chunk_def.chunk_id,
+                topic=chunk_def.topic,
+                cell_specs=tuple(cell_specs),
+                axis_summary=axis_summary,
+                notes=chunk_def.notes,
+            )
+        )
+
+    missing = set(registry.keys()) - seen_keys
+    if missing:
+        sample = sorted(missing)[:5]
+        suffix = "..." if len(missing) > 5 else ""
+        raise ValueError(
+            f"Cells in registry not covered by manifest "
+            f"({len(missing)} missing): {sample}{suffix}"
+        )
+    return chunks
