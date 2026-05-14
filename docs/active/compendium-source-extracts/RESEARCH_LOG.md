@@ -16,6 +16,66 @@ Carry-forward signals (informational, not gates):
 
 (Newest first.)
 
+### 2026-05-13 (paper-audit pre-merge) — `auditing-paper-summaries` (LAST pre-merge gate; branch is merge-ready)
+
+**Convo:** [`convos/20260513_paper_summaries_audit_premerge.md`](convos/20260513_paper_summaries_audit_premerge.md)
+**Handoff executed:** [`plans/_handoffs/20260514_paper_summaries_audit_premerge.md`](plans/_handoffs/20260514_paper_summaries_audit_premerge.md) (drafted 2026-05-13 late-late-late-late-late eve; executed same UTC day, hence convo dated 2026-05-13)
+**Predecessor session:** [`### 2026-05-13 (late-late-late-late eve) — Compendium 2.0 row-freeze brainstorm`](#2026-05-13-late-late-late-late-eve--compendium-20-row-freeze-brainstorm-freeze-landed) below
+
+#### Topics Explored
+
+- **Inventory reality check.** Handoff said "17 PAPER_INDEX entries, 18 PDFs, 16+ branch-added papers." Actual inventory: **17 PAPER_INDEX entries, 37 PDFs in `papers/`, 39 .txt files in `papers/text/`**. Discrepancy explained: the handoff numbers (drafted during the row-freeze session) reflected an earlier branch state; ~20 papers were added during the branch's 3-week life (mostly during the cross-rubric Phase A/B work that pulled in international/comparative-regulation literature).
+- **Format-audit script behavior.** `skills/auditing-paper-summaries/audit_paper_summaries.py` over-counts entries because `PAPER_SUMMARIES.md` uses a mixed convention: Bacik 2025 + Kim 2025 use `## Paper` H2s with nested `### Key findings` / `### Method` / `### Notes for our project` subsections, while the other 15 papers use `### Paper` H3s under `## Category` H2s. The script's `### Paper Title` pattern treats subsection H3s as paper entries. Documented in `PAPER_INDEX.md` Audit Notes; manual count is correct.
+- **Roth 2020 orphan investigated.** `papers/text/Roth_2020__lobbymeter_robustness_index.txt` has no matching PDF in `papers/`. Read confirmed the .txt is a **WebFetch summary capture from 2026-05-03** of a Google Sites page (lobbymeter.eu project, Aminata Sarah Roth) — the source is web-only, not PDF; the .txt functions as both source-of-record and "extracted text." Decision: keep the .txt, add Roth 2020 to PAPER_INDEX with "(web-source-only; no local PDF)" annotation under the new International / Comparative category.
+- **Lacy-Nichols supplementary file naming mismatch resolved.** `papers/Lacy-Nichols-Supple-File-1-IJHPM.pdf` has no `.txt` of the same name, but `papers/text/Lacy_Nichols_2025__lobbying_in_the_shadows__suppl_{001,002}.txt` exist with no corresponding `.pdf`. Confirmed: these are the extracted text of the suppl PDF, split into two parts and renamed at extraction time. Per user direction, **the canonical mapping is documented in `PAPER_INDEX.md` Audit Notes** (durable) **not in the convo** (session-scoped) — rationale: convos are for retracing logic, PAPER_INDEX is the load-bearing reference.
+- **20-paper survey via subagent.** Dispatched a single `general-purpose` subagent with explicit per-paper depth cap (~500 lines of extracted text) to produce: title, authors/publisher, date, ≤35-word index summary, suggested category, 2-3-sentence summaries-stub, and confidence rating. Subagent returned MEDIUM-HIGH-confidence stubs for all 20 papers with honest LOW/MEDIUM flags where extraction was sparse (Global Data Barometer 2022, SOMO 2016).
+- **Category structure update.** PAPER_INDEX previously had 4 categories: Entity Resolution & Record Linkage / Lobbying Data Infrastructure / Compliance & Disclosure Quality / State Lobbying Regulation Measurement. Added 2 new categories to absorb the international/comparative additions: **International / Comparative Lobbying Regulation** (14 entries — anchors the Opheim → CPI → comparative-international lineage cited in Lacy-Nichols 2024/2025) and **Lobbying & Political Outcomes (empirical)** (2 entries — Flavin 2015 and Strickland 2014/2018; distinct from rubric-creating measurement papers because they *use* the measures). Existing categories grew: Lobbying Data Infrastructure +LaPira & Thomas 2014; Compliance & Disclosure Quality +Lacy-Nichols 2023 + Chung 2024; State Lobbying Regulation Measurement +CPI 2015 SII (the source of the C11 atomic items extracted on this branch's 2026-05-07 session).
+- **Factual spot-checks DEFERRED with explicit followup.** Handoff Stop condition #4 ("at least 3 summaries factually accurate against the source PDF") was deferred per user direction: the 17 pre-existing summaries are stable pre-branch and doing 3 deep factual checks at the merge gate adds low signal for the audit work, but the load-bearing downstream consumers (Newmark 2017, Lacy-Nichols 2024 / FOCAL, PRI 2010) **will be hand-coded in Phase C projection logic** on a successor branch — factually wrong summaries would propagate into projection code. Per user "we need a task or note to be sure we don't forget at the end of this session" the followup is recorded in two durable places: (a) PAPER_INDEX.md Audit Notes section (visible whenever paper lookup happens), and (b) the upcoming Phase C kickoff handoff (when that branch is cut post-merge).
+- **Strickland filename year discrepancy surfaced.** Filename is `Strickland_2014__lobbying_laws_interest_groups.pdf` but the SAGE DOI (10.1177/1532673X18788049) and "788049" article ID indicate 2018 publication; filename is from a working-paper version. Decision: leave filename as-is (don't rename a checked-in PDF mid-merge), note the actual publication date in the PAPER_INDEX / PAPER_SUMMARIES entries.
+
+#### Provisional Findings
+
+- **Branch is merge-ready** after this audit landed. All structural invariants now hold: every PDF in `papers/` has either a corresponding `.txt` (or is part of a documented supplementary-file mapping); every paper has at least a stub entry in PAPER_INDEX + PAPER_SUMMARIES.
+- **20 papers were stub-indexed, not fully audited.** The "[stub-indexed]" annotation on each new entry signals to future readers that the depth here is single-pass — full-read pass is a future-audit candidate. The most project-relevant of the 20 (LaPira & Thomas 2014 for biographical-record linkage methodology; McKay & Wozniak 2020 for cross-source disclosure validation; Strickland 2014/2018 for registration-rate endogeneity; AccessInfo 2015 for normative disclosure-field schema) deserve deeper reads when their relevance becomes load-bearing.
+- **Two new PAPER_INDEX categories are now stable.** International / Comparative Lobbying Regulation will likely grow further as additional Lacy-Nichols-adjacent or OECD-adjacent papers are added; Lobbying & Political Outcomes (empirical) has only 2 entries and could fold into Category 4 (State Lobbying Regulation Measurement) if it doesn't grow, but the *uses-the-measure* vs. *creates-the-measure* distinction is real.
+- **The format-audit script is overly strict for this repo's PAPER_SUMMARIES convention.** Script expects every entry to have `arXiv` / `Authors` / `Date` / `Summary` / `Key findings` / `Relevance` fields. Repo uses a looser convention with narrative Summary + Key findings + Relevance subsections. Either the script needs adjustment for this repo's convention or PAPER_SUMMARIES needs reformatting; documented as a known issue in PAPER_INDEX Audit Notes, not blocking merge.
+
+#### Decisions
+
+| topic | decision |
+|---|---|
+| Treatment of 20 branch-added papers | **Stub-index all 20** in PAPER_INDEX + PAPER_SUMMARIES with "[stub-indexed]" annotation and "not factually audited" stubs. Full-read deferred. |
+| Roth 2020 orphan .txt | **Keep as web-source-only** with explicit PAPER_INDEX annotation; no PDF to obtain. |
+| Lacy-Nichols suppl naming mapping | **Document in PAPER_INDEX.md Audit Notes** (durable), not in convo summary alone. Mapping: `papers/Lacy-Nichols-Supple-File-1-IJHPM.pdf` → `papers/text/Lacy_Nichols_2025__lobbying_in_the_shadows__suppl_{001,002}.txt`. Do not rename either file. |
+| Factual spot-checks (handoff Stop #4) | **Defer to Phase C successor branch** with explicit followup note in PAPER_INDEX.md Audit Notes. Priority targets when revisited: Newmark 2017, Lacy-Nichols 2024 / FOCAL, PRI 2010. |
+| Strickland filename year (2014 vs 2018 actual) | **Leave filename**, document actual publication date in entries. SAGE DOI 10.1177/1532673X18788049 cited. |
+| New PAPER_INDEX categories | **Add 2:** International / Comparative Lobbying Regulation (14 entries); Lobbying & Political Outcomes (empirical) (2 entries). |
+| `auditing-paper-summaries` script discrepancy | **Document as known issue** (mixed heading convention in PAPER_SUMMARIES); not blocking merge. Reconciliation deferred. |
+| Merge-readiness | **Branch is merge-ready** post this commit. All handoff Stop/done conditions satisfied or explicitly deferred-with-followup. |
+
+#### Mistakes recorded
+
+- Initial TaskUpdate calls used `id` instead of `taskId` (different harness's tool naming); failed silently for tasks 1+3 leaving them stale. Fixed when loading TaskUpdate schema via ToolSearch. Not a research mistake; surface-level harness-specific quirk.
+- The handoff filename `20260514_paper_summaries_audit_premerge.md` is dated 2026-05-14 but the work was executed on 2026-05-13 (handoff was drafted late-late-late-late-late eve 2026-05-13 anticipating next-day execution). Convo filename uses 2026-05-13 (actual execution date) — slight asymmetry, called out in convo's frontmatter.
+
+#### Results
+
+- [`PAPER_INDEX.md`](../../../../PAPER_INDEX.md) — restructured with 2 new categories + 20 stub entries + Audit Notes section (Lacy-Nichols suppl mapping + Roth 2020 web-source-only + deferred factual audits + format-script known issue). Total: 37 PAPER_INDEX entries matching 37 PDFs + 1 web-only (Roth) — 38 papers indexed.
+- [`PAPER_SUMMARIES.md`](../../../../PAPER_SUMMARIES.md) — 20 new stub entries appended under new H2 categories + 3 additional H2 continuations for in-category additions. All new entries marked `*[stub-indexed]*` and `**Stub-indexed; not factually audited.**` for honest depth-marking.
+- This RESEARCH_LOG entry + the convo summary at `convos/20260513_paper_summaries_audit_premerge.md`.
+
+#### Next Steps
+
+1. **Commit + push this audit landing.** Single clean commit with PAPER_INDEX + PAPER_SUMMARIES + STATUS + RESEARCH_LOG + convo. Branch is then merge-ready.
+2. **Merge `compendium-source-extracts` → `main`.** v2 row set (181 rows) becomes the contract for 3 successor branches. Per branch hygiene, do this in a fresh session.
+3. **Archive `docs/active/compendium-source-extracts/` → `docs/historical/compendium-source-extracts/`** post-merge; add archive row to STATUS.md per the lifecycle in CLAUDE.md.
+4. **Cut 3 successor branches in parallel** (per Option B locked 2026-05-13):
+   - **OH statute retrieval** (Track A): adds OH 2007 + OH 2015 to existing OH 2010 + OH 2025 bundles; HG 2007 ground-truth retrieval sub-task.
+   - **Extraction harness brainstorm** (Track B): brainstorm-then-plan; inherits prompt-architecture from archived `statute-extraction` iter-2; references v2 row set.
+   - **Phase C projection TDD**: locked rubric order CPI 2015 C11 → PRI 2010 → Sunlight 2015 → Newmark 2017 → Newmark 2005 → Opheim 1991 → HG 2007 → FOCAL 2024 (8 rubrics; LobbyView is schema-coverage, not score-projection). **The Phase C kickoff handoff should reference PAPER_INDEX.md Audit Notes** for the deferred factual-accuracy audit on Newmark 2017 + FOCAL + PRI 2010.
+
+---
+
 ### 2026-05-13 (late-late-late-late eve) — Compendium 2.0 row-freeze brainstorm (FREEZE LANDED)
 
 **Convo:** [`convos/20260513_row_freeze_brainstorm.md`](convos/20260513_row_freeze_brainstorm.md)

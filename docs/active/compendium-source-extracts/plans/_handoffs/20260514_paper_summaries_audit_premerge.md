@@ -26,17 +26,19 @@ The audit is a separate concern from the freeze and runs against a separate set 
 
 ## Stop / done conditions
 
-The session is done when:
+**EXECUTED 2026-05-13 (paper-audit pre-merge session).** Convo: [`../../convos/20260513_paper_summaries_audit_premerge.md`](../../convos/20260513_paper_summaries_audit_premerge.md). RESEARCH_LOG entry above the row-freeze entry.
 
-- [ ] Every PDF in `papers/` has a corresponding extracted text file in `papers/text/`
-- [ ] Every paper in `papers/` is indexed in `PAPER_INDEX.md` with a one-sentence summary
-- [ ] Every paper in `papers/` has a key-conclusions entry in `PAPER_SUMMARIES.md` with numerical findings where applicable
-- [ ] Spot-check: at least 3 summaries factually accurate against the source PDF (verify the numbers cited)
-- [ ] PAPER_INDEX entry count == PDF count (resolve the 17 vs 18 discrepancy)
-- [ ] STATUS.md branch row updated noting audit landed
-- [ ] RESEARCH_LOG entry for this session
-- [ ] Convo summary written + commit + push
-- [ ] Updated handoff (this file or successor) describing merge readiness
+- [x] Every PDF in `papers/` has a corresponding extracted text file in `papers/text/` — 37 PDFs, 39 .txt files (37 main + 2 Lacy-Nichols 2025 suppl from `Lacy-Nichols-Supple-File-1-IJHPM.pdf` split into `__suppl_001/__002.txt`; Roth 2020 .txt is a WebFetch capture, no PDF — both mappings documented in PAPER_INDEX Audit Notes).
+- [x] Every paper in `papers/` is indexed in `PAPER_INDEX.md` with a one-sentence summary — 17 pre-existing + 20 new stub entries (annotated `*[stub-indexed]*`).
+- [x] Every paper in `papers/` has a key-conclusions entry in `PAPER_SUMMARIES.md` — 17 pre-existing + 20 new stub entries (annotated `**Stub-indexed; not factually audited.**`). Note: most stubs have at least one numerical finding from the survey subagent's read; those without explicit numbers reflect papers where the source is qualitative (e.g., AccessInfo standards, Council of Europe recommendation).
+- [ ] Spot-check: at least 3 summaries factually accurate against the source PDF — **DEFERRED** with explicit followup recorded in `PAPER_INDEX.md` Audit Notes section. Targets when revisited: Newmark 2017, Lacy-Nichols 2024 / FOCAL, PRI 2010 (the three load-bearing source rubrics for Phase C projection TDD). Owner: Phase C projection TDD successor branch.
+- [x] PAPER_INDEX entry count == PDF count — **37 PAPER_INDEX entries = 37 PDFs** + 1 web-only (Roth 2020); the handoff's "17 vs 18" estimate was stale (actual was 17 vs 37 with 20 unindexed). Reality reflected in this audit; entry count now matches PDF count exactly.
+- [x] STATUS.md branch row updated noting audit landed — `compendium-source-extracts` row's Status column appended; Recent Sessions section gained a new top entry; "Last updated" bumped to 2026-05-13.
+- [x] RESEARCH_LOG entry for this session — new top session entry in `docs/active/compendium-source-extracts/RESEARCH_LOG.md` above the row-freeze entry.
+- [x] Convo summary written + commit + push — convo at `docs/active/compendium-source-extracts/convos/20260513_paper_summaries_audit_premerge.md`; commit + push completes this session.
+- [x] Updated handoff describing merge readiness — this file (these check-offs); branch is merge-ready.
+
+**Merge sequencing reminder (for the next session):** merge `compendium-source-extracts` → `main`, archive `docs/active/compendium-source-extracts/` → `docs/historical/compendium-source-extracts/` per the lifecycle in `CLAUDE.md`, then cut 3 successor branches in parallel per Option B (OH statute retrieval; extraction harness brainstorm; Phase C projection TDD).
 
 ## Read order for the next-session agent
 

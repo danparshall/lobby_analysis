@@ -556,3 +556,278 @@ Key findings:
 **California Case Study:** Total CA lobbying 2007–08 was $552.6M; government category was $92.6M (16.8%) officially, rising to $131.4M (23.8%) after reclassifying taxpayer-funded entities from Education, Public Employees, and Labor Unions.
 
 Relevance: The 37 disclosure law criteria and 22 accessibility criteria are a directly usable framework for grading state data quality in a pipeline feasibility assessment. The accessibility rubric maps cleanly onto whether a state's data can be programmatically ingested (machine-readable format, sortability, historical availability). The 2010 rankings give a vintage baseline — Connecticut, Indiana, Texas, and Washington as better starting points; New Hampshire, Wyoming, and West Virginia as likely data dead-ends. Caveat: this is 16 years old; many states have overhauled their portals since, so rankings should be re-verified against current infrastructure before making pipeline decisions.
+
+---
+
+### CPI / Global Integrity — State Integrity Investigation (2015) *[stub-indexed 2026-05-13]*
+
+- Authors: Nicholas Kusnetz / Center for Public Integrity (with Global Integrity)
+- Date: November 2015
+- File: `papers/CPI_2015__sii_only_three_states.pdf`
+- Extracted text: `papers/text/CPI_2015__sii_only_three_states.txt`
+
+Summary: Public-facing rollup article accompanying CPI/Global Integrity's 2015 State Integrity Investigation (SII), a second-round assessment using 245 questions across 13 governance categories scored by state-based journalists. Lobbying disclosure is the C11 category — the source of the C11 atomic items extracted independently on the `compendium-source-extracts` branch. Headline: no state earned A or B; Alaska earned the top grade (C); 11 states received F; New Jersey saw the largest drop from round 1.
+
+Relevance: The C11 lobbying-disclosure subitems extracted from this SII feed the FOCAL-style framework comparison on this branch. **Stub-indexed; not factually audited** — the C11 atomic items themselves were extracted from the underlying `PublicI/state-integrity-data` GitHub repo (see 2026-05-07 RESEARCH_LOG entry), so this PDF is the *contextual citation* rather than the primary data source for that extraction.
+
+---
+
+## International / Comparative Lobbying Regulation
+
+The entries below were all stub-indexed during the 2026-05-13 pre-merge audit of the `compendium-source-extracts` branch. Confidence: MEDIUM-HIGH from a single-pass survey by a research subagent. Full factual audit deferred. Reading order in `PAPER_INDEX.md` is roughly chronological within this category.
+
+### Hogan, Murphy & Chari — Assessing the Opinions of Actors in the Opaque World of Unregulated Lobbying *[stub-indexed]*
+
+- Authors: John Hogan (DIT), Gary Murphy (DCU), Raj Chari (TCD)
+- Date: 2008 (September), in *Canadian Political Science Review* 2(3)
+- File: `papers/Hogan_Murphy_Chari_2008__regulating_lobbying_globally.pdf`
+- Extracted text: `papers/text/Hogan_Murphy_Chari_2008__regulating_lobbying_globally.txt`
+
+Summary: Interview-based study of attitudes toward lobbying regulation among actors in unregulated jurisdictions. Builds on CPI's Hired Guns index, Opheim (1991), and Brinig et al. (1993) state-level indices to construct a three-tier (low/medium/high) classification applicable internationally. Tests predictions of deliberative-democratic theory about whether unregulated-jurisdiction actors favor regulation.
+
+Relevance: Anchors the lineage from Opheim 1991 → CPI Hired Guns 2007 → international comparative use. The authors go on to write the *Regulating Lobbying* book series, which is widely cited in Lacy-Nichols 2024/2025. Useful context for understanding why CPI Hired Guns becomes the dominant international comparator. **Stub-indexed; not factually audited.**
+
+---
+
+### Mihuț — Lobbying in the United States and the European Union *[stub-indexed]*
+
+- Authors: Liliana Mihuț (Babeș-Bolyai University)
+- Date: 2008, in *Romanian Journal of European Affairs* 8(4)
+- File: `papers/Mihut_2008__lobbying_us_eu.pdf`
+- Extracted text: `papers/text/Mihut_2008__lobbying_us_eu.txt`
+
+Summary: Comparative descriptive essay covering the 1946 Federal Regulation of Lobbying Act through the 2007 Honest Leadership and Open Government Act on the US side, and the European Transparency Initiative (2007) and 1996–97 EP Rules of Procedure on the EU side. Argues that the systems are converging despite differences along the pluralist/corporatist axis.
+
+Relevance: Useful as a primary-source background on the EU-US definitional gap (LDA's "lobbying contact" vs. ETI's "activities to influence policy formulation"). Doesn't add a measurement framework not already covered by Holman & Luneburg 2012. **Stub-indexed; not factually audited.**
+
+---
+
+### Holman & Luneburg — Lobbying and Transparency: A Comparative Analysis of Regulatory Reform *[stub-indexed]*
+
+- Authors: Craig Holman (Public Citizen) & William Luneburg (Univ. of Pittsburgh Law)
+- Date: 2012, in *Interest Groups & Advocacy* 1(1)
+- File: `papers/Holman_Luneburg_2012__lobbying_transparency.pdf`
+- Extracted text: `papers/text/Holman_Luneburg_2012__lobbying_transparency.txt`
+
+Summary: Comparative legal/policy article documenting the divergent origins of lobbying registries — US/Canada developed disclosure to combat corruption while early European registries (Germany 1951, EP 1996, Georgia mid-1990s) emphasized business access ("hall passes"). Catalogs registry adoption in Lithuania (2001), Poland (2005), Hungary (2006, repealed 2011), EC (2008), Macedonia (2008), France (2010), Slovenia (2010), Austria (2011).
+
+Relevance: Categorical critique of disclosure scope (lobbyist identity, expenditure, issue, target) maps to the same atomic items we are extracting from US state regimes. Useful for understanding which disclosure-field axes are universal vs. regime-dependent. **Stub-indexed; not factually audited.**
+
+---
+
+### ALTER-EU — Recommendations for Transparency Register Review: Lobby Disclosure Requirements *[stub-indexed]*
+
+- Authors / publisher: ALTER-EU (Alliance for Lobbying Transparency and Ethics Regulation in the EU)
+- Date: 2013
+- File: `papers/ALTER_EU_2013__transparency_register_review.pdf`
+- Extracted text: `papers/text/ALTER_EU_2013__transparency_register_review.txt`
+
+Summary: Short NGO advocacy brief building on ALTER-EU's June 2013 "Rescue the Register!" report. Concrete proposals include €10,000 financial-disclosure bandwidths, mandatory listing of all lobbyists' prior public offices, drop-down legislative-dossier selection for issue disclosure, twice-yearly registration updates on fixed dates, and obligatory reporting of which lobby firms assisted each registrant's lobbying.
+
+Relevance: Marginal — identifies disclosure-field gaps that recur in many state registers; motivates extraction priorities (named lobbyists, prior offices, specific bills). **Stub-indexed; not factually audited.**
+
+---
+
+### AccessInfo / Open Knowledge / Sunlight / Transparency International — International Standards for Lobbying Regulation *[stub-indexed]*
+
+- Authors / publisher: Access Info Europe, Open Knowledge, Sunlight Foundation, Transparency International (joint)
+- Date: May 2015
+- File: `papers/AccessInfo_2015__intl_lobbying_standards.pdf`
+- Extracted text: `papers/text/AccessInfo_2015__intl_lobbying_standards.txt`
+
+Summary: Four-NGO coalition consolidates lobbying-regulation best practice into 38 numbered standards organized into 7 areas (scope, transparency, integrity, participation, oversight, definitions, framework design). Headline factual claim: as of May 2015, only ~20 countries worldwide had national-level lobbying regulation.
+
+Relevance: Normative benchmark catalog — the disclosure items it enumerates (lobbyist identity, subject matter, ultimate beneficiary, targeted institution, expenditure, funding sources, political contributions, revolving-door history) map directly onto the field-level extractions our LLM pipeline must support. **Stub-indexed; not factually audited.**
+
+---
+
+### SOMO — A Structural Problem in the Shadows: Lobbying by Banks in the Netherlands *[stub-indexed]*
+
+- Authors / publisher: Myriam Vander Stichele / SOMO (Centre for Research on Multinational Corporations)
+- Date: November 2016
+- File: `papers/SOMO_2016__structural_problem.pdf`
+- Extracted text: `papers/text/SOMO_2016__structural_problem.txt`
+
+Summary: Investigative NGO report citing regulatory capture as a structural feature of Dutch financial-sector law-making post-2008 crisis. Documents that the Netherlands has no binding lobbying disclosure, with the only official requirement being that one person per organization may register for parliamentary access.
+
+Relevance: Tangential. Sectoral case study rather than measurement framework; primary value is as a worked example of what's invisible without a real disclosure regime. **Stub-indexed; not factually audited.**
+
+---
+
+### Transparency International EU — Open Data to Fight Corruption — Case Study: The EU and Lobbying *[stub-indexed]*
+
+- Authors / publisher: Daniel Freund & Yannik Bendel / Transparency International EU
+- Date: 2016 (data current as of 21 December 2015)
+- File: `papers/TI_2016__open_data_eu_lobbying.pdf`
+- Extracted text: `papers/text/TI_2016__open_data_eu_lobbying.txt`
+
+Summary: TI-EU walkthrough of the Integrity Watch (integritywatch.eu) project, launched October 2014 and expanded June 2015. Combines ~7,000 EC senior-official lobby meetings with Transparency Register profiles and MEP financial declarations, scraped daily via ParlTrack. Notes that across 19 EU countries assessed, the average lobbying-legislation quality score was 31% and 36% for the three EU institutions.
+
+Relevance: Architectural exemplar — a public-facing portal built by linking three distinct disclosure sources (meeting data, register data, financial declarations) is the kind of downstream artifact our state-level pipeline could feed. Reinforces the design choice of treating each source as a separate but linkable entity. **Stub-indexed; not factually audited.**
+
+---
+
+### Council of Europe — Legal Regulation of Lobbying Activities: Recommendation CM/Rec(2017)2 *[stub-indexed]*
+
+- Authors / publisher: Council of Europe, Committee of Ministers
+- Date: March 2017 (adopted at 1282nd meeting; July publication)
+- File: `papers/CouncilEurope_2017__lobbying_legal_regulation.pdf`
+- Extracted text: `papers/text/CouncilEurope_2017__lobbying_legal_regulation.txt`
+
+Summary: Intergovernmental soft-law instrument from the Council of Europe's Committee of Ministers, with detailed explanatory memorandum. Defines lobbying as "promoting specific interests by communication with a public official as part of a structured and organised action aimed at influencing public decision making" and prescribes that consultant, in-house, and sectoral-organization lobbyists all fall within scope. Organized into ten guiding-principle sections (objective, scope, freedom of expression, transparency, registers, ethics, sanctions, integrity, oversight, review).
+
+Relevance: Authoritative European definitional anchor — its scope/definition section is widely cited downstream and offers a comparator for the US state-by-state definitional patchwork our pipeline must reconcile. **Stub-indexed; not factually audited.**
+
+---
+
+### Bednářová — Evaluation of the Government Draft Lobbying Act in the Czech Republic *[stub-indexed]*
+
+- Authors: Pavla Bednářová (Technical University of Liberec)
+- Date: June 2020, in *E&M Economics and Management* 23(2)
+- File: `papers/Bednarova_2020__lobbying_regulation_quality.pdf`
+- Extracted text: `papers/text/Bednarova_2020__lobbying_regulation_quality.txt`
+
+Summary: Cost-benefit-flavored RIA assessment of the 2019 Czech draft Lobbying Act, applying CPI's Hired Guns scoring on the strength axis paired with Krsmanovic's CII on the burden axis (the "Ninefold theory"). Headline numbers: pre-act Czech regime scores CPI = 0 (lowly regulated) / CII = 0 (lowly burdensome); the draft act would move it to CPI = 34 / CII = 35 (both "medium"), comparable to Slovakia/Poland/Hungary/Slovenia/Austria.
+
+Relevance: A downstream user of the CPI Hired Guns rubric — confirms which atomic items remain CPI-derived in non-US applications. **Stub-indexed; not factually audited.**
+
+---
+
+### Carnstone Partners / Meridian Institute — The Responsible Lobbying Framework *[stub-indexed]*
+
+- Authors / publisher: Carnstone Partners (for the Meridian Institute)
+- Date: June 2020
+- File: `papers/Carnstone_2020__responsible_lobbying_framework.pdf`
+- Extracted text: `papers/text/Carnstone_2020__responsible_lobbying_framework.txt`
+
+Summary: Originator-facing voluntary framework (intended for companies and CSOs, not paid lobbyists) compiled from prior standards including TI, OECD, WHO, PRI, and Harvard. Defines five principles (legitimacy, transparency, consistency, opportunity, accountability) with cross-references; the Transparency principle prescribes disclosure of direct/indirect lobbyists, public-sector officials engaged, issues, outcomes sought, frequency, ultimate beneficiaries, monetary spend on direct lobbying, and third-party-association memberships.
+
+Relevance: Prescribes disclosure-content schema from the lobbyist side rather than the regulator side; useful as a cross-check on which fields should be extractable from public filings. **Stub-indexed; not factually audited.**
+
+---
+
+### McKay & Wozniak — Opaque: An Empirical Evaluation of Lobbying Transparency in the UK *[stub-indexed]*
+
+- Authors: Amy Melissa McKay (Exeter) & Antal Wozniak (Liverpool)
+- Date: 2020 (online 2019), in *Interest Groups & Advocacy*
+- File: `papers/McKay_Wozniak_2020__lobbying_transparency_uk.pdf`
+- Extracted text: `papers/text/McKay_Wozniak_2020__lobbying_transparency_uk.txt`
+
+Summary: Cross-source empirical disclosure-quality audit matching the UK Office of the Registrar of Consultant Lobbyists' register against ministerial-meeting publications for the same four quarters. Headline numbers: only ~29% of register clients appear in ministerial-meeting records, and less than 4% of groups in ministerial meetings appear in the register. UK scores 33 on the CPI Hired Guns rubric per Keeling et al. 2017 (placing it in CPI's "medium-robust" band), but the authors dispute this scoring on two specific coding points.
+
+Relevance: A model for the kind of cross-source validation our pipeline should support (e.g., compare registry filings against meeting/disclosure outputs from the executive branch). Directly applicable methodology. **Stub-indexed; not factually audited.**
+
+---
+
+### Roth — Creating a Valid and Accessible Robustness Index (lobbymeter.eu) *[stub-indexed; web-source-only]*
+
+- Authors: Aminata Sarah Roth
+- Date: 2020 (project ongoing)
+- File: **No local PDF** — Google Sites page is canonical source
+- Extracted text: `papers/text/Roth_2020__lobbymeter_robustness_index.txt` (WebFetch summary captured 2026-05-03)
+- Source: https://sites.google.com/view/regulating-lobbying/home/work-of-colleagues/creating-a-valid-and-accessible-robustness-index
+
+Summary: Roth's research addresses shortcomings in existing lobbying-regulation measurement tools by developing a new 23-item, 6-subindex robustness index and an online platform (lobbymeter.eu). Identifies critical flaws in prior indices (international-applicability issues, validity/reliability imbalance, equal-weighting failures), applies differentiated item weights, and validates via convergent-validity comparison against Corruption Perceptions Index data (r=0.6807 across 13 jurisdictions).
+
+Relevance: Sits in the same Opheim → CPI → comparative-international lineage as Hogan/Murphy/Chari 2008 and Bednářová 2020. The 23-item index is a candidate input to FOCAL-style cross-walks. **Web-source-only; no PDF audit possible.** The summary text is itself a WebFetch capture, not a paper extraction.
+
+---
+
+### Global Data Barometer — First Edition Report *[stub-indexed]*
+
+- Authors / publisher: Tim Davies & Silvana Fumega (with Jonathan Gray) / Global Data Barometer / ILDA
+- Date: 2022 (May 2019 - May 2021 data period)
+- File: `papers/GlobalDataBarometer_2022__report.pdf`
+- Extracted text: `papers/text/GlobalDataBarometer_2022__report.txt`
+
+Summary: Cross-country survey-based index covering 109 countries, with thematic modules including political integrity and lobbying among others. Headline finding: no country scored over 70/100; mean country score was 34.38/100.
+
+Relevance: Narrow but real — the lobbying sub-indicators within the political-integrity module sit alongside our framework as a comparator, and the Barometer is cited in Lacy-Nichols 2025 as one of three frameworks tracking lobbying-register existence across countries (alongside HATVP 2020/2023 and OECD 2021). **Stub-indexed; not factually audited.**
+
+---
+
+### IBAC — Special Report on Corruption Risks Associated with Donations and Lobbying *[stub-indexed]*
+
+- Authors / publisher: Independent Broad-based Anti-corruption Commission (IBAC), Victoria, Australia
+- Date: October 2022
+- File: `papers/IBAC_2022__corruption_risks_donations_lobbying.pdf`
+- Extracted text: `papers/text/IBAC_2022__corruption_risks_donations_lobbying.txt`
+
+Summary: IBAC's section 162(1) special report to the Victorian Parliament. Identifies four areas of lobbying-regime weakness: too-narrow scope of regulation, privileged access enabled by lobbying, lack of transparency around access, and ineffective controls. Notes that Victoria is one of only three Australian states with no electoral campaign spending cap.
+
+Relevance: Tangential to a US state focus, but the regulatory-gap taxonomy (scope/access/transparency/enforcement) is the same diagnostic axis used by FOCAL and CPI Hired Guns — useful as a non-US comparator point. **Stub-indexed; not factually audited.**
+
+---
+
+## Lobbying & Political Outcomes (empirical)
+
+US state-level empirical studies using lobbying-regulation strength as a treatment or moderator. These *use* the measures rather than *constructing* them.
+
+### Strickland — A Paradox of Political Reform: Shadow Interests in the U.S. States *[stub-indexed]*
+
+- Authors: James Strickland (Univ. of Michigan)
+- Date: 2018 (online publication; filename year refers to working paper; SAGE DOI 10.1177/1532673X18788049), in *American Politics Research*
+- File: `papers/Strickland_2014__lobbying_laws_interest_groups.pdf`
+- Extracted text: `papers/text/Strickland_2014__lobbying_laws_interest_groups.txt`
+
+Summary: Panel-data analysis of all 50 states over three decades using an originally compiled dataset of state lobbyist registrations. Finds that campaign-finance restrictions (not reporting burdens) suppress registration — presenting reformers with a paradox: maximize registration or maximize regulation of the registered, but not both. Estimates that hundreds of unregistered "shadow" groups are lobbying in the US states.
+
+Relevance: Empirical evidence that the registration-rate observable our pipeline measures is endogenous to the regulatory regime itself; should inform how we interpret cross-state registrant-count comparisons. The filename's 2014 date is from a working-paper version — actual publication is 2018. **Stub-indexed; not factually audited.**
+
+---
+
+### Flavin — Lobbying Regulations and Political Equality in the American States *[stub-indexed]*
+
+- Authors: Patrick Flavin (Baylor University)
+- Date: 2015 (draft dated January 2014), in *American Politics Research* 43(2)
+- File: `papers/Flavin_2015__lobbying_regulations_political_equality.pdf`
+- Extracted text: `papers/text/Flavin_2015__lobbying_regulations_political_equality.txt`
+
+Summary: Cross-state observational analysis combining National Annenberg Election Survey income-stratified opinion data with state policy outputs to build a "political equality" index. Finds that states with more stringent lobbying regulations exhibit a weaker income-influence gradient — i.e., regulations are associated with more equal representation in policy outcomes.
+
+Relevance: A downstream-use exemplar — shows what becomes empirically tractable once a credible cross-state regulation-strictness measure exists (the very kind of measure our pipeline aims to produce at higher temporal resolution). **Stub-indexed; not factually audited.**
+
+---
+
+## Compliance & Disclosure Quality (continued — 2026-05-13 additions)
+
+Two additional entries in this category were stub-indexed during the 2026-05-13 audit. They are placed here rather than under "International / Comparative" because both use US OpenSecrets data and concern disclosure-quality measurement; the Lobbying Data Infrastructure addition (LaPira & Thomas 2014) is below.
+
+### Lacy-Nichols, Quinn & Cullerton — Aiding Empirical Research on the Commercial Determinants of Health *[stub-indexed]*
+
+- Authors: Jennifer Lacy-Nichols, Madalyn Quinn, Katherine Cullerton
+- Date: 2023, in *Health Research Policy and Systems* 21:56
+- File: `papers/Lacy-Nichols_2023__aiding_empirical_research_cdoh.pdf`
+- Extracted text: `papers/text/Lacy-Nichols_2023__aiding_empirical_research_cdoh.txt`
+
+Summary: Systematic scoping review of peer-reviewed (4,533 screened, 233 assessed) and grey-literature (285 screened, 280 assessed) studies analyzing lobbying. Catalogs indicators (lobbyist registrations, expenditure, meetings, written submissions, bills, committee participation), datasets (government, NGO, commercial), and methodological approaches used by political-science research, with the aim of importing these into public-health/CDoH research. Notes a 2021 OECD survey finding that only 23 of 41 jurisdictions provided lobbying-disclosure information, with widely varying quality.
+
+Relevance: Maps the indicator taxonomy used in academic lobbying research to the data fields actually present in disclosure regimes — useful for normalizing our extracted-field schema against the indicators downstream researchers actually want. Authorship overlaps the Lacy-Nichols 2024 (FOCAL framework) team. **Stub-indexed; not factually audited.**
+
+---
+
+### Chung, Cullerton & Lacy-Nichols — Mapping the Lobbying Footprint of Harmful Industries *[stub-indexed]*
+
+- Authors: Holly Chung, Katherine Cullerton, Jennifer Lacy-Nichols
+- Date: 2024, in *The Milbank Quarterly*
+- File: `papers/Chung_2024__mapping_lobbying_footprint.pdf`
+- Extracted text: `papers/text/Chung_2024__mapping_lobbying_footprint.txt`
+
+Summary: Power-BI-driven descriptive analysis of 23 years of US federal lobbying expenditures (1998–2020) across four harmful-industry sectors using OpenSecrets data. Headline findings: ultraprocessed food spent the most at $1.15B over the period, followed by gambling ($817M), tobacco ($755M), alcohol ($541M); spending was highly concentrated (two organizations = ~60% of tobacco; four = >50% of alcohol).
+
+Relevance: Demonstrates that OpenSecrets-style sector taxonomies enable longitudinal cross-industry comparison and shows what becomes possible once disclosure data is normalized — a downstream-use exemplar for our pipeline at the state level. **Stub-indexed; not factually audited.**
+
+---
+
+## Lobbying Data Infrastructure (continued — 2026-05-13 additions)
+
+### LaPira & Thomas — Revolving Door Lobbyists and Interest Representation *[stub-indexed]*
+
+- Authors: Timothy M. LaPira (James Madison Univ.) & Herschel F. Thomas III (Univ. of Texas-Austin)
+- Date: January 2014, in *Interest Groups & Advocacy* 3
+- File: `papers/LaPira_Thomas_2014__revolving_door_lobbyists.pdf`
+- Extracted text: `papers/text/LaPira_Thomas_2014__revolving_door_lobbyists.txt`
+
+Summary: Original biographical-data construction + linkage exercise: hand-collected professional histories of ~1,600 registered federal lobbyists linked to ~50,000 quarterly LDA reports. Used to identify a major transparency loophole — the LDA does not require continuous disclosure of "covered official" status, so the revolving door is systematically under-reported in periodic filings. Empirically finds that former-Congress lobbyists tend to be contract (not in-house) and over-specialize in appropriations earmarks.
+
+Relevance: A methodological exemplar of biographical-record linkage against periodic disclosure filings (essentially the same problem we solve at state level) — predates the LobbyView corpus by several years. The covered-official under-reporting finding bears directly on what state-level extraction should *expect* to find vs. what's actually filed. **Stub-indexed; not factually audited.**
