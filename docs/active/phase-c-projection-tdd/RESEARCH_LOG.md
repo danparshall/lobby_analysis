@@ -40,6 +40,65 @@ The `data/` symlink convention from `skills/use-worktree/SKILL.md` was **skipped
 
 (Newest first.)
 
+### 2026-05-14 — Rubric plans drafting (meta-session, sub-0 of 5): playbook gap audit + data-year audit
+
+Convo: [`convos/20260514_rubric_plans_drafting.md`](convos/20260514_rubric_plans_drafting.md)
+Results:
+- [`results/20260514_playbook_gap_audit.md`](results/20260514_playbook_gap_audit.md) — playbook vs reality for the 6 remaining rubrics
+- [`results/20260514_rubric_data_years.md`](results/20260514_rubric_data_years.md) — publication-year vs data-year per rubric (12 distinct vintages across the 8 rubrics)
+
+**Topics explored**
+
+- **Meta-question:** can the 6 remaining rubrics (Sunlight, Newmark 2017/2005, Opheim, HG 2007, FOCAL 2024) be parallelized for headless API-key-billed implementation? Motivation: user wants to bill API key (work-project budget) instead of Claude Code subscription. Original framing was "pure parallelism via API."
+- **Reframe chain:** Pure parallelism fights inter-rubric dependencies. Counter: 3 streams (Sunlight→Opheim; Newmark 2017→2005; FOCAL), HG held on `oh-statute-retrieval` Track A. Counter to counter: 2 retrieval blockers for HG, not 1 (CPI scorecard + Track A). Settled: 5 sub-sessions structure with plans drafted in this branch's worktree, headless launches via `claude -p` with API-key auth in later sub-sessions.
+- **Playbook gap audit (sub-0 main work).** Read intro + scope + aggregation + validation + Open Issues of all 5 remaining spec docs (Newmark 2017, Newmark 2005, Opheim 1991, HG 2007, FOCAL 2024); also re-read Sunlight 2015 in full as sanity-check on whether playbook is faithful.
+- **Data-year audit (user interjection mid-session).** Grepped `papers/text/` for each rubric to identify publication-year vs data-year — critical because extraction needs to fetch correct statute vintage from Justia. Found 12 distinct statute vintages spanning 1988-89 → 2025.
+
+**Provisional findings — 5 cross-cutting meta-patterns the playbook missed**
+
+1. **"Disclosure-only Phase B" scope qualifier applies to every remaining rubric** (5 prohib in Newmark 2017; 5 prohib+penalty in Newmark 2005; 8 enforce+catch-all in Opheim; 10 enforce+cooling-off in HG; 1 revolving_door.2 in FOCAL post-FOCAL-1). None can reproduce their published index total.
+2. **Validation regime tiers split 3 ways** — Strong (CPI/HG/FOCAL: per-state per-item); Medium (PRI/Newmark 2017: per-state sub-aggregate); **Weak-inequality only (Newmark 2005, Opheim 1991)**: `our_partial ≤ paper_total` is the only check.
+3. **`unable_to_evaluate` convention applies across the board** (not just Opheim's catch-all): OOS items, un-projectable items, and Phase D portal-cells when only statute data is available. Critically: **not zeroed** (so weak-inequality holds).
+4. **"Same-row-different-binary-cut" is a recurring per-item helper pattern** (PRI cadence family read by Newmark 2005 at 8-cell-OR and Opheim at 2-cell-OR).
+5. **Row-promotion meta-pattern (`X-rubric-confirmed`)** is the seed of Phase 4 cross-rubric audit. `lobbyist_spending_report_includes_total_compensation` is now 7-rubric-confirmed.
+
+**Provisional findings — biggest per-rubric surprises**
+
+- **FOCAL 2024 has NO per-state US ground truth** — only federal LDA + 27 other countries. Cross-rubric is the *only* check for state FOCAL projections.
+- **Newmark 2005 is NOT a near-clone of Newmark 2017** — different aggregation (4 sections vs 3), different validation regime (weak-inequality vs sub-aggregate), 6 panels vs 1.
+- **HG 2007 has TWO retrieval blockers, not one**: (a) CPI's 2007 per-state scorecard (NOT Track A), (b) Track A `oh-statute-retrieval` for OH-specific sub-task.
+- **HG's 22 NEW rows include 13 practical-availability cells** requiring portal observation, not statute extraction. Phase D targets.
+- **FOCAL is substantially heavier than playbook suggests** — 11 Open Issues, scorer-judgment cutoff for scope.2, 2024→2025 numbering asymmetry, set-typed cells, weighted aggregation.
+
+**Provisional findings — data-year audit (user-interjected)**
+
+- 12 distinct statute vintages across the 8 rubrics, 1988-89 → 2025.
+- **HG 2007 has per-item vintage split**: Q35-Q37 at 2002, rest at 2006-2007.
+- **FOCAL state projections are vintage-flexible**: align to L-N 2025's 2019-2023 collection window.
+- 4 rubrics have MEDIUM-or-lower data-year confidence (Sunlight, CPI 2015, PRI 2010, Newmark 2017); papers should be re-read during plan drafting to firm up.
+- `oh-statute-retrieval` (Track A) currently fetches 4 vintages (2007/2010/2015/2025); full Phase C validation needs 12. Track A scope expansion is a separate conversation.
+
+**Decisions carried forward**
+
+- **Structure B**: 5 sub-sessions (sub-0 gap audit now complete; sub-1 Stream 1 plans → sub-2 Stream 2 plans → sub-3 FOCAL plan-set + HG plan → sub-4 launch infra + Sunlight canary).
+- **FOCAL plan shape**: split into 3-4 sub-plans per scope (legal-side core, contact_log battery, openness battery, aggregation + US LDA validation).
+- **HG plan launch gated** on Phase 0 scorecard retrieval; plan drafted with both paths (per-state if retrievable, weak-inequality if not).
+- **Strict reading of disclosure-only Phase B scope** — keep current OOS items OUT; FOCAL-1 precedent does not retroactively apply.
+- **7 convention proposals** from the gap audit to bake into all 6 plans (see [`results/20260514_playbook_gap_audit.md`](results/20260514_playbook_gap_audit.md) for the full list).
+
+**Results**
+
+- [`results/20260514_playbook_gap_audit.md`](results/20260514_playbook_gap_audit.md) — gap audit (5 cross-cutting meta-patterns + per-rubric gaps + implementation implications + convention proposals + decisions).
+- [`results/20260514_rubric_data_years.md`](results/20260514_rubric_data_years.md) — publication-year vs data-year lookup table for all 8 rubrics, with confidence levels and paper-line citations.
+
+**Next steps**
+
+Sub-session 1 (next; separate Claude Code session with API-key auth): Stream 1 plans — Sunlight 2015 + Opheim 1991 in a single sub-session. Sunlight first (function-per-item; item 4 exclusion; per-item validation regime); Opheim second (declarative table; weak-inequality regime; un-projectable catch-all; β AND-projection reuse from Sunlight). Both plans self-contained per write-a-plan skill, with STOP clauses for spec-doc-vs-v2 drift. Each plan opens with a "Scope qualifier" + "Validation regime" + "Data year" section per the conventions established by sub-0.
+
+After Sub-1: Sub-2 (Newmark 2017 → 2005), Sub-3 (FOCAL plan-set + HG plan with retrieval gate), Sub-4 (prompt template + headless launch script + Sunlight canary). HG launch waits on scorecard retrieval task (#6).
+
+---
+
 ### 2026-05-14 — PRI 2010 projection: rubric #2 + PRI-MVP retirement
 
 Convo: [`convos/20260514_pri_2010_tdd.md`](convos/20260514_pri_2010_tdd.md)
