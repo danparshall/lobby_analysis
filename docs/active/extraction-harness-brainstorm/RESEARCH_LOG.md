@@ -27,6 +27,40 @@ The `data/` symlink convention from `skills/use-worktree/SKILL.md` was **skipped
 
 (Newest first.)
 
+### 2026-05-14 (brief-writer brainstorm) — all 10 Q's + 2 pushbacks locked; impl-plan-write handed off
+
+Plan sketch: [`plans/20260514_brief_writer_plan_sketch.md`](plans/20260514_brief_writer_plan_sketch.md)
+Convo: [`convos/20260514_brief_writer_brainstorm.md`](convos/20260514_brief_writer_brainstorm.md)
+Outgoing handoff: [`plans/_handoffs/20260514_brief_writer_impl_plan_write_handoff.md`](plans/_handoffs/20260514_brief_writer_impl_plan_write_handoff.md)
+
+**Brainstormed the v2 scoring harness (legal-axis path) end-to-end with user-in-loop; all architectural Q's locked.** Two pushbacks against the prior session strategy accepted in the opening exchange before any plan-sketch was written:
+
+1. **Combine brief-writer + scorer-prompt-rewrite into ONE component.** Kickoff handoff split them; retrieval's experience (prompt and brief-writer ship in one session, tightly coupled — brief-writer reads prompt at call time, prompt assumes brief-writer's tool definitions) said split was wrong. User agreed.
+2. **Follow retrieval's SDK + Citations + tool use pattern.** Effectively makes the deferred-SDK-adoption decision a settled question — retrieval already added `anthropic>=0.102` to `pyproject.toml`. "ONE pipeline" criterion consistency. User agreed.
+
+**Locked package (full audit trail in convo's "Decisions made" table + "Locked package (synthesis)" section):**
+
+- **Q6: Practical-axis cells → DEFER to sibling brainstorm.** Second pushback against the user's "combine" decision: combine was about prompt+brief-writer *for legal scoring*, not legal+practical. v1 had 2 brief-writers (`build_subagent_brief` portal, `build_statute_subagent_brief` statute) for exactly this reason. Citations API behavior on portal HTML/PDF empirically unmeasured. This component's scope is legal-axis only; mixed chunks score only their legal cells; practical-axis (50 cells + practical halves of 5 dual-axis rows) becomes the next sibling brainstorm.
+- **Q4: Optional disk-loaded preambles, ship 0.** `src/scoring/chunk_frames_v2/<chunk_id>.md` if present, else skip silently. The scholarly v2 rewrite of v1 Rule 6 (PRI A5-A11 + C0 functional-public-entity substantive guidance) lands in preambles when authored — empirical-informed by T1+ evidence of where the model under-grounds. Impl plan ships 0 preambles.
+- **Q1: Parameterized `chunks: list[str]`, default per-chunk.** Mirrors retrieval; accuracy-first; iter-1's 7-row baseline is the comparison point.
+- **Q2: Single polymorphic `record_cell` + `record_unscoreable_cell`.** 2 tools total, mirrors retrieval's surface. Parser dispatches by `row_id` → `CompendiumCellSpec.expected_cell_class`. Per-cell-type (15) tools deferred until T2+ evidence shows the model mis-types values.
+- **Q3: All statutes + retrieval annotations as user text.** Same statute set retrieval consumed — cache-friendly cross-call sharing. RetrievalOutput's cross_references summarized in user text (relevance + chunk_ids_affected + key evidence_spans).
+- **Q7-sub: Separate `UnscoreableCell` + `record_unscoreable_cell` tool.** Direct parallel to retrieval's `UnresolvableReference` / `record_unresolvable_reference`. No `CompendiumCell` wrapper field churn. Symmetric `ScoringOutput.cells` + `ScoringOutput.unscoreable_cells`.
+- **Q7-rules: v1 rule-by-rule disposition.** Drop 1, 7 (Citations + tool-use enforce); replace 6 (preambles), 8 (tool-use); morph 3 (parser validates per-cell-type); keep 2 (escape valve = Q7-sub), 4 (confidence), 5 (read full statute layered — promoted load-bearing).
+- **Q8: `CompendiumCell.provenance` → `tuple[EvidenceSpan, ...]`.** Mirror retrieval; Citations returns multiple spans per claim; low blast radius (Phase C consumer-side not yet ramped); impl-plan-writer audits existing fixture usages.
+- **Q9: `ScoringOutput` Pydantic model mirroring `RetrievalOutput`.** Scoped to one call: `(state_abbr, vintage_year, chunk_id)` + `cells` + `unscoreable_cells` tuples.
+- **Q10: `src/lobby_analysis/scoring_v2/` + `src/scoring/scorer_prompt_v2.md`.** Boring; mirrors retrieval naming; no broader reorg.
+
+**Six locked Q's mirror retrieval directly** (Q1, Q2, Q3, Q7-sub, Q8, Q9, Q10). Symmetry is intentional — process inertia at the architectural-pattern layer reduces review surface and gives a code-reviewable parallel structure across the two LLM-calling modules.
+
+**Things this brainstorm is locking blind on** (3, flagged in convo + handoff): Citations API + tool use composition under longer statutes + more tool calls per response (retrieval's T1 smoke is the canary); `CompendiumCell.provenance` schema change tolerance (Phase C consumer-side); practical-axis brief-writer feasibility (entirely deferred).
+
+**Session strategy: hand off to impl-plan-write session.** User chose the handoff option over writing the impl plan in this session. Outgoing handoff specifies: write `plans/20260514_brief_writer_implementation_plan.md` — TDD-shaped, API-launchable, mirror retrieval impl plan structure (inline the full v2 prompt + tool schemas; list 30+ test signatures by name; phase-by-phase commit boundary). The impl-plan-writer does NOT re-litigate locked decisions; it translates them. Cycle continuation: brainstorm done → impl-plan-write next → impl session in API-launched sub-branch after.
+
+**Process notes.** (1) Agent pushed back on the kickoff handoff's 4-component framing **before** writing the plan-sketch — the sketch reflects the consolidated framing rather than re-litigating the handoff's split mid-document. (2) Two architectural pushbacks batched into a single AskUserQuestion call; both accepted; saved a round-trip. (3) Per the user memory note about doc system being persistent memory, not patchwork: drafted plan-sketch + brainstorm convo before any Phase-2 Q calls so the link graph was consistent at every commit boundary. Plan-sketch carries a "Brainstorm outcome" back-link at the top to the convo's locked decisions; convo carries forward-links to plan-sketch + handoff; handoff carries back-links to convo + plan-sketch + retrieval impl plan + retrieval impl convo. (4) Second pushback (Q6 = defer practical) was a deliberate re-fork of the kickoff "combine" decision on a different seam — surfaced explicitly. (5) Six of 10 Q's locked on agent's "mirror retrieval" hunches; one Q4 deferred scholarly work (v1 Rule 6 content not rewritten this session — lands in preambles when authored, downstream).
+
+**Next session.** Impl-plan-write per the outgoing handoff. After impl-plan ships, two paths in parallel: (a) implementation session in API-launched sub-branch executing the plan under strict TDD; (b) **practical-axis brief-writer brainstorm** as sibling component — covers the 4 practical-only chunks + practical halves of 5 dual-axis chunks; depends on cells + chunks + this session's `scoring_v2` model bindings.
+
 ### 2026-05-14 (retrieval impl) — retrieval_v2 module landed under strict TDD; T1 smoke deferred to desktop
 
 Convo: [`convos/20260514_retrieval_implementation.md`](convos/20260514_retrieval_implementation.md)
