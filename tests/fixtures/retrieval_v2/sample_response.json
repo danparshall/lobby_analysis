@@ -1,0 +1,64 @@
+{
+  "id": "msg_test",
+  "type": "message",
+  "role": "assistant",
+  "model": "claude-opus-4-7",
+  "content": [
+    {"type": "text", "text": "I found a cross-reference to "},
+    {
+      "type": "text",
+      "text": "§311.005",
+      "citations": [
+        {
+          "type": "char_location",
+          "cited_text": "as defined in §311.005",
+          "document_index": 0,
+          "document_title": "OH §101.70",
+          "start_char_index": 245,
+          "end_char_index": 267
+        }
+      ]
+    },
+    {"type": "text", "text": " which defines 'person'."},
+    {
+      "type": "tool_use",
+      "id": "toolu_01",
+      "name": "record_cross_reference",
+      "input": {
+        "section_reference": "§311.005",
+        "chunk_ids_affected": ["lobbying_definitions", "actor_registration_required"],
+        "relevance": "Defines 'person' — controls which entities must register",
+        "justia_url": "https://law.justia.com/codes/ohio/2010/title3/chapter311/311_005.html",
+        "url_confidence": "medium",
+        "url_confidence_reason": "Title number for Chapter 311 inferred from pattern"
+      }
+    },
+    {"type": "text", "text": "I also found an unresolvable reference: "},
+    {
+      "type": "text",
+      "text": "applicable law",
+      "citations": [
+        {
+          "type": "char_location",
+          "cited_text": "as required by applicable law",
+          "document_index": 0,
+          "document_title": "OH §101.70",
+          "start_char_index": 412,
+          "end_char_index": 441
+        }
+      ]
+    },
+    {
+      "type": "tool_use",
+      "id": "toolu_02",
+      "name": "record_unresolvable_reference",
+      "input": {
+        "reference_text": "as required by applicable law",
+        "referenced_from": "OH §101.70",
+        "reason": "No specific section number cited"
+      }
+    }
+  ],
+  "stop_reason": "end_turn",
+  "usage": {"input_tokens": 1000, "output_tokens": 200}
+}
