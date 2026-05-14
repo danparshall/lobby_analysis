@@ -5,6 +5,7 @@
 **Predecessor convo (this session):** [`../../convos/20260513_union_step_and_premerge_audit.md`](../../convos/20260513_union_step_and_premerge_audit.md)
 **Date drafted:** 2026-05-13 (late-late-late eve, immediately after the union step + pre-merge audit shipped)
 **Audience:** the next-session agent running the row-freeze brainstorm. Fresh-context-safe.
+**Executed by convo:** [`../../convos/20260513_row_freeze_brainstorm.md`](../../convos/20260513_row_freeze_brainstorm.md) (2026-05-13 late-late-late-late eve). Outputs: `disclosure_side_compendium_items_v2.tsv` (181 rows) + decision log `20260513_row_freeze_decisions.md` (D1-D30).
 
 ---
 
