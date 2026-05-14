@@ -215,6 +215,84 @@ def _pass2_payload(
 
 
 # ===========================================================================
+# Helper test — _build_justia_link_tsv handles the Foo/Foo.html pattern
+# under a directory parent (WY state-year-index links go 2 segments deep)
+# ===========================================================================
+
+
+def test_build_justia_link_tsv_uses_parent_row_text_when_anchor_is_terse() -> None:
+    """When the anchor text alone is uninformative (just `TITLE III`), the
+    TSV must enrich it with the parent <tr>'s full text — picking up the
+    subject name from the sibling <td>. This is the FL 2010 state-year
+    index shape; without the fix pass-1 can't disambiguate Roman-numeral
+    titles by topic.
+    """
+    from scoring.api_retrieval_agent import _build_justia_link_tsv
+
+    parent = "https://law.justia.com/codes/florida/2010/"
+    html = """
+    <html><body><table>
+    <tr><td><strong><a href="/codes/florida/2010/TitleII/TitleII.html">TITLE II</a></strong></td>
+        <td>STATE ORGANIZATION</td></tr>
+    <tr><td><strong><a href="/codes/florida/2010/TitleIII/TitleIII.html">TITLE III</a></strong></td>
+        <td>LEGISLATIVE BRANCH; COMMISSIONS</td></tr>
+    </table></body></html>
+    """
+    tsv = _build_justia_link_tsv(html, parent)
+    lines = tsv.splitlines()
+    # Find the TitleIII line; description must include the sibling-td subject.
+    title3_line = next(l for l in lines if "TitleIII/TitleIII.html" in l)
+    assert "LEGISLATIVE BRANCH" in title3_line, (
+        f"Expected sibling-td subject in TSV; got line: {title3_line!r}"
+    )
+    title2_line = next(l for l in lines if "TitleII/TitleII.html" in l)
+    assert "STATE ORGANIZATION" in title2_line
+
+
+def test_build_justia_link_tsv_directory_parent_with_foo_foo_html_children() -> None:
+    """When a directory parent (e.g., /codes/wyoming/2010/) links to entries
+    of the form `TitleN/TitleN.html`, the helper must include them in the TSV.
+
+    This is the empirically-observed shape of WY 2010's state-year-index
+    page: 43 anchors, all of form `/codes/wyoming/2010/TitleN/TitleN.html`.
+    The earlier "one-segment-deeper" check rejected them as too deep, which
+    starved pass-1's prompt of any usable links.
+    """
+    from scoring.api_retrieval_agent import _build_justia_link_tsv
+
+    parent = "https://law.justia.com/codes/wyoming/2010/"
+    html = """
+    <html><body>
+    <a href="/codes/wyoming/2010/Title1/Title1.html">Title 1 - General Provisions</a>
+    <a href="/codes/wyoming/2010/Title28/Title28.html">Title 28 - Public Officers and Employees</a>
+    <a href="/codes/wyoming/2010/Title28/Title28/Title28.html">Grandchild (should be rejected)</a>
+    <a href="/codes/wyoming/2010/Title28/chapter7.html">Chapter-level link (should be rejected)</a>
+    <a href="https://en.wikipedia.org/wiki/Wyoming">External (should be rejected)</a>
+    </body></html>
+    """
+
+    tsv = _build_justia_link_tsv(html, parent)
+    lines = tsv.splitlines()
+    urls = [line.split("\t", 1)[0] for line in lines]
+
+    assert "https://law.justia.com/codes/wyoming/2010/Title1/Title1.html" in urls
+    assert "https://law.justia.com/codes/wyoming/2010/Title28/Title28.html" in urls
+    # The Foo/Foo.html exception is narrow — only ``X/X.html`` is accepted.
+    # A bare `Title28/chapter7.html` (different segments) must NOT slip in
+    # at the directory-parent level — that would let chapter URLs masquerade
+    # as title URLs in pass-1.
+    assert "https://law.justia.com/codes/wyoming/2010/Title28/chapter7.html" not in urls
+    # A genuine grandchild (Title28/Title28/Title28.html) is also rejected.
+    assert "https://law.justia.com/codes/wyoming/2010/Title28/Title28/Title28.html" not in urls
+    # External links rejected.
+    assert not any("wikipedia" in u for u in urls)
+
+    # Anchor text preserved, tab-delimited.
+    title28_line = next(l for l in lines if "Title28.html\t" in l)
+    assert "Public Officers" in title28_line
+
+
+# ===========================================================================
 # Test 1 — single-title two-pass returns pass-2 URLs
 # ===========================================================================
 

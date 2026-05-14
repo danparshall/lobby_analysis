@@ -49,9 +49,13 @@ Field rules:
 
 Pass 1's job is to identify the title-level entry point. You will return URLs that look like `<state-slug>/<vintage>/<title-slug>` — typically ending in `.html` (e.g., `Title28/Title28.html`) or in `/` (e.g., `government-code/`), depending on the state's convention. You will **not** return chapter or section URLs — those are pass 2's job.
 
-### 2. Be conservative.
+### 2. Return ALL titles that contain a lobbying-disclosure regime.
 
-Picking one wrong title is cheaper than picking three irrelevant ones — each additional title triggers a second HTTP fetch and a second LLM call. **Prefer to pick a single title** unless you have specific evidence that the state's lobbying statute is split across multiple titles (rare; e.g., some states put legislative-branch and executive-branch lobbying in separate titles).
+When a state has parallel lobbying-disclosure regimes split across different titles — for example, a **legislative-branch lobbying chapter** in one title plus an **executive-branch lobbying / commission-on-ethics chapter** in another — **return BOTH titles**. This is not a rare case; it's the structure FL, NY, OH, and several other states actually use. Naming the regime in `rationale` is what filters out irrelevant titles.
+
+What we want to avoid is picking titles you can't articulate a specific lobbying-statute reason for (general ethics codes that don't touch lobbying registration; campaign-finance titles; legislative-procedure manuals). What we want to *embrace* is returning the full set of titles that together house the state's lobbying-disclosure rules.
+
+Each additional title costs one HTTP fetch + one LLM call (~$0.02 — trivial). The cost of *missing* a title is structural: the second statute body never enters pass 2's snapshot, and downstream extraction silently undercounts.
 
 ### 3. Only URLs from the snapshot.
 

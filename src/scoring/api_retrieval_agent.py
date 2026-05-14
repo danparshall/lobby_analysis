@@ -449,17 +449,54 @@ def _build_justia_link_tsv(html: str, parent_url: str) -> str:
             continue
         if not url_path.startswith(namespace):
             continue
-        # One segment deeper only — tail (after stripping any trailing /)
-        # must not contain a further /.
+        # One segment deeper, with a single narrow exception for the
+        # ``Foo/Foo.html`` pattern (Justia's WY state-year-index uses this
+        # exclusively: every title link is `TitleN/TitleN.html`). Without
+        # the exception, pass-1's prompt would be starved of links for
+        # WY-style states.
         tail = url_path[len(namespace):].rstrip("/")
-        if not tail or "/" in tail:
+        if not tail:
             continue
+        if "/" in tail:
+            parts = tail.split("/")
+            is_foo_foo_html = (
+                len(parts) == 2
+                and parts[1].endswith(".html")
+                and parts[1][: -len(".html")] == parts[0]
+            )
+            if not is_foo_foo_html:
+                continue
         if url in seen:
             continue
         seen.add(url)
-        anchor = a.get_text(strip=True)
+        anchor = _link_description(a)
         entries.append((url, anchor))
     return "\n".join(f"{url}\t{anchor}" for url, anchor in entries)
+
+
+def _link_description(a) -> str:
+    """Build a richer description than ``a.get_text()`` alone.
+
+    Justia uses two HTML patterns for its index pages:
+    - ``<li><a>Title 28 - Legislature</a></li>`` — anchor text is informative.
+    - ``<tr><td><a>TITLE III</a></td><td>LEGISLATIVE BRANCH; COMMISSIONS</td></tr>``
+      — anchor text is just the Roman numeral; the subject sits in a sibling
+      ``<td>``. Without enrichment, pass-1 can't tell Title III from Title IX.
+
+    Strategy: walk up to the nearest ``<tr>`` or ``<li>`` (or ``<dt>``)
+    ancestor and use the full container text. For ``<dt>``, also pull in
+    the next-sibling ``<dd>`` text (definition-list pattern).
+    """
+    parent_row = a.find_parent(["tr", "li", "dt"])
+    if parent_row is None:
+        return a.get_text(strip=True)
+    parts = parent_row.get_text(" ", strip=True).split()
+    if parent_row.name == "dt":
+        dd = parent_row.find_next_sibling("dd")
+        if dd is not None:
+            parts.extend(dd.get_text(" ", strip=True).split())
+    text = " ".join(parts)
+    return text if text else a.get_text(strip=True)
 
 
 async def _fetch_via_client(client: JustiaFetcher, url: str) -> str:
