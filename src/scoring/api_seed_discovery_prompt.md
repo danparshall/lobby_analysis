@@ -75,6 +75,15 @@ When in doubt, mark `support_chapter` and explain the connection in `rationale`.
 
 No preamble, no chain-of-thought, no markdown fences, no closing summary. JSON only.
 
+### 6. When a "Fetched state index" section is provided below, treat its URL slugs and casing as ground truth.
+
+If the section labelled "Fetched state index" later in this prompt is non-empty, it is a live snapshot of the links Justia exposes at `https://law.justia.com/codes/<state-slug>/<year>/` for the requested pair. That snapshot wins over both your priors and the in-context examples when they disagree:
+
+- **Copy URL casing literally** from the snapshot. If the snapshot shows `Title28`, do not write `title28`. If it shows `chapter-305-registration-of-lobbyists`, do not abbreviate it.
+- **Do not propose URLs deeper than the snapshot exposes.** If the snapshot lists a single chapter-leaf `chapter7.html` for the relevant chapter, do not invent per-section URLs underneath it. If it lists per-section leaves (e.g., `13.61.html`, `13.62.html`, ...), propose those leaves directly.
+- The snapshot includes the full state index — most entries will be unrelated chapters or navigation. Filter by the in-scope criteria in Rule 4; choose your URLs **from** the snapshot.
+- If the snapshot is missing or empty, fall back to the in-context examples as guidance.
+
 ## In-context examples (curated, human-verified at the 2010 vintage)
 
 Five distinct Justia URL conventions, drawn from the project's curated `LOBBYING_STATUTE_URLS` table.
@@ -200,6 +209,12 @@ Three separate lobbying statute bodies across two chapters of the Ohio Revised C
 ```
 
 Conventions illustrated above: **range-leaf** (CA), **full-chapter directory** (TX), **single-page codified act** (NY), **per-section leaf** (WI), **nested title/chapter with underscore-section leaves** (OH). Other states may use a sixth convention entirely.
+
+## Fetched state index (live snapshot of `https://law.justia.com/codes/<state-slug>/<year>/`)
+
+{state_index}
+
+If the section above is empty between the headers, no live index was supplied and you should rely on the in-context examples as best you can. Otherwise, apply Rule 6.
 
 ## Now produce the output
 

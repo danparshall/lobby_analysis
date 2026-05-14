@@ -10,6 +10,45 @@
 
 ## Session log (newest first)
 
+### 2026-05-14 — B2 canary: state-index inlined into discovery prompt (WY 2010 re-test)
+
+- **Convo:** `convos/20260514_b2_justia_index_inline_recanary.md` (pending, end-of-session)
+- **Results:** [`results/20260514_wy2010_b2_index_inline_hit_rate.md`](results/20260514_wy2010_b2_index_inline_hit_rate.md)
+
+#### Topics Explored
+
+- Inline a live snapshot of Justia's state-year index page into the discovery prompt to ground the model on URL casing and exposed granularity.
+- Add Rule 6 to the prompt forbidding extrapolation beyond the snapshot.
+- Re-test WY 2010 against the B1 0/9 baseline.
+
+#### Provisional Findings
+
+- **Mode 1 (casing) — fixed by construction.** Model sees `Title28` literally and copies it; the lowercase `title28` that B1 produced and 404'd is gone.
+- **Mode 2 (invented section URLs) — fixed via conservatism, not correctness.** Rule 6 makes the model refuse to propose URLs deeper than the snapshot exposes. Model explicitly notes "to avoid hallucinated deeper paths."
+- **Net statute-leaf hit rate: 0 / 1.** The single URL proposed is the title-index page (`Title28/Title28.html`), not the lobbying-chapter leaf (`Title28/chapter7.html`). Both are live 206; the title-index page is one hop short of the actual statute body.
+- **Token budget came in well under the diagnostic's estimate** — ~1k tokens added for the snapshot, not ~10k. Range-GET `bytes=0-65535` is enough to capture the 43 title-level links on the WY 2010 index page.
+- **HEAD-check defect uncovered.** Original `head_check()` used UA + Range only; that header set is sufficient for some Justia paths (the ground-truth chapter URL) but not others (the title-index page). Initial canary run reported `Title28/Title28.html` as 403 → fixed by extending `head_check` to the same rich-header set as `fetch_state_index` (added Accept, Accept-Language, Connection, Upgrade-Insecure-Requests). Verification correctness now decoupled from per-path anti-bot heuristics.
+- **Justia anti-bot characterization:** plain GET 403s the index page even with a browser UA. Range-GET (`bytes=0-N`) gets 206 — the heuristic seems to prefer "browser doing partial fetch" over "scraper grabbing whole page."
+
+#### Decisions Made
+
+- Prompt template v2: added `{state_index}` placeholder section + Rule 6.
+- `api_retrieval_agent.py`: added `state_index: str = ""` kwarg to `_format_prompt` and `discover_urls_for_pair`. Backward-compat via `str.format` silently ignoring unused kwargs — confirmed by all 9 pre-existing tests still passing.
+- `discover_urls_for_pairs` (batch fan-out) **not** updated yet — full fan-out is gated on the B2 vs B3 decision, no point adding the batch surface area before knowing which architecture ships.
+- Header set for HEAD verification standardized to match the fetcher's, captured in the canary script.
+
+#### Open Questions
+
+- **Is B3 the right next step?** Strong evidence yes: B2 is structurally one hop short for any state whose statute lives below the title level, and that's the common case. Cost projection for 350-pair fan-out: ~$25–30 (B3) vs ~$10–14 (B2) — both trivial; the deciding factor is recall.
+- **Is the title-index page useful enough as a statute artifact** that "stop at title-level" is acceptable? Probably not — `Title28/Title28.html` is a TOC, not statutory text; the downstream Playwright fetcher would need to follow links from there anyway, which is just B3 with the orchestration moved into the fetcher instead of the discovery agent.
+- Should `scripts/canary_*.py` be added to `.gitignore` (carried over from B1; still open).
+
+#### Next Steps
+
+- Discuss B3 architecture: two-pass discovery (state index → pick title → fetch title index → propose chapter URLs from the title-level snapshot).
+- If green-lit, write the B3 plan: title-page fetcher (parameterized `fetch_state_index`), two-call orchestrator, pass-2 prompt variant or extended `{state_index}` semantics.
+- Canary B3 against WY 2010 + one or two more pilot states before fan-out.
+
 ### 2026-05-14 — Canary call (WY 2010) + URL-convention gap diagnosis
 
 - **Convo:** [`convos/20260514_canary_wy2010_url_convention_gap.md`](convos/20260514_canary_wy2010_url_convention_gap.md)

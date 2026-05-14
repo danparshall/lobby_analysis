@@ -79,9 +79,23 @@ class ProposedURL:
         )
 
 
-def _format_prompt(state: str, vintage: int, template: str) -> str:
-    """Fill `{state}` and `{vintage}` placeholders into the prompt template."""
-    return template.format(state=state, vintage=vintage)
+def _format_prompt(
+    state: str,
+    vintage: int,
+    template: str,
+    *,
+    state_index: str = "",
+) -> str:
+    """Fill `{state}`, `{vintage}`, and `{state_index}` placeholders.
+
+    `state_index` is an optional live-snapshot of `https://law.justia.com/
+    codes/<state-slug>/<year>/` to inline in the prompt. When the template
+    does not reference `{state_index}`, the extra kwarg is silently ignored
+    by `str.format` — backwards-compatible with index-free templates.
+    """
+    return template.format(
+        state=state, vintage=vintage, state_index=state_index
+    )
 
 
 def _parse_response_text(
@@ -134,17 +148,25 @@ async def discover_urls_for_pair(
     state: str,
     vintage: int,
     prompt_template: str,
+    state_index: str = "",
     model: str = "claude-sonnet-4-6",
     max_output_tokens: int = 4096,
 ) -> list[ProposedURL]:
     """Discover Justia URLs for a single (state, vintage) pair.
+
+    `state_index`, if non-empty, is inlined into the prompt's
+    `{state_index}` placeholder — a live snapshot of Justia's state-year
+    index page for the pair, used to ground the model's URL casing and
+    granularity choices.
 
     Returns the parsed `ProposedURL` list. Schema violations (non-Justia
     URLs) are silently dropped from the return value — callers that need
     to audit them should use `discover_urls_for_pairs`, which records
     them in the per-pair checkpoint.
     """
-    prompt = _format_prompt(state, vintage, prompt_template)
+    prompt = _format_prompt(
+        state, vintage, prompt_template, state_index=state_index
+    )
     response = await client.messages.create(
         model=model,
         max_tokens=max_output_tokens,
