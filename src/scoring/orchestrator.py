@@ -840,7 +840,7 @@ def cmd_build_smr(args: argparse.Namespace) -> int:
         print(json.dumps({"error": f"PRI score CSV not found: {pri_csv}"}, indent=2))
         return 2
 
-    compendium_csv = repo_root / "data" / "compendium" / "disclosure_items.csv"
+    compendium_csv = repo_root / "compendium" / "disclosure_items.csv"
 
     with pri_csv.open() as f:
         rows = list(csv.DictReader(f))

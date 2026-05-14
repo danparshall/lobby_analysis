@@ -25,7 +25,7 @@ from scoring.smr_projection import project_pri_scores_to_smr
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-COMPENDIUM_CSV = REPO_ROOT / "data" / "compendium" / "disclosure_items.csv"
+COMPENDIUM_CSV = REPO_ROOT / "compendium" / "disclosure_items.csv"
 
 REAL_RUNS = {
     "CA": (2010, "590e9123a624", "California"),
