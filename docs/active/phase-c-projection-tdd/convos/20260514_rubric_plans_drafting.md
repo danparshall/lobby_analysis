@@ -115,3 +115,7 @@ After Sub-1, the chain continues: Sub-2 (Newmark 2017 → 2005), Sub-3 (FOCAL pl
 ## Session token cost
 
 This sub-session ran on Claude Code subscription. Sub-1 onward expected to run on user's API key via headless `claude -p` (or new Claude Code sessions with `ANTHROPIC_API_KEY` set), per the user's billing motivation.
+
+## Captured Tasks
+
+- [#9: Document compendium row-naming taxonomy; trace every name to source](https://github.com/danparshall/lobby_analysis/issues/9) — captured 2026-05-14 (surfaced during Sub-1 plan-drafting when the `*_report_*` → `*_spending_report_*` rename pattern revealed that broader naming conventions live across scattered docs without a canonical taxonomy reference)
