@@ -56,6 +56,28 @@ By chunk, legal vs practical mix:
 
 **Implication:** 5 chunks (`search_portal_capabilities`, `data_quality_and_access`, `disclosure_documents_online`, `lobbyist_directory_and_website`, and arguably `oversight_and_government_subjects` if its 2 govt_agencies rows are minor) don't need statute retrieval at all. Per-chunk retrieval lets us short-circuit those.
 
+### Aggregate-cost lens — surfaced by user mid-session as load-bearing for Q1
+
+The chunks brainstorm established that **per-chunk LLM dispatch is cheap *per call* under prompt caching** (statute in cached `system`, chunk content uncached). That framing makes per-chunk retrieval (Q1 option (a)) look attractive. But the user flagged at session end:
+
+> "Even if it's relatively cheap per chunk, I'll have to do this 50x, for multiple years... and then we'll be doing that multiple times as we adjust the 'user prompt' to make sure we're correctly extracting."
+
+Concrete arithmetic — **per-chunk dispatch** at production rollout:
+- ~10 legal-axis-bearing chunks (per the 15-chunk manifest, after short-circuiting the 5 fully-practical chunks)
+- × 50 states (eventual target)
+- × ~4 vintages per state (e.g., the OH multi-vintage validation set: 2007, 2010, 2015, 2025)
+- × ~3-5 prompt-tuning iterations during design
+
+= **6,000–10,000 retrieval calls per design cycle.**
+
+**Per-(state, vintage) dispatch** at the same rollout:
+- × 1 retrieval call per state-vintage (instead of ~10)
+- = **600–1,000 retrieval calls per design cycle.**
+
+Order-of-magnitude difference. Even with statute caching making each call's *marginal* cost low, the **uncached prefix** (chunk preamble + per-row instructions + JSON output) compounds 10× when per-chunk. This is a real economic argument *against* per-chunk dispatch.
+
+**Implication for Q1:** Don't lock on the "caching makes per-chunk cheap" framing alone. Per-(state, vintage) dispatch — option (b) of Q1 — has a clear aggregate-cost advantage that the per-call view obscures. The tradeoff vs per-chunk is bundle-size (does the single bundle fit Claude's context for all 131 legal-axis cells?) and granularity (does the agent get confused by 131 cells at once?). Iter-1's empirical baseline is per-chunk against 7 cells; per-(state, vintage) is untested empirically. Worth surfacing this lens explicitly in the next session's Q1 ask.
+
 ## Phase 2 — Architectural decisions
 
 (Filled in as the brainstorm resolves each Q.)
