@@ -4,6 +4,7 @@
 
 **Originating conversation:** [`../convos/20260514_chunks_brainstorm.md`](../convos/20260514_chunks_brainstorm.md) — Q1–Q7 architectural decisions.
 **Antecedent agenda:** [`20260514_chunks_plan_sketch.md`](20260514_chunks_plan_sketch.md).
+**Implemented:** [`../convos/20260514_chunks_implementation.md`](../convos/20260514_chunks_implementation.md) — Phases 0-7 executed under strict TDD on 2026-05-14 (commits `087edb6` → `65fa872`); 3 minor plan deviations resolved + documented in convo.
 
 **Predecessor (just landed):** [`20260514_v2_pydantic_cell_models_implementation_plan.md`](20260514_v2_pydantic_cell_models_implementation_plan.md) produced `src/lobby_analysis/models_v2/` with the 186-entry `CompendiumCellSpec` registry this function consumes.
 

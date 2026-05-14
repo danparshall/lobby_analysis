@@ -27,6 +27,35 @@ The `data/` symlink convention from `skills/use-worktree/SKILL.md` was **skipped
 
 (Newest first.)
 
+### 2026-05-14 (chunks impl) — chunks_v2 module landed under strict TDD (Phases 0-7)
+
+Convo: [`convos/20260514_chunks_implementation.md`](convos/20260514_chunks_implementation.md)
+Plan executed: [`plans/20260514_chunks_implementation_plan.md`](plans/20260514_chunks_implementation_plan.md)
+Handoff consumed: [`plans/_handoffs/20260514_chunks_implementation_handoff.md`](plans/_handoffs/20260514_chunks_implementation_handoff.md)
+
+**Executed the chunks implementation plan end-to-end under strict TDD.** 24 tests written first (RED, commit `8450bd6`), then five GREEN commits in sequence — each turned exactly its target test file green. Full repo suite went **374 → 400 pass** (+26 chunks tests), 5 skip, 3 pre-existing `test_pipeline.py` `FileNotFoundError`s unchanged (user-approved baseline carried from the cell-models session).
+
+**The deliverable: `src/lobby_analysis/chunks_v2/`.** A pure-data partition layer parallel to `models_v2/`:
+
+- `chunks.py` — `Chunk` and `ChunkDef` frozen dataclasses (both validated by `__post_init__`: snake_case `chunk_id`, non-empty tuple `cell_specs` / `member_row_ids`, `axis_summary ∈ {legal, practical, mixed}`) + `build_chunks(registry=None, manifest=None) -> list[Chunk]`.
+- `manifest.py` — `CHUNKS_V2: tuple[ChunkDef, ...]` — the hand-curated 15-chunk manifest covering 181 TSV rows = 186 cells, verified against the real registry both at plan-write time and in Phase 0 of this session.
+- `__init__.py` — public exports: `Chunk`, `ChunkDef`, `build_chunks`, `CHUNKS_V2`.
+- `docs.md` — module-level documentation with the 15-chunk table + invariant summary + downstream-consumer pointers.
+
+**Plan deviations surfaced and resolved (3, all minor):**
+
+1. **Architecture-diagram vs Phase-2-wording inconsistency.** The plan placed `ChunkDef` in `manifest.py` per the diagram, but Phase 2 said to implement both `Chunk` and `ChunkDef` in `chunks.py`. Went with Phase 2 wording — splitting `ChunkDef` into `manifest.py` would have induced a circular import once `build_chunks()` lands (chunks.py needs `CHUNKS_V2`; manifest.py would need `ChunkDef`). Recorded in convo + commit `487e713`.
+2. **`build_chunks(manifest=CHUNKS_V2)` default-arg circular import.** Rewrote as `manifest: tuple[ChunkDef, ...] | None = None` with a lazy `from .manifest import CHUNKS_V2` inside the function body. Same caller behavior; eliminates the module-load cycle. Commit `c98ebd0`.
+3. **`ChunkDef.__post_init__` snake_case regex fix.** Plan's draft used `chunk_id.replace("_", "").isalnum() and chunk_id[0].isalpha()` which lets `"BadCaps"` through. Replaced with `re.fullmatch(r"^[a-z][a-z0-9_]*$", chunk_id)` to match the plan's test #4 explicitly. Commit `487e713`.
+
+**No manifest refinements applied this session.** The plan flagged 3 potential refinement targets (the 2-row `enforcement_and_audits` chunk, the `other_lobbyist_filings` catch-all assignment of `lobbyist_or_principal_spending_report_includes_contributions_received_for_lobbying`, the legal/practical mix in `oversight_and_government_subjects`). All hold under the partition invariant; brief-writer brainstorm can revisit if a real reason surfaces.
+
+**Phase-by-phase invariant: each phase's commit turns its target test file green.** Pre-flight reads + handoff verification confirmed working tree clean, `4c49888 retrieval_v2: scaffolding` from the prior killed session on HEAD (left untouched per handoff), and `src/lobby_analysis/chunks_v2/` non-existent on any branch. Phase 0's one-off coverage script (`/tmp/verify_chunks_coverage.py`) confirmed 186/186 cell coverage against the real registry — no TSV drift since plan-write time.
+
+**Commits this session (7):** `087edb6` scaffolding → `8450bd6` RED tests → `487e713` Chunk+ChunkDef → `b9731ee` CHUNKS_V2 manifest → `c98ebd0` build_chunks → `54949c4` __init__ exports → `65fa872` ruff format pass.
+
+**Next session.** Retrieval implementation sub-branch is unblocked — Phase 1 onward of [`plans/20260514_retrieval_implementation_plan.md`](plans/20260514_retrieval_implementation_plan.md) can now run (Phase 0 already shipped at `4c49888` from the killed parallel session; this session deliberately did not touch `retrieval_v2/`). After retrieval lands, brief-writer is the cleaner next brainstorm (orthogonal to retrieval; depends only on cells + chunks, both shipped); scorer-prompt rewrite waits on retrieval bundle shape.
+
 ### 2026-05-14 (pickup) — Retrieval brainstorm completed; Citations API pivot; impl plan written
 
 Convo: [`convos/20260514_retrieval_brainstorm.md`](convos/20260514_retrieval_brainstorm.md) (Phase 2 added — locked Q's + audit table)
