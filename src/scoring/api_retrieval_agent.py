@@ -24,6 +24,7 @@ from __future__ import annotations
 import asyncio
 import json
 import os
+import re
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -32,6 +33,23 @@ from urllib.parse import urlparse
 
 
 JUSTIA_HOSTNAME = "law.justia.com"
+
+
+# Matches a fenced code block in a model response, optionally with a language
+# tag (e.g. ```json). The capture group holds the inner JSON text.
+_FENCED_JSON_RE = re.compile(
+    r"```(?:json|JSON)?\s*\n?(.*?)\n?```",
+    re.DOTALL,
+)
+
+
+def _default_availability() -> dict:
+    """Shape returned when the LLM omits availability metadata."""
+    return {
+        "justia_unavailable": False,
+        "alternative_year": None,
+        "notes": "",
+    }
 
 
 class SchemaViolation(ValueError):
@@ -66,13 +84,26 @@ def _format_prompt(state: str, vintage: int, template: str) -> str:
     return template.format(state=state, vintage=vintage)
 
 
-def _parse_response_text(text: str) -> tuple[list[ProposedURL], list[dict]]:
-    """Extract `{"urls": [...]}` from the LLM response text.
+def _parse_response_text(
+    text: str,
+) -> tuple[list[ProposedURL], list[dict], dict]:
+    """Extract `{"urls": [...]}` plus availability metadata from the LLM response.
 
-    Returns (parsed_urls, schema_violations). Violations are dicts of
-    `{"url": ..., "reason": ...}` for entries the parser rejected.
+    Returns `(parsed_urls, schema_violations, availability)`:
+    - `parsed_urls`: list of `ProposedURL` objects whose hostname is Justia.
+    - `schema_violations`: dicts of `{"url": ..., "reason": ...}` for entries
+      the parser rejected (e.g., non-Justia hostnames).
+    - `availability`: `{"justia_unavailable": bool, "alternative_year": int|None,
+      "notes": str}` — the LLM's coverage signal. When the LLM omits these
+      fields, the defaults from `_default_availability()` are used.
+
+    Tolerant of markdown-fenced JSON (``` or ```json) and leading prose
+    before the fence. Strict JSON without fences is also accepted.
     """
-    data = json.loads(text)
+    fenced = _FENCED_JSON_RE.search(text)
+    json_text = fenced.group(1) if fenced else text
+    data = json.loads(json_text)
+
     raw_urls = data.get("urls", [])
     parsed: list[ProposedURL] = []
     violations: list[dict] = []
@@ -81,7 +112,16 @@ def _parse_response_text(text: str) -> tuple[list[ProposedURL], list[dict]]:
             parsed.append(ProposedURL.from_raw(entry))
         except SchemaViolation as e:
             violations.append({"url": entry.get("url", ""), "reason": str(e)})
-    return parsed, violations
+
+    availability = _default_availability()
+    if "justia_unavailable" in data:
+        availability["justia_unavailable"] = bool(data["justia_unavailable"])
+    if "alternative_year" in data:
+        availability["alternative_year"] = data["alternative_year"]
+    if "notes" in data:
+        availability["notes"] = data["notes"] or ""
+
+    return parsed, violations, availability
 
 
 def _now_iso() -> str:
@@ -94,7 +134,7 @@ async def discover_urls_for_pair(
     state: str,
     vintage: int,
     prompt_template: str,
-    model: str = "claude-sonnet-4-7",
+    model: str = "claude-sonnet-4-6",
     max_output_tokens: int = 4096,
 ) -> list[ProposedURL]:
     """Discover Justia URLs for a single (state, vintage) pair.
@@ -111,7 +151,7 @@ async def discover_urls_for_pair(
         messages=[{"role": "user", "content": prompt}],
     )
     text = response.content[0].text
-    parsed, _violations = _parse_response_text(text)
+    parsed, _violations, _availability = _parse_response_text(text)
     return parsed
 
 
@@ -134,7 +174,7 @@ async def discover_urls_for_pairs(
     max_concurrent: int = 8,
     checkpoint_root: Path,
     prompt_template: str,
-    model: str = "claude-sonnet-4-7",
+    model: str = "claude-sonnet-4-6",
     max_output_tokens: int = 4096,
 ) -> dict[tuple[str, int], list[ProposedURL]]:
     """Discover Justia URLs for many pairs concurrently, with checkpoint resume.
@@ -152,7 +192,9 @@ async def discover_urls_for_pairs(
     pairs = list(pairs)
     semaphore = asyncio.Semaphore(max_concurrent)
     failures_path = checkpoint_root / "failures.jsonl"
+    availability_path = checkpoint_root / "availability.jsonl"
     failures_lock = asyncio.Lock()
+    availability_lock = asyncio.Lock()
     results: dict[tuple[str, int], list[ProposedURL]] = {}
 
     async def process_pair(state: str, vintage: int) -> None:
@@ -189,23 +231,46 @@ async def discover_urls_for_pairs(
                 return
 
         text = response.content[0].text
-        parsed, violations = _parse_response_text(text)
+        parsed, violations, availability = _parse_response_text(text)
+        retrieved_at = _now_iso()
 
         checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
         checkpoint = {
             "prompt": prompt,
             "model": model,
             "response": text,
-            "retrieved_at": _now_iso(),
+            "retrieved_at": retrieved_at,
             "parsed_urls": [
                 {"url": p.url, "role": p.role, "rationale": p.rationale}
                 for p in parsed
             ],
             "schema_violations": violations,
+            "availability": availability,
         }
         checkpoint_path.write_text(
             json.dumps(checkpoint, indent=2), encoding="utf-8"
         )
+
+        if availability["justia_unavailable"]:
+            async with availability_lock:
+                availability_path.parent.mkdir(parents=True, exist_ok=True)
+                with availability_path.open("a", encoding="utf-8") as f:
+                    f.write(
+                        json.dumps(
+                            {
+                                "state": state,
+                                "vintage": vintage,
+                                "justia_unavailable": True,
+                                "alternative_year": availability[
+                                    "alternative_year"
+                                ],
+                                "notes": availability["notes"],
+                                "retrieved_at": retrieved_at,
+                            }
+                        )
+                        + "\n"
+                    )
+
         results[(state, vintage)] = parsed
 
     await asyncio.gather(*(process_pair(s, v) for s, v in pairs))

@@ -10,6 +10,45 @@
 
 ## Session log (newest first)
 
+### 2026-05-14 — Canary call (WY 2010) + URL-convention gap diagnosis
+
+- **Convo:** [`convos/20260514_canary_wy2010_url_convention_gap.md`](convos/20260514_canary_wy2010_url_convention_gap.md)
+- **Results:** [`results/20260514_wy2010_canary_url_hit_rate.md`](results/20260514_wy2010_canary_url_hit_rate.md)
+
+#### Topics Explored
+- Prereq gap analysis before canary (caught missing prompt template + non-existent model name `claude-sonnet-4-7`)
+- Phase 4 step 16: authored `src/scoring/api_seed_discovery_prompt.md` v1 with 5 in-context conventions (CA/TX/NY/WI/OH 2010; WY held out)
+- Parser hardening: tolerant ` ```json ` fence-stripping + availability metadata extraction (`justia_unavailable` / `alternative_year` / `notes`)
+- Batch availability side-channel: `<root>/availability.jsonl` line written when `justia_unavailable=true` (addresses plan §Edge cases #1)
+- Model name correction: `claude-sonnet-4-7` → `claude-sonnet-4-6` everywhere (Sonnet only goes up to 4.6 as of 2026-05-14 per `models.list()`; the `-4-7` line is Opus-only)
+- WY 2010 canary execution against real `anthropic.AsyncAnthropic` (~$0.018 / 4,941+921 tokens)
+- HEAD verification via `httpx` + browser User-Agent + GET-range fallback (bare httpx requests 403 against Justia's anti-bot)
+
+#### Provisional Findings
+- **Pipeline works end-to-end.** SDK auth + prompt rendering + parser + checkpoint all clean.
+- **Semantic recall is fine** — model correctly IDs WY Title 28 Ch. 7 as the lobbying statute.
+- **0 of 9 proposed URLs resolve on Justia.** Two failure modes, both proposal-side: (1) lowercase `title28` vs Justia's case-sensitive capital-T `Title28`; (2) 8 invented `section28-7-NNN/` URLs (WY 2010 is a single chapter-leaf `chapter7.html`, not per-section).
+- **HEAD verification can't rescue proposal-side failures.** This invalidates the plan's "wide net + HEAD filter" architecture for states with sui-generis Justia conventions.
+- Canary cost: ~$0.018. **The canary did its job** — caught the architecture gap before a 350-pair fan-out at ~$6 would have returned ~0% hit rate.
+- Justia anti-bot: bare httpx HEAD 403s; need browser UA + GET-range. Affects plan Phase 2 `url_verification.py` design.
+
+#### Decisions Made
+- Sonnet 4.6 confirmed as default (user-approved); plan + STATUS row + code corrected.
+- WY held out of in-context examples — canary integrity preserved.
+- Tolerant JSON parsing + availability metadata both landed defensively (TDD: tests 7-9 written + passing alongside existing 6).
+- Architecture decision deferred to next session: **B2 first** (pre-fetch state index page, inline in prompt), with **B3** (two-pass discovery) gated on B2 results — B2's work is a strict subset of B3 so trying B2 first is no-regret.
+
+#### Open Questions
+- Will B2 alone close the URL hit-rate gap, or will we need B3?
+- How many `(state, vintage)` pairs across the 50-state × 7-vintage matrix will be `justia_unavailable`? Unknown until B2 runs.
+- Canary script `scripts/canary_discovery.py` not gitignored — should `scripts/canary_*.py` be added to `.gitignore`?
+- Should `url_verification.py` standardize the browser-UA + GET-range pattern given Justia's anti-bot 403s?
+
+#### Next Steps
+- B2 session: pre-fetch `https://law.justia.com/codes/<state>/<year>/`, inline in discovery prompt, re-canary WY 2010.
+- If B2 hit rate is acceptable, canary the other 4 pilot states at 2010 + at 2015 before full fan-out.
+- If B2 hit rate is poor, escalate to B3 (two-pass: state index → chapter index → leaves).
+
 ### 2026-05-14 — Phase 0-1 implementation
 
 *(no convo summary — session ended without finish-convo flow; ~150k of the session's tokens went to diagnosing the silent-deny detour described below)*

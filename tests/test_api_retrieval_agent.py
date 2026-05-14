@@ -30,7 +30,7 @@ def _fake_message(text: str) -> SimpleNamespace:
     return SimpleNamespace(
         content=[SimpleNamespace(type="text", text=text)],
         usage=SimpleNamespace(input_tokens=100, output_tokens=50),
-        model="claude-sonnet-4-7",
+        model="claude-sonnet-4-6",
         role="assistant",
         stop_reason="end_turn",
     )
@@ -208,7 +208,7 @@ async def test_checkpoint_records_prompt_response_and_timestamp(tmp_path: Path) 
         max_concurrent=1,
         checkpoint_root=tmp_path,
         prompt_template=MINIMAL_TEMPLATE,
-        model="claude-sonnet-4-7",
+        model="claude-sonnet-4-6",
     )
     finished_at = time.time()
 
@@ -220,7 +220,7 @@ async def test_checkpoint_records_prompt_response_and_timestamp(tmp_path: Path) 
     assert "STATE: CA" in data["prompt"]
     assert "VINTAGE: 2015" in data["prompt"]
     # Model: the model parameter we asked for.
-    assert data["model"] == "claude-sonnet-4-7"
+    assert data["model"] == "claude-sonnet-4-6"
     # Response: the raw response text (so we can reparse if schema changes).
     assert url in data["response"]
     # Timestamp: ISO-8601 or epoch; either way, parseable + in the right window.
@@ -251,7 +251,7 @@ async def test_resume_skips_existing_checkpoint(tmp_path: Path) -> None:
     ca_dir.mkdir(parents=True)
     sentinel_checkpoint = {
         "prompt": "MARKER_PROMPT",
-        "model": "claude-sonnet-4-7",
+        "model": "claude-sonnet-4-6",
         "response": '{"urls": [{"url": "' + sentinel_url + '", "role": "core_chapter", "rationale": "marker"}]}',
         "retrieved_at": "2026-05-13T12:00:00+00:00",
         "parsed_urls": [
@@ -399,3 +399,162 @@ async def test_non_justia_hostnames_are_rejected(tmp_path: Path) -> None:
     assert any(v.get("url") == bad_url for v in violations), (
         f"schema_violations should record dropped {bad_url}, got {violations}"
     )
+
+
+# ---------------------------------------------------------------------------
+# Test 7 — parser tolerates ```json markdown fences
+# ---------------------------------------------------------------------------
+
+
+def test_parser_strips_markdown_fences() -> None:
+    """Models sometimes wrap JSON in ```json fences despite the prompt asking
+    for raw JSON. The parser must tolerate this rather than raising — fence
+    discipline is hard for LLMs and shouldn't be a hard failure mode."""
+    from scoring.api_retrieval_agent import _parse_response_text
+
+    url = "https://law.justia.com/codes/california/2015/gov/86100-86118.html"
+    raw_json = json.dumps({"urls": [
+        {"url": url, "role": "core_chapter", "rationale": "Art 1."},
+    ]})
+
+    # Variant 1: ```json ... ``` (most common)
+    fenced_json = f"```json\n{raw_json}\n```"
+    parsed, _violations, _avail = _parse_response_text(fenced_json)
+    assert [p.url for p in parsed] == [url], (
+        f"fenced JSON should parse cleanly, got {parsed}"
+    )
+
+    # Variant 2: ``` (no language tag)
+    fenced_bare = f"```\n{raw_json}\n```"
+    parsed, _violations, _avail = _parse_response_text(fenced_bare)
+    assert [p.url for p in parsed] == [url], "bare-fence JSON should parse cleanly"
+
+    # Variant 3: leading prose + fenced JSON
+    with_preamble = f"Sure, here's the JSON:\n```json\n{raw_json}\n```"
+    parsed, _violations, _avail = _parse_response_text(with_preamble)
+    assert [p.url for p in parsed] == [url], (
+        "JSON with preamble + fence should parse cleanly"
+    )
+
+
+# ---------------------------------------------------------------------------
+# Test 8 — parser surfaces justia_unavailable / alternative_year metadata
+# ---------------------------------------------------------------------------
+
+
+def test_parser_extracts_availability_metadata() -> None:
+    """The parser must distinguish three cases:
+      (a) urls present, justia_unavailable=false  → normal
+      (b) urls present, alternative_year set      → year substitution
+      (c) urls empty, justia_unavailable=true     → no Justia coverage at all
+    Case (c) cannot be confused with a model that just returned [] because
+    it had no answer — the metadata is the signal."""
+    from scoring.api_retrieval_agent import _parse_response_text
+
+    # Case (a): normal response, defaults
+    raw_a = json.dumps({
+        "urls": [{"url": "https://law.justia.com/codes/ca/2015/gov/86100-86118.html",
+                  "role": "core_chapter", "rationale": "r"}],
+    })
+    _, _, avail_a = _parse_response_text(raw_a)
+    assert avail_a["justia_unavailable"] is False
+    assert avail_a["alternative_year"] is None
+
+    # Case (b): year substitution
+    raw_b = json.dumps({
+        "urls": [{"url": "https://law.justia.com/codes/texas/2009/government-code/",
+                  "role": "core_chapter", "rationale": "r"}],
+        "alternative_year": 2009,
+        "notes": "TX 2010 not on Justia",
+    })
+    _, _, avail_b = _parse_response_text(raw_b)
+    assert avail_b["justia_unavailable"] is False
+    assert avail_b["alternative_year"] == 2009
+    assert "TX 2010" in avail_b["notes"]
+
+    # Case (c): justia_unavailable true, empty url list
+    raw_c = json.dumps({
+        "urls": [],
+        "justia_unavailable": True,
+        "alternative_year": None,
+        "notes": "Justia hosts no CO statutes before 2016.",
+    })
+    parsed_c, _, avail_c = _parse_response_text(raw_c)
+    assert parsed_c == []
+    assert avail_c["justia_unavailable"] is True
+    assert "no CO statutes" in avail_c["notes"]
+
+
+# ---------------------------------------------------------------------------
+# Test 9 — batch writes availability.jsonl line when justia_unavailable=true
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.asyncio
+async def test_batch_records_unavailable_pairs_in_availability_log(tmp_path: Path) -> None:
+    """When the model reports justia_unavailable=true, the batch must record
+    this distinctly from successful empty-result calls. The mechanism: a
+    line in `<root>/availability.jsonl` with state, vintage, alternative_year,
+    notes, and a timestamp. The per-pair checkpoint is still written (so the
+    full response is preserved per experiment-data-integrity)."""
+    from scoring.api_retrieval_agent import discover_urls_for_pairs
+
+    co_url = "https://law.justia.com/codes/colorado/2016/title-24/article-6/"
+
+    def responder(pair):
+        state, vintage = pair
+        if state == "CO" and vintage == 2010:
+            # CO pre-2016 has no Justia coverage.
+            return json.dumps({
+                "urls": [],
+                "justia_unavailable": True,
+                "alternative_year": None,
+                "notes": "Justia hosts no CO statutes before 2016.",
+            })
+        if state == "CO" and vintage == 2016:
+            return json.dumps({
+                "urls": [{"url": co_url, "role": "core_chapter",
+                          "rationale": "Title 24 Art 6 (Lobbyist Reg)."}],
+                "justia_unavailable": False,
+                "alternative_year": None,
+                "notes": "",
+            })
+        raise AssertionError(f"unexpected pair {pair}")
+
+    client = FakeAsyncClient(responder=responder)
+
+    results = await discover_urls_for_pairs(
+        client,
+        pairs=[("CO", 2010), ("CO", 2016)],
+        max_concurrent=2,
+        checkpoint_root=tmp_path,
+        prompt_template=MINIMAL_TEMPLATE,
+    )
+
+    # availability.jsonl exists with exactly one line — for CO 2010.
+    availability_path = tmp_path / "availability.jsonl"
+    assert availability_path.exists(), (
+        "availability.jsonl must be written when any pair reports unavailable"
+    )
+    lines = [line for line in availability_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    assert len(lines) == 1, f"Expected 1 availability entry, got {len(lines)}: {lines}"
+    entry = json.loads(lines[0])
+    assert entry["state"] == "CO"
+    assert entry["vintage"] == 2010
+    assert entry["justia_unavailable"] is True
+    assert "no CO statutes" in entry["notes"]
+    assert "retrieved_at" in entry
+
+    # The per-pair checkpoint for CO 2010 still exists and preserves the full response.
+    co_2010_checkpoint = tmp_path / "CO" / "2010" / "discovered_urls.json"
+    assert co_2010_checkpoint.exists(), (
+        "checkpoint should still be written even for unavailable pairs"
+    )
+    cp = json.loads(co_2010_checkpoint.read_text(encoding="utf-8"))
+    assert cp["parsed_urls"] == []
+    assert "no CO statutes" in cp["response"]
+
+    # CO 2016 was a normal success — no availability entry, normal checkpoint.
+    assert results[("CO", 2016)][0].url == co_url
+    co_2016_checkpoint = tmp_path / "CO" / "2016" / "discovered_urls.json"
+    assert co_2016_checkpoint.exists()

@@ -98,7 +98,7 @@ NOTE: I will write *all* tests before I add any implementation behavior.
 
 4. Write `ProposedURL` dataclass with `url: str`, `role: str`, `rationale: str`, and `from_raw(...)` classmethod that enforces a Justia hostname.
 5. Write `_load_prompt(state, vintage, template_path)` that fills the seed-discovery prompt template with the target `(state, vintage)`. *Template is a new file at `src/scoring/api_seed_discovery_prompt.md` — see "Prompt template" section below.*
-6. Write `async def discover_urls_for_pair(client, state, vintage, *, prompt_template, model="claude-sonnet-4-7", max_output_tokens=...) -> list[ProposedURL]`. Returns the parsed list; raises on SDK error.
+6. Write `async def discover_urls_for_pair(client, state, vintage, *, prompt_template, model="claude-sonnet-4-6", max_output_tokens=...) -> list[ProposedURL]`. Returns the parsed list; raises on SDK error.
 7. Write `async def discover_urls_for_pairs(client, pairs, *, max_concurrent=8, checkpoint_root, prompt_template)` that fans out with an `asyncio.Semaphore`, checkpoints each result, resumes from existing checkpoints, and logs failures to `<checkpoint_root>/failures.jsonl`.
 8. Write checkpoint serialisation: `discovered_urls.json` schema includes `{prompt, model, response, retrieved_at, parsed_urls}` — full reproducibility per the experiment-data-integrity rule.
 9. Make tests 1-6 pass. Commit.
@@ -168,19 +168,19 @@ NOTE: I will write *all* tests before I add any implementation behavior.
 - Checkpoints live under `data/statutes/<state>/<vintage>/discovered_urls.json` — co-located with the eventual bundle so the full pipeline state for a pair is in one directory.
 - `failures.jsonl` is a sibling of `discovered_urls.json` at `data/statutes/failures.jsonl` (batch-level, not per-pair).
 - Existing `cmd_retrieve_statutes` consumes `LOBBYING_STATUTE_URLS` today; for discovered URLs, either (a) extend the subcommand to accept `--urls-from-checkpoint` or (b) merge discovered URLs back into a separate `DISCOVERED_STATUTE_URLS` dict at runtime. Lean (a): keeps curated and discovered separately auditable.
-- Prompt token budget: discovery prompts are short (~2k in, ~1k out per pair). 350 pairs × 3k tokens ≈ 1M tokens total. At `claude-sonnet-4-7` rates this is small (single-digit dollars for the full 50-state × 7-vintage run); still print an estimate at `--dry-run` and require explicit `--confirm-budget` on the full run as a guardrail. If discovery quality is poor on the canary, escalate to `claude-opus-4-7` for the full run; cost increases ~5× but stays bounded.
+- Prompt token budget: discovery prompts are short (~2k in, ~1k out per pair). 350 pairs × 3k tokens ≈ 1M tokens total. At `claude-sonnet-4-6` rates this is small (single-digit dollars for the full 50-state × 7-vintage run); still print an estimate at `--dry-run` and require explicit `--confirm-budget` on the full run as a guardrail. If discovery quality is poor on the canary, escalate to `claude-opus-4-7` for the full run; cost increases ~5× but stays bounded.
 - All paths in modules are relative to the worktree root via the existing `repo_root` argument pattern in `orchestrator.py`. No absolute paths in module code.
 
 **What could change:**
 
 - The data-year confidence flags in `20260514_rubric_data_years.md` (MEDIUM-LOW for Sunlight, CPI, Newmark 2017, PRI 2010) may tighten after the Sub-1/Sub-2/Sub-3 paper-methodology re-reads on `phase-c-projection-tdd`. If a vintage shifts by ±2 years we re-run discovery for that vintage only — checkpoints are per-pair so the blast radius is one vintage.
 - **HG 2007 split-vintage decision could be revisited** if it turns out the per-item-vintage mapping is too fiddly downstream. Reverting to a single-bundle-per-rubric model would require re-merging the 2002 + 2007 bundles, not re-fetching — so the cost of reversal is low.
-- If LLM URL hallucination rate is high enough that HEAD verification filters >30% of proposed URLs, prompt iteration is required and the discovery cost-per-pair rises. Plan picks `claude-opus-4-7` as the model; could downgrade to `claude-sonnet-4-7` if cost dominates.
+- If LLM URL hallucination rate is high enough that HEAD verification filters >30% of proposed URLs, prompt iteration is required and the discovery cost-per-pair rises. Plan picks `claude-opus-4-7` as the model; could downgrade to `claude-sonnet-4-6` if cost dominates.
 - The Anthropic SDK's `messages.create` API surface may shift between SDK versions; pin `anthropic` in `pyproject.toml`.
 
 **Questions**
 
-- Resolved (2026-05-14): default model is `claude-sonnet-4-7` for discovery. Escalate to opus only if canary quality is poor (HEAD-failure rate >30%, or repeated wrong-statute-body proposals).
+- Resolved (2026-05-14): default model is `claude-sonnet-4-6` for discovery. Escalate to opus only if canary quality is poor (HEAD-failure rate >30%, or repeated wrong-statute-body proposals).
 - Are we OK with this branch's `data/statutes/failures.jsonl` being checked into git (so failures are visible in code review) or should it live data-side only? Recommend gitignored — failures contain raw API responses that may be large.
 - Do we have a per-rubric mapping doc somewhere that says "PRI 2010 → fetch year 2010 with ±2yr tolerance, fall back to 2009 if 2010 missing"? If yes, the discovery code should consume it; if no, it's hardcoded in the orchestrator subcommand for now and lifted into config later.
 
