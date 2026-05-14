@@ -66,3 +66,5 @@ The harness must make the values at these rows readable by projection functions 
 ## Next session
 
 The kickoff plan sketch ([`../plans/20260514_kickoff_plan_sketch.md`](../plans/20260514_kickoff_plan_sketch.md)) lays out an ordered brainstorm agenda. Expected output of the kickoff session: an implementation plan (a real one, not a sketch) ready for the first TDD-able harness component.
+
+> **Executed 2026-05-14.** The brainstorm session ran and produced [`20260514_extraction_harness_brainstorm.md`](20260514_extraction_harness_brainstorm.md) (Phase 1 reading + Phase 2 architectural decisions) and [`../plans/20260514_v2_pydantic_cell_models_implementation_plan.md`](../plans/20260514_v2_pydantic_cell_models_implementation_plan.md) (the TDD-shaped first-component plan). For locked architectural decisions, the brainstorm convo is authoritative — the "Open architectural questions" section above is the pre-brainstorm agenda, not the locked output.

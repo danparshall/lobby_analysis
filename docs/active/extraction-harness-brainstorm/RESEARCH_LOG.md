@@ -27,6 +27,36 @@ The `data/` symlink convention from `skills/use-worktree/SKILL.md` was **skipped
 
 (Newest first.)
 
+### 2026-05-14 — Extraction harness brainstorm (Phase 1 reading + Phase 2 architectural decisions) + first TDD plan
+
+Convo: [`convos/20260514_extraction_harness_brainstorm.md`](convos/20260514_extraction_harness_brainstorm.md)
+Plan: [`plans/20260514_v2_pydantic_cell_models_implementation_plan.md`](plans/20260514_v2_pydantic_cell_models_implementation_plan.md)
+Antecedent agenda: [`plans/20260514_kickoff_plan_sketch.md`](plans/20260514_kickoff_plan_sketch.md)
+
+**The "real" brainstorm session.** Executed the plan-sketch's Phases 1-3 agenda: read 7 carry-forward artifacts, resolved 6 architectural questions + 1 new one (legal/practical axis split surfaced by Phase 1 reading), wrote the first TDD-able implementation plan.
+
+**Mid-session merge.** `compendium-v2-promote` merged to main as `0a6804f` while this session was running (flagged finding #1: v2 TSV path wasn't actually on main at session start; user merged it mid-session). This branch was then `git merge main`'d to bring the canonical `compendium/disclosure_side_compendium_items_v2.tsv` path live on the worktree before the plan was written, matching `phase-c-projection-tdd`'s pattern (merge, not rebase).
+
+**Phase 2 locked decisions (full rationale in convo).**
+
+- **Q0 (new) — Cell ID space:** `(compendium_row_id, axis_str)` flat 186-key space (181 rows: 126 legal-only + 50 practical-only get one entry; 5 legal+practical get two). User-confirmed via AskUserQuestion. Supersedes `compendium/README.md`'s `{row_id: typed_value}` phrasing for the 5 combined-axis rows.
+- **Q1 — Prompt granularity:** Hybrid — chunked-by-domain (5-12 rows) with chunk-frame preambles + per-row instructions, same template across all chunks. Preserves iter-1's empirical 93.3% on the 7-row `definitions` chunk.
+- **Q2 — Retrieval approach:** Two-pass (cross-ref walking → bundle scoring), carry forward from `src/scoring/retrieval_agent_prompt.md`. Empirical bundle-size measurement added as downstream task.
+- **Q3 — Iteration unit:** Per-(state, vintage) as deliverable unit; per-(state, vintage, chunk) as execution unit. Multi-year reliability tested by running same pipeline against `oh-statute-retrieval`'s 4-vintage OH set.
+- **Q4 — v2 Pydantic model shape:** New module `src/lobby_analysis/models_v2/` (user-confirmed); per-cell-type subclasses of `CompendiumCell` ABC; `StateVintageExtraction` container keyed by `(row_id, axis)`; `ExtractionRun` provenance wrapper.
+- **Q5 — Conditional / materiality-gate:** Wrapper fields (`conditional: bool`, `condition_text: str | None`), not a cell-type variant. Orthogonal to value type.
+- **Q6 — Provenance per cell:** Inside the wrapper (`provenance: EvidenceSpan | None`), not parallel. Matches v1.1 `EvidenceSource`-inside-`FieldRequirement` precedent.
+
+**Findings from Phase 1 reading flagged in convo:**
+
+1. `compendium-v2-promote` was unmerged at session start (resolved mid-session by user merge).
+2. **Anthropic SDK is NOT in `pyproject.toml`.** Iter-1 worked via Claude Code subagent dispatch. The v2 harness inherits this pattern; SDK is not added by the first implementation plan.
+3. The v2 TSV's 5 `legal+practical` rows carry axis-conditional `cell_type` strings (e.g., `"binary (legal) + typed int 0-100 step 25 (practical)"`), surfacing Q0. Not in plan-sketch's Open Questions; surfaced explicitly to user.
+
+**First implementation plan: v2 Pydantic cell models** (plan-sketch's recommendation, reaffirmed). 9 phases: scaffolding → `EvidenceSpan` → `CompendiumCell` ABC + `BinaryCell` → numeric subclasses → enum/specialized subclasses → `CompendiumCellSpec` registry (186-cell roster) → `StateVintageExtraction` + `ExtractionRun` → `__init__.py` + `load_v2_compendium_typed()` → suite-wide green + lint → RESEARCH_LOG + finish-convo. Pure-data; no LLM calls; unblocks Phase C.
+
+**No code written this session** — docs only: brainstorm convo, implementation plan, this log entry, back-reference annotation in the plan sketch. Implementation work begins in the next session.
+
 ### 2026-05-14 — Kickoff orientation + plan sketch (NOT the real brainstorm)
 
 Convo: [`convos/20260514_kickoff_orientation.md`](convos/20260514_kickoff_orientation.md)
