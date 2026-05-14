@@ -27,6 +27,35 @@ The `data/` symlink convention from `skills/use-worktree/SKILL.md` was **skipped
 
 (Newest first.)
 
+### 2026-05-14 — v2 Pydantic cell models implementation (Phases 0-9 under strict TDD)
+
+Convo: [`convos/20260514_v2_pydantic_cell_models_implementation.md`](convos/20260514_v2_pydantic_cell_models_implementation.md)
+Plan: [`plans/20260514_v2_pydantic_cell_models_implementation_plan.md`](plans/20260514_v2_pydantic_cell_models_implementation_plan.md)
+
+**Executed the implementation plan end-to-end under strict TDD.** All 68 tests written first (RED, commit `44eee71`), then implementation phases 1-7 turned each phase's tests green in sequence. Phase 8 ran the full suite (374 pass / 5 skip / 3 pre-existing test_pipeline.py failures unchanged from baseline — user-approved). Phase 9 is this entry + STATUS update + finish-convo.
+
+**The deliverable: `src/lobby_analysis/models_v2/` module.** A pure-data typed cell model layer parallel to v1.1 at `src/lobby_analysis/models/` (v1.1 untouched per Q4 decision):
+
+- `cells.py` — `CompendiumCell` ABC (`frozen=True`, wrapper fields: `cell_id`, `conditional`, `condition_text`, `confidence`, `provenance`) + 15 concrete subclasses (BinaryCell, DecimalCell, IntCell, FloatCell, GradedIntCell, BoundedIntCell, EnumCell, EnumSetCell, FreeTextCell + 6 specialized: UpdateCadenceCell, TimeThresholdCell, TimeSpentCell, SectorClassificationCell, CountWithFTECell, EnumSetWithAmountsCell).
+- `cell_spec.py` — `CompendiumCellSpec` (frozen dataclass) + `build_cell_spec_registry()` returning the canonical 186-entry `dict[tuple[row_id, axis], CompendiumCellSpec]` (181 TSV rows + 5 legal+practical doublings). Uses a `_CELL_TYPE_PARSER` table + a generic combined-axis splitter — no per-row hard-coding.
+- `extraction.py` — `StateVintageExtraction(state, vintage, run_id, cells)` with post-validator enforcing `cell.cell_id` matches its dict key; `ExtractionRun(run_id, model_version, prompt_sha, started_at, completed_at)`.
+- `provenance.py` — `EvidenceSpan(section_reference, artifact_path, quoted_span, url)` with 200-char `quoted_span` cap.
+- `__init__.py` — public surface: 21 names re-exported.
+
+**Phase 7 cross-module edit:** added `load_v2_compendium_typed() -> list[CompendiumCellSpec]` to `src/lobby_analysis/compendium_loader.py` as the typed wrapper around the registry. Phase C adopts at its own pace; the raw-dict `load_v2_compendium()` is unchanged.
+
+**Specialized cell struct-shape resolution.** The handoff's instruction to read each specialized row's `notes` column turned out to be a partial map of the territory: `notes` carries provenance only (`'single-rubric (focal_2024)'`) or is empty (`UpdateCadenceCell`, `TimeThresholdCell`). Struct shapes live in the source-rubric projection mappings at `docs/historical/compendium-source-extracts/results/projections/{focal_2024,hiredguns_2007,newmark_2017,newmark_2005}_projection_mapping.md`. Surfaced all 6 to user with proposed shapes (anchored to the mappings); user approved all 6. Documented under "Decisions Made" in the convo.
+
+**Unanticipated 7th cell_type.** The TSV has `typed Optional[int_months] (or enum)` for `lobbyist_registration_renewal_cadence` — not catalogued in the plan. User-approved YAGNI mapping to existing `IntCell` (the "months" semantic is documentation; the type stays `int | None`). The "(or enum)" suffix remains in the parser table as documentation.
+
+**Plan's 29-distinct-cell_types claim was off.** Actual: 23 distinct values. Data-driven parser handles this without code change; flagged in convo's Topics Explored.
+
+**Pre-existing CI failures unchanged.** 3 `test_pipeline.py` failures (portal-snapshot fixture data missing — same as on main, same as the previous v2-promote session). User approved leaving them.
+
+**Commits this session (10):** `62daee7` scaffolding → `44eee71` RED tests → `de507f3` EvidenceSpan → `e3de953` ABC+BinaryCell → `5cac6bc` numerics → `ea6faf5` enum/freetext/specialized → `0e1ed2a` registry → `7c882b1` extraction container → `368cc21` exports+typed loader → `c66d808` ruff format pass.
+
+**Next session.** The cell model layer unblocks 4 downstream components (chunk-grouping function, brief-writer module, retrieval-agent v2 generalization, scorer prompt rewrite). Each is its own brainstorm + TDD plan + implementation cycle. Pick one and start with a brainstorm session. SDK-vs-subagent-dispatch decision deferred until the first LLM-calling component lands.
+
 ### 2026-05-14 — Extraction harness brainstorm (Phase 1 reading + Phase 2 architectural decisions) + first TDD plan
 
 Convo: [`convos/20260514_extraction_harness_brainstorm.md`](convos/20260514_extraction_harness_brainstorm.md)
