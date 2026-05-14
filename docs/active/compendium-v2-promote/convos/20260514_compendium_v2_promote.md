@@ -90,3 +90,36 @@ Process notes (raised by Dan mid-session):
 ## Results
 
 No analytical results produced this session — code + docs only. The new v2 smoke tests (`tests/test_compendium_loader_v2.py`) serve as the executable specification for the v2 loader contract.
+
+## Follow-up: plan sketches on successor branches (same session)
+
+After the v2-promote commit landed (`8958c0b`), Dan asked whether the two compendium-consumer successor branches had plans drafted. Confirmed neither did — both `docs/active/<branch>/plans/` directories contained only `.gitkeep`. Dan picked "sketch both" — recommendation was that even a sketch satisfies the "doc-graph self-consistent" bar so kickoff agents don't pick up skeleton stubs cold.
+
+**Sketched and committed on the respective branches** (not on this v2-promote branch):
+
+- **`extraction-harness-brainstorm`** — commit `235ed50`:
+  - Convo: [`docs/active/extraction-harness-brainstorm/convos/20260514_kickoff_orientation.md`](../../extraction-harness-brainstorm/convos/20260514_kickoff_orientation.md)
+  - Plan sketch: [`docs/active/extraction-harness-brainstorm/plans/20260514_kickoff_plan_sketch.md`](../../extraction-harness-brainstorm/plans/20260514_kickoff_plan_sketch.md)
+  - Shape: **brainstorm-first agenda, not TDD steps** — three phases (read 7 carry-forward artifacts → resolve 6 architectural questions [prompt granularity, retrieval, iteration unit, Pydantic shape, conditional/materiality cells, provenance] → produce real implementation plan). Recommended first TDD-able component: v2 Pydantic cell models (pure-data, unblocks both branches).
+
+- **`phase-c-projection-tdd`** — commit `d864c0d`:
+  - Convo: [`docs/active/phase-c-projection-tdd/convos/20260514_kickoff_orientation.md`](../../phase-c-projection-tdd/convos/20260514_kickoff_orientation.md)
+  - Plan sketch: [`docs/active/phase-c-projection-tdd/plans/20260514_kickoff_plan_sketch.md`](../../phase-c-projection-tdd/plans/20260514_kickoff_plan_sketch.md)
+  - Shape: **concrete TDD agenda** because the per-rubric specs already exist. Five phases (env setup → CPI 2015 C11 per-item TDD + aggregation fit → 7 remaining rubrics in locked order → PRI-MVP retirement after rubric #2 → cross-rubric agreement audit). First-session deliverable: CPI 2015 C11 passing against 700-cell + 50-state ground truth within ±1.
+
+**Both branches also got their RESEARCH_LOG row-freeze-contract links updated** to the new `compendium/disclosure_side_compendium_items_v2.tsv` path (rather than the historical path). When v2-promote merges to main and each successor rebases, the links resolve cleanly to a live repo path.
+
+**Handoff sentences produced for Dan** (matching the style of his original successor-branch kickoff prompts; not committed anywhere, lived in the chat):
+
+- **harness:** "working on extraction-harness-brainstorm branch; kickoff session — read `docs/active/extraction-harness-brainstorm/plans/20260514_kickoff_plan_sketch.md` + its convo, then execute Phase 1 (read the 7 carry-forward artifacts including `origin/statute-extraction:src/scoring/chunk_frames/definitions.md`) and Phase 2 (resolve the 6 architectural questions: prompt granularity, retrieval, iteration unit, Pydantic shape, conditional/materiality cells, provenance); output: a real implementation plan with a single TDD-able first component selected — sketch recommends v2 Pydantic cell models, which also unblocks Phase C."
+- **phase-c:** "working on phase-c-projection-tdd branch; kickoff session — read `docs/active/phase-c-projection-tdd/plans/20260514_kickoff_plan_sketch.md` + its convo + `docs/historical/compendium-source-extracts/results/projections/cpi_2015_c11_projection_mapping.md` (the spec), then execute Phase 0 (env setup + `src/lobby_analysis/projections/` module skeleton) and Phase 1 (per-item TDD cycles for CPI 2015 C11's 14 items + empirical aggregation-rule fit against the 700-cell + 50-state ground truth); deliverable: `project_cpi_2015_c11()` passing against published 50-state category scores within ±1."
+
+## Link graph closure (this checkpoint)
+
+Bidirectional links now exist between:
+- v2-promote convo ↔ harness convo ↔ harness plan sketch
+- v2-promote convo ↔ phase-c convo ↔ phase-c plan sketch
+- v2-promote RESEARCH_LOG → plan sketches (forward refs added below in same checkpoint)
+- STATUS.md ↔ all three branch RESEARCH_LOGs (updated to reflect plan-sketch status)
+
+Per the "doc system is persistent memory, not patchwork" memory note — the graph should now be self-consistent. Cross-branch links resolve live on each branch's filesystem (per worktree); they'll all resolve on main after `compendium-v2-promote` merges.
