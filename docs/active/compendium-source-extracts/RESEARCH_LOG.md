@@ -66,13 +66,15 @@ Carry-forward signals (informational, not gates):
 
 #### Next Steps
 
-1. **Commit + push this audit landing.** Single clean commit with PAPER_INDEX + PAPER_SUMMARIES + STATUS + RESEARCH_LOG + convo. Branch is then merge-ready.
-2. **Merge `compendium-source-extracts` → `main`.** v2 row set (181 rows) becomes the contract for 3 successor branches. Per branch hygiene, do this in a fresh session.
-3. **Archive `docs/active/compendium-source-extracts/` → `docs/historical/compendium-source-extracts/`** post-merge; add archive row to STATUS.md per the lifecycle in CLAUDE.md.
-4. **Cut 3 successor branches in parallel** (per Option B locked 2026-05-13):
-   - **OH statute retrieval** (Track A): adds OH 2007 + OH 2015 to existing OH 2010 + OH 2025 bundles; HG 2007 ground-truth retrieval sub-task.
-   - **Extraction harness brainstorm** (Track B): brainstorm-then-plan; inherits prompt-architecture from archived `statute-extraction` iter-2; references v2 row set.
-   - **Phase C projection TDD**: locked rubric order CPI 2015 C11 → PRI 2010 → Sunlight 2015 → Newmark 2017 → Newmark 2005 → Opheim 1991 → HG 2007 → FOCAL 2024 (8 rubrics; LobbyView is schema-coverage, not score-projection). **The Phase C kickoff handoff should reference PAPER_INDEX.md Audit Notes** for the deferred factual-accuracy audit on Newmark 2017 + FOCAL + PRI 2010.
+**User redirect (post-commit `31ba9ce`):** factual spot-checks no longer deferred to Phase C — do them BEFORE merge in a fresh agent session. Handoff: [`plans/_handoffs/20260514_factual_audit_and_merge.md`](plans/_handoffs/20260514_factual_audit_and_merge.md).
+
+1. **Next session: factual audit + merge** per the successor handoff. Scope:
+   - (a) Factual spot-checks on Newmark 2017, Lacy-Nichols 2024 / FOCAL, and PRI 2010 PAPER_SUMMARIES entries against their source .txt extractions; surface any errors to user; correct inline or note via PAPER_INDEX Audit Notes.
+   - (b) Audit commit + push.
+   - (c) Merge `compendium-source-extracts` → `main` (no-squash; branch commit history is the permanent record).
+   - (d) Archive `docs/active/compendium-source-extracts/` → `docs/historical/compendium-source-extracts/` via `git mv`; update STATUS.md Archived Research Lines table.
+   - (e) Cut 3 successor branches in parallel per Option B: `oh-statute-retrieval`, `extraction-harness-brainstorm`, `phase-c-projection-tdd` (locked rubric order CPI 2015 C11 → PRI 2010 → Sunlight 2015 → Newmark 2017 → Newmark 2005 → Opheim 1991 → HG 2007 → FOCAL 2024). Each new branch gets a seeded `docs/active/<branch>/` skeleton; kickoff plan writing is its own session per successor.
+2. **Three parallel successor tracks (post-merge, separate sessions per branch).** v2 row set becomes the contract.
 
 ---
 

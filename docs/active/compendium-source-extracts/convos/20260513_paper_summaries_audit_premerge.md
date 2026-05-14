@@ -127,4 +127,8 @@ PAPER_SUMMARIES.md appended (existing structure preserved):
 
 ## Next session
 
-**Merge `compendium-source-extracts` → `main`** (separate session per branch hygiene). Then archive `docs/active/compendium-source-extracts/` → `docs/historical/compendium-source-extracts/` and cut 3 successor branches in parallel per Option B (OH statute retrieval; extraction harness brainstorm; Phase C projection TDD with locked rubric order CPI 2015 C11 → PRI 2010 → Sunlight 2015 → Newmark 2017 → Newmark 2005 → Opheim 1991 → HG 2007 → FOCAL 2024).
+**User redirect (post-commit `31ba9ce`):** rather than deferring the factual spot-checks to the Phase C TDD successor branch, do them BEFORE merge in a fresh-agent session. Then complete the merge + archive + cut 3 successor branches.
+
+**Successor handoff:** [`../plans/_handoffs/20260514_factual_audit_and_merge.md`](../plans/_handoffs/20260514_factual_audit_and_merge.md) — self-contained brief covering the factual audit (Newmark 2017, FOCAL/Lacy-Nichols 2024, PRI 2010 against source PDFs), the merge mechanics, archive to `docs/historical/`, and seeding the 3 successor branches per Option B.
+
+Open the next session with: `"working on compendium-source-extracts branch; pick up from docs/active/compendium-source-extracts/plans/_handoffs/20260514_factual_audit_and_merge.md"`.

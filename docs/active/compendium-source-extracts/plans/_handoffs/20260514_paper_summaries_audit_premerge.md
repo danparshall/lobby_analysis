@@ -28,6 +28,8 @@ The audit is a separate concern from the freeze and runs against a separate set 
 
 **EXECUTED 2026-05-13 (paper-audit pre-merge session).** Convo: [`../../convos/20260513_paper_summaries_audit_premerge.md`](../../convos/20260513_paper_summaries_audit_premerge.md). RESEARCH_LOG entry above the row-freeze entry.
 
+**Successor handoff (for the deferred Stop condition #4 + merge):** [`20260514_factual_audit_and_merge.md`](20260514_factual_audit_and_merge.md) — drafted 2026-05-13 after user redirect (factual audits move out of Phase C and back to a pre-merge gate; new agent picks up the audit + merge + archive + cut-3-successor-branches mechanics).
+
 - [x] Every PDF in `papers/` has a corresponding extracted text file in `papers/text/` — 37 PDFs, 39 .txt files (37 main + 2 Lacy-Nichols 2025 suppl from `Lacy-Nichols-Supple-File-1-IJHPM.pdf` split into `__suppl_001/__002.txt`; Roth 2020 .txt is a WebFetch capture, no PDF — both mappings documented in PAPER_INDEX Audit Notes).
 - [x] Every paper in `papers/` is indexed in `PAPER_INDEX.md` with a one-sentence summary — 17 pre-existing + 20 new stub entries (annotated `*[stub-indexed]*`).
 - [x] Every paper in `papers/` has a key-conclusions entry in `PAPER_SUMMARIES.md` — 17 pre-existing + 20 new stub entries (annotated `**Stub-indexed; not factually audited.**`). Note: most stubs have at least one numerical finding from the survey subagent's read; those without explicit numbers reflect papers where the source is qualitative (e.g., AccessInfo standards, Council of Europe recommendation).
