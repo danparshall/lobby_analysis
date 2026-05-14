@@ -64,6 +64,8 @@ def main() -> int:
 
     # Write markdown
     lines: list[str] = []
+    lines.append("<!-- Generated during: convos/20260514_naming_taxonomy_kickoff.md -->")
+    lines.append("")
     lines.append("# Prefix survey — v2 compendium row IDs")
     lines.append("")
     lines.append(f"Source: `{TSV.relative_to(TSV.parents[2])}` ({n} rows)")

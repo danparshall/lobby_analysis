@@ -43,6 +43,23 @@ First substantive session produced three artifacts:
 
 Rename **execution** stays deferred per the kickoff scope decision (sister-branch coordination cost). Rename candidates are flagged in the doc for a follow-up branch once `phase-c-projection-tdd` and `extraction-harness-brainstorm` lifecycles settle.
 
+Session convo: [`convos/20260514_naming_taxonomy_kickoff.md`](convos/20260514_naming_taxonomy_kickoff.md). Commit `0e94f37`.
+
+**Next steps (handoff for the next agent on this branch):**
+
+> Walk Dan through the 8 rename candidates in §10 of [`compendium/NAMING_CONVENTIONS.md`](../../../compendium/NAMING_CONVENTIONS.md) one at a time (accept / defer / reject for each), then draft a rename-execution plan at `plans/20260515_rename_execution_plan.md` enumerating the accepted set plus each rename's downstream-consumer fan-out (TSV regen path via `tools/freeze_canonicalize_rows.py`, projection-mapping doc cross-refs at `docs/historical/compendium-source-extracts/results/projections/`, future `extraction-harness-brainstorm` Pydantic models, prompt strings).
+
+The 8 candidates, in rough order of justification-clarity (full detail in §10):
+
+1. `principal_or_lobbyist_reg_form_*` (1 row) — reversed ordering vs the dominant `lobbyist_or_principal_*` family
+2. D3 rename gaps: 6 leftover `_report_*` rows that should be `_spending_report_*` per the α split
+3. Lobbyist-status threshold family (3 high-traffic rows; load-bearing for HG Q2 D22)
+4. `expenditure_itemization_de_minimis_threshold_dollars` family fit
+5. `registration_deadline_days_after_first_lobbying` family fit
+6. `ministerial_diaries_*` vs `ministerial_diary_*` plural drift
+7. `lobbying_definition_*` / `lobbyist_definition_*` outside the `def_*` family
+8. `compendium/README.md` doc-drift (filename `cpi_2015_projection_mapping.md` → actually `cpi_2015_c11_projection_mapping.md`) — not a row-ID issue, but cheap to fix in the same branch
+
 ### 2026-05-14 — Branch cut, scope locked (kickoff)
 
 GH issue #9 opened earlier the same day (carried out of sub-1's phase-c-projection-tdd convo). Branch `compendium-naming-docs` cut off `main` (`f364973`). Scope locked to **audit + flag, defer renames** to avoid coordination cost on parallel-running sister branches (`phase-c-projection-tdd`, `extraction-harness-brainstorm`, `oh-statute-retrieval`) — renames mid-flight would force one of those branches to absorb a non-trivial merge cost, since `extraction-harness-brainstorm` owns the v2 Pydantic models and any prompt strings that hard-code row names.

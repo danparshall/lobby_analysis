@@ -1,3 +1,5 @@
+<!-- Generated during: convos/20260514_naming_taxonomy_kickoff.md -->
+
 # Prefix survey — v2 compendium row IDs
 
 Source: `compendium-naming-docs/compendium/disclosure_side_compendium_items_v2.tsv` (181 rows)

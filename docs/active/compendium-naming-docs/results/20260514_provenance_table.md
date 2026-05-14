@@ -1,3 +1,5 @@
+<!-- Generated during: convos/20260514_naming_taxonomy_kickoff.md -->
+
 # Per-row provenance table — v2 compendium
 
 Source TSV: `compendium/disclosure_side_compendium_items_v2.tsv` (181 rows)

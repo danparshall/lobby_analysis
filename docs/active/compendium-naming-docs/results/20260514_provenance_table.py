@@ -139,6 +139,8 @@ def main() -> int:
     # Write markdown
     n = len(rows)
     lines: list[str] = []
+    lines.append("<!-- Generated during: convos/20260514_naming_taxonomy_kickoff.md -->")
+    lines.append("")
     lines.append("# Per-row provenance table — v2 compendium")
     lines.append("")
     lines.append(f"Source TSV: `{TSV.relative_to(ROOT)}` ({n} rows)")
