@@ -10,6 +10,48 @@
 
 ## Session log (newest first)
 
+### 2026-05-14 — B3-with-Playwright pivot (supersedes the API-only subagent pivot)
+
+- **Convo:** [`convos/20260514_b3_with_playwright_pivot.md`](convos/20260514_b3_with_playwright_pivot.md)
+- **Plan:** pending (`plans/20260514_b3_two_pass_discovery_plan_playwright.md`, next session)
+- **Supersedes:** `376b2b1`'s subagent-dispatch pivot at ~$175 fan-out
+
+#### Topics Explored
+
+- Triple-check on what's committed for "50-state Justia work" vs user's recall (memory fuses two real artifacts that were never unified)
+- Cost comparison across 5 architectures for the 350-pair fan-out (B2 / B3 / subagent-dispatch / pure-Playwright / Playwright-plus-hand-curation)
+- Whether the API $ axis matters at this project's scale ($175 max — it doesn't)
+- What "B3 with Playwright" actually means structurally (HTTP layer only; LLM role unchanged)
+- Whether the `376b2b1` subagent pivot is still justified once Playwright is available
+
+#### Provisional Findings
+
+- User's recall of "50-state Justia via Sonnet subagents browsing" conflates two distinct committed artifacts: the 50-state **portal** subagent dispatch on `pri-2026-rescore` (981 artifacts, 2026-04-13, not Justia) and the 50-state Justia **year-availability** audit on `pri-calibration` (Playwright, year-level only). No artifact combined them.
+- B2's 0/N failure on WY + FL is structural (state-year index is title-only-depth), not a tuning problem. B3's two-pass design directly addresses it.
+- The original B3 plan's httpx + Range-GET + rich-header anti-bot recipe is hand-tuned; the B2 canary already surfaced one HEAD-check defect of this shape. Playwright eliminates that fragility class entirely.
+- The LLM role (title-picking + URL-proposal) is exactly where the model is irreplaceable; replacing it with regex/heuristic on link text degrades reliability for marginal $ savings. Keep API for judgment; replace only the fetcher.
+- `376b2b1`'s subagent dispatch (~$175) is over-engineered relative to B3-with-Playwright (~$17–30). Subagent pivot was justified by httpx-B3's anti-bot fragility risk; Playwright closes that gap at one-tenth the cost.
+
+#### Decisions Made
+
+- **Supersede `376b2b1`'s subagent pivot with B3-with-Playwright.** Both prior plans (original httpx-B3, subagent pivot) preserved on disk per contingency principle.
+- HTTP layer swaps from httpx to Playwright (reuse `src/scoring/justia_client.py`); drop Range-GET + rich-header scaffolding.
+- LLM role unchanged — two prompts (`api_seed_discovery_pass1_prompt.md`, `api_seed_discovery_pass2_prompt.md`) carry forward as designed in the original B3 plan.
+- Add a **10-pair pre-fan-out canary** at mixed depths (5 pilot + 5 unseen) before the full 350-pair run; validates Playwright at sustained pressure on this branch.
+- HEAD verification → Playwright fetch verification (stronger guarantee; sidesteps per-path header-set sensitivity).
+
+#### Open Questions
+
+- Sustained-pressure anti-bot behavior at section-leaf depth × 700 fetches × 4-way parallelism — resolved by the 10-pair canary.
+- Test story for the Playwright-fetcher path: mock at `Client` protocol boundary (existing `justia_client.py` pattern), not at httpx layer.
+- Cross-vintage URL pattern stability — if OH 2010 → OH 2025's year-swap-only pattern holds broadly, 7-vintage fan-out compresses to 1-vintage discovery + 6× URL-templating. Worth testing during canary.
+
+#### Next Steps
+
+- Draft `plans/20260514_b3_two_pass_discovery_plan_playwright.md` as a delta on the original B3 plan.
+- Update STATUS.md once the new plan lands.
+- Next implementation session: test 1 (single-title happy-path orchestrator) RED → GREEN, then proceed through tests 2–7.
+
 ### 2026-05-14 — B2 canary: state-index inlined into discovery prompt (WY 2010 + FL 2010)
 
 - **Convo:** `convos/20260514_b2_justia_index_inline_recanary.md` (pending, end-of-session)
