@@ -24,12 +24,8 @@ pytestmark = pytest.mark.skipif(
     reason="Integration test requires ANTHROPIC_API_KEY",
 )
 
-TINY_STATUTE_PATH = (
-    Path(__file__).parent / "fixtures" / "retrieval_v2" / "tiny_statute.txt"
-)
-SAMPLE_RESPONSE_PATH = (
-    Path(__file__).parent / "fixtures" / "retrieval_v2" / "sample_response.json"
-)
+TINY_STATUTE_PATH = Path(__file__).parent / "fixtures" / "retrieval_v2" / "tiny_statute.txt"
+SAMPLE_RESPONSE_PATH = Path(__file__).parent / "fixtures" / "retrieval_v2" / "sample_response.json"
 
 
 def _tiny_bundle() -> list[dict]:
@@ -95,16 +91,12 @@ def test_parser_handles_real_api_response():
 
     client = anthropic.Anthropic()
     response = client.messages.create(**_tiny_brief())
-    out = parse_retrieval_response(
-        response, state_abbr="ZZ", vintage_year=2026, hop=1
-    )
+    out = parse_retrieval_response(response, state_abbr="ZZ", vintage_year=2026, hop=1)
     assert len(out.cross_references) >= 1
     for xref in out.cross_references:
         assert len(xref.evidence_spans) >= 1, (
             f"cross_reference {xref.section_reference} has no evidence_spans"
         )
     # Persist real response for parser unit tests
-    serialized = (
-        response.model_dump() if hasattr(response, "model_dump") else dict(response)
-    )
+    serialized = response.model_dump() if hasattr(response, "model_dump") else dict(response)
     SAMPLE_RESPONSE_PATH.write_text(json.dumps(serialized, indent=2, default=str))

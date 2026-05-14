@@ -39,9 +39,7 @@ def test_cross_reference_tool_chunk_ids_enum_matches_chunks_manifest():
     """COUPLING TEST: catches drift between tools.py and chunks manifest."""
     expected = {c.chunk_id for c in build_chunks()}
     actual = set(
-        CROSS_REFERENCE_TOOL["input_schema"]["properties"]["chunk_ids_affected"][
-            "items"
-        ]["enum"]
+        CROSS_REFERENCE_TOOL["input_schema"]["properties"]["chunk_ids_affected"]["items"]["enum"]
     )
     assert actual == expected, f"Drift: tools enum {actual} != chunks manifest {expected}"
 

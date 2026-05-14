@@ -11,9 +11,7 @@ from pathlib import Path
 
 import pytest
 
-V2_PROMPT_PATH = (
-    Path(__file__).parent.parent / "src" / "scoring" / "retrieval_agent_prompt_v2.md"
-)
+V2_PROMPT_PATH = Path(__file__).parent.parent / "src" / "scoring" / "retrieval_agent_prompt_v2.md"
 
 
 @pytest.fixture

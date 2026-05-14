@@ -53,8 +53,7 @@ CROSS_REFERENCE_TOOL: dict = {
             "relevance": {
                 "type": "string",
                 "description": (
-                    "Why the scorer needs this cross-reference and what "
-                    "information it provides."
+                    "Why the scorer needs this cross-reference and what information it provides."
                 ),
             },
             "justia_url": {
@@ -75,9 +74,7 @@ CROSS_REFERENCE_TOOL: dict = {
             },
             "url_confidence_reason": {
                 "type": "string",
-                "description": (
-                    "Brief explanation, especially for medium/low confidence."
-                ),
+                "description": ("Brief explanation, especially for medium/low confidence."),
             },
         },
         "required": [
@@ -104,21 +101,16 @@ UNRESOLVABLE_REFERENCE_TOOL: dict = {
         "properties": {
             "reference_text": {
                 "type": "string",
-                "description": (
-                    "The reference text as it appears in the statute (verbatim)."
-                ),
+                "description": ("The reference text as it appears in the statute (verbatim)."),
             },
             "referenced_from": {
                 "type": "string",
-                "description": (
-                    "Filename or path of the statute file containing this reference."
-                ),
+                "description": ("Filename or path of the statute file containing this reference."),
             },
             "reason": {
                 "type": "string",
                 "description": (
-                    "Why this reference cannot be resolved "
-                    "(e.g., no section number cited)."
+                    "Why this reference cannot be resolved (e.g., no section number cited)."
                 ),
             },
         },

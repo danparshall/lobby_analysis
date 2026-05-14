@@ -70,9 +70,7 @@ def parse_retrieval_response(
                 cross_refs.append(
                     CrossReference(
                         section_reference=_input(tool_input, "section_reference"),
-                        chunk_ids_affected=tuple(
-                            _input(tool_input, "chunk_ids_affected") or ()
-                        ),
+                        chunk_ids_affected=tuple(_input(tool_input, "chunk_ids_affected") or ()),
                         relevance=_input(tool_input, "relevance"),
                         justia_url=_input(tool_input, "justia_url"),
                         url_confidence=_input(tool_input, "url_confidence"),

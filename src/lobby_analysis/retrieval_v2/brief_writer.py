@@ -32,10 +32,7 @@ from lobby_analysis.retrieval_v2.tools import ALL_TOOLS
 
 # src/lobby_analysis/retrieval_v2/brief_writer.py → repo root → src/scoring/...
 _PROMPT_PATH = (
-    Path(__file__).parent.parent.parent.parent
-    / "src"
-    / "scoring"
-    / "retrieval_agent_prompt_v2.md"
+    Path(__file__).parent.parent.parent.parent / "src" / "scoring" / "retrieval_agent_prompt_v2.md"
 )
 
 _MODEL = "claude-opus-4-7"
@@ -138,8 +135,7 @@ def _format_cell_roster(chunks: list) -> str:
     for chunk in chunks:
         lines.append("")
         lines.append(
-            f"### Chunk: {chunk.chunk_id} "
-            f"({len(chunk.cell_specs)} cells, {chunk.axis_summary})"
+            f"### Chunk: {chunk.chunk_id} ({len(chunk.cell_specs)} cells, {chunk.axis_summary})"
         )
         lines.append(f"Topic: {chunk.topic}")
         for spec in chunk.cell_specs:
@@ -148,9 +144,7 @@ def _format_cell_roster(chunks: list) -> str:
     return "\n".join(lines)
 
 
-def _build_user_text(
-    state: str, vintage: int, cell_roster: str, url_pattern: str
-) -> str:
+def _build_user_text(state: str, vintage: int, cell_roster: str, url_pattern: str) -> str:
     """Build the user-message text following the statute documents."""
     return (
         f"State: {state}\n"

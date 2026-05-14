@@ -13,9 +13,7 @@ from pathlib import Path
 
 from lobby_analysis.retrieval_v2.parser import parse_retrieval_response
 
-FIXTURE_PATH = (
-    Path(__file__).parent / "fixtures" / "retrieval_v2" / "sample_response.json"
-)
+FIXTURE_PATH = Path(__file__).parent / "fixtures" / "retrieval_v2" / "sample_response.json"
 
 
 def _load_fixture() -> dict:
@@ -38,17 +36,13 @@ def _xref_tool_use(section: str = "§1") -> dict:
 
 def test_parser_extracts_cross_references_from_tool_calls():
     """Fixture has 1 record_cross_reference tool call; output has 1 cross-ref."""
-    out = parse_retrieval_response(
-        _load_fixture(), state_abbr="OH", vintage_year=2010, hop=1
-    )
+    out = parse_retrieval_response(_load_fixture(), state_abbr="OH", vintage_year=2010, hop=1)
     assert len(out.cross_references) == 1
 
 
 def test_parser_pairs_preceding_citations_to_following_tool_call():
     """text_block_with_citation -> tool_use -> first tool's evidence_spans has citation."""
-    out = parse_retrieval_response(
-        _load_fixture(), state_abbr="OH", vintage_year=2010, hop=1
-    )
+    out = parse_retrieval_response(_load_fixture(), state_abbr="OH", vintage_year=2010, hop=1)
     xref = out.cross_references[0]
     assert len(xref.evidence_spans) >= 1
     assert any("§311.005" in span.cited_text for span in xref.evidence_spans)
@@ -56,9 +50,7 @@ def test_parser_pairs_preceding_citations_to_following_tool_call():
 
 def test_parser_resets_citation_buffer_after_each_tool_call():
     """First tool's citations must not bleed into second tool's evidence_spans."""
-    out = parse_retrieval_response(
-        _load_fixture(), state_abbr="OH", vintage_year=2010, hop=1
-    )
+    out = parse_retrieval_response(_load_fixture(), state_abbr="OH", vintage_year=2010, hop=1)
     xref = out.cross_references[0]
     unres = out.unresolvable_references[0]
     xref_cited = {span.cited_text for span in xref.evidence_spans}
@@ -77,26 +69,20 @@ def test_parser_handles_tool_call_with_no_preceding_citations():
 
 def test_parser_handles_unresolvable_reference_tool_calls():
     """Mixed fixture has both kinds; unresolvable_references populated separately."""
-    out = parse_retrieval_response(
-        _load_fixture(), state_abbr="OH", vintage_year=2010, hop=1
-    )
+    out = parse_retrieval_response(_load_fixture(), state_abbr="OH", vintage_year=2010, hop=1)
     assert len(out.unresolvable_references) == 1
 
 
 def test_parser_empty_response_returns_empty_output():
     """Message with no tool calls -> RetrievalOutput with empty tuples."""
-    out = parse_retrieval_response(
-        {"content": []}, state_abbr="OH", vintage_year=2010, hop=1
-    )
+    out = parse_retrieval_response({"content": []}, state_abbr="OH", vintage_year=2010, hop=1)
     assert out.cross_references == ()
     assert out.unresolvable_references == ()
 
 
 def test_parser_propagates_state_vintage_hop():
     """Parser takes state_abbr, vintage_year, hop as args (caller supplies)."""
-    out = parse_retrieval_response(
-        {"content": []}, state_abbr="TX", vintage_year=2025, hop=2
-    )
+    out = parse_retrieval_response({"content": []}, state_abbr="TX", vintage_year=2025, hop=2)
     assert out.state_abbr == "TX"
     assert out.vintage_year == 2025
     assert out.hop == 2
