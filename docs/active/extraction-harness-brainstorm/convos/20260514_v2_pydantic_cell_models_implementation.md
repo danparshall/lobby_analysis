@@ -78,3 +78,5 @@ The plan's "Out of scope" list names downstream components that now build cleanl
 Each of these is its own brainstorm + TDD plan + implementation cycle. Pick one and start with a brainstorm session.
 
 Also: when first LLM-calling work lands, decide on the Anthropic SDK dependency (currently NOT in `pyproject.toml`; iter-1 used Claude Code subagent dispatch).
+
+**Dedicated handoff doc** for the next agent: [`../plans/_handoffs/20260514_next_session_kickoff.md`](../plans/_handoffs/20260514_next_session_kickoff.md) — includes a handoff sentence, a dependency graph for the 4 components above, a recommendation (chunk-grouping first), the plan-sketch → brainstorm → implementation cycle convention to follow, and the two deferred decisions (data/ symlink, Anthropic SDK) flagged for when they bite.

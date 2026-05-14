@@ -54,7 +54,7 @@ Plan: [`plans/20260514_v2_pydantic_cell_models_implementation_plan.md`](plans/20
 
 **Commits this session (10):** `62daee7` scaffolding → `44eee71` RED tests → `de507f3` EvidenceSpan → `e3de953` ABC+BinaryCell → `5cac6bc` numerics → `ea6faf5` enum/freetext/specialized → `0e1ed2a` registry → `7c882b1` extraction container → `368cc21` exports+typed loader → `c66d808` ruff format pass.
 
-**Next session.** The cell model layer unblocks 4 downstream components (chunk-grouping function, brief-writer module, retrieval-agent v2 generalization, scorer prompt rewrite). Each is its own brainstorm + TDD plan + implementation cycle. Pick one and start with a brainstorm session. SDK-vs-subagent-dispatch decision deferred until the first LLM-calling component lands.
+**Next session.** The cell model layer unblocks 4 downstream components (chunk-grouping function, brief-writer module, retrieval-agent v2 generalization, scorer prompt rewrite). Each is its own brainstorm + TDD plan + implementation cycle. Pick one and start with a brainstorm session. SDK-vs-subagent-dispatch decision deferred until the first LLM-calling component lands. Dedicated handoff at [`plans/_handoffs/20260514_next_session_kickoff.md`](plans/_handoffs/20260514_next_session_kickoff.md) — dependency graph, recommendation (chunk-grouping first), cycle convention, and the two deferred decisions (data/ symlink, Anthropic SDK).
 
 ### 2026-05-14 — Extraction harness brainstorm (Phase 1 reading + Phase 2 architectural decisions) + first TDD plan
 
