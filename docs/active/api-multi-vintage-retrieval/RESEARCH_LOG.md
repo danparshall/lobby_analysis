@@ -13,8 +13,8 @@
 ### 2026-05-14 — B3-with-Playwright pivot (supersedes the API-only subagent pivot)
 
 - **Convo:** [`convos/20260514_b3_with_playwright_pivot.md`](convos/20260514_b3_with_playwright_pivot.md)
-- **Plan:** pending (`plans/20260514_b3_two_pass_discovery_plan_playwright.md`, next session)
-- **Supersedes:** `376b2b1`'s subagent-dispatch pivot at ~$175 fan-out
+- **Plan:** [`plans/20260514_b3_two_pass_discovery_plan_playwright.md`](plans/20260514_b3_two_pass_discovery_plan_playwright.md)
+- **Supersedes:** `376b2b1`'s subagent-dispatch pivot at ~$175 fan-out; the original httpx-based [`plans/20260514_b3_two_pass_discovery_plan.md`](plans/20260514_b3_two_pass_discovery_plan.md) is preserved on disk per contingency principle
 
 #### Topics Explored
 
@@ -48,9 +48,8 @@
 
 #### Next Steps
 
-- Draft `plans/20260514_b3_two_pass_discovery_plan_playwright.md` as a delta on the original B3 plan.
-- Update STATUS.md once the new plan lands.
-- Next implementation session: test 1 (single-title happy-path orchestrator) RED → GREEN, then proceed through tests 2–7.
+- ✅ Revised plan landed: [`plans/20260514_b3_two_pass_discovery_plan_playwright.md`](plans/20260514_b3_two_pass_discovery_plan_playwright.md) — delta on original B3 plan; 7 tests carry forward; HTTP layer swaps to `justia_client.PlaywrightClient`; adds 10-pair pre-fan-out canary.
+- Next implementation session: Phase 0 setup → Phase 1 prompts (carry forward from original B3) → Phase 2 tests RED → Phase 3 GREEN one test at a time → Phase 4 WY/FL canary → 10-pair canary → Phase 5 full fan-out.
 
 ### 2026-05-14 — B2 canary: state-index inlined into discovery prompt (WY 2010 + FL 2010)
 
