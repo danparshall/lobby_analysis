@@ -202,3 +202,5 @@ The impl plan's integration test is the first chance to surface any of these as 
 ## Next session
 
 This convo is the brainstorm. Next: write `plans/20260514_retrieval_implementation_plan.md` (TDD-shaped, API-launchable) — sibling agent in this same session will pick up that work, then run finish-convo.
+
+> **Update 2026-05-14 (post-implementation):** Plan was written same day. Implementation executed Phases 1-8 on the laptop in the next session — see [`20260514_retrieval_implementation.md`](20260514_retrieval_implementation.md). T0 unit suite fully green (+48 tests). T1 smoke (real Citations API call) deferred to a desktop run because the laptop has no `ANTHROPIC_API_KEY`; user runs `uv run pytest tests/test_retrieval_v2_integration.py` on Dans-MacBook-Pro to clear that gate.

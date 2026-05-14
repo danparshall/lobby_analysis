@@ -1,6 +1,7 @@
 # Retrieval Agent v2 — Implementation Plan
 
 **Branch:** `extraction-harness-brainstorm`
+**Implemented:** [`../convos/20260514_retrieval_implementation.md`](../convos/20260514_retrieval_implementation.md) — Phases 1-8 executed under strict TDD on 2026-05-14 laptop session (commits `a5d05c5` → `d1fa512`); T0 unit suite fully green (+48 tests; full suite 400 → 448). 2 plan deviations resolved + documented in convo (P6→P4 reorder; cell-roster format). **Phase 7 (T1 smoke) deferred to desktop run** — laptop has no `ANTHROPIC_API_KEY`; user runs `uv run pytest tests/test_retrieval_v2_integration.py` on Dans-MacBook-Pro.
 **Goal:** Rewrite the v1 PRI-keyed retrieval agent as a v2-compendium-anchored retrieval pipeline that uses the **Anthropic Citations API** for span-level provenance grounding. Pure-Python; first SDK consumer in this codebase. Unblocks the brief-writer + scorer-prompt rewrite downstream.
 
 ## ⚠ PREREQUISITE — chunks_v2 must ship before retrieval impl can proceed past Phase 0

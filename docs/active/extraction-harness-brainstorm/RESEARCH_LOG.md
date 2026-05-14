@@ -27,6 +27,35 @@ The `data/` symlink convention from `skills/use-worktree/SKILL.md` was **skipped
 
 (Newest first.)
 
+### 2026-05-14 (retrieval impl) — retrieval_v2 module landed under strict TDD; T1 smoke deferred to desktop
+
+Convo: [`convos/20260514_retrieval_implementation.md`](convos/20260514_retrieval_implementation.md)
+Plan executed: [`plans/20260514_retrieval_implementation_plan.md`](plans/20260514_retrieval_implementation_plan.md)
+Originating brainstorm: [`convos/20260514_retrieval_brainstorm.md`](convos/20260514_retrieval_brainstorm.md)
+
+**Executed the retrieval implementation plan end-to-end under strict TDD on the laptop (Dans-MacBook-Air).** 51 RED tests written first (commit `a5d05c5`), then five GREEN commits each turning one test file green in sequence. **T0 unit gate is fully green** (full suite 400 → **448 pass** = +48 retrieval_v2 tests); 3 pre-existing `test_pipeline.py` FileNotFoundErrors unchanged from baseline. **T1 smoke (integration test against the real Anthropic Citations API) is deferred to a desktop run** — laptop has no `ANTHROPIC_API_KEY`; user flagged this mid-session and asked to defer T1 explicitly. Integration test machinery is in place: `tiny_statute.txt` fixture committed; `tests/test_retrieval_v2_integration.py` skips cleanly without the key (verified `3 skipped in 0.01s`). Desktop run = `uv run pytest tests/test_retrieval_v2_integration.py` with key in env.
+
+**The deliverable: `src/lobby_analysis/retrieval_v2/`.** Five thin modules:
+
+- `tools.py` — `CROSS_REFERENCE_TOOL` + `UNRESOLVABLE_REFERENCE_TOOL` JSON-schema definitions. `chunk_ids_affected.enum` sourced from `build_chunks()`; **coupling test** (`test_cross_reference_tool_chunk_ids_enum_matches_chunks_manifest`) enforces no drift between this tool schema and the chunks manifest.
+- `models.py` — frozen Pydantic models. `EvidenceSpan` (polymorphic over the 3 documented Citations API citation types); `CrossReference` / `UnresolvableReference` (`evidence_spans: tuple[EvidenceSpan, ...]` from preceding text blocks); `RetrievalOutput` (scoped to `(state_abbr, vintage_year, hop)` with hop ∈ [1, 2]).
+- `brief_writer.py` — `build_retrieval_brief(state, vintage, statute_bundle, chunks, url_pattern="")` returns the `messages.create()` kwargs dict. Does **not** call the SDK; the orchestrator dispatches. Model `claude-opus-4-7`, `thinking={"type": "adaptive"}`, `output_config={"effort": "high"}`, no sampling params (would 400 on Opus 4.7). System block + document blocks both ephemeral-cached.
+- `parser.py` — `parse_retrieval_response(message, state_abbr, vintage_year, hop)`. Polymorphic over SDK `Message` objects (attr access) and JSON dicts (key access) — same path works for fixtures + real responses. Pairing rule: citations on text blocks accumulate; on `tool_use` block, buffer flushes onto that tool's `evidence_spans` and resets. Unknown tool names still reset (prevents stale spans bleeding into next valid call). Other block types (`thinking`, `server_tool_use`) pass through.
+- `__init__.py` + `docs.md` — 9 public names; module-level docs matching `chunks_v2`/`models_v2` pattern.
+
+Plus `src/scoring/retrieval_agent_prompt_v2.md` — the v2 prompt (chunk-anchored, zero PRI rubric leakage, Rule 5 instructs "cite before each tool call" making the parser's pairing rule non-vacuous).
+
+**Plan deviations surfaced and resolved (2, both flagged in convo).**
+
+1. **Phase ordering (P6 → P4 → P5).** The brief_writer reads the prompt file at call time (`_PROMPT_PATH.read_text()` inside `build_retrieval_brief`), so Phase 6 (write `retrieval_agent_prompt_v2.md`) had to land before Phase 4 (brief_writer) for tests to clear. Commit messages preserve plan-numbered phase names ("Phase 6 of plan", "Phase 4 of plan") so the audit trail stays intact.
+2. **Cell roster format.** Plan's `_format_cell_roster` used `spec.description[:120]`, but `CompendiumCellSpec` has only `(row_id, axis, expected_cell_class)` — no description. The underlying compendium TSV also has no description column (only provenance fields: `rubrics_reading`, `n_rubrics`, `notes`). Adapted format to `- {row_id} ({axis}) [{cell_class}]` per cell; row_ids are self-describing in this codebase.
+
+**Surfaced for user / next agent: side-effect in `test_parser_handles_real_api_response`.** Plan design has the integration test write the real API response to `tests/fixtures/retrieval_v2/sample_response.json` on every successful run (overwriting the hand-crafted fixture from Phase 5). Functionally that means parser unit-test fixture churns across runs; pro/con argument in the convo. Plan author chose pro; if fixture-churn-induced parser flakes show up at T2+, gate the write with `if not SAMPLE_RESPONSE_PATH.exists():`. Not changing until the user weighs in or T2-T4 show real noise.
+
+**Commits this session (8):** `a5d05c5` RED tests → `191873b` tools.py (P2) → `16beb1d` models.py (P3) → `1686474` prompt.md (P6, executed early) → `97a3fee` brief_writer.py (P4) → `aab535f` parser.py + fixture (P5) → `22703fa` tiny_statute.txt (P7 prep) → `d1fa512` exports + docs.md + ruff (P8).
+
+**Next session.** Either: (a) **desktop T1 run** — Dan runs `uv run pytest tests/test_retrieval_v2_integration.py` on Dans-MacBook-Pro with `ANTHROPIC_API_KEY`; on success the test side-effects `sample_response.json` with the real shape; if parser unit tests then go red, pause-and-surface (per plan Phase 7 'Things that may go wrong'). Or (b) **brief-writer brainstorm** — the cleaner next downstream component (orthogonal to retrieval; depends only on cells + chunks, both shipped). Plan-sketch → brainstorm → impl-plan cycle, same convention as chunks and retrieval. Scorer-prompt rewrite is the fourth component; depends on retrieval bundle shape (now known: `RetrievalOutput.cross_references[*].evidence_spans` carries cited statute support).
+
 ### 2026-05-14 (chunks impl) — chunks_v2 module landed under strict TDD (Phases 0-7)
 
 Convo: [`convos/20260514_chunks_implementation.md`](convos/20260514_chunks_implementation.md)
