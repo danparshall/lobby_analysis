@@ -87,6 +87,8 @@ Either:
 
 Recommendation: (a). Cross-rubric audit (b) is more useful with 3 modules.
 
+**Rubric-implementation playbook landed same session:** [`plans/20260514_rubric_implementation_playbook.md`](plans/20260514_rubric_implementation_playbook.md) generalizes the CPI + PRI patterns into a reusable kickoff brief for the remaining 6 rubrics (Sunlight, Newmark 2017/2005, Opheim, HG, FOCAL). Future rubric sessions should read the playbook instead of the original kickoff plan sketch — the playbook covers pre-flight (spec doc + v2-row-name cross-check + ground-truth location + rollup-helper survival check), architectural decision (declarative table vs function-per-item), validation regime selection, standard module structure, common rubric patterns (binary / tier / compound / typed / reverse-scoring / AND-projection / form-type-split / collect-once-map-many / catch-all), per-rubric notes for the 6 remaining rubrics, Phase 3 retirement protocol, and Phase 4 cross-rubric audit shape.
+
 ---
 
 ### 2026-05-14 — CPI 2015 C11 projection: first TDD session

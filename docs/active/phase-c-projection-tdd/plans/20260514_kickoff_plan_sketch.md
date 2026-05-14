@@ -1,5 +1,7 @@
 # Phase C Projection-TDD Kickoff Plan Sketch
 
+> **Note added 2026-05-14 (post-PRI-2010 session):** Phases 0-3 of this plan are complete (env + CPI 2015 C11 + PRI 2010 + PRI-MVP retirement). Phase 2.2 onward (rubrics #3-#8) is now better served by the generalized playbook at [`20260514_rubric_implementation_playbook.md`](20260514_rubric_implementation_playbook.md), which captures the patterns established by CPI and PRI (declarative table vs function-per-item, validation-regime decision, spec-doc-to-v2 row-name drift check, common rubric patterns, per-rubric notes). Future rubric sessions should read the playbook instead of this sketch's Phase 2 paragraph. This sketch is preserved for traceability of the original Phase C kickoff decisions.
+
 **Goal:** Get this branch from "skeleton seeded" to "first TDD'd projection function (CPI 2015 C11) passing against published ground truth" within one kickoff session. The pattern established for CPI 2015 C11 then carries through the remaining 7 rubrics in the locked order.
 
 **Originating conversation:** [`../convos/20260514_kickoff_orientation.md`](../convos/20260514_kickoff_orientation.md) (which itself is a thin handoff from [`../../../compendium-v2-promote/convos/20260514_compendium_v2_promote.md`](../../../compendium-v2-promote/convos/20260514_compendium_v2_promote.md), available on main post-`compendium-v2-promote` merge).
