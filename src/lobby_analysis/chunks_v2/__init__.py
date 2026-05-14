@@ -8,3 +8,4 @@ for the design.
 from __future__ import annotations
 
 from .chunks import Chunk, ChunkDef
+from .manifest import CHUNKS_V2
