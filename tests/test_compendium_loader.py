@@ -1,10 +1,15 @@
-"""Tests for the compendium loader.
+"""Tests for the deprecated v1 compendium loader.
 
 Stage A of plans/20260430_compendium_population_and_smr_fill.md.
 
-Unit tests use synthetic CSVs in tmp_path. Integration tests load the real
-compendium/disclosure_items.csv and verify curation completeness against
-the four source rubric CSVs.
+Unit tests use synthetic CSVs in tmp_path. Integration tests load the
+deprecated real compendium at ``compendium/_deprecated/v1/disclosure_items.csv``
+and verify curation completeness against the four source rubric CSVs.
+
+The v1 loader is deprecated as of 2026-05-14 (see compendium-v2-promote
+branch); v2 lives at ``compendium/disclosure_side_compendium_items_v2.tsv``
+and has separate tests. These v1 tests stay green so the PRI-projection-MVP
+path keeps working until ``phase-c-projection-tdd`` retires it.
 """
 
 from __future__ import annotations
@@ -17,13 +22,13 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
-from lobby_analysis.compendium_loader import load_compendium
+from lobby_analysis.compendium_loader import load_v1_compendium_deprecated as load_compendium
 from lobby_analysis.models import CompendiumItem
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-REAL_COMPENDIUM = REPO_ROOT / "compendium" / "disclosure_items.csv"
-DEDUP_MAP = REPO_ROOT / "compendium" / "framework_dedup_map.csv"
+REAL_COMPENDIUM = REPO_ROOT / "compendium" / "_deprecated" / "v1" / "disclosure_items.csv"
+DEDUP_MAP = REPO_ROOT / "compendium" / "_deprecated" / "v1" / "framework_dedup_map.csv"
 
 PRI_DISCLOSURE_RUBRIC = (
     REPO_ROOT
