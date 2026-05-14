@@ -22,6 +22,41 @@ Purpose: Document the Compendium 2.0 row-naming taxonomy. Walk every `compendium
 
 (Newest entries first.)
 
+### 2026-05-14 (sub-2) — Rename-candidate walkthrough + execution plan drafted
+
+Successor to the audit-v1 kickoff. Walked Dan through all 8 §10 rename candidates one at a time, each accompanied by a pre-scanned downstream-consumer fan-out (TSV regen path via `tools/freeze_canonicalize_rows.py`, historical projection-mapping doc cross-refs, future `extraction-harness-brainstorm` Pydantic models, prompt strings, v1.1 Pydantic state).
+
+**All 8 candidates accepted** → 15 row renames + 1 README typo fix. Per-candidate outcomes:
+
+| # | Outcome | Notes |
+|---|---|---|
+| 1 | Accept | `principal_or_lobbyist_*` → `lobbyist_or_principal_*` (1 row, FOCAL) |
+| 2 | Accept cluster, LV-1 to `_filing_*` | 6 rows: 5 to `_spending_report_*`, LV-1 categorically to `lobbyist_filing_*` (schema-coverage observable, not report-contents) |
+| 3 | Accept all 3 high-traffic | Registration-threshold trio → `lobbyist_registration_threshold_<measure>_<unit>` shape (6-rubric `compensation` + 4-rubric `expenditure` and `time`) |
+| 4 | Accept | `expenditure_itemization_de_minimis_threshold_dollars` → `lobbyist_filing_itemization_de_minimis_threshold_dollars` (1 row) |
+| 5 | Accept | `registration_deadline_days_after_first_lobbying` → `lobbyist_registration_deadline_days_after_first_lobbying` (1 row) |
+| 6 | Accept singular | `ministerial_diaries_available_online` → `ministerial_diary_available_online` (1 row) |
+| 7 | Accept to `def_*` | 2 rows: `lobbying_definition_*` → `def_lobbying_activity_types`, `lobbyist_definition_*` → `def_lobbyist_actor_types` |
+| 8 | Fix README in this branch | `cpi_2015_projection_mapping.md` → `cpi_2015_c11_projection_mapping.md` typo in `compendium/README.md` |
+
+**Key methodological move:** the Candidate-2 LV-1 sub-decision (`_filing_*` vs `_spending_report_*`) was decided on **semantic faithfulness over mechanical cluster-uniformity**. Pushback delivered when Dan asked "won't this one be more consistent?" — clarified that "consistency" has two axes (cluster-uniformity rule favors `_spending_report_*`; family-membership / what-the-row-actually-measures favors `_filing_*`). Dan picked `_filing_*` after seeing the dual framing.
+
+**Downstream-consumer pre-scan resolved one important question:** the v1.1 Pydantic models in `src/lobby_analysis/models/` are **row-ID-agnostic** — `compendium.py`, `state_master.py`, `compendium_loader.py` contain zero hard-coded candidate row IDs. The merge-cost consumer is the **future** v2 Pydantic work on `extraction-harness-brainstorm` (where `chunks_v2` etc. are likely to enumerate row IDs). This significantly de-risks execution timing.
+
+**Deliverables this session:**
+
+1. **[`convos/20260514_rename_review_and_plan.md`](convos/20260514_rename_review_and_plan.md)** — full walkthrough decisions, LV-1 sub-decision rationale, downstream-consumer pre-scan, open questions for execution.
+2. **[`plans/20260515_rename_execution_plan.md`](plans/20260515_rename_execution_plan.md)** — 7-section execution brief. Rename set with old→new tables per cluster (§1); downstream-consumer fan-out per cluster with Phase 0 sister-branch grep gating execution (§2); test-first behavior tests for row-count invariance, old-absent / new-present, byte-identical non-ID columns, LV-1 categorical-exception preservation, Candidate-3 unit-suffix correctness (§3); 7-phase execution sequence with immediate-swap canonical strategy (§4); 7 edge cases including row-count drift, historical-archive non-edit rule, `provenance` column possibly harboring old-name strings (§5); what-could-change (§6); 5 questions for execution-time (§7).
+3. **Minor doc-fix on this branch:** `compendium/NAMING_CONVENTIONS.md` §10 Issue 2 header corrected from "(5 rows)" → "(6 rows)". The body table already listed 6 rows; the header was a kickoff-session typo. Fixed here so the rename-execution branch doesn't carry the doc-state cleanup.
+
+**Execution timing: deferred.** The plan stays in this branch as a planning artifact. The execution agent cuts a new branch off main (not off this branch) when `extraction-harness-brainstorm` Pydantic-model state and `phase-c-projection-tdd` projection-function rollout settle. Phase 0's pre-execution grep across sister branches is non-negotiable.
+
+Doc-only commit; no code changes; no test run (no behavior changes here). Session convo: [`convos/20260514_rename_review_and_plan.md`](convos/20260514_rename_review_and_plan.md).
+
+**Next steps (handoff for execution agent — likely a future branch, not this one):**
+
+> Cut a new branch (`compendium-row-renames-v3` or similar) off **main**, not off `compendium-naming-docs`. Read the originating convo + the plan in this branch. Run Phase 0 (grep sister branches for the 15 old row IDs) BEFORE cutting the branch. Proceed test-first through Phases 1-7. Execution is purely mechanical given the plan; the hard part is sister-branch coordination.
+
 ### 2026-05-14 — Audit v1 drafted; 8 rename candidates surfaced
 
 First substantive session produced three artifacts:
@@ -45,7 +80,7 @@ Rename **execution** stays deferred per the kickoff scope decision (sister-branc
 
 Session convo: [`convos/20260514_naming_taxonomy_kickoff.md`](convos/20260514_naming_taxonomy_kickoff.md). Commit `0e94f37`.
 
-**Next steps (handoff for the next agent on this branch):**
+**Next steps (handoff for the next agent on this branch):** ✅ **Completed by 2026-05-14 (sub-2) session — see entry above.**
 
 > Walk Dan through the 8 rename candidates in §10 of [`compendium/NAMING_CONVENTIONS.md`](../../../compendium/NAMING_CONVENTIONS.md) one at a time (accept / defer / reject for each), then draft a rename-execution plan at `plans/20260515_rename_execution_plan.md` enumerating the accepted set plus each rename's downstream-consumer fan-out (TSV regen path via `tools/freeze_canonicalize_rows.py`, projection-mapping doc cross-refs at `docs/historical/compendium-source-extracts/results/projections/`, future `extraction-harness-brainstorm` Pydantic models, prompt strings).
 

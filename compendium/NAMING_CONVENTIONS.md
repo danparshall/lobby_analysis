@@ -223,7 +223,7 @@ This audit surfaces the following inconsistencies. None are blocking — the v2 
 **Proposed rename:** `lobbyist_or_principal_reg_form_includes_member_or_sponsor_names`
 **Cost:** 1 row; FOCAL-introduced; single-rubric.
 
-### Issue 2 — D3 rename gaps: leftover `_report_*` rows that should be `_spending_report_*` (5 rows)
+### Issue 2 — D3 rename gaps: leftover `_report_*` rows that should be `_spending_report_*` (6 rows)
 
 D3 enacted the α form-type split (`*_report_includes_*` → `*_spending_report_includes_*`) but keyed the rename rule on `_includes_*` and `_cadence_*` patterns inside PRI E1/E2 only. Five non-PRI rows that are *also* spending-report observables retained the legacy ambiguous `_report_*` prefix:
 
