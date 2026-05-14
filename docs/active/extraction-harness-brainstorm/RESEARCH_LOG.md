@@ -27,7 +27,39 @@ The `data/` symlink convention from `skills/use-worktree/SKILL.md` was **skipped
 
 (Newest first.)
 
-### 2026-05-14 — Chunks brainstorm-and-plan end-to-end; retrieval brainstorm started
+### 2026-05-14 (pickup) — Retrieval brainstorm completed; Citations API pivot; impl plan written
+
+Convo: [`convos/20260514_retrieval_brainstorm.md`](convos/20260514_retrieval_brainstorm.md) (Phase 2 added — locked Q's + audit table)
+Plan: [`plans/20260514_retrieval_implementation_plan.md`](plans/20260514_retrieval_implementation_plan.md) — TDD-shaped, API-launchable
+Handoff consumed: [`plans/_handoffs/20260514_retrieval_brainstorm_handoff.md`](plans/_handoffs/20260514_retrieval_brainstorm_handoff.md)
+
+**Resumed retrieval brainstorm at Phase 2** per handoff. Re-engaged with the aggregate-cost lens explicitly surfaced (~8,000 calls per design cycle for per-chunk dispatch vs ~800 for per-(state, vintage); 10× delta). Initial agent recommendation was per-(state, vintage) on cost grounds — **user pushed back**: "If it's dirt cheap but only 50% accuracy, that's not actually a win." Re-anchored on **accuracy gate before cost optimization**. Q1 lock: parameterized `chunks: list[str]` dispatch unit, default per-chunk for experiments; iter-1's 93.3% baseline is the per-chunk-against-7-cells comparison point. Batches up empirically (tiny fixture → 1 chunk → N chunks → 50 states × 4 vintages) — never commit to full rollout without intermediate accuracy data.
+
+**Citations API pivot.** Mid-Phase-2, user surfaced the Anthropic **Citations API** as a feature the prior session hadn't considered. This is load-bearing: Citations structurally enforces provenance grounding (every cited claim has a verbatim span pointing back to a source document). Verified the current API surface via WebFetch of [`platform.claude.com/docs/en/build-with-claude/citations.md`](https://platform.claude.com/docs/en/build-with-claude/citations.md): GA, no beta header, works on `claude-opus-4-7`. Three document types supported (plain text → char-level citations, PDF → page-level, custom content → block-level); we use plain text since we have `papers/text/` extractions. **Hard incompatibility:** Citations + Structured Outputs (`output_config.format`) → 400 error — so v1's strict JSON output schema can't be enforced via structured outputs. **Solution:** tool use. Define `record_cross_reference` and `record_unresolvable_reference` tools; agent calls one per finding; citations attach to text blocks preceding each tool call as machine-verified provenance. Tool use **is** compatible with citations.
+
+**Locked package** (full rationale in convo Phase 2):
+
+- Q1: parameterized dispatch unit (`chunks: list[str]`), default per-chunk
+- Q2: tool use (α) replacing JSON output schema; `chunk_ids_affected` is a tool input field
+- Q3: chunk-name + count + descriptive anchors (not cell-row-id enumeration; not chunk-name-only)
+- Q4: cell-aware at input, chunk-coarse at output
+- Q6: prompt markdown + Python brief-writer + tool definitions + parser + Pydantic models (full Python module — brief-writer no longer YAGNI)
+- Q7: `src/scoring/retrieval_agent_prompt_v2.md` + `src/lobby_analysis/retrieval_v2/`
+- SDK: `anthropic>=0.102` added to `pyproject.toml` (closes deferred kickoff Q; current version verified via PyPI WebFetch 2026-05-14)
+- Model/thinking/effort: `claude-opus-4-7`, `thinking={"type": "adaptive"}`, `output_config={"effort": "high"}`; no sampling params (would 400 on Opus 4.7)
+- Data dir: `data/retrieval_v2/{state}_{vintage}/` local-only in worktree
+
+**Implementation plan: 10 phases (0-9), 1 commit per phase.** Full v2 prompt markdown inlined in Phase 6 (chunks-plan precedent: load-bearing artifacts are plan-anchored). Full tool schemas inlined in Phase 2 with `chunk_ids_affected.enum` sourced from `build_chunks()` (coupling test catches drift). 30+ test signatures listed by name across 6 test files (tools, models, brief-writer, parser, prompt invariants, integration). **Integration test runs automatically on every `uv run pytest`** when `ANTHROPIC_API_KEY` is set (skipif gate); 2-sentence statute fixture + `max_tokens=2000` keeps cost ≈ $0.02 per run. Empirical validation gates T0-T4 — this plan implements through T1 (smoke test); T2-T4 (single-OH-chunk → multi-chunk → 50-state) are downstream.
+
+**Things this brainstorm + plan is locking blind on** (both author and implementer first-time Citations users; flagged in convo + Phase 7 of plan): citation-to-tool-call attribution behavior (does Claude actually emit cited reasoning before each tool call, or sometimes consolidate at end?); cache_control on document blocks (does it work alongside citations?); tool-use + citations composition; plain-text char-level citation accuracy on `papers/text/` extractions (PDF→text may have non-standard whitespace affecting sentence chunking). **Phase 7 integration test is designed to surface these — instructs implementer to pause and surface to user rather than silently patch the parser if real-API behavior diverges from documented behavior.**
+
+**Process notes.** (1) The pickup session almost locked Q1 on the per-(state, vintage) framing the cost lens favors before catching that the empirical accuracy floor was undefined — user correction in real time reframed the package around accuracy first, cost second. (2) Citations API pivot was substantial: the entire output-schema decision (Q2) and deliverable-shape decision (Q6) had to be rewritten mid-brainstorm. The plan-sketch's `cell_ids_affected: list[tuple[str, str]]` field is gone; the brief-writer that was YAGNI in the pre-pivot package is now load-bearing. Documented the pre-pivot answers in the convo's "Decisions made (audit trail)" table so future readers can see why the lock changed. (3) Saved a real-API-call decision for the implementer (the integration test is the first time Citations API is exercised in this codebase) — explicitly built-in pause-and-surface instructions in Phase 7 of the plan, rather than expecting silent patching.
+
+**Process note 2: user mid-session correction on the cost framing.** When I led with the cost lens for per-(state, vintage) in the AskUserQuestion, the user pushed back with the accuracy floor argument — and I rolled the cost framing back into "secondary to accuracy gate" in the locked package. The aggregate-cost analysis is still in the convo Phase 2 as decision context (it's a real argument that should inform later batch-size scaling), but it doesn't drive Q1's default.
+
+**Next session.** Implementer (separate API-launched sub-branch per user's session strategy) executes the impl plan. After implementation lands, **brief-writer brainstorm** is the cleaner next component (orthogonal to retrieval; depends on chunks + cells which both exist). **Scorer-prompt rewrite** is the fourth component, depends on retrieval bundle shape (which will be known once retrieval lands).
+
+
 
 Plan sketches: [`plans/20260514_chunks_plan_sketch.md`](plans/20260514_chunks_plan_sketch.md) + [`plans/20260514_retrieval_plan_sketch.md`](plans/20260514_retrieval_plan_sketch.md)
 Brainstorm convos: [`convos/20260514_chunks_brainstorm.md`](convos/20260514_chunks_brainstorm.md) + [`convos/20260514_retrieval_brainstorm.md`](convos/20260514_retrieval_brainstorm.md) (retrieval in progress)
