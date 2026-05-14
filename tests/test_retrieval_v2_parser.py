@@ -13,7 +13,9 @@ from pathlib import Path
 
 from lobby_analysis.retrieval_v2.parser import parse_retrieval_response
 
-FIXTURE_PATH = Path(__file__).parent / "fixtures" / "retrieval_v2" / "sample_response.json"
+FIXTURE_PATH = (
+    Path(__file__).parent / "fixtures" / "retrieval_v2" / "sample_response_handcrafted.json"
+)
 
 
 def _load_fixture() -> dict:

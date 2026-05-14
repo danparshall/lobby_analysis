@@ -25,7 +25,13 @@ pytestmark = pytest.mark.skipif(
 )
 
 TINY_STATUTE_PATH = Path(__file__).parent / "fixtures" / "retrieval_v2" / "tiny_statute.txt"
-SAMPLE_RESPONSE_PATH = Path(__file__).parent / "fixtures" / "retrieval_v2" / "sample_response.json"
+# Real-API response is written here as a local-inspection aid (gitignored).
+# Distinct from sample_response_handcrafted.json, which parser unit tests pin
+# against and which exercises edge cases (mixed tool types, multi-tool reset)
+# that a single live API call may not naturally produce.
+SAMPLE_RESPONSE_PATH = (
+    Path(__file__).parent / "fixtures" / "retrieval_v2" / "sample_response_real.json"
+)
 
 
 def _tiny_bundle() -> list[dict]:
@@ -81,9 +87,9 @@ def test_real_api_call_produces_at_least_one_cross_reference():
 def test_parser_handles_real_api_response():
     """Parser yields non-empty cross_references with attached evidence_spans.
 
-    Side effect: writes the real API response to sample_response.json so
-    parser unit tests use real-shape data (overwriting hand-crafted fixture
-    from Phase 5). Per plan Phase 7.
+    Side effect: writes the real API response to sample_response_real.json
+    (gitignored, local-inspection aid). Decoupled from sample_response_handcrafted.json,
+    which parser unit tests pin against.
     """
     import anthropic
 
