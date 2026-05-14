@@ -40,6 +40,99 @@ The `data/` symlink convention from `skills/use-worktree/SKILL.md` was **skipped
 
 (Newest first.)
 
+### 2026-05-14 — CPI 2015 C11 projection: first TDD session
+
+Convo: [`convos/20260514_cpi_2015_c11_tdd.md`](convos/20260514_cpi_2015_c11_tdd.md)
+Plan: [`plans/20260514_kickoff_plan_sketch.md`](plans/20260514_kickoff_plan_sketch.md) (Phase 0 + Phase 1)
+Results: [`results/20260514_cpi_2015_c11_aggregation_fit.md`](results/20260514_cpi_2015_c11_aggregation_fit.md)
+
+**Topics explored**
+
+- Per-item projection logic for the 14 CPI 2015 C11 indicators (6 de jure
+  Boolean / threshold / enum reads + 8 de facto 5-tier passthroughs +
+  1 compound passthrough on IND_205).
+- Empirical fit of the aggregation rule against the published 50-state
+  per-state aggregate. Four candidates evaluated; only one fits within
+  tolerance.
+- Data-quality normalization for 8 known glitch cells in the 700-cell
+  ground-truth CSV (6 mixed-case Colorado cells + 2 numeric-where-
+  categorical cells in Texas / Massachusetts).
+- Rank tie-break convention used by CPI's published per-category rank.
+
+**Provisional findings**
+
+- **Aggregation rule:** unweighted mean of the 5 sub-category means
+  (sub-cats 11.1-11.5 extracted from `papers/CPI_2015__sii_criteria.xlsx`,
+  item counts 2/4/3/2/3). Max abs residual across 50 states is 0.05,
+  i.e. a one-decimal rounding artifact of the published score. The
+  other 3 candidates (simple mean, de-jure/de-facto halves, sequential
+  sub-cats) miss the +/-1 tolerance on 18-38 of 50 states.
+- **Normalization for invalid de jure cells:** the 2 numeric-string
+  cells (Texas IND_199 "100", Massachusetts IND_203 "100") are
+  consistent with CPI's aggregator treating them as NO (0), not YES
+  (100). Setting them to NO produces exact fit; setting them to YES
+  over-estimates by ~6.7 per state. Codified as a 0-default fallback
+  for any de jure cell not in the YES/MODERATE/NO set after
+  case-insensitive match.
+- **Rank tie-break:** CPI uses competition ranking (1224 style; ties
+  share a rank, next rank skips). Sequential ranking with alphabetical
+  tie-break (a-priori guess) was off-by-1 to off-by-2 on 11 states.
+- **No per-category letter grades.** CPI 2015 publishes letter grades
+  at the overall-state level only. The kickoff plan implied
+  per-category grades; that was incorrect for C11. Letter-grade
+  projection dropped from this rubric's deliverable; rubrics #2-#8
+  likely the same — confirm rubric-by-rubric.
+
+**Results**
+
+- Module: `src/lobby_analysis/projections/cpi_2015_c11.py` (per-item
+  helpers IND_196-IND_209, ground-truth loader, sub-cat aggregator,
+  rank, top-level `project_cpi_2015_c11`, `CPI2015C11Score` Pydantic
+  model).
+- Tests: `tests/projections/test_cpi_2015_c11_per_item.py`,
+  `test_cpi_2015_c11_ground_truth.py`,
+  `test_cpi_2015_c11_aggregation.py` (78 tests, all passing; full
+  suite 384 pass + 3 pre-existing failures from
+  `tests/test_pipeline.py` unrelated to this branch).
+- Fit script: `scripts/fit_cpi_2015_c11_aggregation.py` (reproduces
+  the empirical-fit decision; evaluates 4 candidate aggregators).
+- Fit result: `results/20260514_cpi_2015_c11_aggregation_fit.md`.
+
+**Decisions carried forward**
+
+- Per-rubric module layout: `src/lobby_analysis/projections/<rubric>.py`
+  + `tests/projections/test_<rubric>_*.py`.
+- Cell input shape: `cells[row_id][axis] = value` nested dict,
+  harness-independent.
+- Per-item helper return type: plain `int` in {0, 25, 50, 75, 100}.
+- Score type: frozen Pydantic model with `state` + `per_item_scores`
+  dict + `category_score` float (no per-category letter grade — not
+  published).
+- Aggregation-fit pattern: try 3-4 closed-form candidates (simple mean,
+  de-jure/de-facto halves, sub-cat means from published methodology
+  doc when available, etc.), pick the one with the smallest max
+  residual against published per-state aggregate.
+
+**Next steps**
+
+Either (a) start rubric #2 (PRI 2010, 69 rows; sub-aggregate rollup
+rule already paper-derived in archived `pri-calibration` — port if
+recoverable, rebuild from spec doc if not) or (b) refactor CPI
+projection toward a declarative table format before more rubrics land.
+Recommendation: (a). Refactor only if PRI 2010 makes duplication
+painful.
+
+**Pre-existing test failures flagged.** 3 tests in
+`tests/test_pipeline.py` (test_ca_snapshot_*, test_brief_contains_*,
+test_stamp_rows_*) fail on this branch *and* on main because
+`data/portal_snapshots/CA/2026-04-13/manifest.json` doesn't exist
+(`data/` is gitignored, no symlink set up for this branch). Not caused
+by this session; flagged for the next person who looks at the test
+suite — likely needs a `pytest.skipif` on missing data path or a
+documented data-symlink step.
+
+---
+
 ### 2026-05-14 — Kickoff orientation + plan sketch (NOT the first TDD session)
 
 Convo: [`convos/20260514_kickoff_orientation.md`](convos/20260514_kickoff_orientation.md)
