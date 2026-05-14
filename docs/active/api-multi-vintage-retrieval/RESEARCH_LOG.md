@@ -10,10 +10,14 @@
 
 ## Session log (newest first)
 
-### 2026-05-14 — B2 canary: state-index inlined into discovery prompt (WY 2010 re-test)
+### 2026-05-14 — B2 canary: state-index inlined into discovery prompt (WY 2010 + FL 2010)
 
 - **Convo:** `convos/20260514_b2_justia_index_inline_recanary.md` (pending, end-of-session)
-- **Results:** [`results/20260514_wy2010_b2_index_inline_hit_rate.md`](results/20260514_wy2010_b2_index_inline_hit_rate.md)
+- **Results:**
+  - [`results/20260514_wy2010_b2_index_inline_hit_rate.md`](results/20260514_wy2010_b2_index_inline_hit_rate.md) — first state, surfaces architecture + Rule 6
+  - [`results/20260514_fl2010_b2_index_inline_hit_rate.md`](results/20260514_fl2010_b2_index_inline_hit_rate.md) — second-state confirmation
+
+**FL 2010 update:** 0 / 6 statute-leaf hit (vs WY's 0 / 1). Model lands on `TitleIII/TitleIII.html` and explicitly names Chapter 11 and section 11.045 in narrative, while refusing to emit them as URLs per Rule 6. Different statute structure (per-section leaves like WI's in-context example, not single chapter-leaf like WY) but identical B2 outcome — title-only-depth on Justia's state-year index is what's load-bearing, and that appears universal. Promote to B3 with strong evidence; the architecture, not the prompt, is the ceiling.
 
 #### Topics Explored
 
