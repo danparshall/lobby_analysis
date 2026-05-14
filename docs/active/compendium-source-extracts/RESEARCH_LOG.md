@@ -16,6 +16,62 @@ Carry-forward signals (informational, not gates):
 
 (Newest first.)
 
+### 2026-05-13 (factual-audit pre-merge) — Phase 1 of merge handoff: factually verify Newmark 2017 / FOCAL / PRI 2010 summaries against source PDFs (LAST gate; branch IS merge-ready post-this-commit)
+
+**Convo:** [`convos/20260513_factual_audit_and_merge.md`](convos/20260513_factual_audit_and_merge.md)
+**Handoff being executed:** [`plans/_handoffs/20260514_factual_audit_and_merge.md`](plans/_handoffs/20260514_factual_audit_and_merge.md) (Phase 1 of 5: factual audit; Phases 2–5 = audit commit + merge + archive + 3 successor branches; this session lands Phases 1–5 in sequence)
+**Predecessor session:** [`### 2026-05-13 (paper-audit pre-merge)`](#2026-05-13-paper-audit-pre-merge--auditing-paper-summaries-last-pre-merge-gate-branch-is-merge-ready) below — deferred Stop condition #4 (factual spot-checks) to this session per user redirect post-commit `31ba9ce`
+
+#### Topics Explored
+
+- **Direct-read audit (no subagent dispatch).** The 3 source `.txt` extractions are short enough (1,173 + 1,468 + 2,095 lines = 4,736 total) for direct reads. Subagent dispatch wasn't needed; main-context cost was ~50k tokens of paper text + ~10k tokens of summary verification. The handoff offered subagent parallelization as an option; chose direct read for tighter audit-trail in the convo.
+- **Newmark 2017 — load-bearing r=0.04 confirmed exactly.** Read full PDF .txt. The CPI ↔ PRI-disclosure r=0.04 correlation (paper p.421-422) — the single most important empirical finding for the project's rubric-unification rationale — is reported exactly as stated in the summary. Also confirmed: r=0.27 (vs PRI accessibility), r=0.40 (vs Sunlight), r=0.52 (vs CPI), r=0.54 (vs Newmark 2003), 19-item index (7+5+7), range 7–19, mean 12.96, SD 2.63, alpha 0.67, top/bottom-7 state lists, Arizona 6→16 mover with recipient-id-gap caveat, factor analysis 4-6 factors. **All 11 verifiable numerical claims clean.**
+- **Newmark 2017 sourcing nit (not an error).** The parenthetical "(lower than 2005's 0.71; author flags as 'less than ideal')" — the 0.67 and "less than ideal" ARE in the 2017 paper (p.567); the 0.71 comparator for 2005 is NOT in the 2017 PDF. Most likely sourced from Newmark 2005 (separate paper, also in this collection). Per user direction documented in PAPER_INDEX.md Audit Notes for Phase C agents who might need to extract the comparator from the actual Newmark 2005 paper rather than trust this summary's parenthetical.
+- **FOCAL 2024 — 1 real factual error + 1 clarity issue.** Read full PDF .txt. 14 of 16 verifiable numerical claims confirmed exactly: 1,911 records, 15 frameworks (1991-2022), 248 items coded, 8 categories / 50 indicators, 19/109 GDB countries, financials 14/15, scope 13/15, 3 weighted frameworks, FOCAL unweighted as flagged limitation, scope+contact-log as priority categories, Chile as contact-log exemplar, UK/Australia third-party-only example, enforcement excluded but in 11/15, integrity/codes excluded but in 6/15. **Real error:** the parenthetical claiming "the paper does not state a count for contact log; earlier versions of this summary that cited '13/15 contact log' were duplicating the scope figure" is wrong — paper p.1077-1079 (Contact log subsection of FOCAL Categories) explicitly states 13 frameworks included contact log (HG and Bednářová omitted). The earlier "13/15 contact log" was correct AND the current revision introduced a defensive justification that itself was false. **Clarity issue:** "openness/data accessibility in 9/15" picks the narrower open-data sub-theme number (paper p.809) but the FOCAL Openness category itself is in 11/15 (p.886-887); both are in the paper. Per user direction tightened to "openness in 11/15 (open-data sub-theme specifically in 9/15)."
+- **PRI 2010 — verdict 100% accurate on every checked claim.** Read full PDF .txt in 3 chunks. The handoff flagged this as the highest-density numerical-claim summary and most likely to have transcription errors. None found. **All checked claims confirmed exactly:** the inside-baseball methodology rules (B1/B2 reverse-scoring per footnotes 85/86; E rubric "higher of E1/E2 + F/G double-count + separate J"; A:11 + B:4 + C:1 + D:1 + E:20 = 37 sub-component max-point counts; C 0/1 gate with 3 sub-criteria Ownership/Structure/Public-charter; D 0/1 gate with 2 sub-criteria Financial/Time threshold) all match the methodology section verbatim. The cross-rubric ranks ("South Carolina 3rd on disclosure / Rank 46 on accessibility"; "Connecticut 18th on laws / Rank 1 on accessibility") confirmed via Tables 5 and 6. California $ figures ($552.6M total / $92.6M government 16.8% / $131.4M after reclassification 23.8%) confirmed exactly. State top/bottom lists across all rubrics confirmed exactly. Combined-overall top-6 and bottom-5 confirmed exactly.
+- **PRI 2010 paper-side counting curiosity (NOT a summary error).** Paper p.167-169 claims "11 states received scores below 50 percent." From Table 5 I count 12 states below 50% (WI, SD, NJ at 48.6%; ND, MN at 45.9%; KS, OK, WY at 37.8%; MD at 35.1%; NH at 32.4%; NV, WV at 29.7%). Summary faithfully repeats the paper's "11" — so this is a paper-side counting issue from 2010, not a summary fidelity issue. Documented in PAPER_INDEX Audit Notes for completeness; no action.
+
+#### Provisional Findings
+
+- **The framing rationale for the rubric-unification project rests on accurately-reported data.** Newmark 2017's r=0.04 is the load-bearing piece of evidence for "different scoring rubrics labeled 'disclosure' can measure near-orthogonal constructs" — and it's reported faithfully. PRI 2010's dense numerical claims (down to "Connecticut 17.3/22 ranked 1st on accessibility, 18th on laws") all check out. Phase C TDD agents who hand-code projection logic against these three rubrics can trust the projection-arithmetic values in the summaries.
+- **The audit was much cleaner than the handoff anticipated.** The handoff scoped 45-60 min and treated factual errors as a real possibility worth carefully surfacing to user. They were rare: 1 real correction in FOCAL, 1 clarity tightening in FOCAL, 1 sourcing note in Newmark 2017, 0 in PRI 2010. Net audit time ≈ 30 minutes of real work + ~15 min of context-loading + decisions.
+- **One process pattern worth noting for future audits.** The FOCAL contact-log error illustrates a failure mode: a previous reviewer "fixed" something that was already correct AND introduced a defensive justification that itself was false ("the paper does not state a count for contact log"). The fix path going forward: when removing a number with a justification, double-check that the justification is true. This kind of error is hard to catch without re-reading the source — it survived multiple prior session-end audits because no one re-walked the per-category subsections in §"Framework fOr Comprehensive and Accessible Lobbying" where each FOCAL category's framework count is independently stated.
+
+#### Decisions
+
+| topic | decision |
+|---|---|
+| Newmark 2017 audit verdict | **All numerical claims confirmed exactly.** No corrections needed in summary. Load-bearing r=0.04 finding is solid. |
+| Newmark 2017 0.71 sourcing nit | **Note in PAPER_INDEX.md Audit Notes only** (not summary edit). Flag for Phase C agents that the 0.71 comparator is sourced from Newmark 2005, not from the 2017 PDF. |
+| FOCAL contact-log error | **Restore "contact log in 13/15" + delete the false parenthetical.** Cleanest fix; restores accurate info that a prior revision had wrongly removed with a justification that itself was false. |
+| FOCAL openness 9 vs 11 | **Tighten to "openness in 11/15 (open-data sub-theme specifically in 9/15)."** Both numbers in the paper; informative, matches source exactly. |
+| PRI 2010 audit verdict | **All checked claims confirmed exactly.** No corrections. Paper-side curiosity at "11 vs 12 states below 50%" documented but not actioned (paper-side issue, not summary issue). |
+| Convo filename | `20260513_factual_audit_and_merge.md` — execution-date naming per the handoff's allowance ("or whatever date the next agent's session falls on"). |
+| Audit commit scope | Single commit covering PAPER_SUMMARIES.md (FOCAL correction) + PAPER_INDEX.md (Audit Notes update) + STATUS.md (row + Recent Sessions) + RESEARCH_LOG.md (this entry) + this convo + handoff Stop conditions checked off. |
+| Branch merge-readiness | **Branch is now MERGE-READY.** All Phase 1 Stop conditions in handoff satisfied. Phases 2-5 (commit/merge/archive/cut 3 successors) execute this same session. |
+
+#### Mistakes recorded
+
+None significant. One harness quirk: `Read` over-rejected STATUS.md at 38k tokens for a 100-line slice; worked around with `grep -n` for the relevant section. No impact on audit quality.
+
+#### Results
+
+- [`PAPER_SUMMARIES.md`](../../../PAPER_SUMMARIES.md) — line 230 corrected (FOCAL summary: contact-log count restored to 13/15; openness clarified to 11/15 with 9/15 sub-theme parenthetical).
+- [`PAPER_INDEX.md`](../../../PAPER_INDEX.md) — Audit Notes section "Pending factual-accuracy audits" line replaced with "Factual-accuracy audits landed (2026-05-13)" and a per-summary verdict block including the Newmark 2017 0.71 sourcing nit.
+- [`plans/_handoffs/20260514_factual_audit_and_merge.md`](plans/_handoffs/20260514_factual_audit_and_merge.md) — Phase 1 Stop conditions checked off (factual audits complete on all 3 papers; user-decided dispositions applied; PAPER_INDEX Audit Notes updated; convo + RESEARCH_LOG + STATUS updated).
+- This RESEARCH_LOG entry + the convo summary at `convos/20260513_factual_audit_and_merge.md`.
+
+#### Next Steps
+
+This session continues into Phase 2-5 of the merge handoff:
+
+1. **Phase 2: Audit commit + push** — single commit covering this session's changes; push `compendium-source-extracts` branch.
+2. **Phase 3: Merge `compendium-source-extracts` → main** — standard merge (no-squash; branch commit history is the permanent record). `git fetch` first to verify no other fellow pushed since session start; if main moved, surface to user before auto-resolving.
+3. **Phase 4: Archive `docs/active/compendium-source-extracts/` → `docs/historical/compendium-source-extracts/`** via `git mv`. Update STATUS.md Active table (remove row) + Archived table (add row summarizing what was learned: 181-row v2 freeze, 9 projection mappings, factual audit landed clean).
+4. **Phase 5: Cut 3 successor branches in parallel** — `oh-statute-retrieval`, `extraction-harness-brainstorm`, `phase-c-projection-tdd`. Each gets a worktree with data/ symlink, push to origin, seed `docs/active/<branch>/` skeleton (RESEARCH_LOG.md stub + convos/ + plans/ + results/ dirs). **No kickoff plans** — those are each successor branch's first session's work.
+
+---
+
 ### 2026-05-13 (paper-audit pre-merge) — `auditing-paper-summaries` (LAST pre-merge gate; branch is merge-ready)
 
 **Convo:** [`convos/20260513_paper_summaries_audit_premerge.md`](convos/20260513_paper_summaries_audit_premerge.md)

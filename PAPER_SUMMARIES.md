@@ -227,7 +227,7 @@ Relevance: Federal compliance appears high on surface metrics (97% filing rate) 
 Summary: Systematic scoping review of 1,911 records yielding 15 lobbying transparency frameworks (1991–2022). Thematically coded 248 items to synthesize FOCAL (Framework fOr Comprehensive and Accessible Lobbying) — an 8-category, 50-indicator rubric for evaluating what governments disclose about lobbying and how accessible those disclosures are. Designed to assess both lobbyist registers and open/ministerial diaries.
 
 Key findings:
-- Of 15 frameworks, financials appeared in 14/15; scope in 13/15; openness/data accessibility in 9/15. (The paper does not state a count for contact log; earlier versions of this summary that cited "13/15 contact log" were duplicating the scope figure.)
+- Of 15 frameworks, financials appeared in 14/15; scope in 13/15; openness in 11/15 (open-data sub-theme specifically in 9/15); contact log in 13/15.
 - Only 19 of 109 countries surveyed by the 2021 Global Data Barometer had a lobbyist register available online.
 - Only 3 of the 15 frameworks applied weighted indicators; of those, the categories receiving highest weights were timeliness, online availability/format, financial disclosures, and enforcement/sanctions. FOCAL itself is unweighted by design and the authors flag this as a limitation.
 - Scope and contact logs identified as the two highest-priority categories: narrow scope definitions (e.g., UK/Australia limiting to third-party lobbyists) exclude the bulk of in-house lobbyists; contact logs capture who was contacted, whose interests were represented, and the purpose of the meeting. Chile is cited as an exemplary model for contact log disclosure.
