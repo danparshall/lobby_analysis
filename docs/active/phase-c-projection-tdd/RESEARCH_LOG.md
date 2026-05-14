@@ -16,7 +16,7 @@ Purpose: Phase C successor branch (per Option B locked 2026-05-13). TDD-implemen
 
 > **Predecessor:** Cut off `main` at `8bfc225` post-archive of `compendium-source-extracts` (merged 2026-05-14 as `cac1469`; archived to `docs/historical/compendium-source-extracts/`).
 >
-> **Row-freeze contract:** [`docs/historical/compendium-source-extracts/results/projections/disclosure_side_compendium_items_v2.tsv`](../../historical/compendium-source-extracts/results/projections/disclosure_side_compendium_items_v2.tsv) — 181 rows. Decision log at [`20260513_row_freeze_decisions.md`](../../historical/compendium-source-extracts/results/projections/20260513_row_freeze_decisions.md).
+> **Row-freeze contract:** [`compendium/disclosure_side_compendium_items_v2.tsv`](../../../compendium/disclosure_side_compendium_items_v2.tsv) — 181 rows. Promoted from `docs/historical/...` to repo-level `compendium/` on 2026-05-14 by the `compendium-v2-promote` branch (live contract for the two parallel-running successors; v1 artifacts retained at `compendium/_deprecated/v1/`). Load via `from lobby_analysis.compendium_loader import load_v2_compendium` (returns raw `list[dict[str, str]]`). Decision log at [`20260513_row_freeze_decisions.md`](../../historical/compendium-source-extracts/results/projections/20260513_row_freeze_decisions.md). (Path is live on main after `compendium-v2-promote` merges; until then read via the worktree-local view.)
 >
 > **Compendium 2.0 success criterion:** see the ⭐ section in [`../../../STATUS.md`](../../../STATUS.md). This branch is direct work on criterion #4 (per-rubric projections as sanity checks on extraction accuracy).
 >
@@ -40,4 +40,25 @@ The `data/` symlink convention from `skills/use-worktree/SKILL.md` was **skipped
 
 (Newest first.)
 
-_No sessions yet — kickoff pending._
+### 2026-05-14 — Kickoff orientation + plan sketch (NOT the first TDD session)
+
+Convo: [`convos/20260514_kickoff_orientation.md`](convos/20260514_kickoff_orientation.md)
+Plan: [`plans/20260514_kickoff_plan_sketch.md`](plans/20260514_kickoff_plan_sketch.md)
+
+**Originating context.** This branch was assigned plan-sketch work as a side-effect of the 2026-05-14 coordination session on `compendium-v2-promote` (see [`../../compendium-v2-promote/convos/20260514_compendium_v2_promote.md`](../../compendium-v2-promote/convos/20260514_compendium_v2_promote.md), available post-merge). User wanted a "solidly sketched" plan in `plans/` so the kickoff agent isn't reading skeleton stubs cold.
+
+**Locked decisions carried forward.** v2 row contract now lives at `compendium/disclosure_side_compendium_items_v2.tsv` (181 rows). `extraction-harness-brainstorm` owns v2 Pydantic models; this branch operates on raw `dict[str, Any]` keyed by `compendium_row_id` until those models exist. The ⛔ PRI-out-of-bounds banner is gone — PRI is rubric #2 in this branch's locked order.
+
+**Sketch contents.** Concrete TDD agenda starting with CPI 2015 C11 (most-ready first rubric):
+- Phase 0: env setup + projections module skeleton (`src/lobby_analysis/projections/`)
+- Phase 1: per-item TDD cycles for 14 CPI items (6 de jure 2/3-tier + 8 de facto 5-tier per spec doc); aggregation rule fitted empirically against 50-state ground truth (700 cells per-item + 50 cells category-aggregate); letter grade + rank as derivations
+- Phase 2: carry pattern through remaining 7 rubrics in locked order, with per-rubric notes (PRI 2010 rollup recoverable from `pri-calibration` archive; Newmark 2005 = 100% reuse of 2017; Opheim 100% reuse + weak-inequality tolerance; HG 2007 blocked on `oh-statute-retrieval`; FOCAL 2024 lowest reuse at 37.9%)
+- Phase 3: PRI-MVP retirement after rubric #2 (move `cmd_build_smr` + `smr_projection` to `_deprecated/`)
+- Phase 4: cross-rubric agreement audit after all 8 rubrics ship
+
+**Recommended first session deliverable:** CPI 2015 C11 projection function (per-item + aggregation) passing against the 700-cell per-state-per-item + 50-cell category-aggregate ground truth.
+
+**Open questions flagged for the first TDD session.** scipy/numpy availability for aggregation-rule fitting (current `pyproject.toml` has neither); PRI rollup helper recoverability from `pri-calibration` archive; letter grade boundaries (published vs back-fit); OH SMR equivalence tolerance for PRI-MVP retirement validation.
+
+**Not implementation work.** No code, no tests written; only docs (the convo + plan sketch + this RESEARCH_LOG update + the Row-freeze contract path migration).
+
