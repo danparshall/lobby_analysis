@@ -59,6 +59,21 @@ Handoff consumed: [`plans/_handoffs/20260514_retrieval_brainstorm_handoff.md`](p
 
 **Next session.** Implementer (separate API-launched sub-branch per user's session strategy) executes the impl plan. After implementation lands, **brief-writer brainstorm** is the cleaner next component (orthogonal to retrieval; depends on chunks + cells which both exist). **Scorer-prompt rewrite** is the fourth component, depends on retrieval bundle shape (which will be known once retrieval lands).
 
+### Addendum (same day, post-finish-convo)
+
+User caught a real defect in the retrieval impl plan: **chunks_v2 was treated as if it had shipped, but the chunks impl has not been executed yet.** Three places in the retrieval plan import from `lobby_analysis.chunks_v2` (tools.py, brief_writer.py, coupling test), so the retrieval implementation hard-blocks on chunks shipping. State of play confirmed:
+
+- `src/lobby_analysis/chunks_v2/` does not exist on any branch (`git log --all -- src/lobby_analysis/chunks_v2/` returns zero commits)
+- `src/lobby_analysis/models_v2/` exists and is shipped (cell models complete)
+- A parallel agent session had picked up the retrieval impl plan and executed Phase 0 (local commit `4c49888 retrieval_v2: scaffolding (empty module + anthropic SDK dependency)`) before hitting the same dependency wall and stopping; user killed that session
+- The 4c49888 commit is a clean Phase 0 execution: adds `anthropic>=0.102` to pyproject.toml + uv.lock, creates empty placeholder files in `src/lobby_analysis/retrieval_v2/` + `tests/fixtures/retrieval_v2/.gitkeep`. Safe to keep; the chunks impl session does not touch retrieval_v2/.
+
+**Remediation:**
+
+- Wrote [`_handoffs/20260514_chunks_implementation_handoff.md`](plans/_handoffs/20260514_chunks_implementation_handoff.md) — chunks impl session handoff for fresh agent. Explains state of play, points at the chunks impl plan, names what NOT to touch (retrieval_v2/ scaffolding from the killed session).
+- Added a Prerequisite section + Phase-0-already-done note at the top of [`20260514_retrieval_implementation_plan.md`](plans/20260514_retrieval_implementation_plan.md). Future retrieval impl sessions verify chunks has shipped before proceeding past Phase 0, and skip re-running Phase 0 if the 4c49888 commit is already on HEAD.
+- Sequencing for the user's 4-component strategy: cells ✓ done; chunks → retrieval → brief-writer → scorer-prompt is the now-locked implementation order. Chunks unblocks retrieval; retrieval unblocks scorer-prompt (since scorer-prompt benefits from knowing retrieval's bundle shape); brief-writer is parallelizable with retrieval but cleanest to do after chunks.
+
 
 
 Plan sketches: [`plans/20260514_chunks_plan_sketch.md`](plans/20260514_chunks_plan_sketch.md) + [`plans/20260514_retrieval_plan_sketch.md`](plans/20260514_retrieval_plan_sketch.md)

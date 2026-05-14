@@ -3,6 +3,20 @@
 **Branch:** `extraction-harness-brainstorm`
 **Goal:** Rewrite the v1 PRI-keyed retrieval agent as a v2-compendium-anchored retrieval pipeline that uses the **Anthropic Citations API** for span-level provenance grounding. Pure-Python; first SDK consumer in this codebase. Unblocks the brief-writer + scorer-prompt rewrite downstream.
 
+## ⚠ PREREQUISITE — chunks_v2 must ship before retrieval impl can proceed past Phase 0
+
+Three places in this plan import from `lobby_analysis.chunks_v2`:
+
+- `src/lobby_analysis/retrieval_v2/tools.py` — `chunk_ids_affected.enum` sourced from `build_chunks()` (coupling test catches drift)
+- `src/lobby_analysis/retrieval_v2/brief_writer.py` — `_format_cell_roster()` looks up cell rosters via `build_chunks()`
+- `tests/test_retrieval_v2_tools.py::test_cross_reference_tool_chunk_ids_enum_matches_chunks_manifest` — load-bearing coupling test
+
+**The chunks impl plan ([`20260514_chunks_implementation_plan.md`](20260514_chunks_implementation_plan.md)) must land first.** If you're picking up retrieval before chunks ships, stop and surface to user. The chunks handoff at [`_handoffs/20260514_chunks_implementation_handoff.md`](_handoffs/20260514_chunks_implementation_handoff.md) documents the dependency.
+
+## Phase 0 may already be done — verify before re-running
+
+A prior session (killed by user mid-execution due to the chunks prerequisite) committed Phase 0 scaffolding as `4c49888 retrieval_v2: scaffolding (empty module + anthropic SDK dependency)`. If that commit is on your branch HEAD, **skip Phase 0** and verify the scaffolding matches the spec below (empty `.py` files in `src/lobby_analysis/retrieval_v2/`, `anthropic>=0.102` in `pyproject.toml`, `tests/fixtures/retrieval_v2/.gitkeep`, `uv.lock` updated). If your branch HEAD does not have that commit, execute Phase 0 fresh.
+
 **Originating brainstorm:** [`../convos/20260514_retrieval_brainstorm.md`](../convos/20260514_retrieval_brainstorm.md). Read this first — Phase 2 records every locked Q with rationale.
 
 **Plan-sketch:** [`20260514_retrieval_plan_sketch.md`](20260514_retrieval_plan_sketch.md).
