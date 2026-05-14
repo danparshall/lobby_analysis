@@ -120,4 +120,6 @@ See decision log: [`../results/projections/20260513_row_freeze_decisions.md`](..
 
 ## Forward-planning handoff
 
-Not needed — the freeze is the freeze. Successor branches each get their own kickoff session referencing v2 as the row-set contract.
+[`../plans/_handoffs/20260514_paper_summaries_audit_premerge.md`](../plans/_handoffs/20260514_paper_summaries_audit_premerge.md) — self-contained brief for the next-session agent. Scopes the `auditing-paper-summaries` pass on the 16+ branch-added papers + 17-vs-18 PAPER_INDEX/PDF discrepancy; documents post-audit sequencing (merge → 3 successor branches in parallel per Option B).
+
+The freeze itself is the freeze — no further row-set decisions belong on this branch. The handoff is for the **separate pre-merge audit** of the literature trail.

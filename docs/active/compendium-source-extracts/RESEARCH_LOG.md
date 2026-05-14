@@ -73,7 +73,7 @@ Carry-forward signals (informational, not gates):
 
 #### Next Steps
 
-1. **`auditing-paper-summaries` pass** — verify the 16+ branch-added papers are in PAPER_INDEX + PAPER_SUMMARIES (only remaining pre-merge audit per prior session's deferred items).
+1. **`auditing-paper-summaries` pass** — verify the 16+ branch-added papers are in PAPER_INDEX + PAPER_SUMMARIES (only remaining pre-merge audit per prior session's deferred items). **Forward-planning handoff:** [`plans/_handoffs/20260514_paper_summaries_audit_premerge.md`](plans/_handoffs/20260514_paper_summaries_audit_premerge.md) — self-contained brief for the next-session agent.
 2. **Merge `compendium-source-extracts` → main.** v2 row set becomes the contract.
 3. **Cut 3 successor branches in parallel** (per Option B locked 2026-05-13): OH statute retrieval (Track A), extraction harness brainstorm (Track B), Phase C projection TDD (locked order: CPI → PRI → Sunlight → Newmark 2017 → Newmark 2005 → Opheim → HG → FOCAL).
 
