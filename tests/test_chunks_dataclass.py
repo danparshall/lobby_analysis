@@ -22,9 +22,7 @@ def _make_spec(row_id: str = "law_includes_materiality_test", axis: str = "legal
     """Helper: build a real `CompendiumCellSpec` from the v2 cell-model layer."""
     from lobby_analysis.models_v2 import BinaryCell, CompendiumCellSpec
 
-    return CompendiumCellSpec(
-        row_id=row_id, axis=axis, expected_cell_class=BinaryCell
-    )
+    return CompendiumCellSpec(row_id=row_id, axis=axis, expected_cell_class=BinaryCell)
 
 
 def test_chunk_constructs_with_valid_fields():

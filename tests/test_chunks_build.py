@@ -188,9 +188,7 @@ def test_build_chunks_raises_when_manifest_references_unknown_row_id():
     from lobby_analysis.chunks_v2 import ChunkDef, build_chunks
 
     registry = {("row_a", "legal"): _synthetic_spec("row_a", "legal")}
-    manifest = (
-        ChunkDef(chunk_id="anchor", topic="t", member_row_ids=("row_a", "bogus_row")),
-    )
+    manifest = (ChunkDef(chunk_id="anchor", topic="t", member_row_ids=("row_a", "bogus_row")),)
     with pytest.raises((KeyError, ValueError)):
         build_chunks(registry=registry, manifest=manifest)
 
@@ -204,8 +202,6 @@ def test_build_chunks_raises_when_manifest_misses_registry_rows():
         ("row_a", "legal"): _synthetic_spec("row_a", "legal"),
         ("row_b", "legal"): _synthetic_spec("row_b", "legal"),
     }
-    manifest = (
-        ChunkDef(chunk_id="anchor", topic="t", member_row_ids=("row_a",)),
-    )
+    manifest = (ChunkDef(chunk_id="anchor", topic="t", member_row_ids=("row_a",)),)
     with pytest.raises(ValueError):
         build_chunks(registry=registry, manifest=manifest)

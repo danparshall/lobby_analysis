@@ -35,8 +35,7 @@ def test_chunks_v2_chunk_ids_unique():
 
     chunk_ids = [c.chunk_id for c in CHUNKS_V2]
     assert len(chunk_ids) == len(set(chunk_ids)), (
-        f"Duplicate chunk_ids in CHUNKS_V2: "
-        f"{[i for i in chunk_ids if chunk_ids.count(i) > 1]}"
+        f"Duplicate chunk_ids in CHUNKS_V2: {[i for i in chunk_ids if chunk_ids.count(i) > 1]}"
     )
 
 
@@ -54,9 +53,7 @@ def test_chunks_v2_every_chunk_has_at_least_one_member_row():
     from lobby_analysis.chunks_v2 import CHUNKS_V2
 
     for entry in CHUNKS_V2:
-        assert len(entry.member_row_ids) >= 1, (
-            f"ChunkDef {entry.chunk_id!r} has no member row_ids"
-        )
+        assert len(entry.member_row_ids) >= 1, f"ChunkDef {entry.chunk_id!r} has no member row_ids"
 
 
 def test_chunks_v2_no_row_id_appears_in_two_chunks():
@@ -66,8 +63,7 @@ def test_chunks_v2_no_row_id_appears_in_two_chunks():
     for entry in CHUNKS_V2:
         for row_id in entry.member_row_ids:
             assert row_id not in seen, (
-                f"row_id {row_id!r} appears in both "
-                f"{seen[row_id]!r} and {entry.chunk_id!r}"
+                f"row_id {row_id!r} appears in both {seen[row_id]!r} and {entry.chunk_id!r}"
             )
             seen[row_id] = entry.chunk_id
 

@@ -325,10 +325,7 @@ CHUNKS_V2: tuple[ChunkDef, ...] = (
             "lobbying_website_easily_findable",
             "state_has_dedicated_lobbying_website",
         ),
-        notes=(
-            "All practical-axis. Combines directory format with "
-            "parent-website-existence rows."
-        ),
+        notes=("All practical-axis. Combines directory format with parent-website-existence rows."),
     ),
     ChunkDef(
         chunk_id="oversight_and_government_subjects",

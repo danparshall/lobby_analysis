@@ -51,9 +51,7 @@ class Chunk:
                 f"{type(self.cell_specs).__name__}"
             )
         if not self.cell_specs:
-            raise ValueError(
-                f"Chunk.cell_specs for {self.chunk_id!r} must be non-empty"
-            )
+            raise ValueError(f"Chunk.cell_specs for {self.chunk_id!r} must be non-empty")
         if self.axis_summary not in _VALID_AXIS_SUMMARIES:
             raise ValueError(
                 f"Chunk.axis_summary {self.axis_summary!r} for {self.chunk_id!r} "
@@ -89,9 +87,7 @@ class ChunkDef:
                 f"got {type(self.member_row_ids).__name__}"
             )
         if not self.member_row_ids:
-            raise ValueError(
-                f"ChunkDef.member_row_ids for {self.chunk_id!r} must be non-empty"
-            )
+            raise ValueError(f"ChunkDef.member_row_ids for {self.chunk_id!r} must be non-empty")
 
 
 def build_chunks(
@@ -140,8 +136,7 @@ def build_chunks(
             for key in matched_keys:
                 if key in seen_keys:
                     raise ValueError(
-                        f"Cell {key} assigned to multiple chunks "
-                        f"(latest: {chunk_def.chunk_id!r})"
+                        f"Cell {key} assigned to multiple chunks (latest: {chunk_def.chunk_id!r})"
                     )
                 seen_keys.add(key)
                 cell_specs.append(registry[key])
@@ -169,7 +164,6 @@ def build_chunks(
         sample = sorted(missing)[:5]
         suffix = "..." if len(missing) > 5 else ""
         raise ValueError(
-            f"Cells in registry not covered by manifest "
-            f"({len(missing)} missing): {sample}{suffix}"
+            f"Cells in registry not covered by manifest ({len(missing)} missing): {sample}{suffix}"
         )
     return chunks
