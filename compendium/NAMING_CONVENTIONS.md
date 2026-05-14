@@ -131,6 +131,8 @@ D3 of the row-freeze log enacted this convention by renaming **24 rows** that ha
 
 **Practical consequence for new rows:** if you're adding an observable about the content of a state-required artifact, ask first which artifact (reg form vs spending report); then use the matching family prefix. Generic `*_report_*` is not a current convention.
 
+**LobbyView schema-coverage exception (categorical).** Rows that describe whether a filing has a given column or distinguishes between filing types *at the data-system level* (rather than what content is *in* a single report) belong in `lobbyist_filing_*`, **not** `lobbyist_spending_report_*`. The canonical case is the LV-1 row `lobbyist_filing_distinguishes_in_house_vs_contract_filer` (D12 promotion of a LobbyView schema-coverage column): it captures whether the filing apparatus exposes the in-house-vs-contract distinction at all, not what either category's report contents include. This is a categorical rule, not a per-row judgment call — any future LobbyView-style schema-coverage row goes in `lobbyist_filing_*`. See [Issue 2](#issue-2--d3-rename-gaps-leftover-_report_-rows-that-should-be-_spending_report_-6-rows) for the cluster of D3 rename gaps where this exception lives.
+
 ---
 
 ## 6. Joint-actor rows (D7)
@@ -164,6 +166,13 @@ Disclosure law uses *three distinct* dollar/time thresholds, and the compendium 
 The three-threshold framework is load-bearing for HG Q2's projection (D22: `min(compensation_threshold, expenditure_threshold)` reads the binding-threshold concept).
 
 The lobbyist-status threshold family is currently three singletons with **inconsistent prefix shape** — none of them join the `lobbyist_registration_*` (3-row) family even though semantically they all gate registration. Flagged as [rename candidates](#naming-issues--rename-candidates).
+
+**Threshold-suffix convention** (sub-3 resolution, 2026-05-14). The canonical shape for a threshold row is `_threshold_<unit>` for single-measure threshold families and `_threshold_<measure>_<unit>` for multi-measure families. The unit token (`_dollars` / `_percent` / `_hours`) is repeated in the suffix even though `cell_type` carries it — this is intentional redundancy so readers of the row_id alone know the unit without consulting `cell_type`.
+
+- **Single-measure:** `lobbyist_filing_de_minimis_threshold_dollars` and its sibling `lobbyist_filing_de_minimis_threshold_time_percent` — the filing-de-minimis concept is one threshold cell with two measures (dollar amount, time percent). Each measure is its own row and the row id ends in `_threshold_<unit>`. The measure word is omitted because the threshold concept itself has one name (`de_minimis`).
+- **Multi-measure:** the lobbyist-status threshold family has three *distinct measure concepts* (compensation, expenditure, time spent) all triggering the same status threshold, so each row needs an explicit measure word. The proposed Issue 3 renames `lobbyist_registration_threshold_compensation_dollars` / `_expenditure_dollars` / `_time_percent` follow this shape.
+
+When introducing a new threshold row, decide which case applies: is this a new measure on an existing single-concept threshold (use `_threshold_<unit>` if the family is currently single-measure; rename the existing row to add `<measure>` only if the family is acquiring a second concept), or a new concept-level threshold (use `_threshold_<measure>_<unit>` from the start if you expect multiple measures).
 
 ---
 
@@ -305,6 +314,7 @@ When introducing a new row, work through this decision tree:
    - Whether a specific institutional actor type must **register as a lobbyist** → `actor_<type>_registration_required` (PRI A1–A11 shape).
    - Content of a **registration form** → `lobbyist_reg_form_includes_*` or `principal_reg_form_includes_*` (or `lobbyist_or_principal_reg_form_*` if the rubric source doesn't specify side).
    - Content / structure / cadence of a **spending report** → `lobbyist_spending_report_*` or `principal_spending_report_*` (or `lobbyist_or_principal_spending_report_*`). **Always use the explicit `_spending_report_*` prefix, not bare `_report_*` (per D3).**
+   - **Schema-coverage observable about the filing apparatus** (e.g., "does the system distinguish between two filing types," "is there a column for X at all") → `lobbyist_filing_*`, **NOT** `lobbyist_spending_report_*`. Distinction: report-content rows describe what's *in* a single filing; schema-coverage rows describe what *kinds* of filings exist or what fields the system tracks at all. Canonical case: the LV-1 row in [Issue 2](#issue-2--d3-rename-gaps-leftover-_report_-rows-that-should-be-_spending_report_-6-rows) and the §5 categorical-exception note.
    - **Search-filter capability** on the portal → `lobbying_search_filter_*`.
    - **Contact-log content** → `lobbying_contact_log_*`.
    - **Data-system quality** (downloadable, versioned, open license, identifiers) → `lobbying_data_*`.

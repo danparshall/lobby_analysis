@@ -22,6 +22,25 @@ Purpose: Document the Compendium 2.0 row-naming taxonomy. Walk every `compendium
 
 (Newest entries first.)
 
+### 2026-05-14 (sub-3) — Sharpen plan + memorialize naming conventions
+
+Doc-only sharpening pass on top of sub-2's plan and NAMING_CONVENTIONS.md. Triggered by a pre-implementation review of sub-2's convo that flagged three things worth resolving before the rename-execution branch fires: (1) C7 framing as content-rename-not-just-family-rename, (2) C3's `_<unit>` suffix decision punted to execution time, (3) C2's LV-1 schema-coverage-vs-report-contents distinction needing persistent memorialization.
+
+Dan's calls: (1) leave C7 framing alone (the plan's current §1 Candidate 7 text + §3 byte-identity tests are sufficient — no need to dwell on the `_included_` infix drop in the plan), (2) pick the C3 shape now and document the logic, (3) yes, memorialize the LV-1 distinction.
+
+**C3 resolution: `_threshold_<measure>_<unit>` is canonical, not drift.** The earlier "drift" framing was wrong. NAMING_CONVENTIONS.md §9 already encodes `_threshold_*_dollars` / `_threshold_time_percent` as the canonical suffix shape; the existing single-measure precedent `lobbyist_filing_de_minimis_threshold_dollars` carries the unit suffix even though `cell_type` also does, establishing the redundancy convention. The C3 trio extends to multi-measure: `_threshold_<measure>_<unit>` when a single threshold concept has multiple measures (compensation, expenditure, time), `_threshold_<unit>` when a single threshold concept has one measure. C3 *fixes* drift in the current names, not the other way around.
+
+**Sharpening edits this session:**
+
+1. **`compendium/NAMING_CONVENTIONS.md` §5** — added LobbyView schema-coverage categorical exception paragraph. Codifies the LV-1 decision from sub-2 as a forward-looking rule: any LobbyView-style schema-coverage row goes in `lobbyist_filing_*`, not `lobbyist_spending_report_*`. Per-row judgment call → categorical rule.
+2. **`compendium/NAMING_CONVENTIONS.md` §7** — added threshold-suffix convention paragraph with the single-measure / multi-measure rule and the intentional-redundancy rationale for repeating the unit token.
+3. **`compendium/NAMING_CONVENTIONS.md` §11** — added a schema-coverage decision-tree branch under "What kind of observable is it?" (right after spending-report), so new-row authors hit the LV-1 rule in the decision tree rather than only in the §5 narrative.
+4. **`plans/20260515_rename_execution_plan.md` §5 E2** — replaced the deferred-with-uncertainty E2 text with the resolved rule + back-reference to NAMING_CONVENTIONS.md §7. Execution agent no longer needs to make a naming call at branch-cut time.
+
+**What did NOT change:** C7 framing (kept as-is per Dan), §10 candidate descriptions (still describe the renames as candidates — they don't land until the execution branch), the plan's §3 testing list (still requires byte-identity on non-ID columns, which already covers C7's cell_type/provenance preservation), the v2 TSV (immutable contract on this branch).
+
+Doc-only commit; no code changes; no test run (no behavior changes). Session convo: [`convos/20260514_plan_sharpening.md`](convos/20260514_plan_sharpening.md). The sub-2 convo `convos/20260514_rename_review_and_plan.md` remains the authoritative session record for the rename decisions themselves; sub-3's convo records what was sharpened afterward.
+
 ### 2026-05-14 (sub-2) — Rename-candidate walkthrough + execution plan drafted
 
 Successor to the audit-v1 kickoff. Walked Dan through all 8 §10 rename candidates one at a time, each accompanied by a pre-scanned downstream-consumer fan-out (TSV regen path via `tools/freeze_canonicalize_rows.py`, historical projection-mapping doc cross-refs, future `extraction-harness-brainstorm` Pydantic models, prompt strings, v1.1 Pydantic state).
