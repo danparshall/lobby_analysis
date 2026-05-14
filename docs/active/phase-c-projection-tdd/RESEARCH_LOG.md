@@ -40,6 +40,44 @@ The `data/` symlink convention from `skills/use-worktree/SKILL.md` was **skipped
 
 (Newest first.)
 
+### 2026-05-14 — Sub-1 Stream 1 plans: Sunlight 2015 + Opheim 1991
+
+Convo: [`convos/20260514_sub_1_sunlight_opheim_plans.md`](convos/20260514_sub_1_sunlight_opheim_plans.md)
+Plans:
+- [`plans/20260514_sunlight_2015_plan.md`](plans/20260514_sunlight_2015_plan.md) — 399 lines
+- [`plans/20260514_opheim_1991_plan.md`](plans/20260514_opheim_1991_plan.md) — 491 lines
+GH issue: [danparshall/lobby_analysis#9](https://github.com/danparshall/lobby_analysis/issues/9)
+
+**Topics explored**
+
+- Pre-flight: Sub-0's three artifacts + the headless-API-key handoff doc + both rubrics' projection mapping docs (Sunlight 217 lines, Opheim 424 lines).
+- API-key billing confirmed via `/status` on Dans-MacBook-Pro (work-project budget per the multi-sub-session design).
+- **Phase-0 cross-check executed.** Ran `load_v2_compendium()` against the 13 expected Sunlight rows + 17 expected Opheim rows. Surfaced 5 spec-doc-vs-v2 renames (1 in Sunlight: `_by_client` → `_by_payer`; 4 in Opheim: `*_report_*` → `*_spending_report_*` for cadence + gifts pairs — same family PRI 2010 caught). All under the 10% STOP threshold; both plans bake the rename tables inline.
+- **Sunlight 2015 plan drafted** — function-per-item dispatcher; 4 in-scope items (item 4 EXCLUDED per 2026-05-07 audit); Strong validation regime (200-cell ground truth in `papers/Sunlight_2015__...csv`); no-`Total`/no-`Grade` regression-guard tests; data-year Phase-0 confidence-lift task (MEDIUM-LOW → goal MEDIUM/HIGH).
+- **Opheim 1991 plan drafted** — declarative `_ATOMIC_SPEC` table mirroring PRI 2010 + 3 named helpers (cadence-OR, gifts-OR, β AND); 14 effective in-scope items + 1 un-projectable catch-all (max 14/22); Weak-inequality validation regime only; 47-state sample (MT/SD/VA missing) enforced via `ValueError`; β AND-projection cross-rubric continuity test imports `project_sunlight_item1`; Phase-0 task extracts Table 1 from paper text (no CSV exists).
+- **Token-prefix conventions audit (user-prompted).** Searched `compendium/README.md`, `20260513_row_freeze_decisions.md`, the row-freeze brainstorm convo, the rubric playbook, per-rubric mapping docs. Found D3 (and D1, D2, D6) document the specific renames; broader prefix-family taxonomy is NOT canonically documented. Captured as GH #9.
+- **Branching analysis for the docs overhaul.** Verified `git diff --stat origin/main -- compendium/` is empty on this branch (Phase C is read-only on `compendium/`). Concluded: GH #9 can land cleanly off main; both compendium-consumer branches (`phase-c-projection-tdd`, `extraction-harness-brainstorm`) pull main forward afterward.
+
+**Provisional findings**
+
+- **Spec-doc-vs-v2 drift is a recurring Phase B → Phase C handoff failure mode.** PRI 2010 hit it; Sunlight + Opheim hit it again (same `*_report_*` family); Stream 2/3/4 likely will too. Systemic fix is GH #9; per-plan workaround (rename mapping table inline) is sufficient but adds friction.
+- **Stream 1 plans are self-contained but internally coupled.** Sunlight must land before Opheim's implementation runs (Opheim's cross-rubric continuity test imports `project_sunlight_item1`). Sub-4's headless launch script needs to encode this ordering.
+- **`unable_to_evaluate` convention now exercised concretely.** Sunlight uses it for missing input cells; Opheim uses it for missing cells AND the operationally-undefined catch-all. Per Sub-0 gap audit Pattern 3, this is the canonical disclosure-only-Phase-B treatment.
+- **β AND-projection second-exemplification landed.** First was Sunlight item 1's row introductions (locked 2026-05-11); second is Opheim's `disclosure.legislation_supported_or_opposed`. Pattern is now empirically demonstrated, not just hypothesized.
+- **`phase-c-projection-tdd` is read-only on `compendium/`.** Structurally true (Phase C consumes the v2 contract; doesn't modify it) and empirically verified. Off-main → merge-back → merge-forward works cleanly for GH #9.
+
+**Decisions carried forward**
+
+- **GH #9 is the prerequisite for clean Stream 2/3/4 plan-drafting.** Recommendation: defer Sub-2 (Newmark 2017 → Newmark 2005) until #9 merges. Newmark 2017 introduces 6 new rows whose naming would benefit from the taxonomy doc landing first.
+- **Sub-1 plans are committed-ready as-is.** Self-contained per write-a-plan; carry the 7 Sub-0 conventions; STOP clauses for spec-doc-vs-v2 drift; Phase-0 cross-checks specified inline; rename mapping tables baked in.
+- **5 Open Questions surfaced** for the implementing agent to confirm before launch (oddity-flag return shape; Opheim Table 1 CSV destination; MT/SD/VA refusal vs sentinel; Sub-4 launch-ordering enforcement; `_is_not_null` helper survival). All flagged in the plans' Questions sections.
+
+**Next steps**
+
+Sub-2 (Newmark 2017 + Newmark 2005) — recommend defer until GH #9 merges. Sub-1's deliverables are ready for Sub-5+ headless implementation once Sub-4's launch infrastructure exists. If a parallel `compendium-naming-docs` branch is cut to land GH #9, `phase-c-projection-tdd` will pull main forward after that branch merges (expected-clean merge).
+
+---
+
 ### 2026-05-14 — Rubric plans drafting (meta-session, sub-0 of 5): playbook gap audit + data-year audit
 
 Convo: [`convos/20260514_rubric_plans_drafting.md`](convos/20260514_rubric_plans_drafting.md)
