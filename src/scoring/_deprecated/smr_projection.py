@@ -1,4 +1,21 @@
-"""Project PRI 2010 disclosure-law per-item scores into a StateMasterRecord.
+"""SUPERSEDED — PRI-MVP StateMasterRecord projection (retired 2026-05-14).
+
+Status: retired by ``phase-c-projection-tdd`` Phase 3 (Plan
+``docs/active/phase-c-projection-tdd/plans/20260514_kickoff_plan_sketch.md``)
+after the v2 PRI 2010 projection at ``src/lobby_analysis/projections/pri_2010.py``
+landed and reproduced PRI's published rollup via the paper-derived rules in
+``src/scoring/calibration.py``.
+
+This module is kept under ``_deprecated/`` (not deleted) so the v1 PRI-MVP
+pipeline remains recoverable. It targeted the v1 compendium
+(``compendium/_deprecated/v1/disclosure_items.csv``) and produced
+``StateMasterRecord`` JSON. The successor work splits per-rubric scoring
+(``src/lobby_analysis/projections/<rubric>.py``) from SMR-shape construction
+(future extraction harness on ``extraction-harness-brainstorm``).
+
+----- Original docstring -----
+
+Project PRI 2010 disclosure-law per-item scores into a StateMasterRecord.
 
 Stage B of `docs/active/statute-retrieval/plans/20260430_compendium_population_and_smr_fill.md`.
 

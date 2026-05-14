@@ -40,6 +40,55 @@ The `data/` symlink convention from `skills/use-worktree/SKILL.md` was **skipped
 
 (Newest first.)
 
+### 2026-05-14 — PRI 2010 projection: rubric #2 + PRI-MVP retirement
+
+Convo: [`convos/20260514_pri_2010_tdd.md`](convos/20260514_pri_2010_tdd.md)
+Results: [`results/20260514_pri_2010_projection.md`](results/20260514_pri_2010_projection.md)
+Spec doc: [`../../historical/compendium-source-extracts/results/projections/pri_2010_projection_mapping.md`](../../historical/compendium-source-extracts/results/projections/pri_2010_projection_mapping.md)
+Rollup spec: [`../../historical/pri-calibration/results/20260419_pri_rollup_rule_spec.md`](../../historical/pri-calibration/results/20260419_pri_rollup_rule_spec.md)
+
+**Topics explored**
+
+- Per-atomic-item projection logic for 76 PRI 2010 rubric items (54 disclosure-law + 22 accessibility). 75 are pure binary cell -> 0/1 passthroughs; Q8 is a typed 0..15 passthrough.
+- Reuse of the paper-derived rollup helpers at `src/scoring/calibration.py` (handoff's "port if survived, rebuild from spec doc if not" resolved to **port** — the rollup is intact and unit-tested by 114 rule-level tests).
+- Spec-doc / v2-TSV naming drift. Spec's `principal_report_*` and `lobbyist_report_*` resolve to v2's `principal_spending_report_*` and `lobbyist_spending_report_*`. E1f_i and E2f_i resolve to multi-rubric shared rows.
+- End-to-end validation strategy given PRI publishes only sub-aggregate ground truth. User picked rule-based: existing calibration rollup tests + fixture per-item tests + accessibility 50-state round-trip + disclosure-law wiring tests.
+- Architectural decision: declarative spec table for per-item layer (vs CPI's function-per-item pattern). Resolves CPI's deferred Open Question on cross-rubric template.
+- Phase 3 PRI-MVP retirement (same session): move `smr_projection.py` and `test_smr_projection.py` to `_deprecated/` subdirs with SUPERSEDED banners; remove `cmd_build_smr` from `orchestrator.py`.
+
+**Provisional findings**
+
+- **Two projection axes, separate functions.** PRI 2010 publishes disclosure-law (max 37) and accessibility (max 22) as independent scores. Top-level API: `project_pri_2010_disclosure_law` + `project_pri_2010_accessibility`, each returning a typed score model carrying atomic_scores + sub-aggregates + total + percent.
+- **Accessibility 50-state round-trip passes within tolerance.** Max residual ~0.05 across all 50 states (1-dp rounding artifact of PRI's published total_2010 column). Q8_normalized's 1-dp publication is the dominant error source (recovering Q8_raw introduces at most 0.033 per state); well inside ±1 spec.
+- **No letter grade for PRI 2010.** Same as CPI 2015. The handoff's "confirm rubric-by-rubric" question for letter grades resolved negatively for rubric #2 as well.
+- **`lobbyist_spending_report_includes_total_compensation` reaches 8 rubrics.** Once two projection modules read it, cross-rubric agreement audit on that row becomes well-defined — this is the kind of redundant validation Compendium 2.0's success criterion #4 was built for.
+- **PRI-MVP cleanly retires.** 10 deprecated tests still pass when targeted directly (`uv run pytest tests/_deprecated/test_smr_projection.py`); excluded from default pytest collection.
+
+**Results**
+
+- Module: `src/lobby_analysis/projections/pri_2010.py` (388 LOC; declarative `_ATOMIC_SPEC` table + two Pydantic score models + 2 top-level projections + competition rank + ground-truth loaders).
+- Tests: `tests/projections/test_pri_2010_per_item.py` (247 tests), `test_pri_2010_ground_truth.py` (6 tests), `test_pri_2010_aggregation.py` (13 tests) — 266 new tests, all passing.
+- Phase 3 retirement: `src/scoring/smr_projection.py` -> `src/scoring/_deprecated/smr_projection.py`, `tests/test_smr_projection.py` -> `tests/_deprecated/test_smr_projection.py`, `cmd_build_smr` + helpers removed from `orchestrator.py`, `norecursedirs = ["_deprecated"]` added to pyproject.
+- Full test suite: 640 passing + 5 skipped + 3 pre-existing failures (same `tests/test_pipeline.py::test_ca_snapshot_*` failures CPI 2015 flagged; missing gitignored data file).
+
+**Decisions carried forward**
+
+- **Declarative `_ATOMIC_SPEC` table** is the right pattern for rubrics with many near-identical per-item helpers. CPI's function-per-item pattern still fits rubrics with bespoke compound reads.
+- **Cross-check spec-doc row names against v2 TSV early** — Phase B projection mappings written pre-`compendium-v2-promote` may have similar `*_spending_report_*` rename drift.
+- **Per-rubric module + sibling tests pattern** carries forward unchanged from CPI: `src/lobby_analysis/projections/<rubric>.py` + `tests/projections/test_<rubric>_*.py`.
+- **End-to-end validation tolerance is per rubric.** PRI accessibility supports 50-state round-trip; PRI disclosure-law is rule-level only (per-atomic-item ground truth never published). Future rubrics need a per-rubric validation strategy decision.
+
+**Next steps**
+
+Either:
+- (a) Rubric #3: Sunlight 2015 (13 rows; 11 cross-rubric). Locked conventions: α form-type split, β Opheim AND-projection, "collect once, map many" annotation.
+- (b) Phase 4 cross-rubric agreement audit prototype, using CPI + PRI's two-module overlap.
+- (c) Backport CPI 2015 to declarative table format (probably premature — CPI's compound reads don't compress cleanly into a 2-tuple spec).
+
+Recommendation: (a). Cross-rubric audit (b) is more useful with 3 modules.
+
+---
+
 ### 2026-05-14 — CPI 2015 C11 projection: first TDD session
 
 Convo: [`convos/20260514_cpi_2015_c11_tdd.md`](convos/20260514_cpi_2015_c11_tdd.md)

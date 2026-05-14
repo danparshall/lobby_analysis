@@ -32,7 +32,6 @@ all three temp-0 runs alongside any adjudicated rows without overwriting.
 from __future__ import annotations
 
 import argparse
-import csv
 import json
 from pathlib import Path
 
@@ -83,9 +82,7 @@ def run_dir(repo_root: Path, state: str, snapshot_date: str, run_id: str) -> Pat
     return repo_root / "data" / "scores" / state / snapshot_date / run_id
 
 
-def statute_run_dir(
-    repo_root: Path, state: str, vintage_year: int, run_id: str
-) -> Path:
+def statute_run_dir(repo_root: Path, state: str, vintage_year: int, run_id: str) -> Path:
     return repo_root / "data" / "scores" / state / "statute" / str(vintage_year) / run_id
 
 
@@ -125,15 +122,20 @@ def cmd_prepare(args: argparse.Namespace) -> int:
     )
     bp = brief_path(rd, args.rubric)
     bp.write_text(brief, encoding="utf-8")
-    print(json.dumps({
-        "run_id": run_id,
-        "state": state,
-        "rubric": args.rubric,
-        "brief_path": str(bp),
-        "expected_output_path": str(raw_output_path(rd, args.rubric)),
-        "coverage_tier": coverage_tier_for(state),
-        "item_count": len(rubric.items),
-    }, indent=2))
+    print(
+        json.dumps(
+            {
+                "run_id": run_id,
+                "state": state,
+                "rubric": args.rubric,
+                "brief_path": str(bp),
+                "expected_output_path": str(raw_output_path(rd, args.rubric)),
+                "coverage_tier": coverage_tier_for(state),
+                "item_count": len(rubric.items),
+            },
+            indent=2,
+        )
+    )
     return 0
 
 
@@ -173,17 +175,20 @@ def cmd_finalize(args: argparse.Namespace) -> int:
             rubrics=rubrics,
             coverage_tier=tier,
         )
-        (rd / "run_metadata.json").write_text(
-            meta.model_dump_json(indent=2), encoding="utf-8"
-        )
+        (rd / "run_metadata.json").write_text(meta.model_dump_json(indent=2), encoding="utf-8")
 
-    print(json.dumps({
-        "csv": str(out_csv),
-        "rows": len(rows),
-        "unable_to_evaluate_count": sum(1 for r in rows if r.unable_to_evaluate),
-        "coverage_tier": tier,
-        "wrote_metadata": bool(args.write_metadata),
-    }, indent=2))
+    print(
+        json.dumps(
+            {
+                "csv": str(out_csv),
+                "rows": len(rows),
+                "unable_to_evaluate_count": sum(1 for r in rows if r.unable_to_evaluate),
+                "coverage_tier": tier,
+                "wrote_metadata": bool(args.write_metadata),
+            },
+            indent=2,
+        )
+    )
     return 0
 
 
@@ -209,18 +214,25 @@ def cmd_prepare_run(args: argparse.Namespace) -> int:
         )
         bp = brief_path(rd, rubric_name)
         bp.write_text(brief, encoding="utf-8")
-        results.append({
-            "rubric": rubric_name,
-            "brief_path": str(bp),
-            "expected_output_path": str(raw_output_path(rd, rubric_name)),
-            "item_count": len(rubric.items),
-        })
-    print(json.dumps({
-        "run_id": run_id,
-        "state": state,
-        "coverage_tier": coverage_tier_for(state),
-        "rubrics": results,
-    }, indent=2))
+        results.append(
+            {
+                "rubric": rubric_name,
+                "brief_path": str(bp),
+                "expected_output_path": str(raw_output_path(rd, rubric_name)),
+                "item_count": len(rubric.items),
+            }
+        )
+    print(
+        json.dumps(
+            {
+                "run_id": run_id,
+                "state": state,
+                "coverage_tier": coverage_tier_for(state),
+                "rubrics": results,
+            },
+            indent=2,
+        )
+    )
     return 0
 
 
@@ -252,7 +264,9 @@ def cmd_finalize_run(args: argparse.Namespace) -> int:
             per_rubric_status.append({"rubric": rubric_name, "status": "missing_raw"})
             if args.skip_missing:
                 continue
-            print(json.dumps({"error": f"missing raw JSON for {rubric_name}", "path": str(raw_path)}))
+            print(
+                json.dumps({"error": f"missing raw JSON for {rubric_name}", "path": str(raw_path)})
+            )
             return 2
         rubric = load_rubric(rubric_name, repo_root)
         scored_items = parse_and_validate(raw_path, rubric)
@@ -267,12 +281,14 @@ def cmd_finalize_run(args: argparse.Namespace) -> int:
             run_timestamp=run_ts,
         )
         write_scored_csv(rows, out_csv)
-        per_rubric_status.append({
-            "rubric": rubric_name,
-            "status": "finalized",
-            "rows": len(rows),
-            "unable_to_evaluate_count": sum(1 for r in rows if r.unable_to_evaluate),
-        })
+        per_rubric_status.append(
+            {
+                "rubric": rubric_name,
+                "status": "finalized",
+                "rows": len(rows),
+                "unable_to_evaluate_count": sum(1 for r in rows if r.unable_to_evaluate),
+            }
+        )
 
     wrote_metadata = False
     if all_rubrics_finalized:
@@ -287,18 +303,21 @@ def cmd_finalize_run(args: argparse.Namespace) -> int:
             rubrics=rubrics,
             coverage_tier=tier,
         )
-        (rd / "run_metadata.json").write_text(
-            meta.model_dump_json(indent=2), encoding="utf-8"
-        )
+        (rd / "run_metadata.json").write_text(meta.model_dump_json(indent=2), encoding="utf-8")
         wrote_metadata = True
 
-    print(json.dumps({
-        "state": state,
-        "run_id": args.run_id,
-        "coverage_tier": tier,
-        "per_rubric": per_rubric_status,
-        "wrote_metadata": wrote_metadata,
-    }, indent=2))
+    print(
+        json.dumps(
+            {
+                "state": state,
+                "run_id": args.run_id,
+                "coverage_tier": tier,
+                "per_rubric": per_rubric_status,
+                "wrote_metadata": wrote_metadata,
+            },
+            indent=2,
+        )
+    )
     return 0
 
 
@@ -363,12 +382,17 @@ def cmd_audit_statutes(args: argparse.Namespace) -> int:
         tolerance=args.tolerance,
         out_path=out_path,
     )
-    print(json.dumps({
-        "audited": len(results),
-        "eligible_for_calibration": sum(1 for r in results if r.eligible_for_calibration),
-        "eligible_for_2026_scoring": sum(1 for r in results if r.eligible_for_2026_scoring),
-        "output_csv": str(out_path),
-    }, indent=2))
+    print(
+        json.dumps(
+            {
+                "audited": len(results),
+                "eligible_for_calibration": sum(1 for r in results if r.eligible_for_calibration),
+                "eligible_for_2026_scoring": sum(1 for r in results if r.eligible_for_2026_scoring),
+                "output_csv": str(out_path),
+            },
+            indent=2,
+        )
+    )
     return 0
 
 
@@ -402,9 +426,7 @@ def cmd_export_statute_manifests(args: argparse.Namespace) -> int:
         except ValueError:
             rel = target
         copied.append(str(rel))
-    print(json.dumps(
-        {"copied": len(copied), "targets": copied, "dest": str(dest_root)}, indent=2
-    ))
+    print(json.dumps({"copied": len(copied), "targets": copied, "dest": str(dest_root)}, indent=2))
     return 0
 
 
@@ -420,12 +442,16 @@ def cmd_calibrate_prepare_run(args: argparse.Namespace) -> int:
     vintage = int(args.vintage)
     bundle_dir = statute_bundle_dir(repo_root, state, vintage)
     if not (bundle_dir / "manifest.json").exists():
-        print(json.dumps({
-            "error": "statute bundle not found",
-            "state": state,
-            "vintage": vintage,
-            "expected_path": str(bundle_dir / "manifest.json"),
-        }))
+        print(
+            json.dumps(
+                {
+                    "error": "statute bundle not found",
+                    "state": state,
+                    "vintage": vintage,
+                    "expected_path": str(bundle_dir / "manifest.json"),
+                }
+            )
+        )
         return 2
 
     statute = load_statute_bundle(bundle_dir, repo_root)
@@ -447,20 +473,27 @@ def cmd_calibrate_prepare_run(args: argparse.Namespace) -> int:
         )
         bp = brief_path(rd, rubric_name)
         bp.write_text(brief, encoding="utf-8")
-        results.append({
-            "rubric": rubric_name,
-            "brief_path": str(bp),
-            "expected_output_path": str(raw_output_path(rd, rubric_name)),
-            "item_count": len(rubric.items),
-        })
-    print(json.dumps({
-        "run_id": run_id,
-        "state": state,
-        "vintage_year": vintage,
-        "year_delta": statute.year_delta,
-        "direction": statute.direction,
-        "rubrics": results,
-    }, indent=2))
+        results.append(
+            {
+                "rubric": rubric_name,
+                "brief_path": str(bp),
+                "expected_output_path": str(raw_output_path(rd, rubric_name)),
+                "item_count": len(rubric.items),
+            }
+        )
+    print(
+        json.dumps(
+            {
+                "run_id": run_id,
+                "state": state,
+                "vintage_year": vintage,
+                "year_delta": statute.year_delta,
+                "direction": statute.direction,
+                "rubrics": results,
+            },
+            indent=2,
+        )
+    )
     return 0
 
 
@@ -476,12 +509,16 @@ def cmd_calibrate_finalize_run(args: argparse.Namespace) -> int:
 
     bundle_dir = statute_bundle_dir(repo_root, state, vintage)
     if not (bundle_dir / "manifest.json").exists():
-        print(json.dumps({
-            "error": "statute bundle not found",
-            "state": state,
-            "vintage": vintage,
-            "expected_path": str(bundle_dir / "manifest.json"),
-        }))
+        print(
+            json.dumps(
+                {
+                    "error": "statute bundle not found",
+                    "state": state,
+                    "vintage": vintage,
+                    "expected_path": str(bundle_dir / "manifest.json"),
+                }
+            )
+        )
         return 2
     statute = load_statute_bundle(bundle_dir, repo_root)
     rd = statute_run_dir(repo_root, state, vintage, args.run_id)
@@ -503,20 +540,28 @@ def cmd_calibrate_finalize_run(args: argparse.Namespace) -> int:
             per_rubric_status.append({"rubric": rubric_name, "status": "missing_raw"})
             if args.skip_missing:
                 continue
-            print(json.dumps({"error": f"missing raw JSON for {rubric_name}", "path": str(raw_path)}))
+            print(
+                json.dumps({"error": f"missing raw JSON for {rubric_name}", "path": str(raw_path)})
+            )
             return 2
 
         files_read_path = raw_path.parent / "files_read.json"
         bundle_filenames = {Path(a.local_path).name for a in statute.artifacts}
         if not files_read_path.exists():
             all_finalized = False
-            per_rubric_status.append({"rubric": rubric_name, "status": "missing_files_read_manifest"})
+            per_rubric_status.append(
+                {"rubric": rubric_name, "status": "missing_files_read_manifest"}
+            )
             if args.skip_missing:
                 continue
-            print(json.dumps({
-                "error": "missing files_read.json — agent did not enumerate which statute files it read",
-                "expected_path": str(files_read_path),
-            }))
+            print(
+                json.dumps(
+                    {
+                        "error": "missing files_read.json — agent did not enumerate which statute files it read",
+                        "expected_path": str(files_read_path),
+                    }
+                )
+            )
             return 2
         files_read_obj = json.loads(files_read_path.read_text(encoding="utf-8"))
         read_set = {Path(p).name for p in files_read_obj.get("statute_files_read", [])}
@@ -525,18 +570,24 @@ def cmd_calibrate_finalize_run(args: argparse.Namespace) -> int:
         unread_unexplained = [f for f in unread if f not in explained_in_notes]
         if unread_unexplained:
             all_finalized = False
-            per_rubric_status.append({
-                "rubric": rubric_name,
-                "status": "unread_statute_files",
-                "unread": unread_unexplained,
-            })
+            per_rubric_status.append(
+                {
+                    "rubric": rubric_name,
+                    "status": "unread_statute_files",
+                    "unread": unread_unexplained,
+                }
+            )
             if args.skip_missing:
                 continue
-            print(json.dumps({
-                "error": "agent skipped statute files without explanation in files_read.json notes",
-                "unread_files": unread_unexplained,
-                "files_read_path": str(files_read_path),
-            }))
+            print(
+                json.dumps(
+                    {
+                        "error": "agent skipped statute files without explanation in files_read.json notes",
+                        "unread_files": unread_unexplained,
+                        "files_read_path": str(files_read_path),
+                    }
+                )
+            )
             return 2
 
         rubric = rubrics_loaded[rubric_name]
@@ -552,12 +603,14 @@ def cmd_calibrate_finalize_run(args: argparse.Namespace) -> int:
             run_timestamp=run_ts,
         )
         write_scored_csv(rows, out_csv)
-        per_rubric_status.append({
-            "rubric": rubric_name,
-            "status": "finalized",
-            "rows": len(rows),
-            "unable_to_evaluate_count": sum(1 for r in rows if r.unable_to_evaluate),
-        })
+        per_rubric_status.append(
+            {
+                "rubric": rubric_name,
+                "status": "finalized",
+                "rows": len(rows),
+                "unable_to_evaluate_count": sum(1 for r in rows if r.unable_to_evaluate),
+            }
+        )
 
     wrote_metadata = False
     if all_finalized:
@@ -575,18 +628,21 @@ def cmd_calibrate_finalize_run(args: argparse.Namespace) -> int:
             model_version=MODEL_VERSION,
             rubric_shas={n: r.sha for n, r in rubrics_loaded.items()},
         )
-        (rd / "run_metadata.json").write_text(
-            meta.model_dump_json(indent=2), encoding="utf-8"
-        )
+        (rd / "run_metadata.json").write_text(meta.model_dump_json(indent=2), encoding="utf-8")
         wrote_metadata = True
 
-    print(json.dumps({
-        "state": state,
-        "run_id": args.run_id,
-        "vintage_year": vintage,
-        "per_rubric": per_rubric_status,
-        "wrote_metadata": wrote_metadata,
-    }, indent=2))
+    print(
+        json.dumps(
+            {
+                "state": state,
+                "run_id": args.run_id,
+                "vintage_year": vintage,
+                "per_rubric": per_rubric_status,
+                "wrote_metadata": wrote_metadata,
+            },
+            indent=2,
+        )
+    )
     return 0
 
 
@@ -614,10 +670,14 @@ def cmd_calibrate(args: argparse.Namespace) -> int:
     pri_by_state = load_pri_reference_scores(args.rubric, repo_root)
     missing_from_pri = set(states) - set(pri_by_state)
     if missing_from_pri:
-        print(json.dumps({
-            "error": "state(s) have no PRI 2010 reference",
-            "states": sorted(missing_from_pri),
-        }))
+        print(
+            json.dumps(
+                {
+                    "error": "state(s) have no PRI 2010 reference",
+                    "states": sorted(missing_from_pri),
+                }
+            )
+        )
         return 2
 
     reports: list = []
@@ -625,25 +685,37 @@ def cmd_calibrate(args: argparse.Namespace) -> int:
         ours_atomic_by_state: dict[str, dict[str, object]] = {}
         for state in states:
             csv_path = (
-                repo_root / "data" / "scores" / state / "statute" / str(args.vintage)
-                / run_id / f"{args.rubric}.csv"
+                repo_root
+                / "data"
+                / "scores"
+                / state
+                / "statute"
+                / str(args.vintage)
+                / run_id
+                / f"{args.rubric}.csv"
             )
             if not csv_path.exists():
-                print(json.dumps({
-                    "error": "scored CSV not found",
-                    "state": state,
-                    "run_id": run_id,
-                    "expected_path": str(csv_path),
-                }))
+                print(
+                    json.dumps(
+                        {
+                            "error": "scored CSV not found",
+                            "state": state,
+                            "run_id": run_id,
+                            "expected_path": str(csv_path),
+                        }
+                    )
+                )
                 return 2
             ours_atomic_by_state[state] = load_atomic_scores_from_csv(csv_path)
-        reports.append(compute_agreement(
-            ours_atomic_by_state=ours_atomic_by_state,
-            pri_by_state={s: pri_by_state[s] for s in states},
-            rubric=args.rubric,
-            trust_partition=PRI_RESPONDER_STATES,
-            trust_partition_label="PRI 2010 responders",
-        ))
+        reports.append(
+            compute_agreement(
+                ours_atomic_by_state=ours_atomic_by_state,
+                pri_by_state={s: pri_by_state[s] for s in states},
+                rubric=args.rubric,
+                trust_partition=PRI_RESPONDER_STATES,
+                trust_partition_label="PRI 2010 responders",
+            )
+        )
 
     if len(reports) == 1:
         markdown = render_agreement_markdown(reports[0])
@@ -654,13 +726,18 @@ def cmd_calibrate(args: argparse.Namespace) -> int:
         out = Path(args.output)
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(markdown, encoding="utf-8")
-        print(json.dumps({
-            "rubric": args.rubric,
-            "run_ids": run_ids,
-            "vintage": args.vintage,
-            "states": states,
-            "output": str(out),
-        }, indent=2))
+        print(
+            json.dumps(
+                {
+                    "rubric": args.rubric,
+                    "run_ids": run_ids,
+                    "vintage": args.vintage,
+                    "states": states,
+                    "output": str(out),
+                },
+                indent=2,
+            )
+        )
     else:
         print(markdown)
     return 0
@@ -688,16 +765,24 @@ def cmd_retrieve_statutes(args: argparse.Namespace) -> int:
     elif args.state and args.vintage is not None:
         state = args.state.upper()
         if (state, args.vintage) not in LOBBYING_STATUTE_URLS:
-            print(json.dumps({
-                "error": f"no curated URLs for ({state}, {args.vintage})",
-                "available": sorted(str(k) for k in LOBBYING_STATUTE_URLS),
-            }))
+            print(
+                json.dumps(
+                    {
+                        "error": f"no curated URLs for ({state}, {args.vintage})",
+                        "available": sorted(str(k) for k in LOBBYING_STATUTE_URLS),
+                    }
+                )
+            )
             return 2
         targets = [(state, args.vintage)]
     else:
-        print(json.dumps({
-            "error": "must supply --calibration-subset or both --state and --vintage",
-        }))
+        print(
+            json.dumps(
+                {
+                    "error": "must supply --calibration-subset or both --state and --vintage",
+                }
+            )
+        )
         return 2
 
     client = PlaywrightClient(rate_limit_seconds=args.rate_limit_seconds)
@@ -707,11 +792,16 @@ def cmd_retrieve_statutes(args: argparse.Namespace) -> int:
         dest_root=dest_root,
         target_year=args.target_year,
     )
-    print(json.dumps({
-        "retrieved": len(manifest_paths),
-        "manifests": [str(p) for p in manifest_paths],
-        "dest_root": str(dest_root),
-    }, indent=2))
+    print(
+        json.dumps(
+            {
+                "retrieved": len(manifest_paths),
+                "manifests": [str(p) for p in manifest_paths],
+                "dest_root": str(dest_root),
+            },
+            indent=2,
+        )
+    )
     return 0
 
 
@@ -745,14 +835,19 @@ def cmd_expand_bundle(args: argparse.Namespace) -> int:
     )
     brief_path = bundle_dir / f"retrieval_brief_hop{hop}.md"
     brief_path.write_text(brief, encoding="utf-8")
-    print(json.dumps({
-        "brief_path": str(brief_path),
-        "output_json_path": str(output_json_path),
-        "state": state,
-        "vintage": args.vintage,
-        "hop": hop,
-        "artifact_count": len(statute.artifacts),
-    }, indent=2))
+    print(
+        json.dumps(
+            {
+                "brief_path": str(brief_path),
+                "output_json_path": str(output_json_path),
+                "state": state,
+                "vintage": args.vintage,
+                "hop": hop,
+                "artifact_count": len(statute.artifacts),
+            },
+            indent=2,
+        )
+    )
     return 0
 
 
@@ -768,7 +863,9 @@ def cmd_ingest_crossrefs(args: argparse.Namespace) -> int:
     repo_root = Path(args.repo_root).resolve()
     state = args.state.upper()
     bundle_dir = repo_root / "data" / "statutes" / state / str(args.vintage)
-    crossrefs_path = Path(args.crossrefs) if args.crossrefs else bundle_dir / f"crossrefs_hop{args.hop}.json"
+    crossrefs_path = (
+        Path(args.crossrefs) if args.crossrefs else bundle_dir / f"crossrefs_hop{args.hop}.json"
+    )
 
     if not crossrefs_path.exists():
         print(json.dumps({"error": f"crossrefs file not found: {crossrefs_path}"}))
@@ -780,109 +877,16 @@ def cmd_ingest_crossrefs(args: argparse.Namespace) -> int:
         bundle_dir=bundle_dir,
         crossrefs_path=crossrefs_path,
     )
-    print(json.dumps({
-        "ingested": len(new_files),
-        "new_sections": [f.name for f in new_files],
-        "bundle_dir": str(bundle_dir),
-    }, indent=2))
-    return 0
-
-
-_STATE_NAMES: dict[str, str] = {
-    "CA": "California",
-    "TX": "Texas",
-    "OH": "Ohio",
-}
-
-
-def _detect_multi_set_frequencies(rows: list[dict]) -> dict[str, list[str]]:
-    """Return {prefix: [suffix, ...]} for any side (E1h / E2h) with 2+ true.
-
-    Empty dict if every side has at most one frequency set. Per plan B.5
-    STOP-AND-NOTIFY clause, a non-empty result should pause the build.
-    """
-    by_item = {r["item_id"]: r for r in rows}
-    out: dict[str, list[str]] = {}
-    for prefix in ("E1h", "E2h"):
-        set_freqs: list[str] = []
-        for suffix in ("i", "ii", "iii", "iv", "v", "vi"):
-            row = by_item.get(f"{prefix}_{suffix}")
-            if row is None:
-                continue
-            score_raw = (row.get("score") or "").strip()
-            try:
-                score = int(float(score_raw)) if score_raw else 0
-            except ValueError:
-                score = 0
-            if score == 1:
-                set_freqs.append(suffix)
-        if len(set_freqs) > 1:
-            out[prefix] = set_freqs
-    return out
-
-
-def cmd_build_smr(args: argparse.Namespace) -> int:
-    """Project a per-item PRI score CSV into a StateMasterRecord JSON.
-
-    Plan B.5 STOP-AND-NOTIFY: refuses to write if any side has 2+ frequencies
-    set; pass --allow-multi-frequency to override after surfacing to the user.
-    """
-    from lobby_analysis.compendium_loader import load_v1_compendium_deprecated as load_compendium
-    from scoring.smr_projection import project_pri_scores_to_smr
-
-    repo_root = Path(args.repo_root).resolve()
-    state = args.state.upper()
-    vintage = args.vintage
-    run_id = args.run_id
-
-    pri_csv = repo_root / "data" / "scores" / state / "statute" / str(vintage) / run_id / "pri_disclosure_law.csv"
-    if not pri_csv.exists():
-        print(json.dumps({"error": f"PRI score CSV not found: {pri_csv}"}, indent=2))
-        return 2
-
-    compendium_csv = repo_root / "compendium" / "_deprecated" / "v1" / "disclosure_items.csv"
-
-    with pri_csv.open() as f:
-        rows = list(csv.DictReader(f))
-
-    multi_set = _detect_multi_set_frequencies(rows)
-    if multi_set and not args.allow_multi_frequency:
-        print(json.dumps({
-            "error": (
-                "Multiple reporting frequencies set on the same side. "
-                "Plan B.5 STOP-AND-NOTIFY: surface to the user before producing the SMR. "
-                "Re-run with --allow-multi-frequency to emit reporting_frequency='other'."
-            ),
-            "multi_set": multi_set,
-            "pri_csv": str(pri_csv),
-        }, indent=2))
-        return 3
-
-    compendium = load_compendium(compendium_csv)
-    state_name = _STATE_NAMES.get(state, state)
-    smr = project_pri_scores_to_smr(
-        pri_score_rows=rows,
-        compendium=compendium,
-        state=state,
-        state_name=state_name,
-        vintage=vintage,
-        run_id=run_id,
+    print(
+        json.dumps(
+            {
+                "ingested": len(new_files),
+                "new_sections": [f.name for f in new_files],
+                "bundle_dir": str(bundle_dir),
+            },
+            indent=2,
+        )
     )
-
-    out_dir = repo_root / "data" / "state_master_records" / state / str(vintage)
-    out_dir.mkdir(parents=True, exist_ok=True)
-    out_path = out_dir / f"{run_id}.json"
-    out_path.write_text(smr.model_dump_json(indent=2) + "\n")
-
-    print(json.dumps({
-        "wrote": str(out_path),
-        "registration_requirements": len(smr.registration_requirements),
-        "reporting_parties": len(smr.reporting_parties),
-        "field_requirements": len(smr.field_requirements),
-        "de_minimis_financial_threshold": smr.de_minimis_financial_threshold,
-        "de_minimis_time_threshold": smr.de_minimis_time_threshold,
-        "version": smr.version,
-    }, indent=2))
     return 0
 
 
@@ -970,9 +974,7 @@ def main() -> int:
         help="retrieve curated lobby-statute URL lists from Justia per state/vintage",
     )
     p_retrieve.add_argument("--state", default=None, help="USPS state code (e.g. CA)")
-    p_retrieve.add_argument(
-        "--vintage", type=int, default=None, help="vintage year (e.g. 2010)"
-    )
+    p_retrieve.add_argument("--vintage", type=int, default=None, help="vintage year (e.g. 2010)")
     p_retrieve.add_argument(
         "--calibration-subset",
         action="store_true",
@@ -1013,7 +1015,11 @@ def main() -> int:
     p_ingest.add_argument("--state", required=True, help="USPS state code (e.g. OH)")
     p_ingest.add_argument("--vintage", type=int, required=True, help="vintage year (e.g. 2010)")
     p_ingest.add_argument("--hop", type=int, default=1, help="hop number (default 1)")
-    p_ingest.add_argument("--crossrefs", default=None, help="path to crossrefs JSON (default: bundle_dir/crossrefs_hopN.json)")
+    p_ingest.add_argument(
+        "--crossrefs",
+        default=None,
+        help="path to crossrefs JSON (default: bundle_dir/crossrefs_hopN.json)",
+    )
     p_ingest.add_argument(
         "--rate-limit-seconds",
         type=float,
@@ -1109,22 +1115,11 @@ def main() -> int:
     )
     p_export.set_defaults(func=cmd_export_statute_manifests)
 
-    p_build_smr = sub.add_parser(
-        "build-smr",
-        help="project per-item PRI scores into a StateMasterRecord JSON",
-    )
-    p_build_smr.add_argument("--state", required=True, help="USPS state code (e.g. OH)")
-    p_build_smr.add_argument("--vintage", type=int, required=True, help="vintage year (e.g. 2010)")
-    p_build_smr.add_argument("--run-id", required=True, help="harness run id")
-    p_build_smr.add_argument(
-        "--allow-multi-frequency",
-        action="store_true",
-        help=(
-            "override the plan B.5 STOP-AND-NOTIFY guard for the rare case where a "
-            "side has 2+ frequencies set; emits reporting_frequency='other' with notes"
-        ),
-    )
-    p_build_smr.set_defaults(func=cmd_build_smr)
+    # NOTE: the `build-smr` subcommand and its `cmd_build_smr` handler were
+    # retired on 2026-05-14 by phase-c-projection-tdd Phase 3, alongside the
+    # smr_projection.py module they used. The v1 PRI-MVP pipeline now lives at
+    # ``src/scoring/_deprecated/smr_projection.py``; per-rubric scoring lives
+    # at ``src/lobby_analysis/projections/<rubric>.py``.
 
     args = parser.parse_args()
     return args.func(args)
