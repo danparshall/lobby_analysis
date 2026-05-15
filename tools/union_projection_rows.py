@@ -55,7 +55,7 @@ SCORE_PROJECTION_DOCS: dict[str, str] = {
 # Kept here so the union TSV carries all current freeze inputs in one place.
 LOBBYVIEW_FREEZE_CANDIDATES: list[dict[str, str]] = [
     {
-        "row_id": "lobbyist_report_distinguishes_in_house_vs_contract_filer",
+        "row_id": "lobbyist_filing_distinguishes_in_house_vs_contract_filer",
         "cell_type": "binary",
         "axis": "legal",
         "rubrics_reading": "lobbyview:is_client_self_filer (candidate)",
