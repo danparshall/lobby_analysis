@@ -10,6 +10,62 @@
 
 ## Session log (newest first)
 
+### 2026-05-15 — B4 parser hardening + pass-1 prompt strengthening + AR/WV re-canary
+
+- **Convo:** [`convos/20260515_b4_parser_hardening.md`](convos/20260515_b4_parser_hardening.md)
+- **Picked up from:** `2a20284` (prior session's Chunk 6 finish-convo)
+- **Originating defect:** [`results/20260515_b4_10pair_canary.md`](results/20260515_b4_10pair_canary.md) — Defect 1 (`JSONDecodeError` on prose-only responses)
+- **Results:** [`results/20260515_b4_parser_hardening_canary.md`](results/20260515_b4_parser_hardening_canary.md)
+- **API spend this session:** $0.197 ($0.060 AR + $0.113 WV + $0.024 WY regression)
+
+#### Topics Explored
+
+- **Parser hardening (TDD)** — wrap `json.loads` in `_parse_response_text:131` and `_parse_pass1_response:369` with try/except, route prose-only responses through a shared `_unparseable_response_fallback` helper that returns empty list + `justia_unavailable=True` + 200-char prose preview. Sends pairs to manual review instead of crashing the orchestrator.
+- **Pass-1 prompt strengthening** — rewrite Rule 3 of `api_seed_discovery_pass1_prompt.md`: explicit JSON example for the no-titles branch + framing that the empty-list-with-`justia_unavailable: true` IS the honest answer. The pre-existing "better to return nothing than to guess" wording inadvertently authorized prose responses.
+- **AR/WV re-canary against real API** to validate both fixes end-to-end on the exact states that surfaced the crash. WY regression check to confirm prompt change is neutral on positive cases.
+- Items 4 (WA/CO ground truth) and 5 (concurrency model) explicitly deferred to user.
+
+#### Provisional Findings
+
+- **Both AR 2010 and WV 2010 went from `JSONDecodeError` crash → productive output** under the hardened parser + strengthened prompt. AR 2010: 5 URLs ($0.060, 58.9s) identifying Title 21 Public Officers Ch. 8 ethics regime + Title 10 Ch. 1. WV 2010: 27 URLs ($0.113, 79.2s) identifying Chapter 6B Ethics Act with full Article 1/2/3 fan-out. Both structurally consistent with the actual statutory regimes (Ark. Code §§ 21-8-101 et seq., W. Va. Code §§ 6B-3-1 et seq.) — plausibility-only without curated GT.
+- **The prompt update was load-bearing on observed outcomes**, not the "belt-and-suspenders" framing the handoff originally suggested. AR/WV produced valid JSON post-prompt-fix; the model moved from soft-refusal-as-prose to productive multi-title engagement. The parser hardening is the durable defensive layer for *any future* prose-mode trigger; the prompt update is what actually changed AR/WV outcomes from crash to useful data.
+- **WY regression check confirmed the prompt change is neutral on positive cases** — 1/1 GT-hit, $0.024, 26.9s, identical to Chunk 3.
+- **Test suite GREEN:** 27/27 in `test_api_retrieval_agent*.py` (4 new tests: 3 parser-fallback contracts + 1 prompt-template renderability regression rail).
+- **Updated cost projection:** mean $0.094/pair across 15 productive runs → ~$33 for 350-pair fan-out (vs $21 plan baseline, $29 10-pair-only projection). Still within an order of magnitude of plan.
+- **Caught a self-inflicted `str.format` footgun** on the first canary attempt — the new JSON example in the prompt body had unescaped `{...}` literals that the `template.format(...)` loader interpreted as format placeholders, raising `KeyError: '"chosen_titles"'` before any API call fired. Fixed by escaping; added `test_pass1_prompt_template_renders_without_keyerror` as a regression rail so the next prompt edit can't repeat it.
+
+#### Decisions Made
+
+- **Shared `_unparseable_response_fallback` helper** rather than inline try/except at both call sites — DRY for the truncation policy + preview-format string.
+- **`justia_unavailable=True` on parse failure** routes the pair to manual review, not retry. The call completed; the issue is response shape, not transient API state. Retries on the same prompt would produce more prose, not JSON.
+- **200-char preview cap** for both `schema_violations.reason` and `availability.notes`. Long enough to diagnose; short enough to keep checkpoints small.
+- **AR + WV added to `SINGLE_PAIR_TARGETS`** in `scripts/canary_discovery.py` with `ground_truth: []` — they become permanent graceful-degrade regression rails. (Note: the canary script remains untracked-but-not-gitignored per prior decision; this addition is machine-local until the script itself is ever committed.)
+- **WY regression check after prompt edit** — defensive due diligence at $0.024 + 30s; confirmed no regression on a known-positive case.
+
+#### Open Questions
+
+The post-fix punch list (updated from the 10-pair canary's original 5-item list):
+
+| Question | Status |
+|---|---|
+| Fix Defect 1 (parser crash on prose) | ✅ DONE |
+| Strengthen pass-1 prompt for no-titles branch | ✅ DONE |
+| Multi-pair concurrency — sequential ~7h vs parallel | OPEN |
+| Add GT for ≥1 unseen state (WA or CO) — discriminates silent-correct vs silent-wrong | OPEN |
+| Update `cap_usd` from per-run $1 to per-batch sizing | OPEN |
+| Refresh fan-out cost projection ($21 → ~$33) | OPEN |
+
+Defect 2 (silent-empty WA/CO) was not exercised by the post-fix re-canary; the strengthened Rule 3 might or might not flip those states from silent-empty to productive.
+
+#### What Could Have Gone Better
+
+- **Pre-work framing on the prompt update.** The session opened by echoing the handoff's "minor belt-and-suspenders, lower-priority" framing for the prompt change. That framing was wrong on both halves — the change was load-bearing on outcomes AND introduced a real bug (the unescaped braces). Calibrating prompt changes as load-bearing-by-default would be more honest going forward.
+- **Should have written `test_pass1_prompt_template_renders_without_keyerror` BEFORE editing the prompt**, not after. TDD-on-prompt-edits is the correct discipline; the canary served as the unit test in the meantime.
+
+#### Pre-existing test failures (out of scope)
+
+3 failures in `test_pipeline.py` trace to missing `data/portal_snapshots/CA/2026-04-13/manifest.json` — pre-existing data loss documented in the 2026-05-14 kickoff session. Not addressable from agent code; surfacing here so it stays visible.
+
 ### 2026-05-15 — B4 Chunks 4–6: NY/TX/OH diagnostics + 10-pair canary + 2 surfaced defects
 
 - **Convo:** [`convos/20260515_b4_chunks_4_5_6.md`](convos/20260515_b4_chunks_4_5_6.md)

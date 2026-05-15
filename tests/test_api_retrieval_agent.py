@@ -558,3 +558,91 @@ async def test_batch_records_unavailable_pairs_in_availability_log(tmp_path: Pat
     assert results[("CO", 2016)][0].url == co_url
     co_2016_checkpoint = tmp_path / "CO" / "2016" / "discovered_urls.json"
     assert co_2016_checkpoint.exists()
+
+
+# ---------------------------------------------------------------------------
+# Test 10 — parser degrades gracefully on prose-only (non-JSON) responses
+# ---------------------------------------------------------------------------
+
+
+def test_parser_degrades_gracefully_on_prose_only_response() -> None:
+    """When the model returns prose with no JSON fence and no valid JSON,
+    the parser must NOT raise `JSONDecodeError`. Instead it returns:
+      - parsed_urls: []
+      - schema_violations: a single entry with reason starting "non-JSON response:"
+      - availability: justia_unavailable=True, notes containing the prose preview
+
+    Rationale: this is the AR 2010 / WV 2010 crash mode surfaced in the 10-pair
+    B4 canary (2026-05-15). The call completed, the LLM responded, but the
+    response was not machine-parseable. Routing the pair to the manual-review
+    pile (via justia_unavailable=True + notes) is more actionable than crashing
+    the orchestrator. The first ~200 chars of the offending text are preserved
+    in `notes` for downstream diagnosis."""
+    from scoring.api_retrieval_agent import _parse_response_text
+
+    prose = (
+        "I don't see a lobbying-disclosure regime for this state and "
+        "vintage in the provided Justia snapshot. None of the listed "
+        "titles appear to contain lobbyist registration or expenditure "
+        "reporting statutes."
+    )
+
+    parsed, violations, availability = _parse_response_text(prose)
+
+    assert parsed == [], f"prose-only input must yield empty URL list, got {parsed}"
+
+    assert len(violations) == 1, (
+        f"prose-only input must yield exactly one schema_violations entry "
+        f"recording the parse failure, got {violations}"
+    )
+    v = violations[0]
+    assert v.get("url") == "", f"violation url must be empty string, got {v}"
+    assert v.get("reason", "").startswith("non-JSON response:"), (
+        f"violation reason must flag the non-JSON failure mode, got {v.get('reason')!r}"
+    )
+
+    assert availability["justia_unavailable"] is True, (
+        "prose-only response routes to manual-review via justia_unavailable=True"
+    )
+    assert availability["alternative_year"] is None
+    assert "lobbying-disclosure regime" in availability["notes"], (
+        f"availability.notes must preserve a prose preview for diagnosis, "
+        f"got {availability['notes']!r}"
+    )
+    # Cap the preview so the checkpoint doesn't grow unbounded on long crashes.
+    assert len(availability["notes"]) <= 300, (
+        f"prose preview should be truncated to keep checkpoints small, "
+        f"got {len(availability['notes'])} chars"
+    )
+
+
+def test_pass1_prompt_template_renders_without_keyerror() -> None:
+    """The pass-1 prompt is loaded as a ``str.format()`` template. Any literal
+    ``{...}`` in the prompt body that isn't escaped as ``{{...}}`` will raise
+    ``KeyError`` when ``.format(state=..., vintage=..., state_index=...)``
+    runs. This test renders the production prompt with typical inputs to
+    guarantee the template stays format-safe across edits.
+
+    Regression rail for an edit that initially added an unescaped JSON example
+    to the prompt during the 2026-05-15 parser-hardening session — the canary
+    surfaced ``KeyError: '"chosen_titles"'`` because ``{"chosen_titles": [...]}``
+    in the prompt text was parsed as a format placeholder named
+    ``"chosen_titles"`` (literal quotes and all)."""
+    repo_root = Path(__file__).resolve().parent.parent
+    template_path = repo_root / "src" / "scoring" / "api_seed_discovery_pass1_prompt.md"
+    template = template_path.read_text(encoding="utf-8")
+    # Must render without raising. Content irrelevant for this regression rail.
+    template.format(state="AR", vintage=2010, state_index="<snapshot placeholder>")
+
+
+def test_parser_degrades_gracefully_on_empty_response() -> None:
+    """Empty string is a degenerate variant of the prose-only failure mode —
+    same contract applies: no crash, parsed_urls=[], availability flags unavailable."""
+    from scoring.api_retrieval_agent import _parse_response_text
+
+    parsed, violations, availability = _parse_response_text("")
+
+    assert parsed == []
+    assert len(violations) == 1
+    assert violations[0].get("reason", "").startswith("non-JSON response:")
+    assert availability["justia_unavailable"] is True

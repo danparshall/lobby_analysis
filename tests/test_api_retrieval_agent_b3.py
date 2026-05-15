@@ -595,6 +595,50 @@ def test_pass1_response_schema_records_chosen_titles() -> None:
 
 
 # ===========================================================================
+# Test 6b — _parse_pass1_response degrades gracefully on prose-only input
+# ===========================================================================
+
+
+def test_pass1_parser_degrades_gracefully_on_prose_only_response() -> None:
+    """Matching graceful-degrade contract for the pass-1 parser. When the model
+    returns prose with no JSON fence, `_parse_pass1_response` must return:
+      - chosen_titles: []
+      - availability: justia_unavailable=True, notes containing a prose preview
+      - schema_violations: a single entry flagging the non-JSON failure mode
+
+    Rationale: AR 2010 crashed in pass-1 (27.6s wall time — only one LLM call
+    elapsed) during the 10-pair B4 canary on 2026-05-15. The unguarded
+    `json.loads` at api_retrieval_agent.py:369 raised JSONDecodeError. Routing
+    to manual-review via justia_unavailable=True is the correct degradation."""
+    from scoring.api_retrieval_agent import _parse_pass1_response
+
+    prose = (
+        "After reviewing the Arkansas 2010 state index, I do not find a "
+        "title that clearly contains lobbying-disclosure statutes. The "
+        "applicable lobbying regime may be codified outside the snapshot."
+    )
+
+    chosen, availability, violations = _parse_pass1_response(prose)
+
+    assert chosen == [], f"prose-only input must yield empty chosen_titles, got {chosen}"
+
+    assert len(violations) == 1, (
+        f"prose-only input must yield exactly one schema_violations entry, "
+        f"got {violations}"
+    )
+    v = violations[0]
+    assert v.get("url") == ""
+    assert v.get("reason", "").startswith("non-JSON response:"), (
+        f"violation reason must flag the non-JSON failure mode, got {v.get('reason')!r}"
+    )
+
+    assert availability["justia_unavailable"] is True
+    assert availability["alternative_year"] is None
+    assert "lobbying-disclosure" in availability["notes"]
+    assert len(availability["notes"]) <= 300
+
+
+# ===========================================================================
 # Test 7 — per-pair checkpoint round-trips both passes
 # ===========================================================================
 

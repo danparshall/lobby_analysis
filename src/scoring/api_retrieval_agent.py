@@ -64,6 +64,32 @@ def _default_availability() -> dict:
     }
 
 
+# Maximum length of the prose preview embedded in schema_violations / notes
+# when a model response is not machine-parseable. Long enough to diagnose,
+# short enough to keep checkpoints small.
+_PROSE_PREVIEW_CHARS = 200
+
+
+def _unparseable_response_fallback(text: str) -> tuple[list[dict], dict]:
+    """Build ``(schema_violations, availability)`` for a non-JSON response.
+
+    Returned by both ``_parse_response_text`` and ``_parse_pass1_response``
+    when ``json.loads`` raises ``JSONDecodeError`` — the model returned prose
+    (or empty bytes) rather than the mandated JSON object. Routes the pair
+    to the manual-review pile via ``justia_unavailable=True`` while preserving
+    a truncated preview of the offending response in ``notes`` for diagnosis.
+
+    First surfaced by AR 2010 + WV 2010 in the 10-pair B4 canary (2026-05-15);
+    see ``docs/active/api-multi-vintage-retrieval/results/20260515_b4_10pair_canary.md``.
+    """
+    preview = text.strip()[:_PROSE_PREVIEW_CHARS] if text else ""
+    violations = [{"url": "", "reason": f"non-JSON response: {preview}"}]
+    availability = _default_availability()
+    availability["justia_unavailable"] = True
+    availability["notes"] = preview
+    return violations, availability
+
+
 class SchemaViolation(ValueError):
     """Raised when an LLM-proposed URL violates the agent's schema."""
 
@@ -125,10 +151,20 @@ def _parse_response_text(
 
     Tolerant of markdown-fenced JSON (``` or ```json) and leading prose
     before the fence. Strict JSON without fences is also accepted.
+
+    Prose-only responses (no JSON anywhere) degrade gracefully via
+    ``_unparseable_response_fallback`` — returns empty URLs with a
+    ``justia_unavailable=True`` availability marker and a prose preview in
+    ``notes`` so the pair routes to manual review instead of crashing the
+    orchestrator.
     """
     fenced = _FENCED_JSON_RE.search(text)
     json_text = fenced.group(1) if fenced else text
-    data = json.loads(json_text)
+    try:
+        data = json.loads(json_text)
+    except json.JSONDecodeError:
+        violations, availability = _unparseable_response_fallback(text)
+        return [], violations, availability
 
     raw_urls = data.get("urls", [])
     parsed: list[ProposedURL] = []
@@ -362,11 +398,17 @@ def _parse_pass1_response(
 
     Returns ``(chosen_titles, availability, schema_violations)``. Tolerates
     markdown-fenced JSON (identically to ``_parse_response_text``); rejects
-    non-Justia URLs to the violations list with a reason.
+    non-Justia URLs to the violations list with a reason. Prose-only responses
+    degrade gracefully via ``_unparseable_response_fallback`` rather than
+    raising — the AR 2010 pass-1 crash mode from the 10-pair B4 canary.
     """
     fenced = _FENCED_JSON_RE.search(text)
     json_text = fenced.group(1) if fenced else text
-    data = json.loads(json_text)
+    try:
+        data = json.loads(json_text)
+    except json.JSONDecodeError:
+        violations, availability = _unparseable_response_fallback(text)
+        return [], availability, violations
 
     raw_titles = data.get("chosen_titles", [])
     chosen: list[ChosenTitle] = []

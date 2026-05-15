@@ -59,7 +59,13 @@ Each additional title costs one HTTP fetch + one LLM call (~$0.02 — trivial). 
 
 ### 3. Only URLs from the snapshot.
 
-Do not invent or extrapolate URLs. If the snapshot lists 43 titles and none of them visibly relate to lobbying, registration, or ethics — set `chosen_titles: []` and explain in `notes`. Better to return nothing than to guess.
+Do not invent or extrapolate URLs. If the snapshot lists 43 titles and none of them visibly relate to lobbying, registration, or ethics — set `chosen_titles: []`, `justia_unavailable: true`, and explain in `notes`. Better to return nothing than to guess.
+
+**Return the JSON object with empty `chosen_titles` — not a prose explanation.** The downstream parser cannot read prose: a response like *"I don't see a lobbying-disclosure regime for this state"* expressed in English is a pipeline crash, not an honest signal. Express that same conclusion in the JSON shape — the empty-list-with-`justia_unavailable: true` IS the honest answer. Example:
+
+```
+{{"chosen_titles": [], "justia_unavailable": true, "alternative_year": null, "notes": "Reviewed the 47 titles in the snapshot; none reference lobbying registration, expenditure reporting, or related disclosure obligations."}}
+```
 
 ### 4. Scope: lobbying *disclosure* statutes only.
 
