@@ -233,6 +233,21 @@ def test_should_skip_status(tmp_path: Path):
     assert should_skip_path(target, tmp_path)
 
 
+def test_should_skip_compendium_row_id_renames_active_docs():
+    """The rename-execution branch's convo intentionally quotes old row IDs
+    (e.g., the Candidate-5 substring-trap example: ``registration_deadline_days_after_first_lobbying``
+    is the OLD name of the new ``lobbyist_registration_deadline_days_after_first_lobbying``).
+    Auto-rewriting that quotation produces "X (old) is a substring of X (new)"
+    and destroys the documentation of why word-boundary regex was needed.
+    Same precedent as docs/historical/ — and the branch eventually
+    `git mv`s to historical/ which is already skipped."""
+    root = Path("/repo")
+    assert should_skip_path(
+        root / "docs" / "active" / "compendium-row-id-renames" / "convos" / "20260514_rename_execution.md",
+        root,
+    )
+
+
 # ---------------------------------------------------------------------------
 # Integration: walk_and_apply on a fixture tree
 # ---------------------------------------------------------------------------
@@ -292,6 +307,34 @@ def test_walk_skips_deprecated(tmp_path: Path):
     dep.write_text(original)
     walk_and_apply(tmp_path, RENAMES, dry_run=False)
     assert dep.read_text() == original
+
+
+def test_walk_preserves_substring_trap_example_in_rename_execution_convo(tmp_path: Path):
+    """The rename-execution convo's Candidate-5 substring-trap explanation
+    intentionally quotes the OLD row ID side-by-side with the NEW one to
+    document why word-boundary regex was needed. Auto-rewriting the OLD
+    quotation produces "X (old) is a substring of X (new)" — the example
+    becomes incoherent and the historical record of the design rationale
+    is destroyed. The whole docs/active/compendium-row-id-renames/ tree is
+    skipped (same precedent as docs/historical/, which the branch will
+    eventually `git mv` into anyway)."""
+    convo = (
+        tmp_path
+        / "docs"
+        / "active"
+        / "compendium-row-id-renames"
+        / "convos"
+        / "20260514_rename_execution.md"
+    )
+    convo.parent.mkdir(parents=True)
+    original = (
+        "- **Word-boundary regex for the Candidate-5 substring trap.** "
+        "`registration_deadline_days_after_first_lobbying` (old) is a substring "
+        "of `lobbyist_registration_deadline_days_after_first_lobbying` (new).\n"
+    )
+    convo.write_text(original)
+    walk_and_apply(tmp_path, RENAMES, dry_run=False)
+    assert convo.read_text() == original
 
 
 def test_walk_dry_run_does_not_mutate(tmp_path: Path):
