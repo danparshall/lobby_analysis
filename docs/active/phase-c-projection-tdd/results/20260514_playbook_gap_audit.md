@@ -84,7 +84,7 @@ Every spec doc tracks "X-rubric-confirmed" status of rows it reads. Post-FOCAL s
 | `lobbyist_spending_report_includes_total_compensation` | **7-rubric-confirmed** | Most-validated row in the compendium. Lock at compendium 2.0 freeze. |
 | Gifts/entertainment/transport/lodging bundle | **5-rubric-confirmed** | Lock. |
 | `lobbyist_spending_report_includes_bill_or_action_identifier` | **5-rubric-confirmed** | Lock; α form-type split necessary. |
-| `compensation_threshold_for_lobbyist_registration` | **5-rubric-confirmed at varying granularities** | Cleanest typed-cell example. |
+| `lobbyist_registration_threshold_compensation_dollars` | **5-rubric-confirmed at varying granularities** | Cleanest typed-cell example. |
 | `def_actor_class_elected_officials` / `_public_employees` | **3-rubric-confirmed** | Newmark 2017 introduced; Newmark 2005 + Opheim reuse. Lock at compendium 2.0 freeze. |
 | `lobbyist_or_principal_report_includes_contributions_received_for_lobbying` | **1-rubric (Newmark-2017-distinctive)** | Genuine over-atomization or real Newmark-distinctive? Real per Newmark mapping; KEEP. |
 
@@ -114,7 +114,7 @@ Playbook said: 14 rows, 8 reused, 6 new, "load-bearing r=0.04 CPI↔PRI-disclosu
 1. **5 `prohib.*` items OUT of scope** (disclosure-only Phase B). Cannot reproduce `index.total` (0–19); CAN reproduce `def.section_total` (0–7) + `disclosure.section_total` (0–7) = 100 sub-aggregate cells per state × 50 = **medium-validation tier**.
 2. **No reverse-scoring** in disclosure-side items. The "Newmark may follow PRI's B1/B2 pattern" speculation in the playbook was for prohibitions, which are OOS here.
 3. **Index-based ≠ binary-only.** 3 of the 7 def items are typed-cell `IS NOT NULL` reads (compensation / expenditure / time thresholds). Function-per-item OR declarative table with cut-function annotation.
-4. **6 NEW rows introduced** (which Newmark 2005 + Opheim reuse): `def_actor_class_elected_officials`, `def_actor_class_public_employees`, `expenditure_threshold_for_lobbyist_registration`, `time_threshold_for_lobbyist_registration`, `lobbyist_spending_report_includes_total_expenditures`, `lobbyist_or_principal_report_includes_contributions_received_for_lobbying`. **Newmark 2017 must land before Newmark 2005 or Opheim** because they depend on these new rows.
+4. **6 NEW rows introduced** (which Newmark 2005 + Opheim reuse): `def_actor_class_elected_officials`, `def_actor_class_public_employees`, `lobbyist_registration_threshold_expenditure_dollars`, `lobbyist_registration_threshold_time_percent`, `lobbyist_spending_report_includes_total_expenditures`, `lobbyist_or_principal_report_includes_contributions_received_for_lobbying`. **Newmark 2017 must land before Newmark 2005 or Opheim** because they depend on these new rows.
 5. **`TimeThreshold` is a structured cell type** (`{magnitude: Decimal, unit: enum{hours_per_quarter, hours_per_year, days_per_year, percent_of_work_time, ...}}`). Not a simple `Optional[Decimal]`. Plan needs to specify whether v2-compendium loader supports this structured type or if it loads as opaque dict.
 6. **Two no-variation items** (`def.legislative_lobbying`, `disclosure.expenditures_benefiting_officials`) — universally TRUE in 2015. Cells still extracted; projection still reads. Don't optimize them away.
 7. **Newmark Table 2 published sub-aggregates** (`def.section_total`, `prohib.section_total`, `disclosure.section_total`, `index.total`) per state. Ground-truth loader returns these 4 numbers per state; only the first and third are checkable against `our_partial`.
@@ -124,7 +124,7 @@ Playbook said: 14 rows, 8 reused, 6 new, "load-bearing r=0.04 CPI↔PRI-disclosu
 Playbook said: 14 rows, 100% reuse of Newmark 2017, "near-clone of 2017, consider extracting a shared helper."
 
 **Gaps:**
-1. **4 `prohib.*` items + `penalty_stringency_2003` OUT of scope.** Different exclusions than Newmark 2017 — `prohib_expenditures_over_threshold` is conceptually distinct from the `expenditure_threshold_for_lobbyist_registration` def cell. Plan needs to call out this distinction explicitly.
+1. **4 `prohib.*` items + `penalty_stringency_2003` OUT of scope.** Different exclusions than Newmark 2017 — `prohib_expenditures_over_threshold` is conceptually distinct from the `lobbyist_registration_threshold_expenditure_dollars` def cell. Plan needs to call out this distinction explicitly.
 2. **NOT a near-clone of Newmark 2017.** Newmark 2005 has:
    - **4 sections** (def + freq + prohib + disclosure), not 3
    - **1 frequency item** (`freq_reporting_more_than_annual`) — absent in Newmark 2017

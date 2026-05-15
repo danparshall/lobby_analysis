@@ -57,7 +57,7 @@ GitHub issue:
 - **MT/SD/VA refusal vs sentinel** (Question 4 in Opheim plan): plan picks `ValueError`. Confirm before implementation.
 - **Sub-4 launch-ordering enforcement.** Sub-1 plans require Sunlight to land before Opheim; Sub-4's headless launch script needs to encode this. Surfaced for Sub-4 drafting.
 - **`_is_not_null` helper survival** (Question 3 in Opheim plan): did PRI 2010's session leave a reusable helper, or does the implementing agent need to write one?
-- **`TimeThreshold` cell access pattern.** v2 loader returns raw strings; `time_threshold_for_lobbyist_registration` carries a structured value. Opheim only needs `IS NOT NULL` so non-empty-string check works; if Track B (`extraction-harness-brainstorm`) ships typed models, the helper migrates without logic change. Documented in plan.
+- **`TimeThreshold` cell access pattern.** v2 loader returns raw strings; `lobbyist_registration_threshold_time_percent` carries a structured value. Opheim only needs `IS NOT NULL` so non-empty-string check works; if Track B (`extraction-harness-brainstorm`) ships typed models, the helper migrates without logic change. Documented in plan.
 - **Sub-2 launch timing.** Recommended to wait on GH #9 to merge. User's call.
 
 ## Captured Tasks

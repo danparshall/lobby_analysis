@@ -86,23 +86,23 @@ def test_ind_196_no_when_neither_covered():
 
 
 # ---------------------------------------------------------------------------
-# IND_197 - de jure 3-tier: compensation_threshold_for_lobbyist_registration
+# IND_197 - de jure 3-tier: lobbyist_registration_threshold_compensation_dollars
 # threshold == 0 -> YES (100); threshold > 0 -> MOD (50); no statute -> NO (0).
 # ---------------------------------------------------------------------------
 
 
 def test_ind_197_yes_when_compensation_threshold_is_zero():
-    cells = {"compensation_threshold_for_lobbyist_registration": {"legal_availability": 0}}
+    cells = {"lobbyist_registration_threshold_compensation_dollars": {"legal_availability": 0}}
     assert project_ind_197(cells) == 100
 
 
 def test_ind_197_moderate_when_compensation_threshold_is_positive():
-    cells = {"compensation_threshold_for_lobbyist_registration": {"legal_availability": 500}}
+    cells = {"lobbyist_registration_threshold_compensation_dollars": {"legal_availability": 500}}
     assert project_ind_197(cells) == 50
 
 
 def test_ind_197_no_when_no_compensation_statute():
-    cells = {"compensation_threshold_for_lobbyist_registration": {"legal_availability": None}}
+    cells = {"lobbyist_registration_threshold_compensation_dollars": {"legal_availability": None}}
     assert project_ind_197(cells) == 0
 
 

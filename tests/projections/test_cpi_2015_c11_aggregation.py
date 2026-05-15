@@ -172,7 +172,7 @@ def _cells_from_per_item_scores(per_item: dict[str, int]) -> dict[str, dict]:
         threshold = 100  # arbitrary positive
     else:
         threshold = None
-    cells["compensation_threshold_for_lobbyist_registration"] = {
+    cells["lobbyist_registration_threshold_compensation_dollars"] = {
         "legal_availability": threshold
     }
     # IND_198: passthrough.

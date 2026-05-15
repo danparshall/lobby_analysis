@@ -151,7 +151,7 @@ def project_ind_197(cells: dict[str, Any]) -> int:
 
     threshold == 0 -> YES; threshold > 0 -> MODERATE; no statute -> NO.
     """
-    threshold = _legal(cells, "compensation_threshold_for_lobbyist_registration")
+    threshold = _legal(cells, "lobbyist_registration_threshold_compensation_dollars")
     if threshold is None:
         return 0
     if threshold == 0:
