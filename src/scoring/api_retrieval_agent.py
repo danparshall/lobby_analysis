@@ -854,6 +854,411 @@ async def discover_urls_for_pairs_two_pass(
 # ===========================================================================
 
 
+# ===========================================================================
+# B4 (three-pass discovery) — orchestrator, dataclasses, batch
+# ===========================================================================
+
+
+@dataclass(frozen=True)
+class ChosenChapter:
+    """A chapter-level URL picked by pass-2 to anchor pass-3 fetch + proposal.
+
+    Shape mirrors `ChosenTitle` exactly: ``url`` + ``rationale``, with Justia
+    hostname enforcement at construction. Role information from the original
+    pass-2 `ProposedURL` is kept by the orchestrator on a side channel so it
+    can be re-attached when pass-3 is skipped (chapter IS the leaf).
+    """
+
+    url: str
+    rationale: str
+
+    @classmethod
+    def from_raw(cls, payload: dict) -> "ChosenChapter":
+        url = payload.get("url", "")
+        host = (urlparse(url).hostname or "").lower()
+        if host != JUSTIA_HOSTNAME:
+            raise SchemaViolation(
+                f"non-Justia hostname {host!r} in URL {url!r}"
+            )
+        return cls(url=url, rationale=payload.get("rationale", ""))
+
+
+@dataclass
+class Pass1Pass2Pass3Result:
+    """Output of `discover_urls_for_pair_three_pass`.
+
+    Extends `Pass1Pass2Result`'s fields with chapter-level state and pass-3
+    bookkeeping. ``parsed_urls`` is the union of pass-2 leaves (chapters with
+    no deeper children) and pass-3 sections.
+    """
+
+    state: str
+    vintage: int
+    slug: str
+    pass1_prompt: str = ""
+    pass1_response: str = ""
+    pass1_availability: dict = field(default_factory=_default_availability)
+    pass1_schema_violations: list[dict] = field(default_factory=list)
+    chosen_titles: list[ChosenTitle] = field(default_factory=list)
+    pass2_prompts: list[dict] = field(default_factory=list)
+    title_fetch_failures: list[dict] = field(default_factory=list)
+    chosen_chapters: list[ChosenChapter] = field(default_factory=list)
+    pass3_prompts: list[dict] = field(default_factory=list)
+    chapter_fetch_failures: list[dict] = field(default_factory=list)
+    parsed_urls: list[ProposedURL] = field(default_factory=list)
+
+
+async def discover_urls_for_pair_three_pass(
+    anthropic_client,
+    justia_client: JustiaFetcher,
+    *,
+    state: str,
+    vintage: int,
+    slug: str,
+    pass1_template: str,
+    pass2_template: str,
+    pass3_template: str,
+    model: str = "claude-sonnet-4-6",
+    max_output_tokens: int = 4096,
+    cost_tracker: CostTracker | None = None,
+) -> Pass1Pass2Pass3Result:
+    """Three-pass Justia URL discovery for a single (state, vintage) pair.
+
+    Pass 1: state-year index → pick title(s).
+    Pass 2: title page → pick chapter URL(s) — **provisional**, not final.
+    Adaptive: for each chosen chapter, fetch its page and probe the children
+    TSV via `_build_justia_link_tsv`.
+      - **No children** (empty TSV) → chapter IS the leaf. Pass-3 skipped;
+        the original pass-2 `ProposedURL` (with role + rationale) is added
+        to `parsed_urls`. Regression-prevents B3PW's behavior on chapter-leaf
+        states like WY 2010.
+      - **Children present** → render pass-3 prompt with chapter rationale +
+        children TSV; LLM picks in-scope section URLs; add to `parsed_urls`
+        (deduped on `(url, role)`).
+
+    Pass-3 reuses the pass-2 prompt template's placeholder shape (Rule 6 is
+    depth-agnostic). Production callers pass the same pass-2 template for
+    both ``pass2_template`` and ``pass3_template``; tests pass distinct
+    templates carrying ``PASS_2`` / ``PASS_3`` markers so the fake client can
+    discriminate which pass it's serving.
+    """
+    result = Pass1Pass2Pass3Result(state=state, vintage=vintage, slug=slug)
+
+    # --- Pass 1 ------------------------------------------------------------
+    state_year_url = _state_year_url(slug, vintage)
+    state_year_html = await _fetch_via_client(justia_client, state_year_url)
+    state_year_tsv = _build_justia_link_tsv(state_year_html, state_year_url)
+
+    pass1_prompt = pass1_template.format(
+        state=state, vintage=vintage, state_index=state_year_tsv
+    )
+    result.pass1_prompt = pass1_prompt
+
+    pass1_response = await anthropic_client.messages.create(
+        model=model,
+        max_tokens=max_output_tokens,
+        messages=[{"role": "user", "content": pass1_prompt}],
+    )
+    await _record_usage_if_present(cost_tracker, pass1_response)
+    pass1_text = pass1_response.content[0].text
+    result.pass1_response = pass1_text
+
+    chosen, availability, violations = _parse_pass1_response(pass1_text)
+    result.pass1_availability = availability
+    result.pass1_schema_violations = violations
+    result.chosen_titles = chosen
+
+    if availability.get("justia_unavailable") or not chosen:
+        return result
+
+    # --- Pass 2 (per chosen title) → provisional ChosenChapters -----------
+    # Keep a side-table of (ChosenChapter, original ProposedURL) so that
+    # when pass-3 is skipped we can preserve the role + rationale that
+    # pass-2 attached to the chapter URL.
+    chapter_proposals: list[tuple[ChosenChapter, ProposedURL]] = []
+    seen_chapter_urls: set[str] = set()
+    for title in chosen:
+        try:
+            title_html = await _fetch_via_client(justia_client, title.url)
+        except Exception as e:  # noqa: BLE001 — log and continue per plan
+            result.title_fetch_failures.append(
+                {
+                    "url": title.url,
+                    "error": f"{type(e).__name__}: {e}",
+                    "retrieved_at": _now_iso(),
+                }
+            )
+            continue
+
+        title_tsv = _build_justia_link_tsv(title_html, title.url)
+        pass2_prompt = pass2_template.format(
+            state=state,
+            vintage=vintage,
+            state_index=title_tsv,
+            chosen_title_rationale=_escape_braces(title.rationale),
+        )
+        pass2_response = await anthropic_client.messages.create(
+            model=model,
+            max_tokens=max_output_tokens,
+            messages=[{"role": "user", "content": pass2_prompt}],
+        )
+        await _record_usage_if_present(cost_tracker, pass2_response)
+        pass2_text = pass2_response.content[0].text
+
+        result.pass2_prompts.append(
+            {"url": title.url, "prompt": pass2_prompt, "response": pass2_text}
+        )
+
+        parsed, _vio, _avail = _parse_response_text(pass2_text)
+        for p in parsed:
+            if p.url in seen_chapter_urls:
+                continue
+            seen_chapter_urls.add(p.url)
+            chapter_proposals.append(
+                (ChosenChapter(url=p.url, rationale=p.rationale), p)
+            )
+
+    result.chosen_chapters = [c for c, _ in chapter_proposals]
+
+    # --- Pass 3 (per chosen chapter, adaptive) ----------------------------
+    seen_url_role: set[tuple[str, str]] = set()
+    for chapter, original in chapter_proposals:
+        try:
+            chapter_html = await _fetch_via_client(justia_client, chapter.url)
+        except Exception as e:  # noqa: BLE001 — log and continue per plan
+            result.chapter_fetch_failures.append(
+                {
+                    "url": chapter.url,
+                    "error": f"{type(e).__name__}: {e}",
+                    "retrieved_at": _now_iso(),
+                }
+            )
+            continue
+
+        children_tsv = _build_justia_link_tsv(chapter_html, chapter.url)
+        if not children_tsv:
+            # Chapter IS the leaf — preserve pass-2's role + rationale.
+            key = (original.url, original.role)
+            if key in seen_url_role:
+                continue
+            seen_url_role.add(key)
+            result.parsed_urls.append(original)
+            continue
+
+        pass3_prompt = pass3_template.format(
+            state=state,
+            vintage=vintage,
+            state_index=children_tsv,
+            chosen_title_rationale=_escape_braces(chapter.rationale),
+        )
+        pass3_response = await anthropic_client.messages.create(
+            model=model,
+            max_tokens=max_output_tokens,
+            messages=[{"role": "user", "content": pass3_prompt}],
+        )
+        await _record_usage_if_present(cost_tracker, pass3_response)
+        pass3_text = pass3_response.content[0].text
+
+        result.pass3_prompts.append(
+            {"url": chapter.url, "prompt": pass3_prompt, "response": pass3_text}
+        )
+
+        parsed, _vio, _avail = _parse_response_text(pass3_text)
+        for p in parsed:
+            key = (p.url, p.role)
+            if key in seen_url_role:
+                continue
+            seen_url_role.add(key)
+            result.parsed_urls.append(p)
+
+    return result
+
+
+# --- checkpoint serialization ---------------------------------------------
+
+
+def serialize_pass1_pass2_pass3_result(result: Pass1Pass2Pass3Result) -> dict:
+    """Convert a `Pass1Pass2Pass3Result` to a JSON-serializable dict.
+
+    Shape is the B3PW checkpoint plus the three new B4 fields
+    (``chosen_chapters``, ``pass3_prompts``, ``chapter_fetch_failures``).
+    """
+    return {
+        "state": result.state,
+        "vintage": result.vintage,
+        "slug": result.slug,
+        "pass1_prompt": result.pass1_prompt,
+        "pass1_response": result.pass1_response,
+        "pass1_availability": result.pass1_availability,
+        "pass1_schema_violations": result.pass1_schema_violations,
+        "chosen_titles": [
+            {"url": t.url, "rationale": t.rationale} for t in result.chosen_titles
+        ],
+        "pass2_prompts": result.pass2_prompts,
+        "title_fetch_failures": result.title_fetch_failures,
+        "chosen_chapters": [
+            {"url": c.url, "rationale": c.rationale} for c in result.chosen_chapters
+        ],
+        "pass3_prompts": result.pass3_prompts,
+        "chapter_fetch_failures": result.chapter_fetch_failures,
+        "parsed_urls": [
+            {"url": u.url, "role": u.role, "rationale": u.rationale}
+            for u in result.parsed_urls
+        ],
+    }
+
+
+def deserialize_pass1_pass2_pass3_result(data: dict) -> Pass1Pass2Pass3Result:
+    """Rehydrate a `Pass1Pass2Pass3Result` from `serialize_pass1_pass2_pass3_result`'s output."""
+    return Pass1Pass2Pass3Result(
+        state=data["state"],
+        vintage=data["vintage"],
+        slug=data["slug"],
+        pass1_prompt=data.get("pass1_prompt", ""),
+        pass1_response=data.get("pass1_response", ""),
+        pass1_availability=data.get("pass1_availability") or _default_availability(),
+        pass1_schema_violations=list(data.get("pass1_schema_violations") or []),
+        chosen_titles=[
+            ChosenTitle(url=t["url"], rationale=t.get("rationale", ""))
+            for t in data.get("chosen_titles", [])
+        ],
+        pass2_prompts=list(data.get("pass2_prompts") or []),
+        title_fetch_failures=list(data.get("title_fetch_failures") or []),
+        chosen_chapters=[
+            ChosenChapter(url=c["url"], rationale=c.get("rationale", ""))
+            for c in data.get("chosen_chapters", [])
+        ],
+        pass3_prompts=list(data.get("pass3_prompts") or []),
+        chapter_fetch_failures=list(data.get("chapter_fetch_failures") or []),
+        parsed_urls=[
+            ProposedURL(
+                url=u["url"],
+                role=u.get("role", ""),
+                rationale=u.get("rationale", ""),
+            )
+            for u in data.get("parsed_urls", [])
+        ],
+    )
+
+
+# --- batch orchestrator ---------------------------------------------------
+
+
+async def discover_urls_for_pairs_three_pass(
+    anthropic_client,
+    justia_client: JustiaFetcher,
+    *,
+    pairs: Iterable[tuple[str, int, str]],
+    pass1_template: str,
+    pass2_template: str,
+    pass3_template: str,
+    checkpoint_root: Path,
+    max_concurrent: int = 4,
+    model: str = "claude-sonnet-4-6",
+    max_output_tokens: int = 4096,
+    cost_tracker: CostTracker | None = None,
+) -> dict[tuple[str, int], Pass1Pass2Pass3Result]:
+    """Concurrent three-pass discovery across many (state, vintage, slug) triples.
+
+    Resume semantics + failure isolation + availability side-channel are
+    identical to ``discover_urls_for_pairs_two_pass``; only the per-pair
+    orchestrator (and the serialization shape) differ.
+
+    Default concurrency cap is 4 (unchanged from B3PW); the extra Playwright
+    fetches per pair come at the per-pair level, not the batch level.
+    """
+    checkpoint_root = Path(checkpoint_root)
+    triples = list(pairs)
+    semaphore = asyncio.Semaphore(max_concurrent)
+    failures_path = checkpoint_root / "failures.jsonl"
+    availability_path = checkpoint_root / "availability.jsonl"
+    failures_lock = asyncio.Lock()
+    availability_lock = asyncio.Lock()
+    results: dict[tuple[str, int], Pass1Pass2Pass3Result] = {}
+
+    async def process(state: str, vintage: int, slug: str) -> None:
+        checkpoint_path = (
+            checkpoint_root / state / str(vintage) / "discovered_urls.json"
+        )
+        if checkpoint_path.exists():
+            data = json.loads(checkpoint_path.read_text(encoding="utf-8"))
+            results[(state, vintage)] = deserialize_pass1_pass2_pass3_result(data)
+            return
+
+        async with semaphore:
+            try:
+                result = await discover_urls_for_pair_three_pass(
+                    anthropic_client,
+                    justia_client,
+                    state=state,
+                    vintage=vintage,
+                    slug=slug,
+                    pass1_template=pass1_template,
+                    pass2_template=pass2_template,
+                    pass3_template=pass3_template,
+                    model=model,
+                    max_output_tokens=max_output_tokens,
+                    cost_tracker=cost_tracker,
+                )
+            except CostCapExceeded:
+                # Bubble out — the whole batch is cost-capped.
+                raise
+            except Exception as e:  # noqa: BLE001
+                async with failures_lock:
+                    failures_path.parent.mkdir(parents=True, exist_ok=True)
+                    with failures_path.open("a", encoding="utf-8") as f:
+                        f.write(
+                            json.dumps(
+                                {
+                                    "state": state,
+                                    "vintage": vintage,
+                                    "slug": slug,
+                                    "error": f"{type(e).__name__}: {e}",
+                                    "retrieved_at": _now_iso(),
+                                }
+                            )
+                            + "\n"
+                        )
+                return
+
+        checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
+        checkpoint_path.write_text(
+            json.dumps(serialize_pass1_pass2_pass3_result(result), indent=2),
+            encoding="utf-8",
+        )
+
+        if result.pass1_availability.get("justia_unavailable"):
+            async with availability_lock:
+                availability_path.parent.mkdir(parents=True, exist_ok=True)
+                with availability_path.open("a", encoding="utf-8") as f:
+                    f.write(
+                        json.dumps(
+                            {
+                                "state": state,
+                                "vintage": vintage,
+                                "slug": slug,
+                                "justia_unavailable": True,
+                                "alternative_year": result.pass1_availability.get(
+                                    "alternative_year"
+                                ),
+                                "notes": result.pass1_availability.get("notes", ""),
+                                "retrieved_at": _now_iso(),
+                            }
+                        )
+                        + "\n"
+                    )
+
+        results[(state, vintage)] = result
+
+    await asyncio.gather(*(process(s, v, slug) for s, v, slug in triples))
+    return results
+
+
+# ===========================================================================
+# End B4 block
+# ===========================================================================
+
+
 def load_env_local(env_path: Path) -> None:
     """Load `KEY=VALUE` lines from a `.env.local`-style file into `os.environ`.
 
