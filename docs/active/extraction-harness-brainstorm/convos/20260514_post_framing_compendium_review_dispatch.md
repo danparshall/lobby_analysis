@@ -56,3 +56,28 @@ The 4 findings the reviewer surfaced (severity tags per handoff: **BLOCKER / SHO
 - **Head-fake mid-verification:** when post-spawn git log showed two new commits, I jumped to "the reviewer clobbered the parallel review at the same path" without checking dirnames. They were different paths (`docs/historical/...` vs `docs/active/...`). Corrected within the same turn but worth noting: identical basenames across different parent dirs is exactly the failure shape that "check the full path before claiming collision" guards against. The lesson generalizes — git operations always look at full paths; my mental shortcut from basenames was the lossy step.
 - The reviewer's commit message uses `review:` prefix (not the `convo:` prefix this repo's finish-convo uses). That's appropriate — the report is a results artifact, not a convo summary. This file uses the `convo:` prefix and is what closes the link graph for the dispatcher session.
 - `--system-prompt .` and `--model opus[1m]` in the parent-claude command line (visible during the termination ceremony) look like display artifacts of the harness, not real flags. Not blocking; recorded so the next agent doesn't chase a phantom.
+
+## Mid-session continuation — plan to apply review recommendations (2026-05-15)
+
+After the initial finish-convo committed (`58a8222`, pushed), the user pointed at the parallel harness review's report (commit `0ccbb86`) and noted that the two reviews "seem to concur, even though one was on main and one on the branch" — then asked for a consolidated plan to apply the recommendations for a fresh agent to execute.
+
+**"Concur" audit (recorded before drafting the plan).** Read the harness review in full. The two reviews concur *thematically* on Ralph-loop undersupport — compendium-side flagged that the loss function is structurally uneven across the 8 rubrics (per-state per-atomic-item ground truth exists only for CPI 2015 + Sunlight 2015), harness-side flagged that no component in the 4-module architecture is positioned to drive the loop at all. Their other findings are *complementary across surfaces* (compendium = schema/docs/projection-mappings; harness = code-module shapes) rather than directly duplicative. The "they concur" framing reads as accurate for the Ralph-loop theme; the other findings are additively complementary.
+
+**Plan written:** [`../plans/20260515_apply_post_framing_review_recommendations_plan.md`](../plans/20260515_apply_post_framing_review_recommendations_plan.md). 6 phases, scoped to this branch only:
+- Phase 1.1 — C-F2 status drift fix (doc-only; user picks regen-TSV vs doc-rewrite path).
+- Phase 1.2 — H-F2 orchestrator-gap naming (RESEARCH_ARC + STATUS + placeholder handoff for the post-`scoring_v2` next component).
+- Phase 2 — C-F4 row-ID consistency tool (`tools/check_mapping_doc_row_ids.py`, TDD-built).
+- Phase 3 — H-F1 EvidenceSpan duplication resolution (3 options: pick-semantic / pick-machine / carry-both wrapper). **Brainstorm gate; do not pre-lock.**
+- Phase 4 — H-F3 SMR partiality marker on `StateVintageExtraction` (2 options: `axis_coverage` field vs. type split). **Brainstorm gate; do not pre-lock.**
+- Phase 5 — Handoffs to other branches for the deferred findings (C-F1 to `phase-c-projection-tdd`, C-F3 to the practical-axis sibling brainstorm, Q5 OS-1 watchpoint).
+- Phase 6 — finish-convo.
+
+**Key choices in the plan:**
+- **Brainstorm gates in Phases 3 and 4 are mandatory.** The harness reviewer's Finding 1 (EvidenceSpan duplication) was precisely about Q8 silently locking a shape without picking which class; the plan explicitly tells the fresh agent NOT to repeat that failure mode.
+- **Out-of-scope findings get handoff notes, not implementations.** C-F1 (Ralph-loop per-rubric normalization) is a Phase C kickoff decision; C-F3 (legal-vs-practical content-field gap) is a Prong-2 brief-writer decision; both stay deferred. The orchestrator itself (H-F2's "next component after scoring_v2") is named and scheduled but not built here.
+- **TSV-side verification done in this session:** confirmed via `awk` that the TSV has 181/181 rows at `status=firm`. C-F2's "180 firm + 1 path_b_unvalidated" claim in `compendium/README.md` line 47 is real doc-drift; the plan can name this exactly.
+- **Two open meta-questions surfaced to user before commit:** (Q3) whether Phases 3 and 4 should brainstorm now in this session (pre-lock for the fresh agent) or stay as gates the fresh agent surfaces; (Q6) whether the plan should be split into 2-3 smaller plans for parallel execution.
+
+**Plan presented to user; finish-convo committing it alongside doc updates per the write-a-plan skill's "Present plan to user" step (user approved with the second finish-convo request).**
+
+**Multi-committer artifact noticed mid-finish-convo (resolved before commit):** while preparing this convo-update I realized that the prior turn's commit `58a8222` inadvertently absorbed the parallel harness-review parent session's mid-flight RESEARCH_LOG edit — they were editing the shared worktree's RESEARCH_LOG.md between my Read and my Edit, and my `git add` staged the combined state. Investigation showed the parallel session's own finish-convo landed 2 minutes after mine as `e93c7db` (their convo file `convos/20260514_post_framing_harness_review.md` + STATUS one-liner; commit message explicitly acknowledges that my commit had swept up their RESEARCH_LOG edit and chose not to re-touch it). Net: the link graph on origin is consistent as of `e93c7db`. Recorded in the RESEARCH_LOG entry as a multi-committer-artifact note for future-agent self-awareness — the shared-worktree `git add <file>` pattern is exactly the failure shape the multi-committer rule guards against, even when (as here) it resolves cleanly by chance.
