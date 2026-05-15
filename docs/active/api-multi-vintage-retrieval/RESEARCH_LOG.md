@@ -12,10 +12,11 @@
 
 ### 2026-05-15 — B4 implementation GREEN + WY/FL canaries (Chunks 1–3 of handoff)
 
+- **Convo:** [`convos/20260515_b4_impl_and_wy_fl_canaries.md`](convos/20260515_b4_impl_and_wy_fl_canaries.md)
 - **Picked up from:** `26894aa` (handoff doc, 2 doc-only commits past `dcdb04d` RED checkpoint).
 - **Handoff:** [`plans/20260515_b4_handoff_to_fresh_agent.md`](plans/20260515_b4_handoff_to_fresh_agent.md)
 - **Results:** [`results/20260515_b4_pilot_canaries.md`](results/20260515_b4_pilot_canaries.md)
-- **Commits:** Chunk 1 GREEN (B4 orchestrator + 44 tests) → Chunk 3 canary outcomes + docs.
+- **Commits:** `3b124d9` (Chunk 1 — B4 orchestrator + 44 tests GREEN) → `5b76fd3` (Chunk 3 canary outcomes + docs).
 - **Status at pause:** Chunks 1–3 complete; **session paused before Chunk 4** by user request (handoff to a new session). Chunk 4 (NY/TX/OH single-pair) + Chunk 5 (10-pair) + Chunk 6 (final docs) remain.
 
 #### Topics Explored

@@ -1,3 +1,5 @@
+<!-- Generated during: convos/20260515_b4_impl_and_wy_fl_canaries.md -->
+
 # B4 pilot canaries — WY 2010 + FL 2010
 
 **Date:** 2026-05-15
