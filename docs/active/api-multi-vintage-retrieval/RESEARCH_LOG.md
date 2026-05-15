@@ -10,6 +10,40 @@
 
 ## Session log (newest first)
 
+### 2026-05-15 — B4 plan + RED tests; implementation + canaries handed off to fresh agent
+
+- **Plan:** [`plans/20260515_b4_three_pass_discovery_plan.md`](plans/20260515_b4_three_pass_discovery_plan.md)
+- **Handoff:** [`plans/20260515_b4_handoff_to_fresh_agent.md`](plans/20260515_b4_handoff_to_fresh_agent.md)
+- **RED tests:** `tests/test_api_retrieval_agent_b4.py` (5 tests, all RED at `dcdb04d` with ImportError on `discover_urls_for_pair_three_pass`)
+- **Commits:** `9de9e4f` (B4 plan) → `dcdb04d` (5 RED tests) → `26894aa` (handoff doc)
+
+#### Topics Explored
+
+- User decision on B3 vs B4 vs hybrid: **Option B (three-pass)** picked. Cost delta ($17 → $25 for full fan-out) is rounding error; the model's pass-2 narrative on FL chapter11.html already correctly named all 6 GT section numbers without being allowed to emit them as URLs.
+- Architectural delta from B3PW: adaptive third pass invoked only when the chapter page has section children (deterministic helper-based detection — no LLM judgment to decide whether to run pass-3). WY-shape (chapter IS the leaf) preserved by the empty-TSV → skip-pass-3 branch.
+- Pass-3 prompt reuses the pass-2 template (Rule 6 is depth-agnostic — "URLs that constitute the statute body" applies equally at title-page-snapshot and chapter-page-snapshot depths). Test discrimination via a `pass3_template` kwarg + minimal templates carrying PASS_3 marker; production passes the same pass-2 template for both pass-2 and pass-3.
+- 5 RED behavioural tests authored covering: WY-shape pass-3 skip, FL-shape pass-3 filter, multi-chapter fan-out, chapter-fetch-failure isolation, checkpoint round-trip.
+
+#### Provisional Findings
+
+- B3PW orchestrator + 9 unit tests preserved unchanged; B4 is additive (new dataclass, new orchestrator, new tests, no refactor of B3PW). Some code duplication between two-pass and three-pass accepted; readability > DRY.
+- 5 RED tests confirm the orchestrator surface is well-specified: `discover_urls_for_pair_three_pass`, `Pass1Pass2Pass3Result` with `chosen_chapters` + `pass3_prompts` + `chapter_fetch_failures` fields, `serialize_pass1_pass2_pass3_result` / `deserialize_pass1_pass2_pass3_result`.
+
+#### Decisions Made
+
+- **B4 plan ships;** B3PW stays available for callers who want chapter-level URLs only (no retirement).
+- **Pass-3 reuses pass-2 prompt** (no new prompt file authored). PASS_3 marker is test-only.
+- **Cost cap stays $1.00 per canary run** with conservative pricing (CostTracker). Cumulative budget projected ~$1.00 across all B4 canaries (Chunks 3+4+5 of the handoff).
+- **Context-handoff to a fresh agent** rather than push through implementation + canaries in this session. Context preservation > velocity here.
+
+#### Open Questions
+
+- All open questions are now next-agent's to land. The handoff doc enumerates them as "Things the prior session learned the hard way" (defect cribsheet) + the in-plan What-could-change items (pass-3 returns []; pass-3 over-picks; chapters mixing inline text + child sections; cross-vintage stability).
+
+#### Next Steps
+
+- **Fresh agent picks up from `dcdb04d`** (5 RED B4 tests landed). Follows the 6-chunk handoff: GREEN implementation → re-canary FL/WY → diagnostic NY/TX/OH single-pairs → 10-pair canary → docs/commit. **NOT in scope for the handoff:** full 350-pair fan-out (user-gated).
+
 ### 2026-05-14 — B3PW implementation + WY/FL canaries
 
 - **Convo:** [`convos/20260514_b3pw_implementation.md`](convos/20260514_b3pw_implementation.md)
