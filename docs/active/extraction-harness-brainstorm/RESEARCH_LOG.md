@@ -27,6 +27,57 @@ The `data/` symlink convention from `skills/use-worktree/SKILL.md` was **skipped
 
 (Newest first.)
 
+### 2026-05-14 (harness review dispatch) — post-framing audit of 3 shipped components + `scoring_v2` lock against RESEARCH_ARC; 3 findings logged
+
+Convo: [`convos/20260514_post_framing_harness_review.md`](convos/20260514_post_framing_harness_review.md)
+Handoff consumed: [`plans/_handoffs/20260514_post_framing_harness_review_handoff.md`](plans/_handoffs/20260514_post_framing_harness_review_handoff.md)
+Output report: [`results/20260514_post_framing_review.md`](results/20260514_post_framing_review.md) (commit `0ccbb86`)
+Sibling parallel review (different scope, different session): [`docs/historical/compendium-source-extracts/results/20260514_post_framing_review.md`](../../historical/compendium-source-extracts/results/20260514_post_framing_review.md) (commit `770f866` — compendium-2.0 audit from the parallel handoff)
+
+**Dispatcher session.** Spawned a `general-purpose` subagent against the harness-review handoff (parent session on `main` worktree, no Nori pre-flight reads — handoff was self-contained by design). Subagent read RESEARCH_ARC + this branch's RESEARCH_LOG + the 3 shipped v2 modules + the in-flight scorer prompt + the brief-writer brainstorm/handoff + the 4 impl plans; answered the 6 handoff questions; saved one report under `results/`; committed `0ccbb86` on this branch; did not push, did not touch STATUS.md or RESEARCH_LOG.md (per handoff constraint — parent session handles those). Reviewer subagent still alive (id `a00a165fb531e34aa`) for follow-up if needed.
+
+**Findings, severity-tagged per handoff:**
+
+1. **[SHOULD-FIX] `EvidenceSpan` is two incompatible public classes.** `models_v2.EvidenceSpan` (section_reference + 200-char quote) and `retrieval_v2.EvidenceSpan` (citation_type + char/page/block indices) are both exported. The `scoring_v2` brainstorm Q8 locked `CompendiumCell.provenance: tuple[EvidenceSpan, ...]` without naming which class. Cannot be unified by aliasing — statute-axis semantics vs Citations-API provenance shape. Decision needed before the `scoring_v2` impl plan is written.
+
+2. **[SHOULD-FIX] Ralph loop has no home in the 4-component architecture.** Noise-floor re-runs (N independent invocations at fixed prompt-sha) + per-rubric loss aggregation across (state, vintage) aren't ownable by any of `models_v2` / `chunks_v2` / `retrieval_v2` / `scoring_v2`. "The orchestrator" is uniformly named as out-of-scope across chunks (line 147), retrieval (line 130), and brief-writer (lines 86, 185) brainstorms. Recommendation: name the orchestrator as the next-component-after-`scoring_v2` and track it. Pairs with the compendium-review's BLOCKER finding (per-rubric `Σ |diff|` normalization) — both findings imply the Ralph-loop layer needs explicit named ownership, not implicit "the orchestrator will do it."
+
+3. **[OBSERVATION] Practical-axis seam in `StateVintageExtraction`.** Legal-only scoring leaves 50 practical-only cells + 5 dual-axis practical halves missing. Q6 defers practical-axis brief-writer correctly, but the cell-space is flat across the registry / chunks manifest / `StateVintageExtraction.cells`. Without a typed-state distinction (`partial=True` flag, or separate `Legal/PracticalAxisExtraction` types merging into `StateVintageExtraction`), Phase C consumers can silently project from half-filled SMRs.
+
+**Other reviewer notes.** Phase C dict-access pattern is a natural fit (Q1), with a small accessor helper (`smr.get_cell(row_id, axis)`) recommended to avoid 8 projection modules each implementing defensive lookups. Reuse budget retrieval → practical-axis sibling ≈ 30-40% structural (kwargs-returning brief-writer pattern, parser shape, cell-class dispatch carry; tools / document-block construction / prompt content are statute-specific) (Q3). Scale-failure diagnostics fine at T0/T1; at T2+ one quiet mode — unknown tool names get skipped silently after citation-buffer reset (intentional, but masks model-hallucinated tool names) — and zero-output chunks won't raise without a minimum-emit-count diagnostic (Q4). Of 10 brainstorm Q-locks, only Q8 needs reopening; Q3 is borderline for Ralph reproducibility — `ExtractionRun.prompt_sha` semantics need clarification (just prompt-sha, or `(prompt_sha, retrieval_output_sha)`?) so retrieval-output drift doesn't read as prompt-noise (Q5). Pause-and-surface directive flow already wired into the brief-writer handoff (lines 72, 192, 210); concrete bullet list of T1-failure modes is the impl-plan-writer's deliverable (Q6).
+
+**Open questions for user input** (none locked this session; all surfaced for next):
+
+1. Which `EvidenceSpan` shape backs `CompendiumCell.provenance`?
+2. Does the `scoring_v2` impl plan name the Ralph-loop orchestrator as the next component, or are the four meant to suffice?
+3. Should `ExtractionRun.prompt_sha` include retrieval-output hash for Ralph reproducibility?
+
+**Next session.** User decides the 3 open questions above; then the `scoring_v2` impl plan gets written per [`plans/_handoffs/20260514_brief_writer_impl_plan_write_handoff.md`](plans/_handoffs/20260514_brief_writer_impl_plan_write_handoff.md), with Findings 1-3 folded into scope (Finding 1 ⇒ explicit provenance-type decision in plan; Finding 2 ⇒ orchestrator named in "Things this plan does not ship"; Finding 3 ⇒ typed-state distinction or `partial=True` flag). The compendium-review's Findings 2/4 (doc-vs-data drift; mapping-doc pre-rename IDs) may be picked up in parallel.
+
+### 2026-05-14 (compendium review dispatch) — post-framing audit of Compendium 2.0 against RESEARCH_ARC; 4 findings logged
+
+Convo: [`convos/20260514_post_framing_compendium_review_dispatch.md`](convos/20260514_post_framing_compendium_review_dispatch.md)
+Handoff consumed: [`plans/_handoffs/20260514_post_framing_compendium_review_handoff.md`](plans/_handoffs/20260514_post_framing_compendium_review_handoff.md)
+Output report: [`docs/historical/compendium-source-extracts/results/20260514_post_framing_review.md`](../../historical/compendium-source-extracts/results/20260514_post_framing_review.md) (commit `770f866`)
+Sibling parallel review (different scope, different session): [`results/20260514_post_framing_review.md`](results/20260514_post_framing_review.md) (commit `0ccbb86` — harness-internals audit from the parallel handoff)
+
+**Dispatcher session: spawned a `general-purpose` subagent against the compendium-review handoff, then logged its findings here for future-agent discoverability.** The substantive review (read RESEARCH_ARC, 9 per-rubric projection mappings, freeze-decisions log, naming-conventions doc) was done entirely by the subagent under "read-only outside the report file, commit-but-don't-push, no STATUS.md edits" constraints. Tree clean on entry, clean on exit; only file added is the report under `docs/historical/`.
+
+**Top findings (severity-tagged per handoff):**
+
+1. **BLOCKER for Phase C.** Per-state per-atomic-item ground truth for the Ralph loop exists *only* for CPI 2015 (700 cells) and Sunlight 2015 (200 cells). The other six rubrics validate at sub-aggregate, weak-inequality, or zero-US-state granularity. RESEARCH_ARC's `loss(prompt) = Σ |diff|` will silently weight whichever rubric has the most projectable summands. RESEARCH_ARC §"Three risks" risk #1 names this abstractly; this is the concrete version. **`phase-c-projection-tdd` should pick an explicit per-rubric normalization at kickoff before any projection code is written.**
+2. **SHOULD-FIX (doc-vs-data drift).** TSV says all 181 rows `status=firm`; README + NAMING_CONVENTIONS say "180 firm + 1 path_b_unvalidated". OS-1's unvalidated status is encoded only via `n_rubrics=0` + a magic string. Pick a side.
+3. **SHOULD-FIX (framing-driven asymmetry).** Legal-vs-practical gap is queryable for *artifact existence* (the 5 dual-axis rows) but not for *content-field surfacing*. 35 `lobbyist_spending_report_includes_*` + 13 `lobbyist_reg_form_includes_*` + 9 `lobbying_contact_log_includes_*` rows are legal-only with no practical sibling. Two routes flagged: per-content-field practical cells (~50+ new rows, expensive) vs. a single `practical_axis_observed_fields: Set[row_id]` envelope outside the 181-row TSV. Belongs to Prong-2 brief-writer at spin-up, not v2 re-opening.
+4. **OBSERVATION.** 9 projection mapping docs use **pre-rename** row IDs throughout (247 old-name occurrences, by §10.1 design). Phase C name lookups must route through §10.1's resolver or `row_id_renamer.RENAMES`. Cheap mitigation: a one-off `tools/check_mapping_doc_row_ids.py` as a pre-merge guard on projection PRs.
+
+**Q2 (axis seam) clean — no finding.** Q5 (P1-product residue) lone candidate: **OS-1** (`separate_registrations_for_lobbyists_and_clients`); flagged per handoff, not proposed for removal.
+
+**Reviewer punted on:** PRI 2010 mapping deep-read (919 lines; spot-check only) and whether `compendium-v2-promote`'s deprecation broke any caller. Worth a separate sweep if the user wants either.
+
+**Process note (head-fake recorded for future sessions):** when post-spawn `git log` showed two new commits both touching files named `20260514_post_framing_review.md`, this session's agent jumped to "the reviewer clobbered the parallel review" without checking the parent dirs (`docs/historical/...` vs `docs/active/...`). Corrected within the same turn. Lesson generalizes — identical basenames across different parent dirs is exactly the failure shape that "check the full path before claiming collision" guards against.
+
+**Next session.** Either (a) Finding 2 doc-vs-data drift fix (which side moves?); (b) Finding 4 `tools/check_mapping_doc_row_ids.py` guard (which branch?); or (c) resume the prior "next session" target — brief-writer impl-plan-write per [`plans/_handoffs/20260514_brief_writer_impl_plan_write_handoff.md`](plans/_handoffs/20260514_brief_writer_impl_plan_write_handoff.md). User chooses.
+
 ### 2026-05-14 (research arc doc) — three-prong arc + Prong 1 internals + Ralph loop doc landed on main
 
 Convo: [`convos/20260514_research_arc_doc.md`](convos/20260514_research_arc_doc.md)
