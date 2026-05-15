@@ -20,6 +20,40 @@ The 15 row renames themselves match plan §1 verbatim. The LV-1 categorical exce
 
 ## Sessions
 
+## Session: 2026-05-14 — sister-branch absorption + renamer hotfix
+
+Operational coordination session — absorb the merged renames into the three sister branches, surface and fix a renamer defect on main. Convo: [`convos/20260514_sister_branch_absorption_and_renamer_hotfix.md`](convos/20260514_sister_branch_absorption_and_renamer_hotfix.md).
+
+### Topics Explored
+- Three-branch absorption mechanics (extraction-harness, phase-c, oh-statute) — each had a different conflict shape; STATUS.md "Recent Sessions" + table conflicts resolved by keeping both branches' content per multi-committer rule.
+- Renamer dry-run on the first sister branch surfaced a corruption case: `docs/active/compendium-row-id-renames/convos/20260514_rename_execution.md` line 20 intentionally quotes the OLD row ID side-by-side with the NEW one to document the Candidate-5 substring trap; the renamer's word-boundary regex would auto-rewrite it and collapse the example to "X (old) is a substring of X (new)".
+- TDD on the hotfix: RED unit (`should_skip_path` returns True for the convo path) + RED integration (`walk_and_apply` on a fixture of the actual line leaves it byte-identical, with the RED failure visibly producing the corruption diff) → GREEN by adding the directory to `_SKIP_SUBPATHS`.
+
+### Provisional Findings
+- Renamer skip-list had a missing tier — the active rename-execution convo is structurally in the same "documents the rename, references old names as data" family as the renamer module + its tests + NAMING_CONVENTIONS.md (all of which ARE skip-listed) but lives under `docs/active/` for the duration of this branch's lifecycle. The whole-directory skip is forward-compatible (future convos here may also reference old IDs in narrative) and lifecycle-consistent (the branch will eventually `git mv` to `docs/historical/` which is already skipped).
+- Sister-branch absorption surface was small and bounded: 11 / 9 / 1 file(s) per branch (extraction-harness / phase-c / oh-statute). Post-restoration, renamer dry-run on main itself returns "no files contain old names" — confirming the substring-trap convo was the only file the renamer would have touched on main.
+- pytest deltas matched expectations on every branch: only the three pre-existing `test_pipeline.py::test_*snapshot*/brief/stamp` failures (FileNotFoundError on gitignored `data/portal_snapshots/` fixture data); nothing new introduced by either absorption or hotfix.
+
+### Decisions Made
+- Per-branch manual restoration of the substring-trap line in each absorb commit, rather than pausing absorption pending the hotfix merge (Dan's call).
+- Push the auto-merge commit on `oh-statute-retrieval` as-is (default merge message) rather than amending or adding an empty commit (Dan's call) — the merge IS the absorption when there are no own-branch references.
+- Hotfix scope = whole `docs/active/compendium-row-id-renames/` directory (not just the one convo file) — same precedent as `docs/historical/` and `compendium/_deprecated/`; lifecycle-consistent.
+
+### Results
+- 3 absorb commits pushed to sister branches:
+  - `extraction-harness-brainstorm` `151bad2` (11 files / 56 substitutions; pytest 484 pass)
+  - `phase-c-projection-tdd` `a83ede3` (9 files / 26 substitutions; pytest 676 pass)
+  - `oh-statute-retrieval` `54908f5` (auto-merge; pytest 342 pass)
+- Hotfix branch + PR: `compendium-renamer-skip-fix` commit `660355e`; PR [#15](https://github.com/danparshall/lobby_analysis/pull/15). pytest 344 pass (+2 for the new tests, 0 regressions).
+
+### Next Steps
+- Wait for PR #15 review/merge.
+- After merge: sister branches don't need re-absorption (their convo lines are already manually restored), but next time any of them merges main for substantive reasons, they'll automatically pick up the renamer fix.
+- Branch lifecycle question deferred: this branch is merged to main (PR #14) but now has new doc commits — when (and how) to fold those into main is open. Options on the convo's Open Questions section.
+
+### Process gap (own-side reflection)
+- Should have caught the corruption case during a pre-flight review of the renamer's skip-list before running the dry-run on the first sister branch. The substring-trap convo is in the same "documents the rename, references old names as data" family as items already in the skip-list (the renamer module, its tests, NAMING_CONVENTIONS.md). Dry-run output caught it before any file was written, so no damage — but a more disciplined session would have caught it from the skip-list comment block alone.
+
 ## Session: 2026-05-14 — rename execution
 
 Full execution session — 4 commits land the rename end-to-end. Convo: [`convos/20260514_rename_execution.md`](convos/20260514_rename_execution.md).
