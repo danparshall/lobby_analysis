@@ -1,6 +1,6 @@
 # `compendium/` — Row-naming conventions
 
-> **Status:** draft, 2026-05-14. Audit produced on the `compendium-naming-docs` branch (GH issue [#9](https://github.com/danparshall/lobby_analysis/issues/9)). Scope is **audit + flag**, not rename — see [Naming issues](#naming-issues--rename-candidates) for the rename candidates this audit surfaces; renames are deferred to a separately-scoped follow-up branch to avoid forcing merge churn on the parallel-running successor branches (`phase-c-projection-tdd`, `extraction-harness-brainstorm`, `oh-statute-retrieval`).
+> **Status:** 2026-05-14. Audit produced on the `compendium-naming-docs` branch (GH issue [#9](https://github.com/danparshall/lobby_analysis/issues/9), merged to main as PR [#10](https://github.com/danparshall/lobby_analysis/pull/10)). The 8 rename candidates surfaced in [§10](#naming-issues--rename-candidates) were ratified across 3 sessions and applied on `compendium-row-id-renames`: 15 row-ID renames + 1 README typo fix. The renames are part of v2's contract (no v2→v3 generation bump — Dan's "retroactively re-finalize v2" framing). The [§10.1 resolver table](#101-resolver-table-for-archive-readers) preserves old→new pairs verbatim for readers of archived material. Sister branches absorb the renames by merging main and running `tools/v2_update_names.py` against their working tree.
 
 This document explains how `compendium_row_id` strings in [`disclosure_side_compendium_items_v2.tsv`](disclosure_side_compendium_items_v2.tsv) are structured, what each prefix family means, where every row's name came from, and how to choose a name for a new row.
 
@@ -97,10 +97,10 @@ The empirically tightest families. These are the "real" structural anchors for n
 | `def_actor_class_*` | 2 | Individual-actor classes (elected officials / public employees) |
 | `govt_agencies_subject_*` | 2 | Whether government agencies are themselves subject to lobbyist / principal disclosure |
 | `lobbyist_filing_*` | 2 | Filing-de-minimis thresholds (D4 — see [§7 below](#7-the-three-threshold-framework-d4)) |
-| `lobbyist_report_*` | 2 | Two leftover rows after D3 — flagged as rename candidates |
+| `lobbyist_report_*` | 0 | (Empty after Issue 2 renames — the 2 leftover D3 rows became `lobbyist_spending_report_*` and `lobbyist_filing_*`) |
 | `online_lobbyist_*` | 2 | Online-filing portal availability (HG practical-axis) |
 
-Plus 34 singleton families (one row each) — see the [prefix survey](../docs/active/compendium-naming-docs/results/20260514_prefix_survey.md) for the full listing.
+Plus 34 singleton families (one row each) — see the [prefix survey](../docs/historical/compendium-naming-docs/results/20260514_prefix_survey.md) for the full listing.
 
 ---
 
@@ -142,14 +142,14 @@ The `lobbyist_or_principal_*` prefix (5 rows) marks observables that **apply to 
 Members:
 
 - `lobbyist_or_principal_reg_form_includes_lobbyist_board_memberships`
-- `lobbyist_or_principal_report_includes_lobbyist_count_total_and_FTE`
-- `lobbyist_or_principal_report_includes_time_spent_on_lobbying`
-- `lobbyist_or_principal_report_includes_trade_association_dues_or_sponsorship`
+- `lobbyist_or_principal_spending_report_includes_lobbyist_count_total_and_FTE`
+- `lobbyist_or_principal_spending_report_includes_time_spent_on_lobbying`
+- `lobbyist_or_principal_spending_report_includes_trade_association_dues_or_sponsorship`
 - `lobbyist_or_principal_spending_report_includes_contributions_received_for_lobbying`
 
-**Ordering convention: `lobbyist_or_principal_*` (alphabetical-by-actor-prominence, not alphabetical-by-string).** One outlier — `principal_or_lobbyist_reg_form_includes_member_or_sponsor_names` — uses the reverse order. Flagged as a [rename candidate](#naming-issues--rename-candidates).
+**Ordering convention: `lobbyist_or_principal_*` (alphabetical-by-actor-prominence, not alphabetical-by-string).** All 5 rows now follow this convention — the prior `principal_or_lobbyist_*` outlier was renamed per [Issue 1, DONE 2026-05-14](#issue-1--principal_or_lobbyist_-reversed-ordering-1-row).
 
-**Mixed-form behavior:** three of the five rows use the legacy `_report_*` form-type label (not `_spending_report_*`). D3's rename rule was scoped to PRI E1/E2 rows and didn't extend to the joint-actor family — see [rename candidates](#naming-issues--rename-candidates).
+**Form-type consistency:** all 5 rows now use either `_reg_form_*` or `_spending_report_*` (none use the legacy ambiguous `_report_*`). D3's original rename rule was scoped to PRI E1/E2; [Issue 2, DONE 2026-05-14](#issue-2--d3-rename-gaps-leftover-_report_-rows-that-should-be-_spending_report_-6-rows) closed the gap for the 5 non-PRI rows that were also spending-report observables (plus 1 row that became `lobbyist_filing_*` — the LV-1 schema-coverage exception, §5).
 
 ---
 
@@ -159,18 +159,18 @@ Disclosure law uses *three distinct* dollar/time thresholds, and the compendium 
 
 | Threshold concept | Prefix shape | Members |
 |---|---|---|
-| **Lobbyist-status threshold** — triggers the obligation to register as a lobbyist at all | `<measure>_threshold_for_lobbyist_registration` (singletons) | `compensation_threshold_for_lobbyist_registration`, `expenditure_threshold_for_lobbyist_registration`, `time_threshold_for_lobbyist_registration` |
+| **Lobbyist-status threshold** — triggers the obligation to register as a lobbyist at all | `lobbyist_registration_threshold_<measure>_<unit>` | `lobbyist_registration_threshold_compensation_dollars`, `lobbyist_registration_threshold_expenditure_dollars`, `lobbyist_registration_threshold_time_percent` |
 | **Filing-de-minimis threshold** — once registered, triggers the obligation to file spending reports | `lobbyist_filing_de_minimis_threshold_*` | `lobbyist_filing_de_minimis_threshold_dollars`, `lobbyist_filing_de_minimis_threshold_time_percent` |
-| **Itemization-de-minimis threshold** — once filing, triggers per-line itemization within a report | `*_itemization_de_minimis_threshold_*` (singleton) | `expenditure_itemization_de_minimis_threshold_dollars` |
+| **Itemization-de-minimis threshold** — once filing, triggers per-line itemization within a report | `*_itemization_de_minimis_threshold_*` (singleton) | `lobbyist_filing_itemization_de_minimis_threshold_dollars` |
 
 The three-threshold framework is load-bearing for HG Q2's projection (D22: `min(compensation_threshold, expenditure_threshold)` reads the binding-threshold concept).
 
-The lobbyist-status threshold family is currently three singletons with **inconsistent prefix shape** — none of them join the `lobbyist_registration_*` (3-row) family even though semantically they all gate registration. Flagged as [rename candidates](#naming-issues--rename-candidates).
+The lobbyist-status threshold family now joins the `lobbyist_registration_*` family with consistent `_threshold_<measure>_<unit>` suffix shape, per [Issue 3, DONE 2026-05-14](#issue-3--registration-threshold-family-lives-outside-the-registration-family-3-rows). Prior names were `<measure>_threshold_for_lobbyist_registration` singletons — see §10.1 for the resolver table.
 
 **Threshold-suffix convention** (sub-3 resolution, 2026-05-14). The canonical shape for a threshold row is `_threshold_<unit>` for single-measure threshold families and `_threshold_<measure>_<unit>` for multi-measure families. The unit token (`_dollars` / `_percent` / `_hours`) is repeated in the suffix even though `cell_type` carries it — this is intentional redundancy so readers of the row_id alone know the unit without consulting `cell_type`.
 
 - **Single-measure:** `lobbyist_filing_de_minimis_threshold_dollars` and its sibling `lobbyist_filing_de_minimis_threshold_time_percent` — the filing-de-minimis concept is one threshold cell with two measures (dollar amount, time percent). Each measure is its own row and the row id ends in `_threshold_<unit>`. The measure word is omitted because the threshold concept itself has one name (`de_minimis`).
-- **Multi-measure:** the lobbyist-status threshold family has three *distinct measure concepts* (compensation, expenditure, time spent) all triggering the same status threshold, so each row needs an explicit measure word. The proposed Issue 3 renames `lobbyist_registration_threshold_compensation_dollars` / `_expenditure_dollars` / `_time_percent` follow this shape.
+- **Multi-measure:** the lobbyist-status threshold family has three *distinct measure concepts* (compensation, expenditure, time spent) all triggering the same status threshold, so each row needs an explicit measure word. Issue 3's applied renames `lobbyist_registration_threshold_compensation_dollars` / `_expenditure_dollars` / `_time_percent` follow this shape.
 
 When introducing a new threshold row, decide which case applies: is this a new measure on an existing single-concept threshold (use `_threshold_<unit>` if the family is currently single-measure; rename the existing row to add `<measure>` only if the family is acquiring a second concept), or a new concept-level threshold (use `_threshold_<measure>_<unit>` from the start if you expect multiple measures).
 
@@ -208,10 +208,10 @@ When introducing a new row, **don't try to encode axis in the prefix** — it go
 |---|---|---|
 | `_required` | `binary` | `lobbyist_spending_report_required`, `actor_paid_lobbyist_registration_required` |
 | `_includes_*` | `binary` | most of the spending-report and reg-form content rows |
-| `_threshold_*_dollars` | `typed Optional[Decimal]` | `lobbyist_filing_de_minimis_threshold_dollars`, `compensation_threshold_for_lobbyist_registration` |
-| `_threshold_time_percent` | `typed Optional[TimeThreshold]` | `lobbyist_filing_de_minimis_threshold_time_percent`, `time_threshold_for_lobbyist_registration` |
+| `_threshold_*_dollars` | `typed Optional[Decimal]` | `lobbyist_filing_de_minimis_threshold_dollars`, `lobbyist_registration_threshold_compensation_dollars` |
+| `_threshold_time_percent` | `typed Optional[TimeThreshold]` | `lobbyist_filing_de_minimis_threshold_time_percent`, `lobbyist_registration_threshold_time_percent` |
 | `_cadence_*` | `binary` (PRI atomized as 6-binary set) or `typed UpdateCadence` (HG) | `lobbyist_spending_report_cadence_includes_quarterly`, `lobbyist_directory_update_cadence` |
-| `_def_*` / `_definition_*` | `typed Set[enum]` | `lobbying_definition_included_activity_types`, `lobbyist_definition_included_actor_types` |
+| `_def_*` / `_definition_*` | `typed Set[enum]` | `def_lobbying_activity_types`, `def_lobbyist_actor_types` |
 | `_filter_by_*` | `binary` | the `lobbying_search_filter_*` family |
 | `_required_in_law` / `_available_*` | `binary` | self-explanatory practical-availability rows |
 
@@ -221,89 +221,101 @@ These are conventions, not rules — the `cell_type` column is authoritative. If
 
 ## 10. Naming issues / rename candidates
 
-This audit surfaces the following inconsistencies. None are blocking — the v2 TSV is the active contract and every row resolves to a single canonical name. But each is a rename candidate for a future cleanup branch, listed roughly in order of how clearly the rename is justified.
+**Status:** All 8 candidates surfaced in this audit were ratified and applied on `compendium-row-id-renames` (PR pending; merged 2026-05-14). The §10.1 resolver table below preserves the 15 row-ID renames + 1 doc-filename typo fix verbatim — readers of archived material (e.g., `docs/historical/compendium-naming-docs/`, `docs/historical/compendium-source-extracts/results/projections/*.md`) can resolve old names to new here.
 
-> **Coordination cost reminder:** any rename of a row that appears in a projection-mapping doc, a Pydantic model on `extraction-harness-brainstorm`, or a prompt string forces a merge update across those branches. The follow-up branch should be timed against their lifecycles.
+The renames are part of v2's contract, not a v2→v3 generation bump: `compendium/disclosure_side_compendium_items_v2.tsv` was finalized 2026-05-13 on `compendium-v2-promote` and re-finalized 2026-05-14 with the renamed row IDs on `compendium-row-id-renames`. Sister branches absorb the renames by merging main and running `tools/v2_update_names.py` against their working tree (the script's mapping dict at `src/lobby_analysis/row_id_renamer.py` is the executable form of §10.1 below).
 
-### Issue 1 — `principal_or_lobbyist_*` reversed ordering (1 row)
+### Issue 1 — `principal_or_lobbyist_*` reversed ordering (1 row) — **DONE 2026-05-14**
 
 **Row:** `principal_or_lobbyist_reg_form_includes_member_or_sponsor_names`
 **Issue:** Joint-actor rows use `lobbyist_or_principal_*` ordering (5 of 5 other rows). This one row reverses it. Same convention, opposite alphabetic order.
-**Proposed rename:** `lobbyist_or_principal_reg_form_includes_member_or_sponsor_names`
+**Applied rename:** → `lobbyist_or_principal_reg_form_includes_member_or_sponsor_names`
 **Cost:** 1 row; FOCAL-introduced; single-rubric.
 
-### Issue 2 — D3 rename gaps: leftover `_report_*` rows that should be `_spending_report_*` (6 rows)
+### Issue 2 — D3 rename gaps: leftover `_report_*` rows that should be `_spending_report_*` (6 rows) — **DONE 2026-05-14**
 
-D3 enacted the α form-type split (`*_report_includes_*` → `*_spending_report_includes_*`) but keyed the rename rule on `_includes_*` and `_cadence_*` patterns inside PRI E1/E2 only. Five non-PRI rows that are *also* spending-report observables retained the legacy ambiguous `_report_*` prefix:
+D3 enacted the α form-type split (`*_report_includes_*` → `*_spending_report_includes_*`) but keyed the rename rule on `_includes_*` and `_cadence_*` patterns inside PRI E1/E2 only. Six non-PRI rows that are spending-report observables (or, in the LV-1 case, a schema-coverage observable on the filing apparatus) retained the legacy ambiguous `_report_*` prefix:
 
-| Current row_id | Source rubric | Proposed rename |
+| Old row_id | Source rubric | Applied rename |
 |---|---|---|
-| `lobbyist_report_distinguishes_in_house_vs_contract_filer` | LV-1 (LobbyView, D12 promotion) | Either `lobbyist_filing_distinguishes_in_house_vs_contract_filer` (it's a filing-system property, not a single report's content) or `lobbyist_spending_report_distinguishes_in_house_vs_contract_filer` |
+| `lobbyist_report_distinguishes_in_house_vs_contract_filer` | LV-1 (LobbyView, D12 promotion) | `lobbyist_filing_distinguishes_in_house_vs_contract_filer` |
 | `lobbyist_report_includes_campaign_contributions` | Newmark 2017 | `lobbyist_spending_report_includes_campaign_contributions` |
 | `lobbyist_or_principal_report_includes_lobbyist_count_total_and_FTE` | FOCAL | `lobbyist_or_principal_spending_report_includes_lobbyist_count_total_and_FTE` |
 | `lobbyist_or_principal_report_includes_time_spent_on_lobbying` | FOCAL | `lobbyist_or_principal_spending_report_includes_time_spent_on_lobbying` |
 | `lobbyist_or_principal_report_includes_trade_association_dues_or_sponsorship` | FOCAL | `lobbyist_or_principal_spending_report_includes_trade_association_dues_or_sponsorship` |
 | `principal_report_lists_lobbyists_employed` | FOCAL | `principal_spending_report_lists_lobbyists_employed` |
 
-(The LV-1 row is the one with a non-trivial choice — it could reasonably belong to a `lobbyist_filing_*` family-of-meta rather than a `_spending_report_*` family-of-content. Defer the call until the rename-execution session.)
+**LV-1 is the categorical exception.** It goes to `lobbyist_filing_*` (schema-coverage observable, joining `lobbyist_filing_de_minimis_threshold_*`), not `_spending_report_*`. See §5 and §11 for the decision-tree branch that captures this categorical rule (the other 5 are report-content observables; LV-1 is a schema-coverage meta-observable about the filing apparatus).
 
-### Issue 3 — Registration-threshold family lives outside the registration family (3 rows)
+### Issue 3 — Registration-threshold family lives outside the registration family (3 rows) — **DONE 2026-05-14**
 
-Three singleton rows capture the **lobbyist-status threshold** (D4's first concept in the three-threshold framework). They use a `<measure>_threshold_for_lobbyist_registration` shape that joins no family:
-
-- `compensation_threshold_for_lobbyist_registration`
-- `expenditure_threshold_for_lobbyist_registration`
-- `time_threshold_for_lobbyist_registration`
-
-**Issue:** they share no prefix with each other (`compensation_*`, `expenditure_*`, `time_*` are three different 1-token prefix families), they don't join `lobbyist_registration_*` (3-row family for registration administration), and they don't match the `*_threshold_dollars` / `*_threshold_time_percent` suffix shape used by `lobbyist_filing_de_minimis_threshold_*` (the second concept in the same framework).
-
-**Proposed renames** (to join `lobbyist_registration_*` and mirror the filing-de-minimis suffix shape):
+Three rows capture the **lobbyist-status threshold** (D4's first concept in the three-threshold framework). They previously used a `<measure>_threshold_for_lobbyist_registration` shape that joined no family. Applied renames join `lobbyist_registration_*` with the `_threshold_<measure>_<unit>` shape (§7):
 
 - `compensation_threshold_for_lobbyist_registration` → `lobbyist_registration_threshold_compensation_dollars`
 - `expenditure_threshold_for_lobbyist_registration` → `lobbyist_registration_threshold_expenditure_dollars`
 - `time_threshold_for_lobbyist_registration` → `lobbyist_registration_threshold_time_percent`
 
-(Note: `compensation_threshold` is 6-rubric and `expenditure_threshold` + `time_threshold` are 4-rubric — these are high-traffic rows. Coordination cost for rename is non-trivial. But they are *load-bearing* for HG Q2's projection [D22] and the rename improves family coherence at three of the most-read rows in the compendium.)
+(`compensation_threshold` is 6-rubric and `expenditure_threshold` + `time_threshold` are 4-rubric — these are high-traffic rows. The rename improves family coherence at three of the most-read rows in the compendium and is load-bearing for HG Q2's projection [D22].)
 
-### Issue 4 — `expenditure_itemization_de_minimis_threshold_dollars` family fit (1 row)
+### Issue 4 — `expenditure_itemization_de_minimis_threshold_dollars` family fit (1 row) — **DONE 2026-05-14**
 
-**Row:** `expenditure_itemization_de_minimis_threshold_dollars`
-**Issue:** This is D4's third concept (itemization-de-minimis threshold) and it lives as a singleton `expenditure_*` prefix. Could plausibly belong to `lobbyist_filing_*` (sibling to filing-de-minimis pair) or `lobbyist_spending_report_*` (it's about itemization within the report).
-**Proposed rename:** `lobbyist_filing_itemization_de_minimis_threshold_dollars` (mirroring `lobbyist_filing_de_minimis_threshold_dollars`).
+**Old row_id:** `expenditure_itemization_de_minimis_threshold_dollars`
+**Issue:** D4's third concept (itemization-de-minimis threshold) lived as a singleton `expenditure_*` prefix.
+**Applied rename:** → `lobbyist_filing_itemization_de_minimis_threshold_dollars` (mirroring `lobbyist_filing_de_minimis_threshold_dollars`).
 **Cost:** 1 row; Newmark+Sunlight-introduced.
 
-### Issue 5 — `registration_deadline_days_after_first_lobbying` family fit (1 row)
+### Issue 5 — `registration_deadline_days_after_first_lobbying` family fit (1 row) — **DONE 2026-05-14**
 
-**Row:** `registration_deadline_days_after_first_lobbying`
-**Issue:** Singleton `registration_*` prefix; doesn't join the `lobbyist_registration_*` (3-row) family despite being a registration-administration observable. Two-axis (D11).
-**Proposed rename:** `lobbyist_registration_deadline_days_after_first_lobbying`
-**Cost:** 1 row; CPI-introduced; 2-rubric.
+**Old row_id:** `registration_deadline_days_after_first_lobbying`
+**Issue:** Singleton `registration_*` prefix; didn't join the `lobbyist_registration_*` family despite being a registration-administration observable.
+**Applied rename:** → `lobbyist_registration_deadline_days_after_first_lobbying`
+**Cost:** 1 row; CPI-introduced; 2-rubric. (The old name is a substring of the new — word-boundary regex in the renamer prevents the double-rename trap on idempotent re-runs.)
 
-### Issue 6 — `ministerial_diaries_*` vs `ministerial_diary_*` plural drift (2 rows)
+### Issue 6 — `ministerial_diaries_*` vs `ministerial_diary_*` plural drift (1 row renamed) — **DONE 2026-05-14**
 
-**Rows:**
-- `ministerial_diaries_available_online`
-- `ministerial_diary_disclosure_cadence`
+**Old row_id:** `ministerial_diaries_available_online`
+**Issue:** Plural vs singular within a 2-row family (`ministerial_diary_disclosure_cadence` already singular).
+**Applied rename:** → `ministerial_diary_available_online`. Family now consistently singular.
+**Cost:** 1 row; FOCAL-introduced.
 
-**Issue:** Plural vs singular within a 2-row family. Defensible (the practical-availability row is about the *collection*; the cadence row is about *per-diary* disclosure), but inconsistent at the prefix level.
-**Proposed rename:** standardize on singular `ministerial_diary_*` for both, or leave (low priority).
-**Cost:** at most 1 row; FOCAL-introduced.
+### Issue 7 — `lobbying_definition_*` and `lobbyist_definition_*` outside the `def_*` family (2 rows) — **DONE 2026-05-14**
 
-### Issue 7 — `lobbying_definition_*` and `lobbyist_definition_*` outside the `def_*` family (2 rows)
+**Applied renames:**
+- `lobbying_definition_included_activity_types` → `def_lobbying_activity_types`
+- `lobbyist_definition_included_actor_types` → `def_lobbyist_actor_types`
 
-**Rows:**
-- `lobbying_definition_included_activity_types` (FOCAL)
-- `lobbyist_definition_included_actor_types` (FOCAL)
+These join the `def_*` family with `def_target_*`, `def_actor_class_*`, etc.
 
-**Issue:** These are definitional rows (set-typed enum). Other definitional rows use the `def_*` prefix (`def_target_*`, `def_actor_class_*`). These two don't, because they read most naturally with the keyed scope first. Defensible — but it does fragment the definitional family.
-**Proposed rename:** either `def_lobbying_activity_types` / `def_lobbyist_actor_types`, or leave (low priority — readability vs family coherence).
-**Cost:** 2 rows; FOCAL-introduced.
+### Issue 8 — README filename inconsistency (not a row-ID issue) — **DONE 2026-05-14**
 
-### Issue 8 — README filename inconsistency (not a row-ID issue)
-
-`compendium/README.md` §"How Compendium 2.0 was built" lists the projection-mapping doc filenames including `cpi_2015_projection_mapping.md`, but the actual file is `cpi_2015_c11_projection_mapping.md`. Minor doc-drift; flag for the rename-execution branch or fix in passing.
+`compendium/README.md` referenced `cpi_2015_projection_mapping.md` (the actual file is `cpi_2015_c11_projection_mapping.md`). Applied rename: `cpi_2015_projection_mapping` → `cpi_2015_c11_projection_mapping` (string-level, not a row rename).
 
 ---
+
+## 10.1. Resolver table for archive readers
+
+Verbatim old → new mapping for the 15 row-ID renames + 1 documentation-filename typo fix landed 2026-05-14. Anyone reading archived material that references an old row ID can resolve it here.
+
+The executable form of this table is the `RENAMES` dict at the top of `src/lobby_analysis/row_id_renamer.py`; the find-and-replace tool that applies it is `tools/v2_update_names.py`. Sister branches absorb the rename by merging main and running the tool on their own tree.
+
+| Old name | New name | Candidate |
+|---|---|---|
+| `principal_or_lobbyist_reg_form_includes_member_or_sponsor_names` | `lobbyist_or_principal_reg_form_includes_member_or_sponsor_names` | 1 |
+| `lobbyist_report_distinguishes_in_house_vs_contract_filer` | `lobbyist_filing_distinguishes_in_house_vs_contract_filer` | 2 (LV-1 exception) |
+| `lobbyist_report_includes_campaign_contributions` | `lobbyist_spending_report_includes_campaign_contributions` | 2 |
+| `lobbyist_or_principal_report_includes_lobbyist_count_total_and_FTE` | `lobbyist_or_principal_spending_report_includes_lobbyist_count_total_and_FTE` | 2 |
+| `lobbyist_or_principal_report_includes_time_spent_on_lobbying` | `lobbyist_or_principal_spending_report_includes_time_spent_on_lobbying` | 2 |
+| `lobbyist_or_principal_report_includes_trade_association_dues_or_sponsorship` | `lobbyist_or_principal_spending_report_includes_trade_association_dues_or_sponsorship` | 2 |
+| `principal_report_lists_lobbyists_employed` | `principal_spending_report_lists_lobbyists_employed` | 2 |
+| `compensation_threshold_for_lobbyist_registration` | `lobbyist_registration_threshold_compensation_dollars` | 3 |
+| `expenditure_threshold_for_lobbyist_registration` | `lobbyist_registration_threshold_expenditure_dollars` | 3 |
+| `time_threshold_for_lobbyist_registration` | `lobbyist_registration_threshold_time_percent` | 3 |
+| `expenditure_itemization_de_minimis_threshold_dollars` | `lobbyist_filing_itemization_de_minimis_threshold_dollars` | 4 |
+| `registration_deadline_days_after_first_lobbying` | `lobbyist_registration_deadline_days_after_first_lobbying` | 5 |
+| `ministerial_diaries_available_online` | `ministerial_diary_available_online` | 6 |
+| `lobbying_definition_included_activity_types` | `def_lobbying_activity_types` | 7 |
+| `lobbyist_definition_included_actor_types` | `def_lobbyist_actor_types` | 7 |
+| `cpi_2015_projection_mapping` (doc filename ref) | `cpi_2015_c11_projection_mapping` | 8 |
 
 ## 11. Prefix-choice guidance (for new rows)
 
@@ -322,9 +334,9 @@ When introducing a new row, work through this decision tree:
    - **Directory of lobbyists** (availability, cadence) → `lobbyist_directory_*`.
    - **Oversight-agency behavior** (publishing aggregates, training) → `oversight_agency_*`.
    - **Threshold** for something:
-     - Lobbyist-status threshold (when must one register at all)? → currently the `<measure>_threshold_for_lobbyist_registration` shape, but [Issue 3](#issue-3--registration-threshold-family-lives-outside-the-registration-family-3-rows) flags this as a rename candidate. Use the proposed `lobbyist_registration_threshold_*` shape for new rows.
+     - Lobbyist-status threshold (when must one register at all)? → `lobbyist_registration_threshold_<measure>_<unit>` (per [Issue 3, DONE 2026-05-14](#issue-3--registration-threshold-family-lives-outside-the-registration-family-3-rows)).
      - Filing-de-minimis (when must a registered lobbyist file)? → `lobbyist_filing_de_minimis_threshold_*`.
-     - Itemization-de-minimis (when must a line item be itemized)? → currently `expenditure_itemization_de_minimis_threshold_*`, but [Issue 4](#issue-4--expenditure_itemization_de_minimis_threshold_dollars-family-fit-1-row) flags as candidate. Use the proposed `lobbyist_filing_itemization_de_minimis_threshold_*` shape for new rows.
+     - Itemization-de-minimis (when must a line item be itemized)? → `lobbyist_filing_itemization_de_minimis_threshold_*` (per [Issue 4, DONE 2026-05-14](#issue-4--lobbyist_filing_itemization_de_minimis_threshold_dollars-family-fit-1-row)).
 
 2. **Whose observable is it?**
    - Lobbyist's filings / lobbyist as entity → `lobbyist_*`.
@@ -350,7 +362,7 @@ When introducing a new row, work through this decision tree:
 
 ## 12. Per-row provenance
 
-The per-row provenance table is machine-generated from the v2 TSV's `first_introduced_by` and `notes` columns plus the D1–D30 freeze decisions, by [`docs/active/compendium-naming-docs/results/20260514_provenance_table.py`](../docs/active/compendium-naming-docs/results/20260514_provenance_table.py). Output: [`docs/active/compendium-naming-docs/results/20260514_provenance_table.md`](../docs/active/compendium-naming-docs/results/20260514_provenance_table.md) — one row per `compendium_row_id` with:
+The per-row provenance table is machine-generated from the v2 TSV's `first_introduced_by` and `notes` columns plus the D1–D30 freeze decisions, by [`docs/historical/compendium-naming-docs/results/20260514_provenance_table.py`](../docs/historical/compendium-naming-docs/results/20260514_provenance_table.py). Output: [`docs/historical/compendium-naming-docs/results/20260514_provenance_table.md`](../docs/historical/compendium-naming-docs/results/20260514_provenance_table.md) — one row per `compendium_row_id` with:
 
 - 2-token prefix family
 - `first_introduced_by` projection-mapping doc (column from the TSV)
