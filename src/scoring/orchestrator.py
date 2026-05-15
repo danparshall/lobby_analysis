@@ -827,7 +827,7 @@ def cmd_build_smr(args: argparse.Namespace) -> int:
     Plan B.5 STOP-AND-NOTIFY: refuses to write if any side has 2+ frequencies
     set; pass --allow-multi-frequency to override after surfacing to the user.
     """
-    from lobby_analysis.compendium_loader import load_compendium
+    from lobby_analysis.compendium_loader import load_v1_compendium_deprecated as load_compendium
     from scoring.smr_projection import project_pri_scores_to_smr
 
     repo_root = Path(args.repo_root).resolve()
@@ -840,7 +840,7 @@ def cmd_build_smr(args: argparse.Namespace) -> int:
         print(json.dumps({"error": f"PRI score CSV not found: {pri_csv}"}, indent=2))
         return 2
 
-    compendium_csv = repo_root / "compendium" / "disclosure_items.csv"
+    compendium_csv = repo_root / "compendium" / "_deprecated" / "v1" / "disclosure_items.csv"
 
     with pri_csv.open() as f:
         rows = list(csv.DictReader(f))

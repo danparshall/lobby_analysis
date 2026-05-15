@@ -15,7 +15,7 @@ from pathlib import Path
 
 import pytest
 
-from scoring.models import StatuteArtifact, StatuteBundle
+from scoring.models import StatuteArtifact
 from scoring.statute_loader import load_statute_bundle
 from scoring.statute_retrieval import retrieve_statute_bundle
 
