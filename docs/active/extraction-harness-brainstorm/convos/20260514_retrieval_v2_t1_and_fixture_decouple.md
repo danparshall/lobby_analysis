@@ -60,3 +60,9 @@ After fix: parser unit suite back to 8/8 green; full retrieval_v2 unit suite 48/
 | Commit | What |
 |---|---|
 | `5f262e9` | retrieval_v2: decouple parser test fixture from integration write path (rename + gitignore + 2 test edits) |
+
+## Captured Tasks
+
+- [#11: retrieval_v2: document Opus 4.7 thinking-block passthrough in parser.py](https://github.com/danparshall/lobby_analysis/issues/11) — captured 2026-05-14
+- [#12: retrieval_v2: live-test record_unresolvable_reference path with a deliberately-messy statute fixture](https://github.com/danparshall/lobby_analysis/issues/12) — captured 2026-05-14
+- [#13: retrieval_v2: optional shape-tolerant parser test against sample_response_real.json](https://github.com/danparshall/lobby_analysis/issues/13) — captured 2026-05-14
