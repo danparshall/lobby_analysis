@@ -10,6 +10,48 @@
 
 ## Session log (newest first)
 
+### 2026-05-15 — B4 implementation GREEN + WY/FL canaries (Chunks 1–3 of handoff)
+
+- **Picked up from:** `26894aa` (handoff doc, 2 doc-only commits past `dcdb04d` RED checkpoint).
+- **Handoff:** [`plans/20260515_b4_handoff_to_fresh_agent.md`](plans/20260515_b4_handoff_to_fresh_agent.md)
+- **Results:** [`results/20260515_b4_pilot_canaries.md`](results/20260515_b4_pilot_canaries.md)
+- **Commits:** Chunk 1 GREEN (B4 orchestrator + 44 tests) → Chunk 3 canary outcomes + docs.
+- **Status at pause:** Chunks 1–3 complete; **session paused before Chunk 4** by user request (handoff to a new session). Chunk 4 (NY/TX/OH single-pair) + Chunk 5 (10-pair) + Chunk 6 (final docs) remain.
+
+#### Topics Explored
+
+- B4 plan's adaptive children-probe semantics — pass-3 fires iff `_build_justia_link_tsv(chapter_html, chapter_url)` returns non-empty. WY-shape (chapter IS the leaf) is preserved by the empty-TSV → pass-2 ProposedURL → parsed_urls path; FL-shape (chapter-TOC) triggers pass-3 with the chapter rationale + children TSV.
+- Role-preservation when pass-3 is skipped: orchestrator carries a `chapter_proposals: list[tuple[ChosenChapter, ProposedURL]]` sidetable through pass-2 so that the original pass-2 ProposedURL (with role + rationale) gets propagated to `parsed_urls` when the chapter turns out to be the leaf. ChosenChapter's `{url, rationale}` shape stays identical to ChosenTitle (per plan).
+- Production prompt-reuse pattern for pass-3 — canary script reads the pass-2 prompt file once and passes it as both `pass2_template` and `pass3_template`. PASS_2 / PASS_3 markers are minimal-template-only; production prompts carry no marker.
+- B4 canary script additions: `CANARY_MODE=B4` (single-pair) + `CANARY_MODE=B4_10PAIR` modes, plus NY / TX / OH entries added to `SINGLE_PAIR_TARGETS`. Cost cap unchanged at $1.00 per run; conservative pricing model unchanged.
+
+#### Provisional Findings
+
+- **B4 orchestrator works first-compile.** All 5 RED tests went GREEN with a single Edit; full suite 44/44 across `test_api_retrieval_agent{,_b3,_b4}.py` + `test_justia_client.py`. B3PW's 9 tests preserved unchanged (no refactor of `discover_urls_for_pair_two_pass`).
+- **WY 2010 = 1/1 GT-hit, $0.024, 31.7s.** Pass-3 correctly skipped; chapter7.html children-TSV is empty (only nav-back-to-year-index link, outside namespace); orchestrator emits the pass-2 ProposedURL as the final answer with role + rationale intact. Regression-prevents B3PW's 1/1 hit.
+- **FL 2010 = 6/6 GT-hit, $0.087, 67.1s.** Pass-3 fired twice (chapter11.html + chapter112.html both have children). All 6 GT sections hit on Ch.11; precision 6/8 (extra: 11_044 support_chapter, PARTIII.html on Ch.112). The chapter-TOC ceiling that B3PW's canary documented (0/6 on FL) is closed by the adaptive third pass exactly as the B4 plan predicted.
+- **Combined: 7/7 = 100% recall**, $0.111 total spend, ~99s combined wall time. Cost projection for 350-pair fan-out updates from $21 to ~$19.5 at the observed mean cost-per-pair of $0.056.
+- **Pass-3 returned a partial-chapter TOC on Ch.112** (`PARTIII.html`, not a section leaf). This is *not* in the curated FL 2010 GT, so it doesn't penalize the canary, but signals that some chapters have a 4th-level structure (chapter → Part → section). For FL 2010 we don't need to descend further; for other states' GT this could matter. Flagged for OH 2010 canary in Chunk 4 (which has 30 GT URLs at section depth).
+- **No anti-bot incidents** across 8 fetches × 2 canaries. Playwright cleared Justia's Cloudflare-style heuristics cleanly.
+
+#### Decisions Made
+
+- **Chunk 1 commit standalone** (orchestrator + tests GREEN before any canary spend). 405-line addition to `src/scoring/api_retrieval_agent.py`; B3PW code untouched.
+- **Canary script is the one place modes get added** — not split across files. B3PW modes preserved verbatim; B4 modes added as parallel functions per the plan's "readability > DRY" guidance.
+- **Results doc continues `20260514_b3pw_pilot_canaries.md`'s structure** — TL;DR + per-canary writeup + open observations + appendix. Chunk 4's NY/TX/OH outcomes are to be appended to the same file, per the handoff's explicit instruction.
+
+#### Open Questions
+
+- **Does Ch.112's PARTIII-style sub-TOC generalize?** Likely yes for any state whose chapter is split into Parts before reaching sections. Would manifest in OH 2010 if any of its 30 GT section URLs live under a Part-level intermediate; surfaces in Chunk 4.
+- **Should the orchestrator recurse?** The plan explicitly defers this (Phase 7 / out-of-scope). Current behavior: pass-3 is the final pass; partial-TOC URLs in pass-3 output get added to `parsed_urls` and downstream extraction handles them. Reconsider only if multiple states' GT lives below pass-3 depth.
+- **Pass-3 precision could be tightened**, but plan's gate is recall — 6/6 on Ch.11 is the target outcome. Defer prompt-tuning unless precision becomes a load-bearing concern downstream.
+
+#### Next Steps
+
+- **Chunk 4** (next session): run B4 against NY 2010, TX 2009, OH 2010 — already wired into `SINGLE_PAIR_TARGETS`. Append outcomes to `results/20260515_b4_pilot_canaries.md`. Per handoff: NY/TX target 1/1, OH target ≥25/30.
+- **Chunk 5** (gated): 10-pair canary only if Chunks 3+4 collectively show ≥80% aggregate GT-hit + 0 anti-bot incidents across the 5 pilot states. Currently 1 of 5 pilots done (WY pass; FL is sanity-only); NY/TX/WI need Chunk 4 completion before the gate evaluates.
+- **Chunk 6**: 1 more wrap-up commit + push at session end.
+
 ### 2026-05-15 — B4 plan + RED tests; implementation + canaries handed off to fresh agent
 
 - **Plan:** [`plans/20260515_b4_three_pass_discovery_plan.md`](plans/20260515_b4_three_pass_discovery_plan.md)
