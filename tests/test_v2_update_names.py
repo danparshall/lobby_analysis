@@ -378,15 +378,18 @@ def test_real_tsv_all_15_new_ids_present(tmp_path: Path):
 
 def test_real_tsv_non_id_columns_unchanged_for_renamed_rows(tmp_path: Path):
     """The rename touches column 1 only. Columns 2–8 for renamed rows
-    must be byte-identical between original and updated TSV."""
+    must be byte-identical to wherever the row appears in the source TSV.
+
+    This test is idempotency-aware: it works whether the live TSV is in
+    pre-apply state (has old IDs) or post-apply state (has new IDs),
+    mirroring the renamer's own idempotency property."""
     target = tmp_path / "compendium" / V2_TSV.name
     target.parent.mkdir(parents=True)
     shutil.copy(V2_TSV, target)
 
-    # Read original
     with V2_TSV.open() as f:
-        orig_rows = list(csv.reader(f, delimiter="\t"))
-    orig_by_id = {row[0]: row[1:] for row in orig_rows[1:]}
+        src_rows = list(csv.reader(f, delimiter="\t"))
+    src_by_id = {row[0]: row[1:] for row in src_rows[1:]}
 
     walk_and_apply(tmp_path, RENAMES, dry_run=False)
 
@@ -394,11 +397,14 @@ def test_real_tsv_non_id_columns_unchanged_for_renamed_rows(tmp_path: Path):
         new_rows = list(csv.reader(f, delimiter="\t"))
     new_by_id = {row[0]: row[1:] for row in new_rows[1:]}
 
-    # For each rename, the new row's non-ID columns must equal the old row's non-ID columns
+    # For each renamed row, look up by either old or new ID in the source
+    # (depending on whether the live TSV is pre- or post-apply). Verify the
+    # target has the new ID with byte-identical non-ID columns.
     row_renames = {k: v for k, v in RENAMES.items() if not k.endswith("_projection_mapping")}
     for old, new in row_renames.items():
-        assert old in orig_by_id, f"old row {old!r} not in original TSV"
-        assert new in new_by_id, f"new row {new!r} not in updated TSV"
-        assert orig_by_id[old] == new_by_id[new], (
-            f"non-ID columns changed for {old} → {new}"
+        src_cols = src_by_id.get(old) or src_by_id.get(new)
+        assert src_cols is not None, f"neither {old!r} nor {new!r} in source TSV"
+        assert new in new_by_id, f"new row {new!r} not in target TSV after apply"
+        assert new_by_id[new] == src_cols, (
+            f"non-ID columns drifted for {new}"
         )

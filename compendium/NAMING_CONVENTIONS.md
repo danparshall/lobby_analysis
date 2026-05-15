@@ -45,30 +45,28 @@ Median is 6 tokens. The longest IDs are descriptive predicates inside dense fami
 
 ## 2. Top-level prefix families (1-token)
 
-20 distinct 1-token prefixes. The first six account for 159 of 181 rows.
+16 distinct 1-token prefixes. The first six account for 164 of 181 rows.
 
 | Prefix | Count | Role |
 |---|---:|---|
-| `lobbyist_*` | 70 | Lobbyist-side observables (the natural person or firm registered to lobby): registration forms, spending reports, directory listings, filing requirements |
-| `lobbying_*` | 43 | Process / portal observables (the *activity* of lobbying, the *data system* exposing it): search filters, contact logs, data quality, disclosure-documents access |
-| `principal_*` | 23 | Principal-side observables (the entity employing or paying the lobbyist): spending reports, listings |
+| `lobbyist_*` | 75 | Lobbyist-side observables (the natural person or firm registered to lobby): registration forms, spending reports, directory listings, filing requirements |
+| `lobbying_*` | 42 | Process / portal observables (the *activity* of lobbying, the *data system* exposing it): search filters, contact logs, data quality, disclosure-documents access |
+| `principal_*` | 22 | Principal-side observables (the entity employing or paying the lobbyist): spending reports, listings |
 | `actor_*` | 11 | Institutional-actor registration requirements (PRI A1–A11): one row per actor type (`actor_executive_agency_*`, `actor_volunteer_lobbyist_*`, etc.) |
-| `def_*` | 8 | Definitional rows (legal definitions): `def_target_*` (target of lobbying), `def_actor_class_*` (individual-actor classes like elected officials) |
+| `def_*` | 10 | Definitional rows (legal definitions): `def_target_*`, `def_actor_class_*`, `def_lobbying_*`, `def_lobbyist_*` |
 | `oversight_*` | 4 | Oversight-agency publishing behavior (HG practical-axis: aggregate spending publications, e-file training) |
 | `public_*` | 3 | Public-entity definition criteria |
 | `exemption_*` | 2 | Exemption-from-disclosure provisions |
-| `expenditure_*` | 2 | Expenditure observables (one rename candidate — see issues) |
 | `govt_*` | 2 | Government-agency disclosure-subject status |
 | `law_*` | 2 | Statutory-content properties (definitions and materiality tests) |
 | `ministerial_*` | 2 | Ministerial-diary practical observables (FOCAL) |
 | `online_*` | 2 | Online-filing portal availability (HG practical-axis) |
-| `compensation_*` | 1 | Singleton — registration-threshold row (see [Naming issues](#naming-issues--rename-candidates)) |
 | `consultant_*` | 1 | Singleton — consultant-lobbyist sub-type income disclosure (FOCAL) |
-| `registration_*` | 1 | Singleton — registration-deadline row (rename candidate) |
 | `sample_*` | 1 | Singleton — HG: sample filing forms available online |
 | `separate_*` | 1 | Singleton — OS-1 path-b unvalidated row |
 | `state_*` | 1 | Singleton — HG: state has dedicated lobbying website |
-| `time_*` | 1 | Singleton — registration-threshold row (rename candidate) |
+
+(`compensation_*`, `expenditure_*`, `registration_*`, `time_*` are empty after the §10 renames — their rows joined `lobbyist_registration_*` and `lobbyist_filing_*`. `lobbyist_definition_*` and `lobbying_definition_*` collapsed into `def_*`.)
 
 The keying choice between `lobbyist_*` and `lobbying_*` tracks **whose observable it is**: a `lobbyist_*` row is a property of the lobbyist's filings or the lobbyist as an entity; a `lobbying_*` row is a property of the lobbying activity or the data system that exposes it. This split was not a single explicit decision — it emerged from the nine per-rubric extraction passes — but it holds consistently across the 181 rows.
 
@@ -80,25 +78,26 @@ The empirically tightest families. These are the "real" structural anchors for n
 
 | Family prefix | Count | Meaning |
 |---|---:|---|
-| `lobbyist_spending_report_*` | 34 | Content / structure / cadence / scope of the lobbyist-side spending report (PRI E2 + cross-rubric companions). The α form-type split target — see [§5 below](#5-the-α-form-type-split-d3) |
-| `principal_spending_report_*` | 21 | Content / structure / cadence of the principal-side spending report (PRI E1 + CPI-distinctive content) |
+| `lobbyist_spending_report_*` | 35 | Content / structure / cadence / scope of the lobbyist-side spending report (PRI E2 + cross-rubric companions). The α form-type split target — see [§5 below](#5-the-α-form-type-split-d3) |
+| `principal_spending_report_*` | 22 | Content / structure / cadence of the principal-side spending report (PRI E1 + CPI-distinctive content) |
 | `lobbying_search_filter_*` | 15 | Per-criterion search-filter capabilities on the portal (PRI Q7a-o atomized, +1 multicriteria capability) |
 | `lobbyist_reg_form_*` | 13 | Content fields on the lobbyist's registration form (HG Q22 + FOCAL `descriptors.*`) |
 | `lobbying_contact_log_*` | 9 | Per-field content of the contact log (FOCAL `contact_log` atomized) |
 | `lobbying_data_*` | 8 | Data-system / portal-data quality observables (FOCAL openness + PRI Q3/Q11) |
+| `lobbyist_registration_*` | 7 | Registration administration + lobbyist-status threshold trio + registration deadline (CPI/HG/PRI; expanded by Issue 3 + Issue 5 renames) |
 | `def_target_*` | 6 | Target classes of lobbying (legislative/executive/independent/governor's office/legislative-staff/executive-staff) |
 | `lobbying_disclosure_*` | 6 | Disclosure-documents access (online, free, audited, unique-IDs, linked, response-time) |
+| `lobbyist_or_principal_*` | 6 | Joint-actor rows: same observable applies to either side (see [§6 below](#6-joint-actor-rows-d7); expanded by Issue 1 + Issue 2 renames) |
 | `lobbyist_directory_*` | 5 | Directory of registered lobbyists, availability format + update cadence (HG Q31/Q32) |
-| `lobbyist_or_principal_*` | 5 | Joint-actor rows: same observable applies to either side (see [§6 below](#6-joint-actor-rows-d7)) |
+| `lobbyist_filing_*` | 4 | Filing-de-minimis thresholds + itemization-de-minimis threshold + LV-1 in-house/contract distinction (D4 — see [§7 below](#7-the-three-threshold-framework-d4); expanded by Issue 2 LV-1 + Issue 4 renames) |
 | `lobbyist_itemized_expenditure_*` | 4 | Per-item content of itemized expenditures (HG) |
 | `oversight_agency_*` | 4 | Oversight agency publishing + training behavior (HG practical-axis) |
-| `lobbyist_registration_*` | 3 | Registration administration: amendment deadline, renewal cadence, required (CPI/HG two-axis) |
 | `public_entity_def_*` | 3 | Criteria the public-entity definition relies on (charter / ownership / revenue structure) |
 | `def_actor_class_*` | 2 | Individual-actor classes (elected officials / public employees) |
 | `govt_agencies_subject_*` | 2 | Whether government agencies are themselves subject to lobbyist / principal disclosure |
-| `lobbyist_filing_*` | 2 | Filing-de-minimis thresholds (D4 — see [§7 below](#7-the-three-threshold-framework-d4)) |
-| `lobbyist_report_*` | 0 | (Empty after Issue 2 renames — the 2 leftover D3 rows became `lobbyist_spending_report_*` and `lobbyist_filing_*`) |
 | `online_lobbyist_*` | 2 | Online-filing portal availability (HG practical-axis) |
+
+Two new `def_*` 3-token singletons from Issue 7: `def_lobbying_activity_types`, `def_lobbyist_actor_types`. The `lobbyist_report_*` family is now empty (both leftover D3 rows from Issue 2 moved to `lobbyist_spending_report_*` or `lobbyist_filing_*`).
 
 Plus 34 singleton families (one row each) — see the [prefix survey](../docs/historical/compendium-naming-docs/results/20260514_prefix_survey.md) for the full listing.
 

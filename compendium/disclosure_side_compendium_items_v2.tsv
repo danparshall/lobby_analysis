@@ -10,7 +10,7 @@ actor_paid_lobbyist_registration_required	binary	legal	pri_2010	1	pri_2010_proje
 actor_principal_registration_required	binary	legal	pri_2010	1	pri_2010_projection_mapping.md	firm	single-rubric (pri_2010)
 actor_public_entity_other_registration_required	binary	legal	pri_2010	1	pri_2010_projection_mapping.md	firm	single-rubric (pri_2010)
 actor_volunteer_lobbyist_registration_required	binary	legal	pri_2010	1	pri_2010_projection_mapping.md	firm	single-rubric (pri_2010)
-compensation_threshold_for_lobbyist_registration	typed Optional[Decimal]	legal	cpi_2015;focal_2024;hg_2007;newmark_2005;newmark_2017;opheim_1991	6	cpi_2015_c11_projection_mapping.md	firm	
+lobbyist_registration_threshold_compensation_dollars	typed Optional[Decimal]	legal	cpi_2015;focal_2024;hg_2007;newmark_2005;newmark_2017;opheim_1991	6	cpi_2015_c11_projection_mapping.md	firm	
 consultant_lobbyist_report_includes_income_by_source_type	typed Set[enum] + amounts	legal	focal_2024	1	focal_2024_projection_mapping.md	firm	single-rubric (focal_2024)
 def_actor_class_elected_officials	binary	legal	newmark_2005;newmark_2017;opheim_1991	3	newmark_2017_projection_mapping.md	firm	
 def_actor_class_public_employees	binary	legal	newmark_2005;newmark_2017;opheim_1991	3	newmark_2017_projection_mapping.md	firm	
@@ -22,8 +22,8 @@ def_target_legislative_branch	binary	legal	cpi_2015;focal_2024;newmark_2005;newm
 def_target_legislative_staff	binary	legal	cpi_2015;focal_2024	2	focal_2024_projection_mapping.md	firm	
 exemption_for_govt_official_capacity_exists	binary	legal	pri_2010	1	pri_2010_projection_mapping.md	firm	single-rubric (pri_2010)
 exemption_partial_for_govt_agencies	binary	legal	pri_2010	1	pri_2010_projection_mapping.md	firm	single-rubric (pri_2010)
-expenditure_itemization_de_minimis_threshold_dollars	typed Optional[Decimal]	legal	hg_2007;sunlight_2015	2	sunlight_2015_projection_mapping.md	firm	
-expenditure_threshold_for_lobbyist_registration	typed Optional[Decimal]	legal	focal_2024;newmark_2005;newmark_2017;opheim_1991	4	newmark_2017_projection_mapping.md	firm	
+lobbyist_filing_itemization_de_minimis_threshold_dollars	typed Optional[Decimal]	legal	hg_2007;sunlight_2015	2	sunlight_2015_projection_mapping.md	firm	
+lobbyist_registration_threshold_expenditure_dollars	typed Optional[Decimal]	legal	focal_2024;newmark_2005;newmark_2017;opheim_1991	4	newmark_2017_projection_mapping.md	firm	
 govt_agencies_subject_to_lobbyist_disclosure_requirements	binary	legal	pri_2010	1	pri_2010_projection_mapping.md	firm	single-rubric (pri_2010)
 govt_agencies_subject_to_principal_disclosure_requirements	binary	legal	pri_2010	1	pri_2010_projection_mapping.md	firm	single-rubric (pri_2010)
 law_defines_public_entity	binary	legal	pri_2010	1	pri_2010_projection_mapping.md	firm	single-rubric (pri_2010)
@@ -45,7 +45,7 @@ lobbying_data_minimally_available	binary	practical	pri_2010	1	pri_2010_projectio
 lobbying_data_no_user_registration_required	binary	practical	focal_2024	1	focal_2024_projection_mapping.md	firm	single-rubric (focal_2024)
 lobbying_data_open_data_quality	typed int 0-100 step 25 (practical)	practical	cpi_2015	1	cpi_2015_c11_projection_mapping.md	firm	single-rubric (cpi_2015)
 lobbying_data_open_license	binary	practical	focal_2024	1	focal_2024_projection_mapping.md	firm	single-rubric (focal_2024)
-lobbying_definition_included_activity_types	typed Set[enum] (8 types)	legal	focal_2024	1	focal_2024_projection_mapping.md	firm	single-rubric (focal_2024)
+def_lobbying_activity_types	typed Set[enum] (8 types)	legal	focal_2024	1	focal_2024_projection_mapping.md	firm	single-rubric (focal_2024)
 lobbying_disclosure_audit_required_in_law	enum (legal) + typed int 0-100 step 25 (practical)	legal+practical	cpi_2015	1	cpi_2015_c11_projection_mapping.md	firm	single-rubric (cpi_2015)
 lobbying_disclosure_data_includes_unique_identifiers	typed Set[enum]	practical	focal_2024	1	focal_2024_projection_mapping.md	firm	single-rubric (focal_2024)
 lobbying_disclosure_data_linked_to_other_datasets	typed Set[enum]	practical	focal_2024	1	focal_2024_projection_mapping.md	firm	single-rubric (focal_2024)
@@ -71,7 +71,7 @@ lobbying_search_filter_by_total_expenditures	binary	practical	pri_2010	1	pri_201
 lobbying_search_simultaneous_multicriteria_capability	typed int ∈ 0..15	practical	focal_2024;pri_2010	2	pri_2010_projection_mapping.md	firm	
 lobbying_violation_penalties_imposed_in_practice	binary (legal) + typed int 0-100 step 25 (practical)	legal+practical	cpi_2015	1	cpi_2015_c11_projection_mapping.md	firm	single-rubric (cpi_2015)
 lobbying_website_easily_findable	binary	practical	pri_2010	1	pri_2010_projection_mapping.md	firm	single-rubric (pri_2010)
-lobbyist_definition_included_actor_types	typed Set[enum] (9 types)	legal	focal_2024	1	focal_2024_projection_mapping.md	firm	single-rubric (focal_2024)
+def_lobbyist_actor_types	typed Set[enum] (9 types)	legal	focal_2024	1	focal_2024_projection_mapping.md	firm	single-rubric (focal_2024)
 lobbyist_directory_available_as_downloadable_database	binary	practical	hg_2007	1	hiredguns_2007_projection_mapping.md	firm	single-rubric (hg_2007)
 lobbyist_directory_available_as_pdf_or_image_on_web	binary	practical	hg_2007	1	hiredguns_2007_projection_mapping.md	firm	single-rubric (hg_2007)
 lobbyist_directory_available_as_photocopies_from_office_only	binary	practical	hg_2007	1	hiredguns_2007_projection_mapping.md	firm	single-rubric (hg_2007)
@@ -84,9 +84,9 @@ lobbyist_itemized_expenditure_identifies_recipient	binary	legal	hg_2007	1	hiredg
 lobbyist_itemized_expenditure_includes_date	binary	legal	hg_2007	1	hiredguns_2007_projection_mapping.md	firm	single-rubric (hg_2007)
 lobbyist_itemized_expenditure_includes_description	binary	legal	hg_2007	1	hiredguns_2007_projection_mapping.md	firm	single-rubric (hg_2007)
 lobbyist_or_principal_reg_form_includes_lobbyist_board_memberships	binary	legal	focal_2024	1	focal_2024_projection_mapping.md	firm	single-rubric (focal_2024)
-lobbyist_or_principal_report_includes_lobbyist_count_total_and_FTE	typed Optional[count_with_FTE]	legal	focal_2024	1	focal_2024_projection_mapping.md	firm	single-rubric (focal_2024)
-lobbyist_or_principal_report_includes_time_spent_on_lobbying	typed Optional[TimeSpent]	legal	focal_2024	1	focal_2024_projection_mapping.md	firm	single-rubric (focal_2024)
-lobbyist_or_principal_report_includes_trade_association_dues_or_sponsorship	binary	legal	focal_2024	1	focal_2024_projection_mapping.md	firm	single-rubric (focal_2024)
+lobbyist_or_principal_spending_report_includes_lobbyist_count_total_and_FTE	typed Optional[count_with_FTE]	legal	focal_2024	1	focal_2024_projection_mapping.md	firm	single-rubric (focal_2024)
+lobbyist_or_principal_spending_report_includes_time_spent_on_lobbying	typed Optional[TimeSpent]	legal	focal_2024	1	focal_2024_projection_mapping.md	firm	single-rubric (focal_2024)
+lobbyist_or_principal_spending_report_includes_trade_association_dues_or_sponsorship	binary	legal	focal_2024	1	focal_2024_projection_mapping.md	firm	single-rubric (focal_2024)
 lobbyist_or_principal_spending_report_includes_contributions_received_for_lobbying	binary	legal	newmark_2017	1	newmark_2017_projection_mapping.md	firm	single-rubric (newmark_2017)
 lobbyist_reg_form_includes_bill_or_action_identifier	binary	legal	focal_2024;hg_2007;sunlight_2015	3	sunlight_2015_projection_mapping.md	firm	
 lobbyist_reg_form_includes_business_associations_with_officials	binary	legal	focal_2024;hg_2007	2	hiredguns_2007_projection_mapping.md	firm	
@@ -104,8 +104,8 @@ lobbyist_reg_form_lists_each_employer_or_principal	binary	legal	focal_2024;hg_20
 lobbyist_registration_amendment_deadline_days	typed Optional[int]	legal	hg_2007	1	hiredguns_2007_projection_mapping.md	firm	single-rubric (hg_2007)
 lobbyist_registration_renewal_cadence	typed Optional[int_months] (or enum)	legal	cpi_2015;hg_2007	2	cpi_2015_c11_projection_mapping.md	firm	
 lobbyist_registration_required	binary (legal) + typed int 0-100 step 25 (practical)	legal+practical	cpi_2015;hg_2007	2	cpi_2015_c11_projection_mapping.md	firm	
-lobbyist_report_distinguishes_in_house_vs_contract_filer	binary	legal	lobbyview	1	lobbyview_schema_coverage.md	firm	single-rubric (lobbyview); LV-1 promoted at freeze per D12
-lobbyist_report_includes_campaign_contributions	binary	legal	focal_2024;hg_2007	2	hiredguns_2007_projection_mapping.md	firm	
+lobbyist_filing_distinguishes_in_house_vs_contract_filer	binary	legal	lobbyview	1	lobbyview_schema_coverage.md	firm	single-rubric (lobbyview); LV-1 promoted at freeze per D12
+lobbyist_spending_report_includes_campaign_contributions	binary	legal	focal_2024;hg_2007	2	hiredguns_2007_projection_mapping.md	firm	
 lobbyist_required_to_submit_photograph_with_registration	binary	legal	hg_2007	1	hiredguns_2007_projection_mapping.md	firm	single-rubric (hg_2007)
 lobbyist_spending_report_available_as_downloadable_database	binary	practical	hg_2007	1	hiredguns_2007_projection_mapping.md	firm	single-rubric (hg_2007)
 lobbyist_spending_report_available_as_pdf_or_image_on_web	binary	practical	hg_2007	1	hiredguns_2007_projection_mapping.md	firm	single-rubric (hg_2007)
@@ -141,7 +141,7 @@ lobbyist_spending_report_required	binary	legal	cpi_2015;hg_2007;pri_2010;sunligh
 lobbyist_spending_report_required_when_no_activity	binary	legal	hg_2007	1	hiredguns_2007_projection_mapping.md	firm	single-rubric (hg_2007)
 lobbyist_spending_report_scope_includes_household_members_of_officials	binary	legal	hg_2007	1	hiredguns_2007_projection_mapping.md	firm	single-rubric (hg_2007)
 lobbyist_spending_report_uses_itemized_format	binary	legal	pri_2010	1	pri_2010_projection_mapping.md	firm	single-rubric (pri_2010)
-ministerial_diaries_available_online	binary	practical	focal_2024	1	focal_2024_projection_mapping.md	firm	single-rubric (focal_2024)
+ministerial_diary_available_online	binary	practical	focal_2024	1	focal_2024_projection_mapping.md	firm	single-rubric (focal_2024)
 ministerial_diary_disclosure_cadence	typed enum	practical	focal_2024	1	focal_2024_projection_mapping.md	firm	single-rubric (focal_2024)
 online_lobbyist_registration_filing_available	binary	practical	hg_2007	1	hiredguns_2007_projection_mapping.md	firm	single-rubric (hg_2007)
 online_lobbyist_spending_report_filing_available	binary	practical	hg_2007	1	hiredguns_2007_projection_mapping.md	firm	single-rubric (hg_2007)
@@ -149,8 +149,8 @@ oversight_agency_provides_efile_training	binary	practical	hg_2007	1	hiredguns_20
 oversight_agency_publishes_aggregate_lobbying_spending_by_filing_deadline	binary	practical	hg_2007	1	hiredguns_2007_projection_mapping.md	firm	single-rubric (hg_2007)
 oversight_agency_publishes_aggregate_lobbying_spending_by_industry	binary	practical	hg_2007	1	hiredguns_2007_projection_mapping.md	firm	single-rubric (hg_2007)
 oversight_agency_publishes_aggregate_lobbying_spending_by_year	binary	practical	hg_2007	1	hiredguns_2007_projection_mapping.md	firm	single-rubric (hg_2007)
-principal_or_lobbyist_reg_form_includes_member_or_sponsor_names	binary	legal	focal_2024	1	focal_2024_projection_mapping.md	firm	single-rubric (focal_2024)
-principal_report_lists_lobbyists_employed	binary	legal	focal_2024	1	focal_2024_projection_mapping.md	firm	single-rubric (focal_2024)
+lobbyist_or_principal_reg_form_includes_member_or_sponsor_names	binary	legal	focal_2024	1	focal_2024_projection_mapping.md	firm	single-rubric (focal_2024)
+principal_spending_report_lists_lobbyists_employed	binary	legal	focal_2024	1	focal_2024_projection_mapping.md	firm	single-rubric (focal_2024)
 principal_spending_report_cadence_includes_annual	binary	legal	pri_2010	1	pri_2010_projection_mapping.md	firm	single-rubric (pri_2010)
 principal_spending_report_cadence_includes_monthly	binary	legal	newmark_2005;opheim_1991;pri_2010	3	pri_2010_projection_mapping.md	firm	
 principal_spending_report_cadence_includes_other	binary	legal	pri_2010	1	pri_2010_projection_mapping.md	firm	single-rubric (pri_2010)
@@ -175,8 +175,8 @@ principal_spending_report_uses_itemized_format	binary	legal	pri_2010	1	pri_2010_
 public_entity_def_relies_on_charter	binary	legal	pri_2010	1	pri_2010_projection_mapping.md	firm	single-rubric (pri_2010)
 public_entity_def_relies_on_ownership	binary	legal	pri_2010	1	pri_2010_projection_mapping.md	firm	single-rubric (pri_2010)
 public_entity_def_relies_on_revenue_structure	binary	legal	pri_2010	1	pri_2010_projection_mapping.md	firm	single-rubric (pri_2010)
-registration_deadline_days_after_first_lobbying	typed int (legal) + typed int 0-100 step 25 (practical)	legal+practical	cpi_2015;hg_2007	2	cpi_2015_c11_projection_mapping.md	firm	
+lobbyist_registration_deadline_days_after_first_lobbying	typed int (legal) + typed int 0-100 step 25 (practical)	legal+practical	cpi_2015;hg_2007	2	cpi_2015_c11_projection_mapping.md	firm	
 sample_lobbying_forms_available_on_web	binary	practical	hg_2007	1	hiredguns_2007_projection_mapping.md	firm	single-rubric (hg_2007)
 separate_registrations_for_lobbyists_and_clients	binary	legal	(unvalidated; path-b)	0	_tabled/opensecrets_2022_tabled.md	firm	OS-1 path-b unvalidated; OpenSecrets Cat 1 reads but is tabled. Real distinguishing observable in some states.
 state_has_dedicated_lobbying_website	binary	practical	focal_2024;pri_2010	2	pri_2010_projection_mapping.md	firm	
-time_threshold_for_lobbyist_registration	typed Optional[TimeThreshold]	legal	focal_2024;newmark_2005;newmark_2017;opheim_1991	4	newmark_2017_projection_mapping.md	firm	
+lobbyist_registration_threshold_time_percent	typed Optional[TimeThreshold]	legal	focal_2024;newmark_2005;newmark_2017;opheim_1991	4	newmark_2017_projection_mapping.md	firm	
