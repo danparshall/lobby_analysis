@@ -68,7 +68,7 @@ def test_registry_doubles_each_legal_plus_practical_row():
         "lobbying_violation_penalties_imposed_in_practice",
         "lobbyist_registration_required",
         "lobbyist_spending_report_filing_cadence",
-        "registration_deadline_days_after_first_lobbying",
+        "lobbyist_registration_deadline_days_after_first_lobbying",
     }
     for row_id in combined_row_ids:
         assert (row_id, "legal") in registry, f"Missing ({row_id}, 'legal') in registry."
@@ -143,7 +143,7 @@ def test_anchor_row_maps_to_binary_cell_at_legal():
         ),
         # cell_type: 'typed int (legal) + typed int 0-100 step 25 (practical)'
         (
-            "registration_deadline_days_after_first_lobbying",
+            "lobbyist_registration_deadline_days_after_first_lobbying",
             "IntCell",
             "GradedIntCell",
         ),

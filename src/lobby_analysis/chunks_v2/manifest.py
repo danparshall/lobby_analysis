@@ -21,8 +21,8 @@ CHUNKS_V2: tuple[ChunkDef, ...] = (
         chunk_id="lobbying_definitions",
         topic="What counts as lobbying or a lobbyist — definitional rows",
         member_row_ids=(
-            "lobbying_definition_included_activity_types",
-            "lobbyist_definition_included_actor_types",
+            "def_lobbying_activity_types",
+            "def_lobbyist_actor_types",
             "law_defines_public_entity",
             "law_includes_materiality_test",
             "def_target_executive_agency",
@@ -68,10 +68,10 @@ CHUNKS_V2: tuple[ChunkDef, ...] = (
         chunk_id="registration_thresholds",
         topic="Quantitative gates for lobbyist registration and disclosure",
         member_row_ids=(
-            "compensation_threshold_for_lobbyist_registration",
-            "expenditure_threshold_for_lobbyist_registration",
-            "time_threshold_for_lobbyist_registration",
-            "expenditure_itemization_de_minimis_threshold_dollars",
+            "lobbyist_registration_threshold_compensation_dollars",
+            "lobbyist_registration_threshold_expenditure_dollars",
+            "lobbyist_registration_threshold_time_percent",
+            "lobbyist_filing_itemization_de_minimis_threshold_dollars",
             "lobbyist_filing_de_minimis_threshold_dollars",
             "lobbyist_filing_de_minimis_threshold_time_percent",
         ),
@@ -88,7 +88,7 @@ CHUNKS_V2: tuple[ChunkDef, ...] = (
             "lobbyist_registration_required",
             "lobbyist_registration_renewal_cadence",
             "lobbyist_registration_amendment_deadline_days",
-            "registration_deadline_days_after_first_lobbying",
+            "lobbyist_registration_deadline_days_after_first_lobbying",
             "separate_registrations_for_lobbyists_and_clients",
             "lobbyist_required_to_submit_photograph_with_registration",
             "exemption_for_govt_official_capacity_exists",
@@ -96,7 +96,7 @@ CHUNKS_V2: tuple[ChunkDef, ...] = (
         ),
         notes=(
             "Contains 2 of the 5 combined-axis rows (`lobbyist_registration_required`, "
-            "`registration_deadline_days_after_first_lobbying`). Mixed axis_summary "
+            "`lobbyist_registration_deadline_days_after_first_lobbying`). Mixed axis_summary "
             "expected."
         ),
     ),
@@ -190,8 +190,8 @@ CHUNKS_V2: tuple[ChunkDef, ...] = (
             "principal_spending_report_includes_total_expenditures",
             "principal_spending_report_required",
             "principal_spending_report_uses_itemized_format",
-            "principal_or_lobbyist_reg_form_includes_member_or_sponsor_names",
-            "principal_report_lists_lobbyists_employed",
+            "lobbyist_or_principal_reg_form_includes_member_or_sponsor_names",
+            "principal_spending_report_lists_lobbyists_employed",
         ),
         notes=(
             "21 `principal_spending_*` rows + 2 adjacent principal-side rows "
@@ -219,16 +219,16 @@ CHUNKS_V2: tuple[ChunkDef, ...] = (
         topic="Other lobbyist/principal filings — itemized expenditures, special reports",
         member_row_ids=(
             "lobbyist_or_principal_reg_form_includes_lobbyist_board_memberships",
-            "lobbyist_or_principal_report_includes_lobbyist_count_total_and_FTE",
-            "lobbyist_or_principal_report_includes_time_spent_on_lobbying",
-            "lobbyist_or_principal_report_includes_trade_association_dues_or_sponsorship",
+            "lobbyist_or_principal_spending_report_includes_lobbyist_count_total_and_FTE",
+            "lobbyist_or_principal_spending_report_includes_time_spent_on_lobbying",
+            "lobbyist_or_principal_spending_report_includes_trade_association_dues_or_sponsorship",
             "lobbyist_or_principal_spending_report_includes_contributions_received_for_lobbying",
             "lobbyist_itemized_expenditure_identifies_employer_or_principal",
             "lobbyist_itemized_expenditure_identifies_recipient",
             "lobbyist_itemized_expenditure_includes_date",
             "lobbyist_itemized_expenditure_includes_description",
-            "lobbyist_report_distinguishes_in_house_vs_contract_filer",
-            "lobbyist_report_includes_campaign_contributions",
+            "lobbyist_filing_distinguishes_in_house_vs_contract_filer",
+            "lobbyist_spending_report_includes_campaign_contributions",
             "consultant_lobbyist_report_includes_income_by_source_type",
         ),
         notes=(
@@ -335,7 +335,7 @@ CHUNKS_V2: tuple[ChunkDef, ...] = (
             "oversight_agency_publishes_aggregate_lobbying_spending_by_filing_deadline",
             "oversight_agency_publishes_aggregate_lobbying_spending_by_industry",
             "oversight_agency_publishes_aggregate_lobbying_spending_by_year",
-            "ministerial_diaries_available_online",
+            "ministerial_diary_available_online",
             "ministerial_diary_disclosure_cadence",
             "govt_agencies_subject_to_lobbyist_disclosure_requirements",
             "govt_agencies_subject_to_principal_disclosure_requirements",

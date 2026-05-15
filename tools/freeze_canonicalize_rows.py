@@ -22,7 +22,7 @@ Decisions encoded:
 - D8: rename lobbyist_disclosure_includes_* → lobbyist_reg_form_includes_* (2 rows).
 - D9: lobbying_data_downloadable_in_analytical_format cell_type → binary.
 - D10: lobbyist_registration_required cell_type stays two-axis.
-- D11: registration_deadline_days_after_first_lobbying cell_type stays two-axis.
+- D11: lobbyist_registration_deadline_days_after_first_lobbying cell_type stays two-axis.
 - D12: LV-1 IN as firm row (1-rubric: lobbyview).
 - D13: LV-2 OUT.
 - D14: LV-3 OUT.
@@ -131,7 +131,7 @@ SPLIT_NEW_ROWS = [
 # D12 + D16 — promotions / additions
 PROMOTIONS = {
     # D12: LV-1 from candidate → firm
-    "lobbyist_report_distinguishes_in_house_vs_contract_filer": {
+    "lobbyist_filing_distinguishes_in_house_vs_contract_filer": {
         "rubrics_reading": "lobbyview",
         "status": "firm",
         "notes": "single-rubric (lobbyview); LV-1 promoted at freeze per D12",

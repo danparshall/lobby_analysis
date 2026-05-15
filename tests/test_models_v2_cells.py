@@ -301,7 +301,7 @@ def test_time_threshold_cell_accepts_magnitude_and_unit():
     from lobby_analysis.models_v2.cells import TimeThresholdCell
 
     cell = TimeThresholdCell(
-        cell_id=("time_threshold_for_lobbyist_registration", "legal"),
+        cell_id=("lobbyist_registration_threshold_time_percent", "legal"),
         magnitude=Decimal("20"),
         unit="percent_of_work_time",
     )
@@ -314,7 +314,7 @@ def test_time_threshold_cell_accepts_both_fields_none():
     from lobby_analysis.models_v2.cells import TimeThresholdCell
 
     cell = TimeThresholdCell(
-        cell_id=("time_threshold_for_lobbyist_registration", "legal"),
+        cell_id=("lobbyist_registration_threshold_time_percent", "legal"),
         magnitude=None,
         unit=None,
     )
@@ -327,7 +327,7 @@ def test_time_threshold_cell_rejects_unknown_unit():
 
     with pytest.raises(ValidationError):
         TimeThresholdCell(
-            cell_id=("time_threshold_for_lobbyist_registration", "legal"),
+            cell_id=("lobbyist_registration_threshold_time_percent", "legal"),
             magnitude=Decimal("20"),
             unit="fortnights",  # type: ignore[arg-type]
         )
@@ -339,7 +339,7 @@ def test_time_spent_cell_accepts_magnitude_and_unit():
     from lobby_analysis.models_v2.cells import TimeSpentCell
 
     cell = TimeSpentCell(
-        cell_id=("lobbyist_or_principal_report_includes_time_spent_on_lobbying", "legal"),
+        cell_id=("lobbyist_or_principal_spending_report_includes_time_spent_on_lobbying", "legal"),
         magnitude=Decimal("10"),
         unit="hours_per_quarter",
     )
@@ -371,7 +371,7 @@ def test_count_with_fte_cell_accepts_count_and_fte():
 
     cell = CountWithFTECell(
         cell_id=(
-            "lobbyist_or_principal_report_includes_lobbyist_count_total_and_FTE",
+            "lobbyist_or_principal_spending_report_includes_lobbyist_count_total_and_FTE",
             "legal",
         ),
         count=5,

@@ -174,7 +174,7 @@ class TimeThresholdCell(CompendiumCell):
     (e.g. the federal LDA's 20% of work time rule).
 
     Cell type: `typed Optional[TimeThreshold]` (1 row:
-    `time_threshold_for_lobbyist_registration`).
+    `lobbyist_registration_threshold_time_percent`).
     Source: Newmark 2005/2017 projection mappings.
     """
 
@@ -188,7 +188,7 @@ class TimeSpentCell(CompendiumCell):
     threshold).
 
     Cell type: `typed Optional[TimeSpent]` (1 row:
-    `lobbyist_or_principal_report_includes_time_spent_on_lobbying`).
+    `lobbyist_or_principal_spending_report_includes_time_spent_on_lobbying`).
     Source: FOCAL 2024 projection mapping.
     """
 
@@ -214,7 +214,7 @@ class CountWithFTECell(CompendiumCell):
     """Disclosed total lobbyist count alongside FTE-equivalent figure.
 
     Cell type: `typed Optional[count_with_FTE]` (1 row:
-    `lobbyist_or_principal_report_includes_lobbyist_count_total_and_FTE`).
+    `lobbyist_or_principal_spending_report_includes_lobbyist_count_total_and_FTE`).
     Source: FOCAL 2024 projection mapping.
     """
 

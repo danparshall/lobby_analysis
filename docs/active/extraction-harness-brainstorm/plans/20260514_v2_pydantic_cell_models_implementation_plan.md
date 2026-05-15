@@ -118,10 +118,10 @@ NOTE: I will write *all* tests before I add any implementation behavior.
    - `EnumSetCell(value: frozenset[str])` — set of values from a registered enum domain.
    - `FreeTextCell(value: str)` — 2 rows (`lobbyist_spending_report_cadence_other_specification`, `principal_spending_report_cadence_other_specification`). Bound to `max_length=500` to prevent unbounded extraction.
    - `UpdateCadenceCell` — 1 row (`lobbyist_directory_update_cadence`). Per v2 TSV `notes` lookup at implementation time; likely an enum {"daily", "weekly", "monthly", "quarterly", "annually", "ad_hoc"}.
-   - `TimeThresholdCell` — 1 row (`time_threshold_for_lobbyist_registration`). Likely `value: int | None` + `unit: Literal["hours", "days", "percent_of_time"]`.
+   - `TimeThresholdCell` — 1 row (`lobbyist_registration_threshold_time_percent`). Likely `value: int | None` + `unit: Literal["hours", "days", "percent_of_time"]`.
    - `TimeSpentCell` — 1 row. Per `notes`.
    - `SectorClassificationCell` — 1 row (`lobbyist_reg_form_includes_lobbyist_sector`). Per `notes`; likely `value: frozenset[str]` over a NAICS-or-similar enum.
-   - `CountWithFTECell` — 1 row (`lobbyist_or_principal_report_includes_lobbyist_count_total_and_FTE`). Per `notes`; likely `count: int | None`, `fte: float | None`.
+   - `CountWithFTECell` — 1 row (`lobbyist_or_principal_spending_report_includes_lobbyist_count_total_and_FTE`). Per `notes`; likely `count: int | None`, `fte: float | None`.
    - `EnumSetWithAmountsCell` — 1 row (`consultant_lobbyist_report_includes_income_by_source_type`). Per `notes`; likely `value: frozenset[str]` + `amounts: dict[str, Decimal]`.
 2. Commit each specialized cell as its own micro-commit so the history reads as "one cell per commit."
 

@@ -20,7 +20,7 @@ The branch produced:
 
 1. **26 paper extractions** (7 originals + 14 predecessors + 5 author-hunt) treated on an even basis — no rubric privileged.
 2. **9 per-rubric projection-mapping docs** at `docs/historical/compendium-source-extracts/results/projections/`:
-   - `cpi_2015_projection_mapping.md`
+   - `cpi_2015_c11_projection_mapping.md`
    - `pri_2010_projection_mapping.md`
    - `sunlight_2015_projection_mapping.md`
    - `newmark_2017_projection_mapping.md`

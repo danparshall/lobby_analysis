@@ -20,7 +20,7 @@ Re-read end-to-end. Key takeaways for the chunking function design:
 1. **Chunk-frame preambles are substantive tutorials, not metadata.** The iter-1 `definitions` frame teaches the LLM a three-axis decomposition (TARGET / ACTOR / THRESHOLD) of "what makes someone count as a lobbyist," includes per-row axis assignments, and provides linguistic disambiguation cues ("contact with X" → TARGET; "X engages in" → ACTOR; "exceeds $X" → THRESHOLD).
 2. **The frame names individual rows by ID and explains each row's axis.** The chunking function's output must therefore expose stable row-level membership so the preamble author can reference rows by ID.
 3. **A chunk can have rows that span multiple axes** (the `definitions` chunk has TARGET, ACTOR, and THRESHOLD rows together) — chunks are **topic-coherent**, not axis-homogeneous.
-4. **v1.2 row IDs in the iter-1 frame:** `DEF_ADMIN_AGENCY_LOBBYING_TRIGGER`, `DEF_ELECTED_OFFICIAL_AS_LOBBYIST`, `DEF_PUBLIC_EMPLOYEE_AS_LOBBYIST`, `DEF_COMPENSATION_STANDARD`, `DEF_EXPENDITURE_STANDARD`, `DEF_TIME_STANDARD`, `THRESHOLD_LOBBYING_MATERIALITY_GATE`. The v2 equivalents map roughly to `def_target_executive_agency` (+ `executive_staff` + `governors_office` + `independent_agency` + `legislative_branch` + `legislative_staff` = 6 rows), plus selected `actor_*` rows (the lobbyist-identifying ones, like `actor_paid_*`, `actor_volunteer_*`), plus `compensation_threshold_for_lobbyist_registration`, `expenditure_threshold_for_lobbyist_registration`, `time_threshold_for_lobbyist_registration`, and `law_includes_materiality_test`. So **the v2 successor to the iter-1 `definitions` chunk is likely 10-14 rows** — well within the 5-12 target with a small bleed.
+4. **v1.2 row IDs in the iter-1 frame:** `DEF_ADMIN_AGENCY_LOBBYING_TRIGGER`, `DEF_ELECTED_OFFICIAL_AS_LOBBYIST`, `DEF_PUBLIC_EMPLOYEE_AS_LOBBYIST`, `DEF_COMPENSATION_STANDARD`, `DEF_EXPENDITURE_STANDARD`, `DEF_TIME_STANDARD`, `THRESHOLD_LOBBYING_MATERIALITY_GATE`. The v2 equivalents map roughly to `def_target_executive_agency` (+ `executive_staff` + `governors_office` + `independent_agency` + `legislative_branch` + `legislative_staff` = 6 rows), plus selected `actor_*` rows (the lobbyist-identifying ones, like `actor_paid_*`, `actor_volunteer_*`), plus `lobbyist_registration_threshold_compensation_dollars`, `lobbyist_registration_threshold_expenditure_dollars`, `lobbyist_registration_threshold_time_percent`, and `law_includes_materiality_test`. So **the v2 successor to the iter-1 `definitions` chunk is likely 10-14 rows** — well within the 5-12 target with a small bleed.
 
 ### Q1's prior locked decision
 
@@ -56,7 +56,7 @@ User-confirmed via AskUserQuestion 2026-05-14.
 - Below 30, chunk size is driven by topic coherence, not by minimum-size considerations. A 3-row `registration_mechanics` chunk is fine.
 - Above 34: split into sub-chunks at the most natural topic boundary. No current cluster hits this.
 
-**No "misc" bucket.** Every row gets a topically-coherent home. The few rows that resist grouping (e.g., `lobbying_definition_included_activity_types`) join their closest semantic neighbor; the manifest documents the assignment rationale per-row when it's non-obvious.
+**No "misc" bucket.** Every row gets a topically-coherent home. The few rows that resist grouping (e.g., `def_lobbying_activity_types`) join their closest semantic neighbor; the manifest documents the assignment rationale per-row when it's non-obvious.
 
 ### Q3 — Combined-axis row handling
 

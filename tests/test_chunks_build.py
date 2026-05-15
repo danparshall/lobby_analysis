@@ -19,7 +19,7 @@ COMBINED_AXIS_ROWS = (
     "lobbyist_spending_report_filing_cadence",
     "lobbying_disclosure_audit_required_in_law",
     "lobbying_violation_penalties_imposed_in_practice",
-    "registration_deadline_days_after_first_lobbying",
+    "lobbyist_registration_deadline_days_after_first_lobbying",
 )
 
 
