@@ -81,6 +81,16 @@ _SKIP_TOP_LEVEL = {".git", ".venv", ".worktrees", "node_modules", "__pycache__"}
 _SKIP_SUBPATHS = (
     Path("docs") / "historical",
     Path("compendium") / "_deprecated",
+    # The rename-execution branch's convos intentionally quote OLD row IDs
+    # to document the rename's design rationale (e.g., the Candidate-5
+    # substring-trap example: `registration_deadline_days_after_first_lobbying`
+    # is the OLD name of `lobbyist_registration_deadline_days_after_first_lobbying`,
+    # and the convo shows them side-by-side to motivate the word-boundary regex).
+    # Auto-rewriting collapses "X (old) is a substring of X (new)" and destroys
+    # the historical record of why word boundaries were needed. The branch will
+    # eventually `git mv` to docs/historical/ which is already skipped above —
+    # this entry covers the active-docs interim.
+    Path("docs") / "active" / "compendium-row-id-renames",
 )
 
 # Specific files we never touch. The renamer module and its tests reference
