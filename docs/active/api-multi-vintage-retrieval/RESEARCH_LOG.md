@@ -10,6 +10,55 @@
 
 ## Session log (newest first)
 
+### 2026-05-15 — B4 Chunks 4–6: NY/TX/OH diagnostics + 10-pair canary + 2 surfaced defects
+
+- **Convo:** [`convos/20260515_b4_chunks_4_5_6.md`](convos/20260515_b4_chunks_4_5_6.md)
+- **Picked up from:** `77a51b2` (prior session's finish-convo checkpoint after Chunks 1–3).
+- **Handoff:** [`plans/20260515_b4_handoff_to_fresh_agent.md`](plans/20260515_b4_handoff_to_fresh_agent.md) (Chunks 4–6 of 6)
+- **Results:** [`results/20260515_b4_pilot_canaries.md`](results/20260515_b4_pilot_canaries.md) (Chunk 4 appended) + [`results/20260515_b4_10pair_canary.md`](results/20260515_b4_10pair_canary.md) (Chunk 5 new file)
+- **Commits:** `75034d4` (Chunk 4 NY/TX/OH 32/32) → `cda68c4` (Chunk 5 10-pair canary + defect surfacing).
+
+#### Topics Explored
+
+- **Single-pair diagnostics on NY/TX/OH** (Chunk 4): characterize how the chapter-TOC ceiling and multi-codification edge cases distribute beyond the WY/FL pilots. OH 2010 (30 GT URLs) was the highest-stakes pilot — the question was whether pass-3 fan-out scales cleanly to a state with 20+ section leaves under two chapters.
+- **10-pair pre-fan-out canary** (Chunk 5): exercise the B4 orchestrator at fan-out-ish scale (10 pairs sequential, same TARGET list as B3PW_10PAIR), check pilot-state recall + anti-bot + wall-time + cost telemetry against the handoff's full-fan-out gate.
+- **Failure-mode discovery on unseen states:** the 5 unseen states in the 10-pair list (AK/WA/CO/AR/WV) deliberately have no curated GT and serve to flush out tail behaviors. AR/WV crashed the orchestrator on JSON parsing; WA/CO returned silently-empty results; AK ran fine but produced 45 unvalidatable URLs.
+- **Parser-crash root-cause** in `_parse_pass1_response` (line 369) and `_parse_response_text` (line 131): unguarded `json.loads(json_text)` blows up when the model returns prose-only "no regime found" responses without a JSON fence.
+
+#### Provisional Findings
+
+- **NY 2010 = 1/1 GT-hit, $0.113, 98.5s.** Pass-1 multi-pick across rla/+leg/+exc/ (the same RLA statute under three codification paths). Pass-3 fired on `leg/article-1-a/`, expanding into 22 subsection URLs. Recall perfect; precision low only because GT is curated to 1 of 3 valid paths.
+- **TX 2009 = 1/1 GT-hit, $0.044, 39.9s.** Crispest possible outcome — 3 LLM calls, 1 final URL exactly matching GT.
+- **OH 2010 = 30/30 GT-hit, $0.144, 94.9s.** Blew past the ≥25/30 handoff target. Pass-2 picked chapter101 + chapter121 + chapter102 (the last via cross-reference); pass-3 fan-out covered all 30 GT URLs plus 12 plausible support_chapter URLs. Smashed the highest-stakes pilot.
+- **Aggregate Chunks 3+4 single-pair scoreboard:** WY 1/1 + FL 6/6 + NY 1/1 + TX 1/1 + OH 30/30 = **39/39 = 100% recall, $0.412 spend, 0 anti-bot incidents across 22 fetches.**
+- **10-pair canary pilot-state recall: 21/21 = 100%** (CA 2/2, TX 1/1, NY 1/1, WI 16/16, WY 1/1). Single-pair-vs-10-pair reproducibility was perfect on TX/NY/WY (the 3 overlap states).
+- **10-pair anti-bot: 0 incidents** across ~50 Justia fetches. Operationally stable at 10-pair scale.
+- **Combined GT scoreboard across all canary modes: 60/60 across 7 states with curated GT.** No state with GT ever scored below 100% recall. This is the strongest possible signal the B4 architecture's recall is correct for the canary-set states.
+- **Defect 1 — `JSONDecodeError` on prose-only responses** (AR 2010, WV 2010 in the 10-pair run). Affects `_parse_response_text` and `_parse_pass1_response`. **20% crash rate on this sample; must-fix before full fan-out** lest it produce ~70 silent-fail pairs at 350-pair scale.
+- **Defect 2 — silent-empty results** (WA 2010, CO 2016 returned 0 URLs without crashing). Undecidable as silent-correct vs silent-wrong without GT for these states.
+- **Wall-time telemetry: mean 71.6s, p50 83.5s, p95 135.6s.** The p95 ≤ 30s fan-out gate from the handoff is **not met** (135.6s = 4.5× over). 350-pair sequential fan-out ≈ 7h wall time.
+- **Cost telemetry: $0.879 / $1.00 cap on 10-pair run** (near miss); cumulative B4 canary spend $1.291. **Fan-out projection updates to ~$29** at observed mean cost-per-pair $0.083 (vs plan's ~$21).
+
+#### Decisions Made
+
+- **Surface Defect 1 + Defect 2 to user as a gate to full fan-out — don't fix in this handoff.** The handoff doc explicitly says: "If you find yourself implementing something the B4 plan doesn't anticipate, stop and surface to the user." A parser-hardening fix is anticipated by the plan's "What could change" notes (`What if the response is non-JSON?`) but no implementation guidance is given; that's a user-owned scope call.
+- **Document both defects in detail** in `results/20260515_b4_10pair_canary.md` with: localized line numbers, proposed-but-not-applied fixes (try/except parser hardening + Rule 1 prompt update), severity assessment, and an explicit list of pre-fan-out decisions for the user.
+- **Chunk 4 results appended to `results/20260515_b4_pilot_canaries.md`** (per handoff's explicit instruction); Chunk 5 results in a new file `20260515_b4_10pair_canary.md`.
+- **2 commits for Chunks 4+5** (`75034d4` Chunk 4, `cda68c4` Chunk 5) + this finish-convo commit. Pushed at end.
+
+#### Open Questions
+
+- **Defect 1 fix priority:** apply parser try/except (cheap, durable) only, or also re-author pass-1 prompt's Rule 1 to mandate JSON-on-no-titles? Parser fix is the load-bearing safety net; prompt fix is incrementally nicer but lower-priority.
+- **Multi-pair concurrency for fan-out:** accept ~7h sequential, or parallelize 4-8 way? Parallelization amplifies Defect 1's blast radius until fixed. Reasonable order: fix Defect 1 → ship a one-state-many-vintages micro-fanout (e.g., 10 pairs for OH 2010 across vintages) → then full fan-out.
+- **Silent-empty discrimination (Defect 2):** worth adding GT for WA + CO before full fan-out to catch silent-wrong cases? Cheap manual lookup; modest insurance value.
+- **Fan-out cost projection $29 vs plan's $21:** does the user want to update the plan, or absorb the 38% spread silently? Caching could close most of the gap if pass-1 responses are cacheable.
+
+#### Next Steps
+
+- **Hand back to user** for the four pre-fan-out decisions (parser fix, concurrency model, silent-empty GT addition, cost projection refresh).
+- **NOT in scope for this session:** full 350-pair fan-out, Defect 1 / Defect 2 fixes, prompt-caching exploration.
+- **If user picks "fix parser then fan-out":** create a new convo for the parser-hardening TDD (one RED test + try/except + unit test against the canary log bytes); ~30 min work.
+
 ### 2026-05-15 — B4 implementation GREEN + WY/FL canaries (Chunks 1–3 of handoff)
 
 - **Convo:** [`convos/20260515_b4_impl_and_wy_fl_canaries.md`](convos/20260515_b4_impl_and_wy_fl_canaries.md)
