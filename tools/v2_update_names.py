@@ -81,8 +81,10 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     total_subs = sum(results.values())
-    print(f"{'would change' if dry_run else 'changed'}: "
-          f"{len(results)} files, {total_subs} substitutions")
+    print(
+        f"{'would change' if dry_run else 'changed'}: "
+        f"{len(results)} files, {total_subs} substitutions"
+    )
     print()
     for path in sorted(results):
         rel = path.relative_to(root) if path.is_absolute() else path

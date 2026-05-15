@@ -12,7 +12,6 @@ import csv
 import shutil
 from pathlib import Path
 
-import pytest
 
 from lobby_analysis.row_id_renamer import (
     RENAMES,
@@ -187,9 +186,7 @@ def test_should_not_skip_compendium_tsv():
 
 def test_should_not_skip_active_docs():
     root = Path("/repo")
-    assert not should_skip_path(
-        root / "docs" / "active" / "some-branch" / "convos" / "x.md", root
-    )
+    assert not should_skip_path(root / "docs" / "active" / "some-branch" / "convos" / "x.md", root)
 
 
 def test_should_not_skip_src():
@@ -310,9 +307,7 @@ def test_walk_dry_run_does_not_mutate(tmp_path: Path):
 def test_walk_idempotent_on_already_renamed_tree(tmp_path: Path):
     tsv = tmp_path / "compendium" / "items.tsv"
     tsv.parent.mkdir(parents=True)
-    tsv.write_text(
-        "compendium_row_id\nlobbyist_spending_report_includes_campaign_contributions\n"
-    )
+    tsv.write_text("compendium_row_id\nlobbyist_spending_report_includes_campaign_contributions\n")
     result = walk_and_apply(tmp_path, RENAMES, dry_run=False)
     # No changes on a tree that already has new names
     assert all(count == 0 for count in result.values())
@@ -405,6 +400,4 @@ def test_real_tsv_non_id_columns_unchanged_for_renamed_rows(tmp_path: Path):
         src_cols = src_by_id.get(old) or src_by_id.get(new)
         assert src_cols is not None, f"neither {old!r} nor {new!r} in source TSV"
         assert new in new_by_id, f"new row {new!r} not in target TSV after apply"
-        assert new_by_id[new] == src_cols, (
-            f"non-ID columns drifted for {new}"
-        )
+        assert new_by_id[new] == src_cols, f"non-ID columns drifted for {new}"

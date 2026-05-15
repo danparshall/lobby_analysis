@@ -22,51 +22,33 @@ from pathlib import Path
 # the 8 candidate clusters in plan §1.
 RENAMES: dict[str, str] = {
     # Candidate 1 — joint-actor ordering
-    "principal_or_lobbyist_reg_form_includes_member_or_sponsor_names":
-        "lobbyist_or_principal_reg_form_includes_member_or_sponsor_names",
+    "principal_or_lobbyist_reg_form_includes_member_or_sponsor_names": "lobbyist_or_principal_reg_form_includes_member_or_sponsor_names",
     # Candidate 2 — D3 rename gaps (5 spending_report + 1 LV-1 filing exception)
-    "lobbyist_report_distinguishes_in_house_vs_contract_filer":
-        "lobbyist_filing_distinguishes_in_house_vs_contract_filer",
-    "lobbyist_report_includes_campaign_contributions":
-        "lobbyist_spending_report_includes_campaign_contributions",
-    "lobbyist_or_principal_report_includes_lobbyist_count_total_and_FTE":
-        "lobbyist_or_principal_spending_report_includes_lobbyist_count_total_and_FTE",
-    "lobbyist_or_principal_report_includes_time_spent_on_lobbying":
-        "lobbyist_or_principal_spending_report_includes_time_spent_on_lobbying",
-    "lobbyist_or_principal_report_includes_trade_association_dues_or_sponsorship":
-        "lobbyist_or_principal_spending_report_includes_trade_association_dues_or_sponsorship",
-    "principal_report_lists_lobbyists_employed":
-        "principal_spending_report_lists_lobbyists_employed",
+    "lobbyist_report_distinguishes_in_house_vs_contract_filer": "lobbyist_filing_distinguishes_in_house_vs_contract_filer",
+    "lobbyist_report_includes_campaign_contributions": "lobbyist_spending_report_includes_campaign_contributions",
+    "lobbyist_or_principal_report_includes_lobbyist_count_total_and_FTE": "lobbyist_or_principal_spending_report_includes_lobbyist_count_total_and_FTE",
+    "lobbyist_or_principal_report_includes_time_spent_on_lobbying": "lobbyist_or_principal_spending_report_includes_time_spent_on_lobbying",
+    "lobbyist_or_principal_report_includes_trade_association_dues_or_sponsorship": "lobbyist_or_principal_spending_report_includes_trade_association_dues_or_sponsorship",
+    "principal_report_lists_lobbyists_employed": "principal_spending_report_lists_lobbyists_employed",
     # Candidate 3 — registration threshold trio (high-traffic)
-    "compensation_threshold_for_lobbyist_registration":
-        "lobbyist_registration_threshold_compensation_dollars",
-    "expenditure_threshold_for_lobbyist_registration":
-        "lobbyist_registration_threshold_expenditure_dollars",
-    "time_threshold_for_lobbyist_registration":
-        "lobbyist_registration_threshold_time_percent",
+    "compensation_threshold_for_lobbyist_registration": "lobbyist_registration_threshold_compensation_dollars",
+    "expenditure_threshold_for_lobbyist_registration": "lobbyist_registration_threshold_expenditure_dollars",
+    "time_threshold_for_lobbyist_registration": "lobbyist_registration_threshold_time_percent",
     # Candidate 4 — itemization de-minimis family fit
-    "expenditure_itemization_de_minimis_threshold_dollars":
-        "lobbyist_filing_itemization_de_minimis_threshold_dollars",
+    "expenditure_itemization_de_minimis_threshold_dollars": "lobbyist_filing_itemization_de_minimis_threshold_dollars",
     # Candidate 5 — registration deadline family fit (substring-of-new-name; word boundaries required)
-    "registration_deadline_days_after_first_lobbying":
-        "lobbyist_registration_deadline_days_after_first_lobbying",
+    "registration_deadline_days_after_first_lobbying": "lobbyist_registration_deadline_days_after_first_lobbying",
     # Candidate 6 — ministerial-diary plural drift
-    "ministerial_diaries_available_online":
-        "ministerial_diary_available_online",
+    "ministerial_diaries_available_online": "ministerial_diary_available_online",
     # Candidate 7 — definitional-row family fit
-    "lobbying_definition_included_activity_types":
-        "def_lobbying_activity_types",
-    "lobbyist_definition_included_actor_types":
-        "def_lobbyist_actor_types",
+    "lobbying_definition_included_activity_types": "def_lobbying_activity_types",
+    "lobbyist_definition_included_actor_types": "def_lobbyist_actor_types",
     # Candidate 8 — README projection-mapping filename typo (not a row rename)
-    "cpi_2015_projection_mapping":
-        "cpi_2015_c11_projection_mapping",
+    "cpi_2015_projection_mapping": "cpi_2015_c11_projection_mapping",
 }
 
 
-_PATTERN = re.compile(
-    r"\b(" + "|".join(re.escape(k) for k in RENAMES) + r")\b"
-)
+_PATTERN = re.compile(r"\b(" + "|".join(re.escape(k) for k in RENAMES) + r")\b")
 
 
 def apply_renames_to_text(text: str, renames: dict[str, str]) -> tuple[str, int]:
@@ -114,7 +96,19 @@ _SKIP_FILES = (
 )
 
 # File extensions we treat as text. Anything else is left alone.
-_TEXT_EXTENSIONS = {".py", ".md", ".tsv", ".csv", ".txt", ".toml", ".yaml", ".yml", ".json", ".ini", ".cfg"}
+_TEXT_EXTENSIONS = {
+    ".py",
+    ".md",
+    ".tsv",
+    ".csv",
+    ".txt",
+    ".toml",
+    ".yaml",
+    ".yml",
+    ".json",
+    ".ini",
+    ".cfg",
+}
 
 
 def should_skip_path(path: Path, root: Path) -> bool:
