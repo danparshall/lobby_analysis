@@ -27,6 +27,31 @@ The `data/` symlink convention from `skills/use-worktree/SKILL.md` was **skipped
 
 (Newest first.)
 
+### 2026-05-14 (research arc doc) — three-prong arc + Prong 1 internals + Ralph loop doc landed on main
+
+Convo: [`convos/20260514_research_arc_doc.md`](convos/20260514_research_arc_doc.md)
+Doc: [`docs/RESEARCH_ARC.md`](../../../RESEARCH_ARC.md) (repo-level; main `86dc02e`, this branch `ee75e3a`)
+
+**Started as a branch-status query, evolved into a research-arc review with three user-initiated reframes of the agent's mental model, and produced one repo-level doc landed on main via cherry-pick.** No code changes; no extraction-harness component movement; no plan revisions. Pure framing work that hardens the project's link graph for future agents (and other fellows).
+
+**The three reframes** (corrections to agent framing, all from user):
+
+1. **Phase C is the Ralph-loop evaluation function, not a downstream sanity-check.** No 50-state typed-cell ground truth exists — that's the gap this project fills — so projecting our extracted cells back into each rubric's published scoring rule and comparing to published per-state scores is the only tractable accuracy signal for Prong 1. The Ralph loop closes via that signal.
+2. **Prong 2 + Prong 3 is the product; Prong 1 is upstream scaffolding.** The SMR encodes what each state's regime *legally requires*; the gap vs. what portals *actually expose* is itself a research artifact. Prong 1 also makes Prong 2 dramatically cheaper (shared typed-cell schema across 50 state pipelines instead of 50 bespoke extractors). "Stairs of leverage" pattern: prior-art rubrics → Prong 1 (via Phase C eval); Prong 1 → Prong 2.
+3. **Locked rubric order is mostly convenience, not a rigid signal-strength gradient.** Order respects dependencies (Newmark 2005 → Newmark 2017; HG 2007 → Track A's HG retrieval sub-task) and starts where ground truth is strongest, but reordering on empirical results is fine.
+
+**Ralph-loop concretization** (added to the doc after user provided the loop shape): objective `loss(prompt) = Σ over (state, vintage, rubric) |f_rubric(SMR) − published_score|`; single scalar. Noise floor `σ_noise` from independent re-runs is a prerequisite (otherwise the loop chases 1σ flukes). Three risks named up front: implicit weighting in `Σ |diff|` across unequal-size rubrics; Goodhart on projection-distance (rubrics have degenerate solutions); cost asymmetry (single-state OH-only ≈ $4/iter vs 50-state ≈ $150/iter under ARCHITECTURE.md's $50–500/mo budget). Track A's across-vintage stability check is the only signal that *doesn't* go through a rubric — load-bearing for Goodhart defense.
+
+**Cross-track milestone surfaced:** the first Ralph-loop iteration end-to-end needs three things landed across three branches simultaneously — `scoring_v2` (this branch) + CPI 2015 C11 projection (`phase-c-projection-tdd`) + OH 2015 statute bundle (`oh-statute-retrieval`). Named in the doc. This walks back an earlier agent overclaim that "harness feature-complete for a single-state pilot after scoring_v2 ships" — that's *extraction-complete*, not *quality-validated*.
+
+**Mid-session fast-forward:** integrated 2 unseen commits on `origin/extraction-harness-brainstorm` (`5f262e9` fixture decouple + `7d6f20d` desktop T1 convo) before the new doc commit. No conflicts; no file overlap with `docs/RESEARCH_ARC.md`. Doc's `retrieval_v2` status line ("T1 smoke validated on desktop") happened to land consistent with the just-pulled RESEARCH_LOG state.
+
+**Cherry-pick path executed cleanly:** `git pull --ff-only` on this branch → commit doc (`ee75e3a`) → switch to main worktree (already at `f6cf909` from session-start fetch, fast-forwarded by `compendium-naming-docs` PR #10 merge during the session) → `git cherry-pick ee75e3a` (clean; lands as `86dc02e`) → push both branches. Multi-committer rules respected throughout.
+
+**Discoverability follow-up deferred per user.** `README.md`'s repo-layout section doesn't reference `docs/RESEARCH_ARC.md`. Easy one-line edit when desired.
+
+**Next session.** Brief-writer/scorer-v2 implementation plan per the prior session's outstanding handoff at [`plans/_handoffs/20260514_brief_writer_impl_plan_write_handoff.md`](plans/_handoffs/20260514_brief_writer_impl_plan_write_handoff.md). That's the actual next work session; the research-arc doc was a sidebar that happened to fit cleanly here.
+
 ### 2026-05-14 (retrieval impl T1 + fixture decouple) — desktop T1 cleared; parser fixture decoupled from integration write path
 
 Convo: [`convos/20260514_retrieval_v2_t1_and_fixture_decouple.md`](convos/20260514_retrieval_v2_t1_and_fixture_decouple.md)
