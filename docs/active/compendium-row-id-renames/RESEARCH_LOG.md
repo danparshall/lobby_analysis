@@ -20,4 +20,32 @@ The 15 row renames themselves match plan §1 verbatim. The LV-1 categorical exce
 
 ## Sessions
 
-- **2026-05-14** — [in progress] Renamer module + CLI + 36 tests landed. Archive of `compendium-naming-docs` complete. Self-skip rules protect the renamer module, its tests, `compendium/NAMING_CONVENTIONS.md` (needs surgical hand-edit), and `STATUS.md` (session log is historical narrative). Pending: hand-update `compendium/NAMING_CONVENTIONS.md` (§10 → DONE, add §10.1 resolver table), apply rename script, PR.
+## Session: 2026-05-14 — rename execution
+
+Full execution session — 4 commits land the rename end-to-end. Convo: [`convos/20260514_rename_execution.md`](convos/20260514_rename_execution.md).
+
+### Topics Explored
+- Architecture: standalone find-and-replace tool vs the plan's canonicalizer-extension; sister-branch absorption model; word-boundary regex for the Candidate-5 substring trap; skip-list design (renamer module + tests + NAMING_CONVENTIONS.md + STATUS.md + historical/deprecated paths).
+- Doc surgery: §10 marked DONE (8 Issues), §10.1 resolver table added inline, §§2/3 prefix-family counts updated, body cross-refs updated through §§6/7/9/11.
+
+### Provisional Findings
+- Find-and-replace architecture is simpler than the plan's TSV-canonicalizer approach AND matches the sister-branch absorption model (each branch owner runs the script after merging main).
+- Test design: making the byte-identity invariant test idempotency-aware (look up source row by old OR new ID) preserves the invariant pre- and post-apply.
+- Apply surface shrank from 15 files / 157 subs to 4 files / 19 subs once the skip rules were in place — dry-run caught all three skip-rule gaps before any file was written.
+
+### Decisions Made
+- **No v3 file** — retroactive v2 finalization. Filename unchanged.
+- **Branch name** `compendium-row-id-renames` (not the plan's speculative `*-v3`).
+- **Sister-branch absorption** is owner work — handoff sentence captured.
+- Audit branch `compendium-naming-docs` archived to `docs/historical/` (workflow protocol on completion).
+
+### Results
+None saved separately — the substantive session output is the 4 commits + the convo file. Prefix-survey regen against the renamed TSV deferred (low priority; historical prefix-survey artifact still serves as baseline).
+
+### Next Steps
+- finish-dev-branch on this branch: ruff check/format, push, open PR.
+- After Dan merges PR: sister-branch owners apply the rename per the handoff sentence (each: merge origin/main, run `tools/v2_update_names.py --apply`, commit, push).
+
+## Branch state
+
+- **2026-05-14 (session 1, archived in PR #10):** Predecessor `compendium-naming-docs` produced the audit, ratified 8 rename candidates, drafted plan, sharpened. See historical convos/plans.
