@@ -43,6 +43,7 @@ The 4 findings the reviewer surfaced (severity tags per handoff: **BLOCKER / SHO
 
 - [`../../../historical/compendium-source-extracts/results/20260514_post_framing_review.md`](../../../historical/compendium-source-extracts/results/20260514_post_framing_review.md) — committed by the spawned reviewer as `770f866`.
 - (Adjacent: the sibling harness review at `../results/20260514_post_framing_review.md` from commit `0ccbb86` — different session, different scope.)
+- [`../results/20260516_review_synopsis.md`](../results/20260516_review_synopsis.md) — synthesis of both reviews into a speed-readable walkthrough; written 2026-05-16 after user speed-read both reports and asked for a synopsis to check next session. Covers the Ralph-loop theme where the two reviews concur, the two `scoring_v2`-blocking design forks (H-F1 EvidenceSpan, H-F3 SMR partiality), the cleanup tier, and the recommended plan-restructure (split into A/B/C).
 
 ## Open Questions
 
