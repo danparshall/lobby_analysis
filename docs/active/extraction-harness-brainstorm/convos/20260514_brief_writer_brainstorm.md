@@ -6,6 +6,7 @@
 **Sibling plan (shipped):** [`../plans/20260514_retrieval_implementation_plan.md`](../plans/20260514_retrieval_implementation_plan.md) — load-bearing pattern template.
 **Originating handoff:** [`../plans/_handoffs/20260514_next_session_kickoff.md`](../plans/_handoffs/20260514_next_session_kickoff.md) — split this into 2 components; pushback below merged them.
 **Outgoing handoff:** [`../plans/_handoffs/20260514_brief_writer_impl_plan_write_handoff.md`](../plans/_handoffs/20260514_brief_writer_impl_plan_write_handoff.md) — for the impl-plan-write session.
+**Impl plan written:** [`../plans/20260514_brief_writer_implementation_plan.md`](../plans/20260514_brief_writer_implementation_plan.md) — written 2026-05-18 via subagent dispatch (commit `067dfac`); 1400 lines, TDD-shaped, full v2 prompt + tool schemas inlined, 51 named test signatures. Convo: [`20260518_tier_0_review_scoring_v2_plan_evidencespan_resolve.md`](20260518_tier_0_review_scoring_v2_plan_evidencespan_resolve.md).
 
 ---
 

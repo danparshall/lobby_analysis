@@ -27,6 +27,41 @@ The `data/` symlink convention from `skills/use-worktree/SKILL.md` was **skipped
 
 (Newest first.)
 
+### 2026-05-18 (Tier-0 review + scoring_v2 impl plan write + EvidenceSpan resolution) — three commits ship the load-bearing follow-ups from the synopsis review
+
+Convo: [`convos/20260518_tier_0_review_scoring_v2_plan_evidencespan_resolve.md`](convos/20260518_tier_0_review_scoring_v2_plan_evidencespan_resolve.md)
+Predecessor convo (same day): [`convos/20260518_synopsis_walkthrough_and_tier_0_scoping.md`](convos/20260518_synopsis_walkthrough_and_tier_0_scoping.md)
+Plan written this session (via subagent): [`plans/20260514_brief_writer_implementation_plan.md`](plans/20260514_brief_writer_implementation_plan.md) (commit `067dfac`)
+Plan edited this session: [`plans/20260518_tier_0_minimal_pipeline.md`](plans/20260518_tier_0_minimal_pipeline.md)
+
+**Reviewed the Tier-0 plan critically and shipped its load-bearing follow-ups in three commits.** Review surfaced a dependency-graph error in the predecessor session's plan — the "4 v2 modules to wire up" framing conflated the retrieval brief-writer (shipped) with the scorer brief-writer (not built; lives in a `scoring_v2/` module that didn't exist on this branch). User confirmed the impl plan was never written (only a sketch + handoff existed since 2026-05-14), green-lit subagent dispatch.
+
+**Subagent (`general-purpose`) wrote `plans/20260514_brief_writer_implementation_plan.md`** off the existing `_handoffs/20260514_brief_writer_impl_plan_write_handoff.md` — 1400 lines, mirroring the retrieval impl plan structure. 51 named test signatures across 6 test files (8 tools + 7 models + 16 brief-writer + 9 parser + 8 prompt-invariant + 3 integration); full v2 scorer prompt drafted and inlined (7 cell-anchored rules, zero PRI key leakage); full `RECORD_CELL_TOOL` + `RECORD_UNSCOREABLE_CELL_TOOL` JSON schemas inlined; phase ordering bakes in the retrieval-lesson (prompt md before brief_writer because brief_writer reads prompt at call time). Subagent's non-obvious calls: `row_id` as plain string with parser-side registry validation (not a 186-entry enum); `ScoringOutput.chunk_id: str` per-call; parser logs+skips on unknown `(row_id, axis)` rather than raising; specialized `_instantiate_with_special_shapes` adapter for cell-classes whose tool `value` is a dict not a scalar. Commit `067dfac`; no AskUserQuestion escalations (locked package was complete enough).
+
+**Verified subagent's audit independently** — `grep -rn "provenance=" tests/ src/` returns 1 line (`tests/test_models_v2_cells.py:69`), matching the subagent's claim. But the broader `EvidenceSpan` import-surface audit (not in the subagent's scope) revealed the Tier-0 plan's "deletion requires full import-graph audit; defer" assertion was overcautious — actual surface was 6 files / 5 edit sites / 130 line-diff. User authorized full deletion now (not deferred). Commit `0979779`: deleted `src/lobby_analysis/models_v2/provenance.py` + `tests/test_models_v2_provenance.py`; migrated `CompendiumCell.provenance: EvidenceSpan | None = None` → `tuple[retrieval_v2.EvidenceSpan, ...] = ()`; updated 3 other files (init exports, init-test imports, wrapper-field-propagation test). 480 pass / 8 skip / 3 pre-existing `test_pipeline.py` baseline failures unchanged (was 484 — the 4 deleted tests targeted dead code). Closes Fork 1 from the 2026-05-16 review synopsis.
+
+**Tier-0 plan edits applied** (two from user pre-confirmation + two follow-ups from `0979779`): hop=2 locked in Step 3 (was an "implementer's call" open question; matches Tier 1 parity); `prompt_sha` capture added to Step 5 (sha256 of scorer prompt content, persisted in results JSON) + writeup; Step 2 collapsed to verify-already-done against commit `0979779`; Questions section cleaned up (removed Q1 hop + Q4 Step-2-ordering, both resolved/moot). Scoring_v2 impl plan Phase 7 collapsed similarly as commit `2d8e395`.
+
+**Not addressed this session** (held per user): four deeper Tier-0 issues from the review — Step 2's failing test was testing-anti-pattern by the plan's own definition (tests Pydantic acceptance of a tuple type), success criterion #3 (`cells == 2`) forecloses `record_unscoreable_cell` outcomes, Step 6 implies a refactor not named in Steps 3–5, cost budget $1–2/run is unsourced. Likely worth deeper Tier-0 rewrite after scoring_v2 ships and the actual API surface is concrete.
+
+**Commits this session (4):** `067dfac` scoring_v2 impl plan (subagent) → `0979779` EvidenceSpan retirement + schema migration → `2d8e395` scoring_v2 plan Phase 7 narrative collapse → finish-convo bundle (this commit).
+
+**Process note.** The predecessor session today wrote `20260518_synopsis_walkthrough_and_tier_0_scoping.md` + `plans/20260518_tier_0_minimal_pipeline.md` but didn't run finish-convo — both files were sitting untracked when this session started. This session's finish-convo absorbs the predecessor's work into the bundle (separate RESEARCH_LOG entry below for the predecessor; both convos tracked here for the first time). The doc-system-is-persistent-memory rule says end-of-session commits must land graph self-consistent — closing the predecessor's gap is part of this session's responsibility because it was sitting in this worktree.
+
+**Next session.** Either: (a) implementation session for `scoring_v2` (API-launched sub-branch, strict TDD per the now-existing plan, ~similar shape to the retrieval impl session); or (b) deeper Tier-0 rewrite to address the 4 unaddressed review issues once scoring_v2 ships; or (c) practical-axis brief-writer brainstorm as the next sibling component (per Q6 deferral). User decides priority.
+
+### 2026-05-18 (synopsis walkthrough + Tier-0 scoping) — Fork 1 resolved, H-F2 reframed, Tier-0 plan written
+
+Convo: [`convos/20260518_synopsis_walkthrough_and_tier_0_scoping.md`](convos/20260518_synopsis_walkthrough_and_tier_0_scoping.md)
+Plan: [`plans/20260518_tier_0_minimal_pipeline.md`](plans/20260518_tier_0_minimal_pipeline.md)
+Source review synopsis: [`results/20260516_review_synopsis.md`](results/20260516_review_synopsis.md)
+
+**Walked the 2026-05-16 review synopsis end-to-end and produced three substantive moves** (full audit trail in convo): (1) **Fork 1 resolved** — `CompendiumCell.provenance` uses `retrieval_v2.EvidenceSpan` (Citations-API span); `models_v2.EvidenceSpan` retired as dead code (deletion deferred per this session; later resolved 2026-05-18 in commit `0979779` per the session above). (2) **H-F2 reframed** — the Ralph loop IS the orchestrator (not a missing 5th component), so the load-bearing next move is building the smallest end-to-end pipeline that runs. (3) **Tier-0 / Tier-1 scoping landed against CPI 2015 vs OH 2015** — CPI has the strongest ground truth (700 per-state-per-item cells); Tier-0 = 1 chunk × 1 (state, vintage) × no projection (smoke-test wiring only); Tier-1 = 6 chunks covering CPI's 6 de-jure items + σ_noise via N=3 re-runs + first real Ralph-loop data point.
+
+Plan output: [`plans/20260518_tier_0_minimal_pipeline.md`](plans/20260518_tier_0_minimal_pipeline.md) — 7 implementation steps + Tier-1 forward-pointer + success criteria + confidence checkpoints with stop conditions. Per the convo's Open Questions section, the plan left several decisions for later (hop count, Step 2 ordering) — later resolved 2026-05-18 in the session above.
+
+**Process note (recorded later).** This session did not run finish-convo before being interrupted; both the convo file and the Tier-0 plan sat untracked in the worktree until the follow-up session committed them in its finish-convo bundle. The cross-session continuity is recorded in the follow-up convo's "Cross-session continuity note" section.
+
 ### 2026-05-14 (harness review dispatch) — post-framing audit of 3 shipped components + `scoring_v2` lock against RESEARCH_ARC; 3 findings logged
 
 Convo: [`convos/20260514_post_framing_harness_review.md`](convos/20260514_post_framing_harness_review.md)
