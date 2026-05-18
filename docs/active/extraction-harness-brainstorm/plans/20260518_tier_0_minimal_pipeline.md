@@ -1,6 +1,10 @@
 # Tier 0 — Minimal end-to-end pipeline (smoke test)
 
-**Goal:** Run the extraction pipeline end-to-end for **one chunk on one state-vintage** (OH 2015, `enforcement_and_audits` chunk) and produce a partial `StateVintageExtraction` containing the 2 legal cells. Verify the wiring works; no projection comparison, no σ_noise re-runs, no other chunks.
+> **RETARGET 2026-05-18 (in-session):** Tier-0 vintage swapped from **OH 2015 → OH 2025** because the OH 2015 statute bundle was not on the implementing machine (Dans-MacBook-Air) — only OH 2010 and OH 2025 were present in the canonical location. Approved by Dan in-session. All vintage-2025 references below were originally 2015. The Tier-1 forward-pointer section retains 2015 — that's Tier 1's bundle-availability problem to resolve. Convenient side-effect: OH 2025 was the v2 scorer prompt's original tuning vintage (`statute-extraction` iter-1), so this is closer to known territory than the original scope.
+>
+> **Path correction (same commit):** Canonical statutes path is `~/data/lobby_analysis/statutes/<STATE>/<VINTAGE>/`, NOT `~/data/statutes/<STATE>/<VINTAGE>/` as originally written. Pre-existing data/ dir in the worktree (containing gitignored `data/retrieval_v2/.gitkeep` placeholder) made `ln -s ~/data data` infeasible; replaced with sibling symlink `data/statutes -> /Users/dan/data/lobby_analysis/statutes`. Symlink lives inside gitignored `data/` so Step 1's commit is empty / skipped.
+
+**Goal:** Run the extraction pipeline end-to-end for **one chunk on one state-vintage** (OH 2025, `enforcement_and_audits` chunk) and produce a partial `StateVintageExtraction` containing the 2 legal cells. Verify the wiring works; no projection comparison, no σ_noise re-runs, no other chunks.
 
 **Originating conversation:** [`../convos/20260518_synopsis_walkthrough_and_tier_0_scoping.md`](../convos/20260518_synopsis_walkthrough_and_tier_0_scoping.md)
 
@@ -8,7 +12,7 @@
 
 **Confidence:** Exploratory. Tier 0's purpose is to test whether the 4 v2 modules (`models_v2`, `chunks_v2`, `retrieval_v2`, the WIP brief-writer in `retrieval_v2/brief_writer.py`) wire into a runnable end-to-end pipeline. Surprises are expected and informative; the value is what they teach about Tier 1.
 
-**Architecture:** A thin wiring script at `scripts/tier_0_smoke_test.py` that invokes (1) the retrieval agent against the OH 2015 statute bundle, (2) the brief-writer for the `enforcement_and_audits` chunk using retrieval output, (3) `anthropic.messages.create()` to dispatch the scorer call, (4) the parser to convert response into cells, (5) assemble a partial `StateVintageExtraction`, (6) save artifacts to `results/` with provenance headers. No new packaged module. The dispatch logic is the kernel of what the orchestrator will become; YAGNI says don't package it yet.
+**Architecture:** A thin wiring script at `scripts/tier_0_smoke_test.py` that invokes (1) the retrieval agent against the OH 2025 statute bundle, (2) the brief-writer for the `enforcement_and_audits` chunk using retrieval output, (3) `anthropic.messages.create()` to dispatch the scorer call, (4) the parser to convert response into cells, (5) assemble a partial `StateVintageExtraction`, (6) save artifacts to `results/` with provenance headers. No new packaged module. The dispatch logic is the kernel of what the orchestrator will become; YAGNI says don't package it yet.
 
 **Branch:** `extraction-harness-brainstorm` (worktree at `/Users/dan/code/lobby_analysis/.worktrees/extraction-harness-brainstorm/`)
 
@@ -32,7 +36,7 @@ The implementing agent has zero context. Read these first, in order:
 
 ## Prerequisites
 
-- **OH 2015 statute bundle.** User maintains canonical data at `~/data/statutes/OH/2015/` (not yet symlinked into the worktree as of plan-write time). Set up the symlink in Step 1. If `~/data/statutes/OH/` doesn't exist on this machine, **stop and ask the user** — do not proceed against OH 2010 or OH 2025 as a substitute. Vintage mismatch with CPI 2015 ground truth makes the eventual Tier 1 comparison meaningless, and Tier 0 is the predecessor of Tier 1.
+- **OH 2025 statute bundle** (retargeted from 2015 — see banner). Canonical path: `~/data/lobby_analysis/statutes/OH/2025/`. Symlinked into worktree at `data/statutes/OH/2025/` in Step 1. (Original prereq language read: "User maintains canonical data at `~/data/statutes/OH/2015/`... If `~/data/statutes/OH/` doesn't exist on this machine, **stop and ask the user** — do not proceed against OH 2010 or OH 2025 as a substitute. Vintage mismatch with CPI 2015 ground truth makes the eventual Tier 1 comparison meaningless, and Tier 0 is the predecessor of Tier 1." That stop fired on 2026-05-18; resolution was the blessed retarget.)
 - **`ANTHROPIC_API_KEY`** in env. Tier 0 dispatches real API calls (~$1–2 budget per smoke-test run).
 - **Model:** `claude-opus-4-7` to match the prior `statute-extraction` iter-1 baseline (93.3% inter-run agreement on the v1.2 definitions chunk). Override only if there's a documented reason.
 
@@ -47,11 +51,11 @@ Unit-level TDD **is** in scope for the small wiring helpers introduced in Steps 
 Tier 0 passes if all of:
 
 1. The script runs to completion (no uncaught exceptions).
-2. It produces a `StateVintageExtraction` with `state_abbr="OH"`, `vintage_year=2015`.
+2. It produces a `StateVintageExtraction` with `state_abbr="OH"`, `vintage_year=2025`.
 3. The extraction's `cells` field contains exactly 2 entries: legal halves of `lobbying_violation_penalties_imposed_in_practice` and `lobbying_disclosure_audit_required_in_law`.
 4. Each cell's `provenance` is a non-empty `tuple[retrieval_v2.EvidenceSpan, ...]`.
 5. The cell values type-check against their `CompendiumCellSpec.expected_cell_class`.
-6. A hand-eyeball read of the cell values is plausible against OH 2015 statute text (does OH 2015 require audits? Are penalties statutorily defined? — quick sanity check, ~10 minutes, not a formal projection).
+6. A hand-eyeball read of the cell values is plausible against OH 2025 statute text (does OH 2025 require audits? Are penalties statutorily defined? — quick sanity check, ~10 minutes, not a formal projection).
 
 If any of (1)–(5) fail, **stop and report rather than patching**. The failure mode is the deliverable.
 
@@ -59,12 +63,12 @@ If any of (1)–(5) fail, **stop and report rather than patching**. The failure 
 
 ## Implementation steps
 
-### Step 1 — Set up the OH 2015 data symlink
+### Step 1 — Set up the OH 2025 data symlink
 
-- Verify `~/data/statutes/OH/2015/` exists. If not, stop and ask user.
-- If the worktree has no top-level `data/` symlink yet (it doesn't, as of plan-write time per the branch's RESEARCH_LOG): `ln -s ~/data /Users/dan/code/lobby_analysis/.worktrees/extraction-harness-brainstorm/data` (per the convention in `skills/use-worktree/SKILL.md`).
-- Verify the bundle is readable from `data/statutes/OH/2015/` within the worktree.
-- Commit: `tier-0: symlink OH 2015 statute bundle`
+- Verify `~/data/lobby_analysis/statutes/OH/2025/` exists. (Original plan path `~/data/statutes/OH/2015/` was wrong on both vintage and parent dir; see banner.)
+- Worktree has a pre-existing gitignored `data/` directory containing only `data/retrieval_v2/.gitkeep` placeholder. Create sibling symlink: `ln -s /Users/dan/data/lobby_analysis/statutes /Users/dan/code/lobby_analysis/.worktrees/extraction-harness-brainstorm/data/statutes`.
+- Verify the bundle is readable from `data/statutes/OH/2025/` within the worktree.
+- No commit (symlink lives under gitignored `data/`).
 
 ### Step 2 — Verify the EvidenceSpan migration is already in place
 
@@ -74,19 +78,19 @@ If any of (1)–(5) fail, **stop and report rather than patching**. The failure 
 - If both verify: **skip to Step 3**. No commit, no test re-run (commit `0979779` ran `uv run pytest`: 480 pass / 8 skip / 3 pre-existing `test_pipeline.py` failures unchanged from baseline).
 - If either does NOT verify (branch state surprise — e.g., a rebase dropped the commit): **stop and surface to user**. Do NOT re-execute the migration blindly — coordinate first.
 
-### Step 3 — Verify the retrieval agent runs against OH 2015
+### Step 3 — Verify the retrieval agent runs against OH 2025
 
 - Identify the current entry point for invoking retrieval (likely in `src/lobby_analysis/retrieval_v2/`; check `__init__.py` exports).
-- Construct the call inputs targeting OH 2015's statute bundle. Use `hop=2` — matches what Tier 1 will use; cost delta over hop=1 is small and parity matters for the Tier-0 → Tier-1 lift.
+- Construct the call inputs targeting OH 2025's statute bundle. Use `hop=2` — matches what Tier 1 will use; cost delta over hop=1 is small and parity matters for the Tier-0 → Tier-1 lift.
 - Invoke. Verify it returns a `RetrievalOutput` with at least one `CrossReference`.
 - Hand-eyeball: do the returned `section_reference` strings look like real OH lobbying-statute sections (Ohio Revised Code §101.70 onward)?
-- Save the `RetrievalOutput` to `results/20260518_tier_0_retrieval_oh_2015.json` (or `.md` if formatted for human reading) with a provenance header:
+- Save the `RetrievalOutput` to `results/20260518_tier_0_retrieval_oh_2025.json` (or `.md` if formatted for human reading) with a provenance header:
   ```
   <!-- Generated during: convos/20260518_synopsis_walkthrough_and_tier_0_scoping.md -->
   ```
-- Commit: `tier-0: retrieval against OH 2015 produces N CrossReferences`
+- Commit: `tier-0: retrieval against OH 2025 produces N CrossReferences`
 
-If retrieval returns zero `CrossReference`s or fails: **stop**. Either the agent isn't tuned for non-2025 vintages, or the OH 2015 bundle has a format issue. Either way, that's the finding for this session; report and stop.
+If retrieval returns zero `CrossReference`s or fails: **stop**. The retrieval prompt was tuned against OH 2025 (per `statute-extraction` iter-1), so zero results would point to a wiring regression rather than vintage tuning. Either way, that's the finding for this session; report and stop.
 
 ### Step 4 — Brief-writer for `enforcement_and_audits`
 
@@ -104,14 +108,14 @@ If retrieval returns zero `CrossReference`s or fails: **stop**. Either the agent
 
 - Instantiate `anthropic.Anthropic()` and call `messages.create(**kwargs)`. Capture the full response object.
 - **Capture the prompt-sha before dispatch.** Compute `prompt_sha = hashlib.sha256(scorer_prompt_v2_text.encode()).hexdigest()` (using the same prompt content the brief-writer loaded). Persist it in the results JSON alongside the response — Tier 1's σ_noise loop requires fixed prompt-sha pinning, and bisecting smoke-test outputs against future prompt revisions needs this fingerprint captured from the first run.
-- Pass the response to the parser entry point (per the brief-writer brainstorm: `parse_scoring_response(message, state_abbr="OH", vintage_year=2015, chunk_id="enforcement_and_audits") -> ScoringOutput`).
+- Pass the response to the parser entry point (per the brief-writer brainstorm: `parse_scoring_response(message, state_abbr="OH", vintage_year=2025, chunk_id="enforcement_and_audits") -> ScoringOutput`).
 - Inspect the parsed `ScoringOutput`. Confirm it has exactly 2 cells, each with non-empty `provenance`.
 - Save the raw response (with sensitive fields redacted if any), the parsed `ScoringOutput`, and the `prompt_sha` to `results/20260518_tier_0_scoring_output.json` with a provenance header.
 - Commit: `tier-0: scorer call dispatched + parsed`
 
 ### Step 6 — Assemble the partial SMR + unit tests for the wiring
 
-- Construct a partial `StateVintageExtraction(state_abbr="OH", vintage_year=2015, cells=<from parser>)`. Verify Pydantic validation passes.
+- Construct a partial `StateVintageExtraction(state_abbr="OH", vintage_year=2025, cells=<from parser>)`. Verify Pydantic validation passes.
 - Write unit tests for the small helper functions introduced in Steps 3–5:
   - Retrieval invocation wrapper (input → kwargs).
   - Brief-writer dispatch wrapper (chunk + retrieval_output → kwargs).
@@ -119,12 +123,12 @@ If retrieval returns zero `CrossReference`s or fails: **stop**. Either the agent
   - Cell-to-SMR assembly.
 - Use **frozen fixtures** captured from Steps 3 and 5 — real RetrievalOutput, real API response. NOT mocks of behavior. Per `skills/testing-anti-patterns/SKILL.md`: tests must verify actual behavior.
 - Run tests; confirm green.
-- Save the assembled SMR to `results/20260518_tier_0_smr_oh_2015.json` with provenance header.
+- Save the assembled SMR to `results/20260518_tier_0_smr_oh_2025.json` with provenance header.
 - Commit: `tier-0: assemble partial SMR + wiring unit tests`
 
 ### Step 7 — Hand-eyeball + writeup
 
-- Compare cell values against the OH 2015 statute text. Do they read as plausible? (~10 minutes.)
+- Compare cell values against the OH 2025 statute text. Do they read as plausible? (~10 minutes.)
 - Write `results/20260518_tier_0_writeup.md` (with provenance header) containing:
   - What the script does.
   - Cell values produced (the 2 legal cells, with their provenance).
@@ -145,7 +149,7 @@ If retrieval returns zero `CrossReference`s or fails: **stop**. Either the agent
 
 ## Edge cases to anticipate
 
-- **Retrieval emits 0 `CrossReference`s.** Either OH 2015 has no enforcement/audit language (unlikely — Ohio Revised Code Chapter 101 covers this) or the retrieval prompt isn't tuned for legal-side enforcement language. Report and stop; don't try to patch the prompt mid-session.
+- **Retrieval emits 0 `CrossReference`s.** Either OH 2025 has no enforcement/audit language (very unlikely — Ohio Revised Code Chapter 101 covers this and the retrieval prompt was tuned on this exact vintage) or there's a wiring regression. Report and stop; don't try to patch the prompt mid-session.
 - **Scorer emits cells the parser rejects** (e.g., unknown tool names, malformed payloads). Per the brainstorm: "unknown tool names reset the citation buffer." Surface the rejection in the writeup; don't silently drop cells.
 - **Cell value out of range for its `CompendiumCellSpec`.** Pydantic should catch this. If it does, that's a finding about the scorer prompt → row description mismatch, not a bug to patch in Tier 0.
 - **`models_v2.EvidenceSpan` import surface larger than expected.** Step 2's audit may surface importers across fixtures, tests, possibly `compendium_loader.py`. Update them in this commit; defer the deletion of the class itself.
@@ -211,7 +215,7 @@ NOTE: I will write *all* tests before I add any implementation behavior.
 
 ## What could change
 
-- **Retrieval prompt may not generalize to OH 2015.** The v2 scorer prompt was tuned against OH 2025 definitions (per iter-1 in the now-paused `statute-extraction`). Enforcement language in OH 2015 may use older phrasings the prompt doesn't anticipate. If retrieval returns weak `CrossReference`s, Tier 0's finding may be "the retrieval prompt needs vintage-aware tuning" — that's a Tier 1 prerequisite, not a Tier 0 bug.
+- **Retrieval prompt may not generalize across vintages.** The v2 scorer prompt was tuned against OH 2025 definitions (per iter-1 in the now-paused `statute-extraction`). Tier 0 (post-retarget) runs against the prompt's own tuning vintage, so this risk doesn't bear on this run — but it remains a Tier 1 concern: enforcement language in OH 2015 may use older phrasings the prompt doesn't anticipate. If Tier 1 retrieval against OH 2015 returns weak `CrossReference`s, the finding may be "the retrieval prompt needs vintage-aware tuning" — that's a Tier 1 prerequisite, not a Tier 0 bug.
 - **The 5-tier de facto scoring** in CPI 2015 (25/75 intermediate values undocumented in the published criteria) is a Tier 1 problem the de-jure-only Tier 0 sidesteps entirely.
 - **`models_v2.EvidenceSpan` deletion** is deferred to a follow-on plan. Tier 0 deprecates the class; deletion requires a full import-graph audit.
 - **The orchestrator's packaged shape.** Tier 0's script is a prototype. Tier 1 may decide the orchestrator wants its own module with batching, σ_noise re-run scaffolding, prompt-sha pinning. Don't pre-design that here.
