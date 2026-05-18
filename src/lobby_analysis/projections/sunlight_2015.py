@@ -275,3 +275,33 @@ def project_sunlight_item3(
     if threshold is None or threshold == 0:
         return 0, None
     return -1, None
+
+
+# ---------------------------------------------------------------------------
+# Item 5: lobbyist_compensation (2-tier OR over 3 binary cells)
+# ---------------------------------------------------------------------------
+
+_ITEM5_TOTAL_ROW: Final[str] = "lobbyist_spending_report_includes_total_compensation"
+_ITEM5_BREAKDOWN_ROW: Final[str] = (
+    "lobbyist_spending_report_includes_compensation_broken_down_by_payer"
+)
+_ITEM5_REGFORM_ROW: Final[str] = "lobbyist_reg_form_includes_compensation"
+
+
+def project_sunlight_item5(
+    cells: dict[str, Any],
+) -> tuple[int | Literal["unable_to_evaluate"], str | None]:
+    """Sunlight item 5: lobbyist_compensation (2-tier, -1..0).
+
+    Form-agnostic OR over 3 disclosure modes. Any compensation
+    observable disclosed -> 0; none -> -1. No statutory implausibility
+    among the three modes, so no oddity flag.
+    """
+    for row_id in (_ITEM5_TOTAL_ROW, _ITEM5_BREAKDOWN_ROW, _ITEM5_REGFORM_ROW):
+        if _legal(cells, row_id) is None:
+            return UNABLE_TO_EVALUATE, None
+    disclosed = any(
+        bool(_legal(cells, r))
+        for r in (_ITEM5_TOTAL_ROW, _ITEM5_BREAKDOWN_ROW, _ITEM5_REGFORM_ROW)
+    )
+    return (0, None) if disclosed else (-1, None)

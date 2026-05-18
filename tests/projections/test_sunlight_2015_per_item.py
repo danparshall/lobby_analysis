@@ -24,11 +24,14 @@ from __future__ import annotations
 
 from decimal import Decimal
 
+import itertools
+
 from lobby_analysis.projections.sunlight_2015 import (
     UNABLE_TO_EVALUATE,
     project_sunlight_item1,
     project_sunlight_item2,
     project_sunlight_item3,
+    project_sunlight_item5,
 )
 
 
@@ -292,3 +295,54 @@ def test_item3_tier_minus1_when_threshold_positive_small():
 def test_item3_tier_minus1_when_threshold_positive_large():
     cells = {_ITEM3_ROW: {"legal_availability": Decimal("500.00")}}
     assert project_sunlight_item3(cells) == (-1, None)
+
+
+# ---------------------------------------------------------------------------
+# Item 5: lobbyist_compensation (2-tier OR over 3 binary cells)
+#
+# 3 input cells (legal_availability):
+#   lobbyist_spending_report_includes_total_compensation
+#   lobbyist_spending_report_includes_compensation_broken_down_by_payer
+#   lobbyist_reg_form_includes_compensation
+#
+# Rule: any compensation observable disclosed -> 0; none -> -1.
+# (Form-agnostic OR; no oddity flags because there is no statutory
+# implausibility — any subset of 3 disclosure modes can coexist.)
+# ---------------------------------------------------------------------------
+
+
+_ITEM5_TOTAL_ROW = "lobbyist_spending_report_includes_total_compensation"
+_ITEM5_BREAKDOWN_ROW = (
+    "lobbyist_spending_report_includes_compensation_broken_down_by_payer"
+)
+_ITEM5_REGFORM_ROW = "lobbyist_reg_form_includes_compensation"
+
+
+def _cells_item5(total: bool, breakdown: bool, regform: bool) -> dict:
+    return {
+        _ITEM5_TOTAL_ROW: {"legal_availability": total},
+        _ITEM5_BREAKDOWN_ROW: {"legal_availability": breakdown},
+        _ITEM5_REGFORM_ROW: {"legal_availability": regform},
+    }
+
+
+def test_item5_unable_to_evaluate_when_total_row_missing():
+    cells = _cells_item5(True, True, True)
+    del cells[_ITEM5_TOTAL_ROW]
+    score, oddity = project_sunlight_item5(cells)
+    assert score == UNABLE_TO_EVALUATE
+    assert oddity is None
+
+
+def test_item5_tier_minus1_when_nothing_disclosed():
+    assert project_sunlight_item5(_cells_item5(False, False, False)) == (-1, None)
+
+
+def test_item5_tier0_for_every_non_zero_combination():
+    # 2^3 - 1 = 7 combinations where at least one cell is True.
+    for combo in itertools.product([False, True], repeat=3):
+        if combo == (False, False, False):
+            continue
+        assert project_sunlight_item5(_cells_item5(*combo)) == (0, None), (
+            f"expected (0, None) for combo {combo}"
+        )
