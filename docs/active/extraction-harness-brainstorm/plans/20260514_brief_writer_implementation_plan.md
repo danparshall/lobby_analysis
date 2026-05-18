@@ -96,7 +96,7 @@ That's it. No source-side `provenance=` constructions anywhere in `src/`. Phase 
 
 **Subtle but important:** the test at line 60 imports `from lobby_analysis.models_v2.provenance import EvidenceSpan` (statute-semantic shape). Per the Q8 lock + the Tier-0 plan Step 2 / post-framing review F1 resolution: **the new shape uses `retrieval_v2.EvidenceSpan` (Citations-API shape)**. So the Phase 7 edit ALSO updates this test's import to the retrieval-side `EvidenceSpan` and the construction call to match its shape (`citation_type=...`, `document_index=...`, `cited_text=...` instead of `section_reference=...`). The test's intent (verify wrapper fields propagate) is preserved.
 
-**Tier-0 plan coordination:** the Tier-0 plan's Step 2 owns this same edit. If Tier-0 ships first, this plan's Phase 7 becomes a verify-already-done step; if `scoring_v2` ships first, Tier-0's Step 2 becomes verify-already-done. **Coordinate via STATUS.md / parent session.** This plan's Phase 7 instruction: re-run the grep + `git log -p src/lobby_analysis/models_v2/cells.py` to determine which side is acting and skip-or-execute accordingly.
+**Resolved 2026-05-18 in commit `0979779`** — the schema edit + dead-class deletion shipped together as a single commit on this branch, before either Tier-0 or `scoring_v2` impl started. Both Phase 7 below and Tier-0 plan Step 2 are now verify-already-done steps; the original "coordinate via STATUS.md to avoid double-execution" instruction is moot.
 
 ---
 
@@ -1190,39 +1190,19 @@ Commit: `scoring_v2: parser + hand-crafted sample_response fixture (Phase 5 of p
 
 ---
 
-## Phase 7 — `CompendiumCell.provenance` schema edit + audit-driven test updates
+## Phase 7 — `CompendiumCell.provenance` schema (already done; verify-and-skip)
 
-**Coordinate with Tier-0 plan Step 2.** Both this plan's Phase 7 and the Tier-0 plan's Step 2 own the same edit to `src/lobby_analysis/models_v2/cells.py`. At Phase-7 execution time:
+**Already done 2026-05-18 in commit `0979779`** (`models_v2: retire EvidenceSpan; migrate CompendiumCell.provenance to tuple[retrieval_v2.EvidenceSpan, ...]`). Both the schema edit AND the dead-class deletion shipped together as a single tight commit (6 files / 5 edit sites / 130 line-diff). The "audit non-trivial; defer deletion" assertion in the original plan was overcautious — the actual surface was tractable.
 
-1. `git -C /Users/dan/code/lobby_analysis/.worktrees/extraction-harness-brainstorm log -p src/lobby_analysis/models_v2/cells.py` to see if Tier-0 has already shipped the edit.
-2. If the edit is already in: skip steps 3-5 below, jump to Phase 8.
-3. If not: run `grep -rn "provenance=" tests/ src/` to confirm the audit list (plan-write-time result: 1 file, 1 line — `tests/test_models_v2_cells.py:69`). If the count differs, **stop and surface to user** (someone added new `provenance=` usages between plan-write and execution; coordinate before touching).
-4. Edit `src/lobby_analysis/models_v2/cells.py` — change line 40:
-   ```python
-   # BEFORE
-   provenance: EvidenceSpan | None = None
-   # AFTER
-   from lobby_analysis.retrieval_v2 import EvidenceSpan as _RetrievalEvidenceSpan
-   provenance: tuple[_RetrievalEvidenceSpan, ...] = ()
-   ```
-   (Import at top of file; aliased to avoid name-shadow with the now-deprecated `models_v2.provenance.EvidenceSpan` which is still imported at line 23. Per Tier-0 Step 2, add deprecation notice to `models_v2/provenance.py` docstring; deletion deferred.)
-5. Update `tests/test_models_v2_cells.py:60-69` — change import to `from lobby_analysis.retrieval_v2 import EvidenceSpan`, update the construction call:
-   ```python
-   span = EvidenceSpan(
-       citation_type="char_location",
-       document_index=0,
-       cited_text="as required by §101.70(B)(1)",
-       document_title="OH §101.70",
-       start_char_index=0,
-       end_char_index=24,
-   )
-   cell = BinaryCell(..., provenance=(span,))  # tuple, not single span
-   ```
-6. Run the full test suite: `uv run pytest`. Expected: all previously-green tests stay green; the test_scoring_v2_models.py UnscoreableCell test that uses `evidence_spans: tuple[EvidenceSpan, ...]` continues to import correctly.
+The original Phase-7 instructions (verify-or-execute) collapse to verify-only:
 
-Commit: `scoring_v2 / models_v2: lock CompendiumCell.provenance to retrieval_v2.EvidenceSpan tuple`
+1. `git -C /Users/dan/code/lobby_analysis/.worktrees/extraction-harness-brainstorm log --oneline 0979779 -- src/lobby_analysis/models_v2/cells.py` should return commit `0979779`.
+2. `ls src/lobby_analysis/models_v2/provenance.py` should fail (file deleted).
+3. `grep -rn "from lobby_analysis.models_v2.provenance" src/ tests/` should return zero hits.
 
-(If Tier-0 already shipped this edit, no commit; jump to Phase 8.)
+If all three verify: **skip to Phase 8.** No commit.
+
+If any fail (branch state surprise — e.g., a rebase dropped the commit): **stop and surface to user.** Do NOT re-execute the migration blindly — coordinate first.
 
 ---
 
