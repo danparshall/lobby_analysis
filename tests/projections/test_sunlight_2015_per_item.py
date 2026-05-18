@@ -25,6 +25,7 @@ from __future__ import annotations
 from lobby_analysis.projections.sunlight_2015 import (
     UNABLE_TO_EVALUATE,
     project_sunlight_item1,
+    project_sunlight_item2,
 )
 
 
@@ -173,3 +174,73 @@ def test_item1_oddity_position_without_bill():
     assert oddity is not None
     assert "position_on_bill" in oddity
     assert "bill_or_action_identifier" in oddity
+
+
+# ---------------------------------------------------------------------------
+# Item 2: expenditure_transparency (4-tier clean nesting)
+#
+# 3 input cells (legal_availability):
+#   lobbyist_spending_report_required
+#   lobbyist_spending_report_categorizes_expenses_by_type
+#   lobbyist_spending_report_includes_itemized_expenses
+#
+# Truth table (with wildcards from spec doc):
+#   F * * -> -1
+#   T F F ->  0
+#   T T F ->  1
+#   T * T ->  2
+# Oddity: (T, F, T) — itemization without categorization. Tier 2 (per
+# spec wildcard) plus non-None oddity flag.
+# ---------------------------------------------------------------------------
+
+
+_ITEM2_REQUIRED_ROW = "lobbyist_spending_report_required"
+_ITEM2_CATEGORIZED_ROW = "lobbyist_spending_report_categorizes_expenses_by_type"
+_ITEM2_ITEMIZED_ROW = "lobbyist_spending_report_includes_itemized_expenses"
+
+
+def _cells_item2(required: bool, categorized: bool, itemized: bool) -> dict:
+    return {
+        _ITEM2_REQUIRED_ROW: {"legal_availability": required},
+        _ITEM2_CATEGORIZED_ROW: {"legal_availability": categorized},
+        _ITEM2_ITEMIZED_ROW: {"legal_availability": itemized},
+    }
+
+
+def test_item2_unable_to_evaluate_when_required_cell_missing():
+    cells = _cells_item2(True, True, True)
+    del cells[_ITEM2_REQUIRED_ROW]
+    score, oddity = project_sunlight_item2(cells)
+    assert score == UNABLE_TO_EVALUATE
+    assert oddity is None
+
+
+def test_item2_tier_minus1_not_required():
+    # F * * -> -1; any combination of categorized/itemized.
+    for categorized in (False, True):
+        for itemized in (False, True):
+            assert project_sunlight_item2(_cells_item2(False, categorized, itemized)) == (
+                -1,
+                None,
+            )
+
+
+def test_item2_tier0_required_lump_total():
+    assert project_sunlight_item2(_cells_item2(True, False, False)) == (0, None)
+
+
+def test_item2_tier1_required_categorized_not_itemized():
+    assert project_sunlight_item2(_cells_item2(True, True, False)) == (1, None)
+
+
+def test_item2_tier2_fully_itemized_and_categorized():
+    assert project_sunlight_item2(_cells_item2(True, True, True)) == (2, None)
+
+
+def test_item2_oddity_itemized_without_categorization():
+    # T F T -> tier 2 (per spec wildcard "T * T -> 2") + oddity flag.
+    score, oddity = project_sunlight_item2(_cells_item2(True, False, True))
+    assert score == 2
+    assert oddity is not None
+    assert "itemized" in oddity
+    assert "categorized" in oddity

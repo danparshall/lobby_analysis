@@ -188,3 +188,51 @@ def project_sunlight_item1(
         )
     oddity = "; ".join(higher_without_lower) if higher_without_lower else None
     return tier, oddity
+
+
+# ---------------------------------------------------------------------------
+# Item 2: expenditure_transparency (4-tier nested with wildcard at top tier)
+# ---------------------------------------------------------------------------
+
+_ITEM2_REQUIRED_ROW: Final[str] = "lobbyist_spending_report_required"
+_ITEM2_CATEGORIZED_ROW: Final[str] = (
+    "lobbyist_spending_report_categorizes_expenses_by_type"
+)
+_ITEM2_ITEMIZED_ROW: Final[str] = "lobbyist_spending_report_includes_itemized_expenses"
+
+
+def project_sunlight_item2(
+    cells: dict[str, Any],
+) -> tuple[int | Literal["unable_to_evaluate"], str | None]:
+    """Sunlight item 2: expenditure_transparency (4-tier, -1..2).
+
+    Truth table per spec doc::
+
+        F * * -> -1   (report not required)
+        T F F ->  0   (lump total only)
+        T T F ->  1   (categorized but not itemized)
+        T * T ->  2   (itemized, with or without separate categorization)
+
+    The ``(T, F, T)`` combination — itemization without separate
+    categorization — is statutorily implausible (itemization implies
+    categorization). Returns tier 2 per the wildcard rule, with a
+    non-None oddity flag.
+    """
+    for row_id in (_ITEM2_REQUIRED_ROW, _ITEM2_CATEGORIZED_ROW, _ITEM2_ITEMIZED_ROW):
+        if _legal(cells, row_id) is None:
+            return UNABLE_TO_EVALUATE, None
+    required = bool(_legal(cells, _ITEM2_REQUIRED_ROW))
+    categorized = bool(_legal(cells, _ITEM2_CATEGORIZED_ROW))
+    itemized = bool(_legal(cells, _ITEM2_ITEMIZED_ROW))
+    if not required:
+        return -1, None
+    if itemized:
+        if not categorized:
+            return 2, (
+                "itemized True while categorized False (itemization implies "
+                "categorization statutorily)"
+            )
+        return 2, None
+    if categorized:
+        return 1, None
+    return 0, None
