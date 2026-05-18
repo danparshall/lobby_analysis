@@ -81,3 +81,50 @@ def test_item1_unable_to_evaluate_when_one_required_cell_missing():
     score, oddity = project_sunlight_item1(cells)
     assert score == UNABLE_TO_EVALUATE
     assert oddity is None
+
+
+# --- valid truth-table tiers (4 tiers x 3 form-type variants) --------------
+
+
+def test_item1_tier_minus1_when_nothing_disclosed_both_forms():
+    cells = _cells_item1(reg=(False, False, False), spend=(False, False, False))
+    assert project_sunlight_item1(cells) == (-1, None)
+
+
+def test_item1_tier0_general_subject_only_on_reg_form():
+    cells = _cells_item1(reg=(True, False, False), spend=(False, False, False))
+    assert project_sunlight_item1(cells) == (0, None)
+
+
+def test_item1_tier0_general_subject_only_on_spending_report():
+    cells = _cells_item1(reg=(False, False, False), spend=(True, False, False))
+    assert project_sunlight_item1(cells) == (0, None)
+
+
+def test_item1_tier0_general_subject_on_both_forms():
+    cells = _cells_item1(reg=(True, False, False), spend=(True, False, False))
+    assert project_sunlight_item1(cells) == (0, None)
+
+
+def test_item1_tier1_general_and_bill_on_reg_form_only():
+    cells = _cells_item1(reg=(True, True, False), spend=(False, False, False))
+    assert project_sunlight_item1(cells) == (1, None)
+
+
+def test_item1_tier1_general_and_bill_split_across_forms():
+    # general_subject on reg form; bill_id on spending report. OR over the
+    # form-type split should still yield tier 1.
+    cells = _cells_item1(reg=(True, False, False), spend=(False, True, False))
+    assert project_sunlight_item1(cells) == (1, None)
+
+
+def test_item1_tier2_full_disclosure_both_forms():
+    cells = _cells_item1(reg=(True, True, True), spend=(True, True, True))
+    assert project_sunlight_item1(cells) == (2, None)
+
+
+def test_item1_tier2_position_only_on_spending_report_others_on_reg_form():
+    # Each concept satisfied by one or both forms; specifically tests the
+    # form-agnostic-OR behavior at every concept-pair.
+    cells = _cells_item1(reg=(True, True, False), spend=(False, False, True))
+    assert project_sunlight_item1(cells) == (2, None)

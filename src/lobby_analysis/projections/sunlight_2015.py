@@ -157,5 +157,15 @@ def project_sunlight_item1(
     for row_id in _ITEM1_REG_ROWS + _ITEM1_SPEND_ROWS:
         if _legal(cells, row_id) is None:
             return UNABLE_TO_EVALUATE, None
-    # Placeholder: tier-table logic comes in stage 2.
-    raise NotImplementedError("stage 2 not yet implemented")
+    reg = tuple(bool(_legal(cells, r)) for r in _ITEM1_REG_ROWS)
+    spend = tuple(bool(_legal(cells, r)) for r in _ITEM1_SPEND_ROWS)
+    general = reg[0] or spend[0]
+    bill = reg[1] or spend[1]
+    position = reg[2] or spend[2]
+    if not general:
+        return -1, None
+    if not bill:
+        return 0, None
+    if not position:
+        return 1, None
+    return 2, None
