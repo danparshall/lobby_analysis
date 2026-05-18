@@ -40,6 +40,41 @@ The `data/` symlink convention from `skills/use-worktree/SKILL.md` was **skipped
 
 (Newest first.)
 
+### 2026-05-18 — CPI 2015 drift fix + v2 row-reference audit (closes GH #17)
+
+Convo: [`convos/20260518_cpi_drift_fix_and_v2_row_audit.md`](convos/20260518_cpi_drift_fix_and_v2_row_audit.md)
+Predecessor: same-day Sunlight 2015 session ([`convos/20260518_sunlight_2015_projection_tdd.md`](convos/20260518_sunlight_2015_projection_tdd.md)) — surfaced the IND_201 drift and filed it as GH #17.
+GH issue: [danparshall/lobby_analysis#17](https://github.com/danparshall/lobby_analysis/issues/17)
+
+**Topics explored**
+
+- Verified GH #17's claims against the live v2 TSV — 6 reference sites for IND_201's bad name; `lobbyist_spending_report_includes_total_compensation` confirmed at line 138 (8-rubric mega-row).
+- Wrote a first-pass shape-based audit. It immediately flagged a second drift instance at IND_200 (`registration_timeliness_after_first_lobbying_activity` — merged into two-axis `lobbyist_registration_deadline_days_after_first_lobbying` by D11 of the row-freeze) plus 4 false-positive enum-value matches (`cadence in (...)` / `rule == "..."` comparisons).
+- Per user direction, fixed IND_200 here too and rewrote the audit with syntactic AST detection.
+- My first IND_200 rename used the wrong v2 name (took it from the historical mapping doc, which uses the unprefixed `registration_deadline_days_after_first_lobbying`); the rewritten audit caught it. Actual v2 row is `lobbyist_registration_deadline_days_after_first_lobbying` (line 178 v2 TSV).
+- Syntactic AST audit detects 4 reference patterns + sentinel-prefix exclusion: `_legal/_practical(cells, X)` second arg; `cells[X]` subscript; tuple-register `("ID", X, _LEGAL|_PRACTICAL)`; module-level `_FOO_ROW`/`_FOO_ROWS` constants; `__`-prefixed names excluded as deliberate test-only sentinels (sole instance: `__ind_205_partial_credit_passthrough`).
+
+**Provisional findings**
+
+- **Audit is load-bearing.** Paid for itself before commit — caught a second drift instance the issue didn't name, then caught my own wrong-rename. Both surfaced from end-state detection, not prior knowledge.
+- **Syntactic detection is the right model.** Shape-based has irreducible false positives because v2 row names and v2 enum values share lexical shape. Syntactic detection by AST position cleanly separates them and is robust to new accessors that follow the `(cells, row_id, ...)` convention.
+- **The v2 TSV is the source of truth for current row names.** The historical mapping docs predate the freeze and use earlier candidate names; treat them as background, not as the contract. Burnt-finger lesson from the IND_200 wrong-rename.
+
+**Results**
+
+No standalone results files this session.
+
+**Decisions carried forward**
+
+- Audit scope is `src/lobby_analysis/projections/*.py` only. Test-side fixture-drift audit punted to follow-up if more surface (would need stricter detection, e.g., only `cells[...]` subscripts in test files).
+- 3 pre-existing `test_pipeline.py` failures (FileNotFoundError on `data/portal_snapshots/CA/2026-04-13/manifest.json`) NOT fixed — out of scope; require `data/` symlink plumbing for this worktree (intentionally absent at branch creation per RESEARCH_LOG line 33–35). Surfaced to user.
+
+**Next steps**
+
+Phase 4 cross-rubric agreement audit on the `_total_compensation` 8-rubric mega-row is now unblocked. Per the predecessor convo's recommendation: either (a) Newmark 2017 (rubric #4) plan-drafting or (b) Opheim 1991 (rubric #6) implementation — both ready, both advance the locked rubric order; or (c) prototype the cross-rubric agreement audit on the now-3-module overlap (CPI + PRI + Sunlight).
+
+---
+
 ### 2026-05-18 — Sunlight 2015 projection: rubric #3 shipped
 
 Convo: [`convos/20260518_sunlight_2015_projection_tdd.md`](convos/20260518_sunlight_2015_projection_tdd.md)

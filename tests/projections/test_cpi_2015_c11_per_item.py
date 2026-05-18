@@ -155,14 +155,14 @@ def test_ind_199_no_when_no_registration_required():
 
 # ---------------------------------------------------------------------------
 # IND_200 - de facto 5-tier passthrough:
-# registration_timeliness_after_first_lobbying_activity
+# lobbyist_registration_deadline_days_after_first_lobbying (practical axis)
 # ---------------------------------------------------------------------------
 
 
 @pytest.mark.parametrize("value", [0, 25, 50, 75, 100])
 def test_ind_200_passes_through_practical_availability_value(value: int):
     cells = {
-        "registration_timeliness_after_first_lobbying_activity": {
+        "lobbyist_registration_deadline_days_after_first_lobbying": {
             "practical_availability": value
         }
     }
@@ -181,7 +181,7 @@ def test_ind_201_yes_when_report_required_itemized_and_compensation_included():
     cells = {
         "lobbyist_spending_report_required": {"legal_availability": True},
         "lobbyist_spending_report_includes_itemized_expenses": {"legal_availability": True},
-        "lobbyist_spending_report_includes_compensation": {"legal_availability": True},
+        "lobbyist_spending_report_includes_total_compensation": {"legal_availability": True},
     }
     assert project_ind_201(cells) == 100
 
@@ -190,7 +190,7 @@ def test_ind_201_moderate_when_itemized_but_no_compensation():
     cells = {
         "lobbyist_spending_report_required": {"legal_availability": True},
         "lobbyist_spending_report_includes_itemized_expenses": {"legal_availability": True},
-        "lobbyist_spending_report_includes_compensation": {"legal_availability": False},
+        "lobbyist_spending_report_includes_total_compensation": {"legal_availability": False},
     }
     assert project_ind_201(cells) == 50
 
@@ -199,7 +199,7 @@ def test_ind_201_moderate_when_compensation_but_not_itemized():
     cells = {
         "lobbyist_spending_report_required": {"legal_availability": True},
         "lobbyist_spending_report_includes_itemized_expenses": {"legal_availability": False},
-        "lobbyist_spending_report_includes_compensation": {"legal_availability": True},
+        "lobbyist_spending_report_includes_total_compensation": {"legal_availability": True},
     }
     assert project_ind_201(cells) == 50
 
@@ -208,7 +208,7 @@ def test_ind_201_no_when_no_report_required():
     cells = {
         "lobbyist_spending_report_required": {"legal_availability": False},
         "lobbyist_spending_report_includes_itemized_expenses": {"legal_availability": True},
-        "lobbyist_spending_report_includes_compensation": {"legal_availability": True},
+        "lobbyist_spending_report_includes_total_compensation": {"legal_availability": True},
     }
     assert project_ind_201(cells) == 0
 
@@ -417,7 +417,7 @@ _DE_FACTO_PASSTHROUGH_ITEMS = {
     "IND_198": (project_ind_198, "lobbyist_registration_required"),
     "IND_200": (
         project_ind_200,
-        "registration_timeliness_after_first_lobbying_activity",
+        "lobbyist_registration_deadline_days_after_first_lobbying",
     ),
     "IND_202": (project_ind_202, "lobbyist_spending_report_filing_cadence"),
     "IND_204": (

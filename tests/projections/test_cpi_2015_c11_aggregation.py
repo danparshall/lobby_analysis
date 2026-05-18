@@ -189,7 +189,7 @@ def _cells_from_per_item_scores(per_item: dict[str, int]) -> dict[str, dict]:
         cadence = "no_registration_required"
     cells["lobbyist_registration_renewal_cadence"] = {"legal_availability": cadence}
     # IND_200: passthrough.
-    cells["registration_timeliness_after_first_lobbying_activity"] = {
+    cells["lobbyist_registration_deadline_days_after_first_lobbying"] = {
         "practical_availability": per_item["IND_200"]
     }
     # IND_201: compound de jure -- for MOD (50) the projection needs
@@ -199,7 +199,7 @@ def _cells_from_per_item_scores(per_item: dict[str, int]) -> dict[str, dict]:
     cells["lobbyist_spending_report_includes_itemized_expenses"] = {
         "legal_availability": s201 >= 50
     }
-    cells["lobbyist_spending_report_includes_compensation"] = {
+    cells["lobbyist_spending_report_includes_total_compensation"] = {
         "legal_availability": s201 == 100
     }
     # IND_202: passthrough.

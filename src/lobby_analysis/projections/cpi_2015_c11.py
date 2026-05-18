@@ -181,7 +181,7 @@ def project_ind_199(cells: dict[str, Any]) -> int:
 def project_ind_200(cells: dict[str, Any]) -> int:
     """IND_200: registration filed within days of first lobbying. 5-tier passthrough."""
     return int(
-        _practical(cells, "registration_timeliness_after_first_lobbying_activity") or 0
+        _practical(cells, "lobbyist_registration_deadline_days_after_first_lobbying") or 0
     )
 
 
@@ -197,7 +197,7 @@ def project_ind_201(cells: dict[str, Any]) -> int:
     if not required:
         return 0
     itemized = bool(_legal(cells, "lobbyist_spending_report_includes_itemized_expenses"))
-    compensation = bool(_legal(cells, "lobbyist_spending_report_includes_compensation"))
+    compensation = bool(_legal(cells, "lobbyist_spending_report_includes_total_compensation"))
     if itemized and compensation:
         return 100
     if itemized or compensation:
