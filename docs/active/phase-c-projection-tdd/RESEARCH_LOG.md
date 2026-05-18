@@ -40,6 +40,56 @@ The `data/` symlink convention from `skills/use-worktree/SKILL.md` was **skipped
 
 (Newest first.)
 
+### 2026-05-18 — Sub-3 Stream 3 plans: FOCAL 2024 plan-set (4 plans) + HG 2007 plan
+
+Convo: [`convos/20260518_focal_hg_plans_drafting.md`](convos/20260518_focal_hg_plans_drafting.md)
+Plans:
+- [`plans/20260518_hg_2007_plan.md`](plans/20260518_hg_2007_plan.md) — ~500 lines
+- [`plans/20260518_focal_2024_legal_core_plan.md`](plans/20260518_focal_2024_legal_core_plan.md) — ~470 lines
+- [`plans/20260518_focal_2024_contact_log_plan.md`](plans/20260518_focal_2024_contact_log_plan.md) — ~320 lines
+- [`plans/20260518_focal_2024_openness_timeliness_plan.md`](plans/20260518_focal_2024_openness_timeliness_plan.md) — ~390 lines
+- [`plans/20260518_focal_2024_aggregation_plan.md`](plans/20260518_focal_2024_aggregation_plan.md) — ~510 lines
+
+**Topics explored**
+
+- Pre-flight: reconstructed Phase C state from `cacb65b` HEAD (Sub-2 Newmark plans shipped + pushed); read Sub-0's playbook gap audit + Sub-1's drafting conventions convo + Sub-2's drafting convo + the rubric implementation playbook + the FOCAL (938 lines) and HG (815 lines) spec docs end-to-end.
+- **Phase 0 cross-check executed.** Ran `load_v2_compendium()` against 59 expected FOCAL rows + 49 expected HG rows + 6 PRI cadence binaries (Q12 input). Surfaced **23 spec-doc-vs-v2 renames** total (9 for HG, 17 for FOCAL); all resolved cleanly via TSV verification. Most renames inherit from Sub-1 + Sub-2 families; FOCAL adds a few of its own (set-typed cell prefix normalization, staff-cell v2 split).
+- **HG plan drafted** with retrieval-gate dual-path validation — Path A (Strong, 1,900-cell ground truth if CPI's 2007 scorecard retrievable) vs Path B (Weak-inequality `our_partial ≤ published_total - 17` if not). 38 in-scope items via declarative `_ATOMIC_SPEC` + 9 named helpers. Q12 cadence-derived projection; Q15+Q16-Q19 conditional cascade; Q23/Q24 partial-scope projection. **Retrieval is NOT a Track A task** — correction to the spec doc's misattribution; HG plan calls for a separate pre-launch retrieval attempt.
+- **FOCAL plan-set drafted** as 4 sub-plans per Sub-0's recommendation (legal core / contact log / openness+timeliness / aggregation), all converging on a SINGLE `focal_2024.py` module via additions to a shared `_ATOMIC_SPEC` dispatcher dict. Sub-4 launcher must enforce intra-FOCAL ordering.
+- **scope.3 v2 staff-split structural delta** — v2 split FOCAL's single `def_target_legislative_or_executive_staff` into 2 cells (`_legislative_staff` + `_executive_staff`). Plan handles via strict-AND projection.
+- **FOCAL partly-tier YAGNI collapse** — ~19 of FOCAL's ~20 partly-tier sub-criteria are not extractable from v2 binary cells. Collapse to binary (TRUE → 2; FALSE → 0); document systematic over-scoring on Federal US LDA per battery; tolerance budget ~±15 raw points on the 81 target.
+- **scope.2 calibration cutoffs** — Sub-0 had flagged this as a Phase C decision. Plan ships defaults `LOW_DOLLAR_CUTOFF = $1000`, `LOW_TIME_CUTOFF = 5%`. Federal US LDA's $3000 + 20% threshold is "significant" under these cutoffs (matches published scope.2 = 0).
+- **2024-vs-2025 vintage handling** — L-N 2025 merged timeliness.1 + timeliness.2 + added "Lobbyist list" indicator. Spec encoded via `min_vintage` / `max_vintage` per `_ATOMIC_SPEC` entry; dispatcher filters by `current_vintage`.
+
+**Provisional findings**
+
+- **FOCAL's partly-tier sub-criteria are mostly not operationally extractable from v2 binary cells.** Only 1 of ~20 (openness.6 "only business IDs") reads cleanly from v2 typed cells. Systematic over-scoring documented in module docstrings; tolerance budgeted per battery in the aggregation plan.
+- **scope.3 v2 staff split** is a meaningful structural change from the spec doc. Plan handles via strict-AND; Federal US LDA validation will surface whether strict reading aligns with L-N 2025's coding.
+- **HG retrieval gate creates a real branching workflow** for Sub-5+ implementation. Path A (per-state per-item scorecard from CPI archives) gives 1,900-cell ground truth; Path B (composite totals only) gives 50 weak-inequality checks. Launch infrastructure (Sub-4) must run the retrieval attempt first.
+- **Cross-rubric overlap promotion at FOCAL landing** — `lobbyist_spending_report_includes_total_compensation` reaches 8-module-confirmed at the projection layer (was 7 after HG; Opheim blocked). Phase 4 cross-rubric agreement audit becomes substantially more powerful.
+- **No shared helpers between FOCAL and HG.** Unlike Stream 2 (Newmark 2017's `project_gifts_actor_agnostic_or` shared with Newmark 2005), Stream 3 has no intra-stream helper sharing. FOCAL optionally imports `project_gifts_actor_agnostic_or` from `newmark_2017` for financials.10 if available.
+
+**Decisions carried forward**
+
+- **Sub-3's 5 plans are committed-ready as-is.** Self-contained per write-a-plan; carry the 7 Sub-0 conventions; STOP clauses for spec-doc-vs-v2 drift; Phase-0 cross-checks specified inline; rename mapping tables baked in.
+- **4-plan FOCAL split** at battery/concern boundary; all converging on `focal_2024.py`. Sub-4 launcher must enforce intra-FOCAL ordering.
+- **HG dual-path validation regime** — Path A (Strong) if scorecard retrievable; Path B (Weak-inequality) if not. Launcher attempts retrieval first; passes `HG_GROUND_TRUTH_PATH=A|B` to implementing agent's environment.
+- **FOCAL partly-tier YAGNI collapse** with documented over-scoring tolerance.
+- **scope.3 strict-AND read for v2 staff split.**
+- **scope.2 calibration defaults** `$1000 / 5%`; per-fixture override for sensitivity analysis.
+- **2024-vs-2025 vintage handling** via single dispatcher with `min_vintage` / `max_vintage` per spec entry.
+- **19 Open Questions surfaced** across the 5 plans for the implementing agent (or pre-launch decision) to confirm before launch. All flagged in the plans' Open Questions sections.
+
+**Next steps**
+
+Stream 3's plans are ready for Sub-5+ headless implementation once Sub-4's launch infrastructure exists. Recommended sequencing per the locked rubric order: (1) HG 2007 implementation — independent; can launch in parallel with FOCAL. Pre-launch task: scorecard retrieval attempt. (2) FOCAL 2024 implementation — 4 sub-sessions in strict order (legal core → contact log → openness+timeliness → aggregation).
+
+**Sub-4 (launch infra + Sunlight canary)** is the next session. The launch infrastructure handles: path-selection step for HG (retrieval attempt + env var); intra-FOCAL ordering enforcement (4-step sequence); Stream-2 ordering enforcement (Newmark 2017 before 2005); API-key handoff per `plans/20260514_headless_api_key_handoff.md`; Sunlight canary — re-run rubric #3 implementation headless to validate the launcher.
+
+After Stream 3 ships, Phase C is **7 of 8 score-projection rubrics complete** (Opheim blocked on 1988-89 statute data). Phase 4 cross-rubric agreement audit becomes the natural next research line.
+
+---
+
 ### 2026-05-18 — Sub-2 Stream 2 plans: Newmark 2017 + Newmark 2005
 
 Convo: [`convos/20260518_newmark_plans_drafting.md`](convos/20260518_newmark_plans_drafting.md)
