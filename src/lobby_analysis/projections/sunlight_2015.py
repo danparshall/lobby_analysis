@@ -61,9 +61,14 @@ row-freeze (Open Issue 2 in the original spec landed as ``_by_payer``).
 
 from __future__ import annotations
 
+import csv
+import re
+from pathlib import Path
 from typing import Any, Final, Literal
 
 from pydantic import BaseModel, ConfigDict
+
+from scoring.calibration import STATE_NAME_TO_USPS
 
 
 # ---------------------------------------------------------------------------
@@ -305,3 +310,99 @@ def project_sunlight_item5(
         for r in (_ITEM5_TOTAL_ROW, _ITEM5_BREAKDOWN_ROW, _ITEM5_REGFORM_ROW)
     )
     return (0, None) if disclosed else (-1, None)
+
+
+# ---------------------------------------------------------------------------
+# Ground-truth loader
+#
+# CSV columns in the published file (with empty-string first column for
+# state name):
+#
+#   '' (state name), Grade, Total, Lobbyist Activity,
+#   Expenditure Transparency, Expenditure Reporting Thresholds,
+#   Document Accessibility, Lobbyist Compensation,
+#   State Lobbying Law, State Disclosure Portal
+#
+# Item 4 (Document Accessibility) is NOT surfaced by the loader.
+# Total / Grade columns are NOT surfaced (regression-guarded in
+# tests/projections/test_sunlight_2015_aggregation.py).
+# ---------------------------------------------------------------------------
+
+_CSV_PATH_PARTS: Final[tuple[str, ...]] = (
+    "papers",
+    "Sunlight_2015__state_lobbying_disclosure_scorecard_data.csv",
+)
+
+# CSV column -> in-scope item id.
+_CSV_COLUMN_TO_ITEM_ID: Final[dict[str, str]] = {
+    "Lobbyist Activity": "sunlight_2015.lobbyist_activity",
+    "Expenditure Transparency": "sunlight_2015.expenditure_transparency",
+    "Expenditure Reporting Thresholds": "sunlight_2015.expenditure_reporting_thresholds",
+    "Lobbyist Compensation": "sunlight_2015.lobbyist_compensation",
+}
+
+# Footnote markers: trailing runs of '*' or '^'. Per Phase 0 inventory the
+# observed markers are {'*', '**', '***', '^^'} across 36 cells.
+_MARKER_RE: Final[re.Pattern[str]] = re.compile(r"[*^]+$")
+
+
+def _load_csv_raw(repo_root: Path) -> list[dict[str, str]]:
+    csv_path = repo_root.joinpath(*_CSV_PATH_PARTS)
+    with csv_path.open() as f:
+        return list(csv.DictReader(f))
+
+
+def _strip_marker(raw: str) -> tuple[int, str | None]:
+    """Strip trailing footnote markers; return (int, marker_or_None)."""
+    match = _MARKER_RE.search(raw)
+    marker = match.group(0) if match else None
+    numeric_part = raw[: match.start()] if match else raw
+    return int(numeric_part), marker
+
+
+def load_sunlight_2015_reference(repo_root: Path) -> dict[str, dict[str, int]]:
+    """Load per-state per-item published tiers from the Sunlight CSV.
+
+    Returns ``{USPS_code: {sunlight_2015.<item>: tier_int}}`` with 50
+    states and 4 in-scope items per state. Footnote markers are
+    stripped; marker provenance is available via
+    ``load_sunlight_2015_reference_marker_provenance``. Item 4
+    (``document_accessibility``) is NOT included.
+    """
+    rows = _load_csv_raw(repo_root)
+    reference: dict[str, dict[str, int]] = {}
+    for row in rows:
+        state_name = row[""]
+        usps = STATE_NAME_TO_USPS[state_name]
+        per_item: dict[str, int] = {}
+        for csv_col, item_id in _CSV_COLUMN_TO_ITEM_ID.items():
+            tier, _ = _strip_marker(row[csv_col])
+            per_item[item_id] = tier
+        reference[usps] = per_item
+    return reference
+
+
+def load_sunlight_2015_reference_marker_provenance(
+    repo_root: Path,
+) -> dict[str, dict[str, str]]:
+    """Return the footnote markers stripped from per-cell tiers.
+
+    Shape: ``{USPS_code: {sunlight_2015.<item>: marker_str}}``. States
+    with no markers on any in-scope cell are omitted from the outer
+    dict. Used by audit-traceable validation tests that want to verify
+    a marker-carrying cell still projects to its published tier
+    (markers are caveats, not invalidations).
+    """
+    rows = _load_csv_raw(repo_root)
+    provenance: dict[str, dict[str, str]] = {}
+    for row in rows:
+        state_name = row[""]
+        usps = STATE_NAME_TO_USPS[state_name]
+        markers: dict[str, str] = {}
+        for csv_col, item_id in _CSV_COLUMN_TO_ITEM_ID.items():
+            _, marker = _strip_marker(row[csv_col])
+            if marker is not None:
+                markers[item_id] = marker
+        if markers:
+            provenance[usps] = markers
+    return provenance
