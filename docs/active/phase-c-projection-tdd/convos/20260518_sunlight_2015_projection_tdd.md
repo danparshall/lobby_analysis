@@ -176,3 +176,7 @@ Recommendation: **(d) first, then (a) or (b).** The CPI drift is a small
 yak-shave that unblocks Phase 4 prototyping and removes a load-bearing
 silent failure mode before extraction harness lands. (a) and (b) are
 equally good after that; either advances the locked rubric order.
+
+## Captured Tasks
+
+- [#17: CPI 2015 IND_201 reads row name absent from v2 (silent drift; load-bearing)](https://github.com/danparshall/lobby_analysis/issues/17) — captured 2026-05-18
