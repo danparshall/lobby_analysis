@@ -20,7 +20,7 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-from .provenance import EvidenceSpan
+from lobby_analysis.retrieval_v2.models import EvidenceSpan
 
 
 class CompendiumCell(BaseModel):
@@ -29,6 +29,10 @@ class CompendiumCell(BaseModel):
     Concrete subclasses add their own value field(s). Instantiation of the
     bare ABC is allowed for completeness but is never useful — every real
     cell is a typed subclass keyed in the cell-spec registry.
+
+    `provenance` is a tuple of Citations-API spans (one per cited claim the
+    scorer emitted on the path to this cell's value). Empty tuple = no
+    provenance attached (e.g. for cells constructed in tests or seeds).
     """
 
     model_config = ConfigDict(frozen=True, strict=True)
@@ -37,7 +41,7 @@ class CompendiumCell(BaseModel):
     conditional: bool = False
     condition_text: str | None = None
     confidence: Literal["high", "medium", "low"] | None = None
-    provenance: EvidenceSpan | None = None
+    provenance: tuple[EvidenceSpan, ...] = ()
 
 
 class BinaryCell(CompendiumCell):

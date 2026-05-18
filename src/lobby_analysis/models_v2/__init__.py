@@ -28,7 +28,6 @@ from .cells import (
     UpdateCadenceCell,
 )
 from .extraction import ExtractionRun, StateVintageExtraction
-from .provenance import EvidenceSpan
 
 __all__ = [
     "BinaryCell",
@@ -40,7 +39,6 @@ __all__ = [
     "EnumCell",
     "EnumSetCell",
     "EnumSetWithAmountsCell",
-    "EvidenceSpan",
     "ExtractionRun",
     "FloatCell",
     "FreeTextCell",

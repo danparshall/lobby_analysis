@@ -32,7 +32,7 @@ def test_binary_cell_constructs_with_defaults():
     assert cell.conditional is False
     assert cell.condition_text is None
     assert cell.confidence is None
-    assert cell.provenance is None
+    assert cell.provenance == ()
 
 
 def test_binary_cell_accepts_false_value():
@@ -55,23 +55,33 @@ def test_cell_requires_cell_id():
 
 
 def test_binary_cell_wrapper_fields_propagate():
-    """conditional + condition_text + confidence + provenance all round-trip."""
-    from lobby_analysis.models_v2.cells import BinaryCell
-    from lobby_analysis.models_v2.provenance import EvidenceSpan
+    """conditional + condition_text + confidence + provenance all round-trip.
 
-    span = EvidenceSpan(section_reference="§101.70(B)(1)")
+    `provenance` is `tuple[EvidenceSpan, ...]` where `EvidenceSpan` is the
+    Citations-API span shape from `retrieval_v2.models` (locked 2026-05-18).
+    """
+    from lobby_analysis.models_v2.cells import BinaryCell
+    from lobby_analysis.retrieval_v2.models import EvidenceSpan
+
+    span = EvidenceSpan(
+        citation_type="char_location",
+        document_index=0,
+        cited_text="An expenditure exceeding $200 per calendar quarter triggers registration.",
+        start_char_index=42,
+        end_char_index=115,
+    )
     cell = BinaryCell(
         cell_id=("lobbyist_registration_required", "legal"),
         value=True,
         conditional=True,
         condition_text="if expenditures ≥ $200/quarter",
         confidence="high",
-        provenance=span,
+        provenance=(span,),
     )
     assert cell.conditional is True
     assert cell.condition_text == "if expenditures ≥ $200/quarter"
     assert cell.confidence == "high"
-    assert cell.provenance is span
+    assert cell.provenance == (span,)
 
 
 def test_binary_cell_rejects_non_bool_value():
