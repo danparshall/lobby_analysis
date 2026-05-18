@@ -22,10 +22,13 @@ Item 4 (``document_accessibility``) is excluded; no helper is defined.
 
 from __future__ import annotations
 
+from decimal import Decimal
+
 from lobby_analysis.projections.sunlight_2015 import (
     UNABLE_TO_EVALUATE,
     project_sunlight_item1,
     project_sunlight_item2,
+    project_sunlight_item3,
 )
 
 
@@ -244,3 +247,48 @@ def test_item2_oddity_itemized_without_categorization():
     assert oddity is not None
     assert "itemized" in oddity
     assert "categorized" in oddity
+
+
+# ---------------------------------------------------------------------------
+# Item 3: expenditure_reporting_thresholds (2-tier typed cell)
+#
+# 1 input cell: lobbyist_filing_itemization_de_minimis_threshold_dollars
+# (Optional[Decimal] on legal_availability axis).
+#
+#   threshold absent OR threshold == 0  ->   0   (all expenditures itemized)
+#   threshold > 0                       ->  -1   (below-threshold lines exempt)
+#
+# unable_to_evaluate: row_id not present as a key in cells. A row present
+# with legal_availability=None means "no threshold defined" -> tier 0
+# per the spec rule "threshold IS NULL ... -> 0".
+# ---------------------------------------------------------------------------
+
+
+_ITEM3_ROW = "lobbyist_filing_itemization_de_minimis_threshold_dollars"
+
+
+def test_item3_unable_to_evaluate_when_row_absent_from_cells():
+    score, oddity = project_sunlight_item3({})
+    assert score == UNABLE_TO_EVALUATE
+    assert oddity is None
+
+
+def test_item3_tier0_when_threshold_is_none():
+    # Row present, legal_availability=None -> "no threshold defined" -> 0.
+    cells = {_ITEM3_ROW: {"legal_availability": None}}
+    assert project_sunlight_item3(cells) == (0, None)
+
+
+def test_item3_tier0_when_threshold_is_zero_decimal():
+    cells = {_ITEM3_ROW: {"legal_availability": Decimal("0")}}
+    assert project_sunlight_item3(cells) == (0, None)
+
+
+def test_item3_tier_minus1_when_threshold_positive_small():
+    cells = {_ITEM3_ROW: {"legal_availability": Decimal("25.00")}}
+    assert project_sunlight_item3(cells) == (-1, None)
+
+
+def test_item3_tier_minus1_when_threshold_positive_large():
+    cells = {_ITEM3_ROW: {"legal_availability": Decimal("500.00")}}
+    assert project_sunlight_item3(cells) == (-1, None)

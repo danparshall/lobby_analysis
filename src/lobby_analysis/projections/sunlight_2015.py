@@ -236,3 +236,42 @@ def project_sunlight_item2(
     if categorized:
         return 1, None
     return 0, None
+
+
+# ---------------------------------------------------------------------------
+# Item 3: expenditure_reporting_thresholds (2-tier typed cell)
+#
+# This is the itemization-de-minimis threshold (Sunlight #3's "below
+# this amount, individual lines need not be itemized"). It is distinct
+# from two neighboring threshold concepts:
+#
+#   * lobbyist-status threshold:
+#       lobbyist_registration_threshold_compensation_dollars
+#       (CPI #197 / HG Q2 / Newmark / Opheim / FOCAL scope.2)
+#   * filing-de-minimis threshold (whether a registered lobbyist's
+#     activity even triggers filing): a separate PRI D1 row.
+#
+# v2's row id is correctly scoped; do not collapse with either neighbor.
+# ---------------------------------------------------------------------------
+
+_ITEM3_ROW: Final[str] = "lobbyist_filing_itemization_de_minimis_threshold_dollars"
+
+
+def project_sunlight_item3(
+    cells: dict[str, Any],
+) -> tuple[int | Literal["unable_to_evaluate"], str | None]:
+    """Sunlight item 3: expenditure_reporting_thresholds (2-tier, -1..0).
+
+    threshold IS NULL OR threshold == 0  ->   0
+    threshold > 0                        ->  -1
+
+    Returns ``(UNABLE_TO_EVALUATE, None)`` only when the row id is not a
+    key in ``cells``. A row present with ``legal_availability=None``
+    means "no threshold defined in law" and projects to tier 0.
+    """
+    if _ITEM3_ROW not in cells:
+        return UNABLE_TO_EVALUATE, None
+    threshold = cells[_ITEM3_ROW].get(LEGAL_AXIS)
+    if threshold is None or threshold == 0:
+        return 0, None
+    return -1, None
