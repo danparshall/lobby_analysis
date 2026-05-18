@@ -406,3 +406,47 @@ def load_sunlight_2015_reference_marker_provenance(
         if markers:
             provenance[usps] = markers
     return provenance
+
+
+# ---------------------------------------------------------------------------
+# Top-level projection
+# ---------------------------------------------------------------------------
+
+
+# Each entry: (item_id, helper). Item 4 is intentionally absent.
+_ITEM_HELPERS: Final[
+    tuple[
+        tuple[
+            str,
+            Any,  # actual type: Callable[[dict[str, Any]], tuple[int | str, str | None]]
+        ],
+        ...,
+    ]
+] = (
+    ("sunlight_2015.lobbyist_activity", project_sunlight_item1),
+    ("sunlight_2015.expenditure_transparency", project_sunlight_item2),
+    ("sunlight_2015.expenditure_reporting_thresholds", project_sunlight_item3),
+    ("sunlight_2015.lobbyist_compensation", project_sunlight_item5),
+)
+
+
+def project_sunlight_2015(cells: dict[str, Any], state: str) -> Sunlight2015Score:
+    """Project Sunlight 2015 per-item tiers for one state.
+
+    Returns a frozen ``Sunlight2015Score`` with 4 per-item scores and
+    a parallel oddity_flags dict. No total, no grade, no rank — those
+    are not reproducible from 4 items (item 4 excluded) and are
+    regression-guarded in
+    ``tests/projections/test_sunlight_2015_aggregation.py``.
+    """
+    per_item: dict[str, int | str] = {}
+    oddities: dict[str, list[str]] = {}
+    for item_id, helper in _ITEM_HELPERS:
+        score, oddity = helper(cells)
+        per_item[item_id] = score
+        oddities[item_id] = [oddity] if oddity is not None else []
+    return Sunlight2015Score(
+        state=state,
+        per_item_scores=per_item,
+        oddity_flags=oddities,
+    )
