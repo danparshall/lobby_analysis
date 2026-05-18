@@ -128,3 +128,48 @@ def test_item1_tier2_position_only_on_spending_report_others_on_reg_form():
     # form-agnostic-OR behavior at every concept-pair.
     cells = _cells_item1(reg=(True, True, False), spend=(False, False, True))
     assert project_sunlight_item1(cells) == (2, None)
+
+
+# --- statutorily-implausible (oddity) combinations -------------------------
+#
+# Cascading-downward: lowest failing predicate sets the tier. Oddity flag
+# names the specific failure mode so a downstream auditor can investigate.
+
+
+def test_item1_oddity_bill_without_general_subject():
+    # general=F, bill=T, position=F  ->  tier -1 (general failed)
+    cells = _cells_item1(reg=(False, True, False), spend=(False, False, False))
+    score, oddity = project_sunlight_item1(cells)
+    assert score == -1
+    assert oddity is not None
+    assert "bill_or_action_identifier" in oddity
+    assert "general_subject_matter" in oddity
+
+
+def test_item1_oddity_position_without_general_subject():
+    # general=F, bill=F, position=T  ->  tier -1 (general failed)
+    cells = _cells_item1(reg=(False, False, True), spend=(False, False, False))
+    score, oddity = project_sunlight_item1(cells)
+    assert score == -1
+    assert oddity is not None
+    assert "position_on_bill" in oddity
+    assert "general_subject_matter" in oddity
+
+
+def test_item1_oddity_bill_and_position_without_general_subject():
+    # general=F, bill=T, position=T  ->  tier -1 (general failed)
+    cells = _cells_item1(reg=(False, True, True), spend=(False, False, False))
+    score, oddity = project_sunlight_item1(cells)
+    assert score == -1
+    assert oddity is not None
+    assert "general_subject_matter" in oddity
+
+
+def test_item1_oddity_position_without_bill():
+    # general=T, bill=F, position=T  ->  tier 0 (bill failed)
+    cells = _cells_item1(reg=(True, False, True), spend=(False, False, False))
+    score, oddity = project_sunlight_item1(cells)
+    assert score == 0
+    assert oddity is not None
+    assert "position_on_bill" in oddity
+    assert "bill_or_action_identifier" in oddity

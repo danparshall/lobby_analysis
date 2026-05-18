@@ -162,10 +162,29 @@ def project_sunlight_item1(
     general = reg[0] or spend[0]
     bill = reg[1] or spend[1]
     position = reg[2] or spend[2]
+
+    # Cascading-downward tier assignment: lowest failing predicate sets
+    # the tier. Statutorily expected: general_subject >= bill_id >= position
+    # (each higher tier requires the lower predicates). Any violation is an
+    # oddity flagged downstream, not silently coerced.
     if not general:
-        return -1, None
-    if not bill:
-        return 0, None
-    if not position:
-        return 1, None
-    return 2, None
+        tier = -1
+    elif not bill:
+        tier = 0
+    elif not position:
+        tier = 1
+    else:
+        tier = 2
+
+    higher_without_lower: list[str] = []
+    if (bill or position) and not general:
+        higher_without_lower.append(
+            "bill_or_action_identifier and/or position_on_bill True while "
+            "general_subject_matter False"
+        )
+    if position and not bill:
+        higher_without_lower.append(
+            "position_on_bill True while bill_or_action_identifier False"
+        )
+    oddity = "; ".join(higher_without_lower) if higher_without_lower else None
+    return tier, oddity
