@@ -40,6 +40,46 @@ The `data/` symlink convention from `skills/use-worktree/SKILL.md` was **skipped
 
 (Newest first.)
 
+### 2026-05-18 — Sub-2 Stream 2 plans: Newmark 2017 + Newmark 2005
+
+Convo: [`convos/20260518_newmark_plans_drafting.md`](convos/20260518_newmark_plans_drafting.md)
+Plans:
+- [`plans/20260518_newmark_2017_plan.md`](plans/20260518_newmark_2017_plan.md) — 435 lines
+- [`plans/20260518_newmark_2005_plan.md`](plans/20260518_newmark_2005_plan.md) — 551 lines
+
+**Topics explored**
+
+- Pre-flight: re-confirmed `compendium-naming-docs` + `compendium-row-id-renames` have shipped (15 renames live; `compendium/NAMING_CONVENTIONS.md` exists); confirmed Sunlight 2015 (rubric #3) shipped + CPI 2015 drift fix landed; confirmed Opheim 1991 (rubric #6) flagged blocked on 1988-89 statute data (commit `e62910b`). Sub-2 (deferred during Sub-1 pending GH #9) is unblocked.
+- Pulled `phase-c-projection-tdd` worktree forward from `1450eb4` (Sub-1) to `e62910b` (current head) — 30 commits across the v2 row-ID renames, Sunlight 2015 implementation, CPI drift fix, and Opheim blocking caveat.
+- **Phase-0 cross-check executed.** Ran `load_v2_compendium()` against the 15 expected Newmark 2017 rows + 8 additional Newmark 2005 cadence rows. Surfaced 7 spec-doc-vs-v2 renames for Newmark 2017 (3 long-form threshold renames `_threshold_for_lobbyist_registration` → `lobbyist_registration_threshold_*` family; 2 gifts `_report_` → `_spending_report_`; 1 `_by_client` → `_by_payer` inherited from Sunlight; 1 contributions-received `_report_` → `_spending_report_`) + 8 cadence renames for Newmark 2005 (`_report_cadence_` → `_spending_report_cadence_` family). All resolved cleanly. Both plans bake the rename tables inline.
+- **Newmark 2017 plan drafted** — declarative `_ATOMIC_SPEC` table dispatcher mirroring `pri_2010.py`; 14 in-scope items (5 prohib OUT); Medium validation regime (per-state sub-aggregate); 50-state validation against Phase 0-extracted Table 2 (def.section_total + disclosure.section_total cells, 100 validation-usable cells); rubric-agnostic `project_gifts_actor_agnostic_or` helper for Newmark 2005 + Opheim re-use; honest counterfactual handling of the 2 no-variation items.
+- **Newmark 2005 plan drafted** — declarative `_ATOMIC_SPEC` table dispatcher mirroring `newmark_2017.py`; 14 in-scope items (4 prohib + 1 penalty OUT); Weak-inequality validation regime only (Newmark 2005 publishes per-state totals only — no sub-aggregates); imports `project_gifts_actor_agnostic_or` from `newmark_2017`; introduces NEW rubric-agnostic `project_cadence_more_than_annual_or` helper (8-cell OR over sub-annual cadence); 2003-panel-first validation strategy with `xfail` markers for the other 5 panels pending Track A retrieval scope expansion; falsified-2017-speculation regression-guard (Newmark 2005 has 6 disclosure items, NOT 7); explicit no-sub-aggregate-validation discipline (Newmark 2005 doesn't publish sub-aggregates, so module exposes them only as `_informational` fields).
+- **Cross-rubric reuse opportunity surfaced** for Opheim 1991 — when Opheim is unblocked, its `project_opheim_disclosure_gifts` can refactor to import the rubric-agnostic helper from `newmark_2017`, and its `project_opheim_disclosure_frequency` is naturally a monthly-only variant of `project_cadence_more_than_annual_or`. Plan flags this as a follow-up; does NOT modify Opheim's drafted plan.
+
+**Provisional findings**
+
+- **Stream 2 ordering is helper-sharing, not row-introduction.** All 6 Newmark-2017-NEW rows are already in v2 (the row-freeze locked them in `compendium-v2-promote`). The dependency between Newmark 2017 and Newmark 2005 is at the helper-import level (`project_gifts_actor_agnostic_or` + threshold IS-NOT-NULL pattern). Sub-4 headless launch script must enforce intra-stream ordering.
+- **Newmark 2005 has structurally weaker validation than Newmark 2017** — by a meaningful margin. Newmark 2017 contributes 100 sub-aggregate cells of full-tolerance ground truth from a single 2015 vintage; Newmark 2005 contributes 300 weak-inequality cells across 6 panels, but the inequality has `[0, 4]` headroom from the OOS prohibitions and no per-item / sub-aggregate decomposition. Newmark 2005's role is **temporal-coverage validation**, not direct validation utility — the plan frames this honestly via the validation-regime declaration.
+- **Falsified-2017-speculation is a regression-guard hazard.** The Newmark 2017 mapping doc speculated a 2005 parallel for `disclosure.contributions_from_others`; Newmark 2005 mapping doc Correction 1 falsified it. The Newmark 2005 plan bakes in an explicit regression-guard test asserting the `contributions_received_for_lobbying` row is NOT referenced in the module — a future copy-paste error from `newmark_2017.py` would re-introduce the falsified item silently.
+- **Rubric-agnostic helper naming pays off here.** `project_gifts_actor_agnostic_or` (rather than `project_newmark_gifts_or` or `project_opheim_gifts_or`) lets Newmark 2005 + (eventually) Opheim import without redefinition. Same pattern for the new `project_cadence_more_than_annual_or` — Opheim's monthly-only variant becomes a natural neighbor.
+- **No-sub-aggregate-validation discipline is a new convention.** Newmark 2005's plan introduces an explicit "module must not expose sub-aggregates as validation outputs, but MAY expose them as `_informational` fields with module-docstring caveat." This is finer than the playbook's binary "validation regime tier" — it's a per-rubric output-API decision separate from input-axis decisions. Worth folding into the playbook if HG / FOCAL surface similar shapes.
+
+**Decisions carried forward**
+
+- **Sub-2 plans are committed-ready as-is.** Self-contained per write-a-plan; carry the 7 Sub-0 conventions; STOP clauses for spec-doc-vs-v2 drift; Phase-0 cross-checks specified inline; rename mapping tables baked in.
+- **Helper-sharing pattern**: `project_gifts_actor_agnostic_or` lives in `newmark_2017.py` (Newmark 2005 imports it). `project_cadence_more_than_annual_or` lives in `newmark_2005.py` (Opheim's eventual monthly-only variant will live alongside). Refactor to a shared `lobby_analysis.projections._shared` module only when HG / FOCAL need a third helper.
+- **Newmark 2005's panel strategy**: 2003 panel-first validation at Phase C launch; `xfail` markers for the 5 earlier panels pending Track A scope expansion. Track A scope expansion is a separate conversation on `oh-statute-retrieval` branch — NOT in Phase C scope.
+- **No-sub-aggregate-validation convention**: when a rubric publishes per-state totals only (no sub-aggregates), the projection module may expose sub-aggregates as `_informational` fields for debugging / Phase 4 audit, but tests do NOT assert equality against any published sub-aggregate value. Convention documented inline in Newmark 2005 plan; consider hoisting to the playbook if HG / FOCAL share the shape.
+- **7 Open Questions surfaced** across both plans for the implementing agent to confirm before launch. All flagged in the plans' Questions sections.
+
+**Next steps**
+
+Stream 2's plans are ready for Sub-5+ headless implementation once Sub-4's launch infrastructure exists. Recommended sequencing per the locked rubric order: (1) Newmark 2017 implementation (must land first — Stream 2 ordering); (2) Newmark 2005 implementation (imports helpers from Newmark 2017). After Stream 2 ships, Phase 4 cross-rubric agreement audit prototype becomes substantially more powerful — the `lobbyist_spending_report_includes_total_compensation` 8-rubric mega-row gains 2 more readers (CPI + PRI + Sunlight + Newmark 2017 + Newmark 2005 = 5 module-level readers).
+
+Sub-3 (FOCAL plan-set + HG plan with retrieval gate) is the next plan-drafting session; Sub-4 (launch infra + Sunlight canary) follows. Opheim remains blocked on 1988-89 statute data — when unblocked, its plan benefits from refactoring to import `project_gifts_actor_agnostic_or` from `newmark_2017` and from co-locating its monthly-only cadence helper alongside `project_cadence_more_than_annual_or` in `newmark_2005`.
+
+---
+
 ### 2026-05-18 — CPI 2015 drift fix + v2 row-reference audit (closes GH #17)
 
 Convo: [`convos/20260518_cpi_drift_fix_and_v2_row_audit.md`](convos/20260518_cpi_drift_fix_and_v2_row_audit.md)
