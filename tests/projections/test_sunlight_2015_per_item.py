@@ -346,3 +346,30 @@ def test_item5_tier0_for_every_non_zero_combination():
         assert project_sunlight_item5(_cells_item5(*combo)) == (0, None), (
             f"expected (0, None) for combo {combo}"
         )
+
+
+# ---------------------------------------------------------------------------
+# Item 4: document_accessibility EXCLUDED
+#
+# Per 2026-05-07 audit: 5-tier ordinal conflates 3-4 sub-features with a
+# documented -1/-2 near-typo. Cell-to-tier function not well-defined.
+# Module exposes the exclusion via EXCLUDED_ITEMS; no helper is defined.
+# ---------------------------------------------------------------------------
+
+
+def test_item4_helper_is_not_defined():
+    import lobby_analysis.projections.sunlight_2015 as sunlight_mod
+
+    assert not hasattr(sunlight_mod, "project_sunlight_item4")
+
+
+def test_item4_is_in_excluded_items():
+    from lobby_analysis.projections.sunlight_2015 import EXCLUDED_ITEMS
+
+    assert "sunlight_2015.document_accessibility" in EXCLUDED_ITEMS
+
+
+def test_item4_not_in_in_scope_items():
+    from lobby_analysis.projections.sunlight_2015 import IN_SCOPE_ITEMS
+
+    assert "sunlight_2015.document_accessibility" not in IN_SCOPE_ITEMS
