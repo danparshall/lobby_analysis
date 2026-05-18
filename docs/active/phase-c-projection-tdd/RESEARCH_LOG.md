@@ -40,6 +40,50 @@ The `data/` symlink convention from `skills/use-worktree/SKILL.md` was **skipped
 
 (Newest first.)
 
+### 2026-05-18 — Sunlight 2015 projection: rubric #3 shipped
+
+Convo: [`convos/20260518_sunlight_2015_projection_tdd.md`](convos/20260518_sunlight_2015_projection_tdd.md)
+Results: [`results/20260518_sunlight_2015_projection.md`](results/20260518_sunlight_2015_projection.md)
+Plan: [`plans/20260514_sunlight_2015_plan.md`](plans/20260514_sunlight_2015_plan.md)
+Spec doc: [`../../historical/compendium-source-extracts/results/projections/sunlight_2015_projection_mapping.md`](../../historical/compendium-source-extracts/results/projections/sunlight_2015_projection_mapping.md)
+
+**Topics explored**
+
+- Phase 0 pre-flight: v2 cross-check (13/13 expected rows present after the `_by_client` → `_by_payer` rename); ground-truth CSV smoke (50 rows × 10 cols; 36 marker-carrying cells inventory); data-year paper re-read (line 242 "Kansas chooses not to hold any lobbying data before 2015" lifts confidence MEDIUM-LOW → MEDIUM).
+- 4 in-scope items TDD'd item-by-item with RED-GREEN-COMMIT cadence (item 1 split into 3 sub-stages: unable_to_evaluate → truth-table → oddity flags).
+- Function-per-item dispatcher (matches CPI 2015 C11 style; PRI 2010's declarative table wouldn't compress Sunlight's bespoke compound logic).
+- Reverse-projection cells builder as a test-only fixture, enabling 50-state × 4-item parameterized round-trip (200 cells).
+- Item 4 (`document_accessibility`) regression-guarded as excluded (no helper, in `EXCLUDED_ITEMS`).
+- No-aggregation regression guards: module exports no `_total`/`_grade`/`rank_*` function; `Sunlight2015Score` has no total/grade/rank field.
+- Footnote-marker stripping in ground-truth loader + sibling provenance dict (36 markers: 28 `*`, 2 `**`, 5 `***`, 1 `^^`).
+- **Pre-existing CPI 2015 drift surfaced during Phase 0** — `project_ind_201` reads `lobbyist_spending_report_includes_compensation` which doesn't exist in v2 (merged into `_total_compensation` by D1/D2 of row-freeze). CPI tests pass only because fixtures use the same wrong name. Filed as task #12; **NOT fixed this session.**
+
+**Provisional findings**
+
+- **Helper signature `tuple[int | Literal["unable_to_evaluate"], str | None]` is clean.** Score is either tier or sentinel; oddity flag is None or a description string. Threaded into the score model with `per_item_scores: dict[str, int | str]` and `oddity_flags: dict[str, list[str]]`.
+- **Item 1 vs item 2 semantics: a real asymmetry surfaced.** Item 1's spec table is monotonic (no wildcards); item 2's uses an explicit `(T, *, T) → 2` wildcard. I implemented item 1 with **cascading-downward** (lowest failing predicate sets tier) and item 2 with the wildcard. Both are defensible; future rubrics with nested predicates should pick deliberately.
+- **Item 3 None-vs-missing asymmetry.** For the typed-cell case, `legal_availability=None` projects to tier 0 per the spec rule "threshold IS NULL → 0". The `unable_to_evaluate` sentinel is reserved for "row not a key in cells." Items 1, 2, 5 use a different convention: legal_availability=None on a binary cell → unable_to_evaluate.
+- **The 200-cell round-trip is a weak validation.** It exercises reverse-projection-to-projection consistency, not statute-extraction-to-projection consistency. Real validation comes when `extraction-harness-brainstorm` ships and projections run on actual extracted cells.
+- **Sunlight cross-rubric reuse is high.** 11 of 13 v2 rows feed ≥1 other rubric. Phase 4 cross-rubric agreement audit (deferred until ≥3 modules exist; we now have CPI + PRI + Sunlight) is now well-defined — though the CPI drift means the audit can't yet land cleanly on the `_total_compensation` row.
+
+**Results**
+
+- [`results/20260518_sunlight_2015_projection.md`](results/20260518_sunlight_2015_projection.md) — what landed, validation outcome, Phase 0 outcomes, row-promotion delta, naming-drift corrections, items skipped per YAGNI, decisions log.
+
+**Decisions carried forward**
+
+- Helper return shape unified (tuple).
+- Item 1 cascading-downward semantics — revisitable in Phase 4.
+- No aggregation API — firm.
+- CPI #201 drift fix sequencing: **task #12 first** (small, surgical, unblocks Phase 4 prototyping by fixing the `_total_compensation` audit row), then either Newmark 2017 (rubric #4) or Opheim 1991 (rubric #6 — Opheim's β-AND test now resolves since `project_sunlight_item1` exists).
+- Data-year confidence lift documented in `results/20260514_rubric_data_years.md`; Sub-1 follow-up checklist updated.
+
+**Next steps**
+
+Recommended sequencing: (d) fix CPI drift (task #12) → (a) Newmark 2017 plan-drafting OR (b) Opheim 1991 implementation. (a) and (b) are equally good after (d); either advances the locked rubric order. Phase 4 cross-rubric audit prototype becomes viable post-(d).
+
+---
+
 ### 2026-05-14 — Sub-1 Stream 1 plans: Sunlight 2015 + Opheim 1991
 
 Convo: [`convos/20260514_sub_1_sunlight_opheim_plans.md`](convos/20260514_sub_1_sunlight_opheim_plans.md)
