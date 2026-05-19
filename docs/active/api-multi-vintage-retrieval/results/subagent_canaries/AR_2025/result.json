@@ -1,0 +1,39 @@
+{
+  "state": "AR",
+  "vintage": 2025,
+  "actual_vintage_used": 2024,
+  "prompt_git_rev": "bab81e07462d2ae159b8deca6f54d72dca02505d",
+  "proposed_urls": [
+    {"url": "https://law.justia.com/codes/arkansas/2024/title-21/chapter-8/subchapter-4/section-21-8-401/", "role": "support_chapter", "rationale": "Short title of the lobbying-disclosure act covering Subch. 4-6."},
+    {"url": "https://law.justia.com/codes/arkansas/2024/title-21/chapter-8/subchapter-4/section-21-8-402/", "role": "support_chapter", "rationale": "Definitions used by the entire lobbying-disclosure regime."},
+    {"url": "https://law.justia.com/codes/arkansas/2024/title-21/chapter-8/subchapter-4/section-21-8-403/", "role": "support_chapter", "rationale": "Penalty provision for the lobbying-disclosure regime."},
+    {"url": "https://law.justia.com/codes/arkansas/2024/title-21/chapter-8/subchapter-4/section-21-8-404/", "role": "support_chapter", "rationale": "Investigation procedure for disclosure violations."},
+    {"url": "https://law.justia.com/codes/arkansas/2024/title-21/chapter-8/subchapter-4/section-21-8-405/", "role": "support_chapter", "rationale": "Supplemental-provisions clause for the disclosure regime."},
+    {"url": "https://law.justia.com/codes/arkansas/2024/title-21/chapter-8/subchapter-4/section-21-8-406/", "role": "core_chapter", "rationale": "Substantive gift / event-ticket disclosure rule applicable to lobbyists and officials."},
+    {"url": "https://law.justia.com/codes/arkansas/2024/title-21/chapter-8/subchapter-4/section-21-8-407/", "role": "core_chapter", "rationale": "Substantive gift-of-art disclosure rule."},
+    {"url": "https://law.justia.com/codes/arkansas/2024/title-21/chapter-8/subchapter-5/", "role": "support_chapter", "rationale": "Investigation by Attorney General (§ 21-8-501) — pass-3 empty TSV; subchapter page is the leaf containing the single section."},
+    {"url": "https://law.justia.com/codes/arkansas/2024/title-21/chapter-8/subchapter-6/section-21-8-601/", "role": "core_chapter", "rationale": "Lobbyist registration requirement, exceptions, and termination."},
+    {"url": "https://law.justia.com/codes/arkansas/2024/title-21/chapter-8/subchapter-6/section-21-8-602/", "role": "core_chapter", "rationale": "Other required filings by lobbyists."},
+    {"url": "https://law.justia.com/codes/arkansas/2024/title-21/chapter-8/subchapter-6/section-21-8-603/", "role": "core_chapter", "rationale": "Lobbyist activity reports and public inspection."},
+    {"url": "https://law.justia.com/codes/arkansas/2024/title-21/chapter-8/subchapter-6/section-21-8-604/", "role": "core_chapter", "rationale": "Activity-report required contents."},
+    {"url": "https://law.justia.com/codes/arkansas/2024/title-21/chapter-8/subchapter-6/section-21-8-605/", "role": "core_chapter", "rationale": "Recordkeeping by lobbyists."},
+    {"url": "https://law.justia.com/codes/arkansas/2024/title-21/chapter-8/subchapter-6/section-21-8-606/", "role": "support_chapter", "rationale": "Duties of public officials in connection with lobbyist disclosure."},
+    {"url": "https://law.justia.com/codes/arkansas/2024/title-21/chapter-8/subchapter-6/section-21-8-607/", "role": "core_chapter", "rationale": "Prohibited acts by lobbyists."}
+  ],
+  "pass1_chosen_titles": [
+    "https://law.justia.com/codes/arkansas/2024/title-21/",
+    "https://law.justia.com/codes/arkansas/2024/title-10/"
+  ],
+  "pass2_chosen_chapters": [
+    "https://law.justia.com/codes/arkansas/2024/title-21/chapter-8/"
+  ],
+  "pass3_invoked_on": [
+    "https://law.justia.com/codes/arkansas/2024/title-21/chapter-8/",
+    "https://law.justia.com/codes/arkansas/2024/title-21/chapter-8/subchapter-4/",
+    "https://law.justia.com/codes/arkansas/2024/title-21/chapter-8/subchapter-5/",
+    "https://law.justia.com/codes/arkansas/2024/title-21/chapter-8/subchapter-6/"
+  ],
+  "tree_depth": 6,
+  "playwright_errors": [],
+  "notes": "Justia returned 'Page not found' for the requested 2025 vintage; fell back to 2024 (actual_vintage_used=2024) per the handoff substitution rule. AR's 2024 lobbying-disclosure regime is essentially the same as 2015: Title 21 Ch. 8 Subchapters 4 (general/definitions/penalty/gift rules §§ 21-8-401 to 407), 5 (single-section AG investigation § 21-8-501 — subchapter page is its leaf), and 6 (lobbyist registration / activity reports / recordkeeping / prohibited acts §§ 21-8-601 to 607). REGIME DROP from 2015: Title 10 (General Assembly) Ch. 1 was a populated 'General Provisions' chapter in 2015 hosting legislative-branch lobbying support provisions; in the 2024 Justia snapshot Title 10 Ch. 1 is listed as 'GENERAL PROVISIONS [RESERVED]' (not exposed as a chapter URL in the TSV) and the remaining Title 10 chapters (2-6 plus Sunset Laws appendix) do not contain lobbying content. Pass-1 still selected Title 10 per the handoff's split-regime guidance, but pass-2 returned an empty urls list with rationale in notes. Tree depth 6 reflects state -> code -> title -> chapter -> subchapter -> section. Pass-3 fetch on subchapter-5/ returned an empty TSV, so the subchapter URL itself goes into proposed_urls as the leaf (same convention as AR 2015 prior). Final URL count: 15 (all Title 21)."
+}
