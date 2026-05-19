@@ -29,7 +29,7 @@ The `data/` symlink convention from `skills/use-worktree/SKILL.md` was **skipped
 
 ### 2026-05-19 (Tier-0 direct-read plan: Steps 1–4 executed on Dans-MacBook-Air; Step 5 pending on a keyed machine) — 4 commits, +14 parser tests + 3 cold-load regression tests, all green
 
-Convo: [`convos/20260519_steps_1_to_4_execution.md`](convos/20260519_steps_1_to_4_execution.md)
+Convo: [`convos/20260519_session_end_steps_1_to_4.md`](convos/20260519_session_end_steps_1_to_4.md)
 Plan: [`plans/20260518_tier_0_direct_read_smoke_test.md`](plans/20260518_tier_0_direct_read_smoke_test.md) — Steps 1–4 of 7 shipped this session; Steps 5–7 (run, writeup, finish-convo) pending.
 
 **What shipped (4 commits on top of `cce8542`):**

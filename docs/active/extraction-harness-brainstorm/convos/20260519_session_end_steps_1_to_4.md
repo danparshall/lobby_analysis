@@ -91,4 +91,4 @@ From the plan, none newly resolved this session. The next agent will hit these w
 3. Sanity check: `uv run pytest tests/test_v2_cold_load.py tests/test_tier_0_smoke_parser.py` (17 tests should be green).
 4. `uv run python scripts/tier_0_direct_read_smoke.py`.
 5. Hand-eyeball writeup at `results/20260518_tier_0_direct_read_writeup.md` per the plan's Step 6.
-6. Finish-convo with the execution date as the convo date (not 20260519, which is this checkpoint).
+6. Finish-convo on that session's execution date (not 20260519 — this convo *is* the finish-convo for the keyless-machine session that shipped Steps 1–4; the keyed-machine session ending Steps 5–7 writes its own finish-convo).
