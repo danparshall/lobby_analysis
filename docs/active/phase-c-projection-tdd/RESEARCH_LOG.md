@@ -40,6 +40,36 @@ The `data/` symlink convention from `skills/use-worktree/SKILL.md` was **skipped
 
 (Newest first.)
 
+### 2026-05-18 — Scope correction: this branch ships deterministic Python, nothing more
+
+Convo: [`convos/20260518_scope_correction.md`](convos/20260518_scope_correction.md)
+
+The branch's scope is reset to its irreducible core: **ship deterministic Python that maps populated SMR cells → rubric scores**. No LLM in the loop, no headless launcher, no canary, no Sub-N multi-session orchestration. The 3 shipped modules (CPI 2015 C11, PRI 2010, Sunlight 2015) confirmed the shape — 0 LLM imports across all three; pure `csv` / `re` / `pathlib` / `typing` / `pydantic`.
+
+**Trigger:** Sub-4 (this session) was set up to "build a headless `claude -p` launcher + run a Sunlight canary." User pushed back as the 4th-conversation-in-a-row evidence of plan inflation. Filesystem + git-history scan confirmed: no `newmark*.py` / `opheim*.py` / `hg*.py` / `focal*.py` projection module has ever existed on any branch, ever. Only CPI, PRI, Sunlight have shipped code.
+
+**Retired:**
+
+- `plans/20260514_headless_api_key_handoff.md` — the headless `claude -p` launcher idea (don't build it).
+- The "Sub-0 / Sub-1 / Sub-2 / Sub-3 / Sub-4" multi-sub-session orchestration framing.
+- The 7 Sub-0 conventions wrapped as ceremony — STOP clauses, "Phase 0 cross-check" rituals, per-helper RED/GREEN documentation requirements. CPI/PRI/Sunlight shipped without any of that overhead; match their shape.
+- The 5 Sub-1/2/3 plans (~2,190 lines) as process scripture. **Content kept** as cell-mapping reference (which v2 rows feed which item; rename tables; ground-truth CSV paths); **process framing ignored**.
+
+**Remaining work — for all 4 outstanding rubrics:** ship deterministic Python that turns a populated SMR into a rubric score.
+
+- Newmark 2017
+- Newmark 2005 (~100% reuse of 2017 mappings; near-twin with weak-inequality aggregation + imports from `newmark_2017`)
+- HG 2007 (38 items, declarative `_ATOMIC_SPEC`)
+- FOCAL 2024 (50 indicators × weighted aggregation; L-N 2025 Suppl File 1 ground truth)
+
+Opheim 1991 stays blocked on 1988-89 statute data; not this branch's concern until Track A expands vintage scope.
+
+**How:** open `sunlight_2015.py` as the template; open the matching Phase B mapping doc in `docs/historical/compendium-source-extracts/results/projections/` as the spec; write the module + tests; commit; move on. After all 4 ship + tests pass, branch is mergeable.
+
+**Vocabulary fix going forward:** reserve "shipped" for code + tests merged; use "drafted" or "landed" for plan documents. The current ambiguous usage in convos (Sub-3's "Sub-2 Newmark plans shipped + pushed") compressed in cross-machine status memory to "Newmark shipped" and was the proximate cause of the scope-correction session.
+
+---
+
 ### 2026-05-18 — Sub-3 Stream 3 plans: FOCAL 2024 plan-set (4 plans) + HG 2007 plan
 
 Convo: [`convos/20260518_focal_hg_plans_drafting.md`](convos/20260518_focal_hg_plans_drafting.md)
