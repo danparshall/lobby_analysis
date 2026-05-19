@@ -27,6 +27,36 @@ The `data/` symlink convention from `skills/use-worktree/SKILL.md` was **skipped
 
 (Newest first.)
 
+### 2026-05-19 (Tier-0 direct-read plan: Steps 1–4 executed on Dans-MacBook-Air; Step 5 pending on a keyed machine) — 4 commits, +14 parser tests + 3 cold-load regression tests, all green
+
+Convo: [`convos/20260519_steps_1_to_4_execution.md`](convos/20260519_steps_1_to_4_execution.md)
+Plan: [`plans/20260518_tier_0_direct_read_smoke_test.md`](plans/20260518_tier_0_direct_read_smoke_test.md) — Steps 1–4 of 7 shipped this session; Steps 5–7 (run, writeup, finish-convo) pending.
+
+**What shipped (4 commits on top of `cce8542`):**
+
+- `62e02c0` — **Step 1:** relocated `EvidenceSpan` to new `src/lobby_analysis/models_v2/citations.py`. Breaks the cold-load cycle `chunks_v2 → models_v2.cells → retrieval_v2 → brief_writer → chunks_v2`. `retrieval_v2.models` re-exports for back-compat; all four import paths (`from lobby_analysis.retrieval_v2 import EvidenceSpan`, `.../retrieval_v2/models`, `.../models_v2`, `.../models_v2/citations`) resolve to the same class. Three new regression tests at `tests/test_v2_cold_load.py` verify cold-load from a fresh interpreter + that `models_v2.cells` doesn't pull `retrieval_v2` into `sys.modules` + identity preservation.
+- `a7fbbb6` — **Step 2:** `uv add openai` → 2.37.0.
+- `02cad4f` — **Step 3:** `scripts/tier_0_direct_read_smoke.py` with shared `RECORD_CELL_INPUT_SCHEMA`/`RECORD_UNSCOREABLE_INPUT_SCHEMA`, `ANTHROPIC_TOOLS`/`OPENAI_TOOLS` wrappers, and `parse_response(response, sdk)` returning `list[ParsedToolCall]`. 14 parser tests at `tests/test_tier_0_smoke_parser.py` cover both SDK shapes, raise-vs-skip policy for malformed responses, the cross-SDK schema-sharing invariant, and the returned-dict-is-an-independent-copy invariant.
+- `b0a1b2d` — **Step 4:** smoke-test body. Preflight (keys + bundle path → exit 2 on failure), statute loader (30 OH 2025 `.txt` files), cached system prompt, dispatch for both models, `_instantiate_cell` adapter covering scalar + dict-shape cells, raw + parsed JSON output with structured `provenance` field, side-by-side printer, $1/call cost ceiling (exit 3 on overrun). Verified preflight-no-keys path: exits cleanly before any API call.
+
+**Test deltas:** 480 → 497 passing (+14 parser, +3 cold-load). 3 pre-existing `test_pipeline.py` baseline failures unchanged (missing CA portal-snapshot fixture, unrelated).
+
+**Decisions resolved from the plan's open questions:**
+
+- Q1 (EvidenceSpan home) — `models_v2/citations.py` chosen per the plan recommendation.
+- Q3 (cited_section/justification placement) — option (a): per-cell wrapper dict `{cell, cell_class, cited_section, justification}`. `CompendiumCell` unchanged.
+
+Q2 (adversarial framing wording) and Q4 (cost ceiling) deferred to whoever runs Step 5.
+
+**Caveats logged for the next agent** (full detail in the convo):
+
+1. Pricing in `_PRICING_USD_PER_MTOK` is best-guess opus-4-**6** rates standing in for opus-4-**7** (the `personal_info.md` table is March 2026; opus-4-7 may differ).
+2. OH 2015 sections ARE on Dans-MacBook-Air now — the predecessor convo's claim that they were absent appears no longer true (data added since, or prior check missed). Doesn't change the retarget; just noted.
+3. Dict-shape cell adapter (TimeThreshold/TimeSpent/CountWithFTE/EnumSetWithAmounts) isn't exercised by `enforcement_and_audits` — all 4 cells are scalar (Binary/Enum/Graded).
+4. Cost ceiling aborts the WHOLE run if any one call exceeds $1 (strict reading of "stop and investigate").
+
+**Next session:** on a machine with both keys exported, run `uv run python scripts/tier_0_direct_read_smoke.py` and proceed to plan Steps 6 (writeup) and 7 (finish-convo).
+
 ### 2026-05-18 → 19 (Tier-0 execution attempted; pivot to direct-read after 4 preconditions failed) — no code shipped; architecture reframed and captured in new plan + convo + superseding move on old plan
 
 Convo: [`convos/20260518_tier_0_execution_pivot_to_direct_read.md`](convos/20260518_tier_0_execution_pivot_to_direct_read.md)
