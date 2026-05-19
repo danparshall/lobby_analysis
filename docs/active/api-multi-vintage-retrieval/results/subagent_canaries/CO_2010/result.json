@@ -1,0 +1,33 @@
+{
+  "state": "CO",
+  "vintage": 2010,
+  "actual_vintage_used": 2016,
+  "prompt_git_rev": "104268e008c6a17f0e107c6c64b22b66b018958e",
+  "proposed_urls": [
+    {"url": "https://law.justia.com/codes/colorado/2016/title-24/administration/article-6/part-3/section-24-6-301/",   "role": "core_chapter", "rationale": "§24-6-301 Definitions and legislative declaration for the lobbyist-regulation regime."},
+    {"url": "https://law.justia.com/codes/colorado/2016/title-24/administration/article-6/part-3/section-24-6-302/",   "role": "core_chapter", "rationale": "§24-6-302 Required disclosure statements (the disclosure obligation itself)."},
+    {"url": "https://law.justia.com/codes/colorado/2016/title-24/administration/article-6/part-3/section-24-6-303/",   "role": "core_chapter", "rationale": "§24-6-303 Registration as professional lobbyist, filing of disclosure statements, certificate of registration."},
+    {"url": "https://law.justia.com/codes/colorado/2016/title-24/administration/article-6/part-3/section-24-6-303.5/", "role": "core_chapter", "rationale": "§24-6-303.5 Lobbying by state officials and employees."},
+    {"url": "https://law.justia.com/codes/colorado/2016/title-24/administration/article-6/part-3/section-24-6-304/",   "role": "core_chapter", "rationale": "§24-6-304 Records preservation, public inspection, electronic access."},
+    {"url": "https://law.justia.com/codes/colorado/2016/title-24/administration/article-6/part-3/section-24-6-304.5/", "role": "core_chapter", "rationale": "§24-6-304.5 Examination of books and records (audit authority over lobbyist filings)."},
+    {"url": "https://law.justia.com/codes/colorado/2016/title-24/administration/article-6/part-3/section-24-6-305/",   "role": "core_chapter", "rationale": "§24-6-305 Secretary-of-State powers over registration certificates and penalties."},
+    {"url": "https://law.justia.com/codes/colorado/2016/title-24/administration/article-6/part-3/section-24-6-306/",   "role": "core_chapter", "rationale": "§24-6-306 Employment of legislators/legislative employees/state employees - filing of statement."},
+    {"url": "https://law.justia.com/codes/colorado/2016/title-24/administration/article-6/part-3/section-24-6-307/",   "role": "core_chapter", "rationale": "§24-6-307 Employment of unregistered persons."},
+    {"url": "https://law.justia.com/codes/colorado/2016/title-24/administration/article-6/part-3/section-24-6-308/",   "role": "core_chapter", "rationale": "§24-6-308 Prohibited practices."},
+    {"url": "https://law.justia.com/codes/colorado/2016/title-24/administration/article-6/part-3/section-24-6-309/",   "role": "core_chapter", "rationale": "§24-6-309 Offenses, penalties, injunctions (enforcement)."}
+  ],
+  "pass1_chosen_titles": [
+    "https://law.justia.com/codes/colorado/2016/title-24/"
+  ],
+  "pass2_chosen_chapters": [
+    "https://law.justia.com/codes/colorado/2016/title-24/administration/article-6/part-3/",
+    "https://law.justia.com/codes/colorado/2016/title-24/administration/article-6/part-1/",
+    "https://law.justia.com/codes/colorado/2016/title-24/administration/article-18.5/"
+  ],
+  "pass3_invoked_on": [
+    "https://law.justia.com/codes/colorado/2016/title-24/administration/article-6/part-3/"
+  ],
+  "tree_depth": 4,
+  "playwright_errors": [],
+  "notes": "CO 2010 vintage absent from Justia. Tried 2010, 2011, 2009, 2012, 2008 - all returned 'Page not found' (404s preserved as pass1_state_index_<year>_404.html). The Justia all-versions page for Colorado (https://law.justia.com/codes/colorado/) lists 2016 as the earliest available vintage. Substituted to 2016 (6 years off, outside the typical ±5 window but the only available option; same outcome as CO_2015 which substituted to 2016 at 1 year off). The regime is C.R.S. Title 24 (Government - State) Art. 6 (Colorado Sunshine Law) Part 3 (Regulation of Lobbyists), §§24-6-301 through 24-6-309 (11 per-section leaves). Tree is 4 levels deep: state-index -> title-24 -> administration (categorical grouping) -> article-6 -> part-3. The unusual depth is because Justia's title-24 page groups articles under topical categories rather than listing them flat; required an intermediate fetch (pass2_administration.tsv) beyond the standard pass-2 title snapshot to reach the article level. pass2_chosen_chapters includes two support_chapter candidates (Art. 6 Pt. 1 General Provisions for cross-referenced definitions; Art. 18.5 Independent Ethics Commission for enforcement linkage) - pass3 was only invoked on the core_chapter Part 3 per the task brief's 'For each chosen chapter URL'. Result matches CO_2015 bundle (same actual_vintage_used=2016, same 11 URLs, same tree structure) - the substitution lands on the same Justia content because 2010 and 2015 both lack Justia vintages and both fall back to 2016 as earliest available. The CO 2010 statute text may differ in detail from what 2016 hosts (the regime has been amended); downstream consumers should treat actual_vintage_used=2016 as the ground-truth source vintage for the URLs above. pass0_all_versions.{html,tsv} copied from CO_2015 bundle to document substitution evidence (Justia all-versions listing is not vintage-specific)."
+}
