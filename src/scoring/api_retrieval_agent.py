@@ -437,13 +437,21 @@ def _build_justia_link_tsv(html: str, parent_url: str) -> str:
     children from the parent page. Filters to one-segment-deeper URLs in
     the parent's namespace; deduplicates on URL, first-seen anchor wins.
 
-    Handles three Justia parent-page patterns:
+    Handles four Justia parent-page patterns:
     1. Directory parent (``/codes/wyoming/2010/``) — children are immediate
        descendants in that path.
     2. ``Foo/Foo.html`` parent (``/Title28/Title28.html``) — children are
        siblings inside the matching ``Foo/`` directory.
     3. ``foo.html`` parent (``/gov.html``) — children are entries in the
        matching ``foo/`` subdirectory.
+    4. Year-less "current code" children of a year-prefixed parent.
+       When the parent is ``/codes/<state>/<YYYY>/<...>/`` and Justia
+       treats ``<YYYY>`` as the current code (empirically: 2025 as of
+       2026-05-19; 2024 and earlier still year-prefixed), the index links
+       drop the year segment. Both URL forms resolve to the same content
+       server-side; we accept the year-less children and inject the year
+       on emission so downstream consumers see a uniformly year-prefixed
+       URL space.
 
     Anchor text is the link's stripped text content; may be empty (trailing
     tab preserved). HTML parsing uses BeautifulSoup, the same library
@@ -472,6 +480,20 @@ def _build_justia_link_tsv(html: str, parent_url: str) -> str:
     else:
         namespace = parent_canon + "/"
 
+    # Pattern 4 setup: detect a year-prefixed parent and compute the
+    # year-less namespace + state prefix used for year injection.
+    yearless_namespace: str | None = None
+    state_prefix: str | None = None
+    year_to_inject: str | None = None
+    year_match = re.match(r"^(/codes/[^/]+)/(\d{4})(/.*)?$", parent_path)
+    if year_match:
+        state_prefix = year_match.group(1) + "/"            # /codes/texas/
+        year_to_inject = year_match.group(2)                # 2025
+        rest = (year_match.group(3) or "").lstrip("/")      # "" or "government-code/"
+        yearless_namespace = state_prefix + rest
+        if not yearless_namespace.endswith("/"):
+            yearless_namespace += "/"
+
     soup = BeautifulSoup(html, "html.parser")
     seen: set[str] = set()
     entries: list[tuple[str, str]] = []
@@ -489,14 +511,32 @@ def _build_justia_link_tsv(html: str, parent_url: str) -> str:
             continue
         if url_path == parent_canon or url_path == parent_canon + "/":
             continue
-        if not url_path.startswith(namespace):
+
+        match_namespace = namespace
+        is_yearless_match = False
+        if url_path.startswith(namespace):
+            pass  # Pattern 1/2/3 — primary match.
+        elif (
+            yearless_namespace is not None
+            and state_prefix is not None
+            and year_to_inject is not None
+            and url_path.startswith(yearless_namespace)
+            # Don't double-match: if the child happens to ALSO include the
+            # year segment under the year-less namespace (mixed-form HTML),
+            # let it match the primary namespace path on a different iteration
+            # or skip here.
+            and not url_path.startswith(state_prefix + year_to_inject + "/")
+        ):
+            match_namespace = yearless_namespace
+            is_yearless_match = True
+        else:
             continue
         # One segment deeper, with a single narrow exception for the
         # ``Foo/Foo.html`` pattern (Justia's WY state-year-index uses this
         # exclusively: every title link is `TitleN/TitleN.html`). Without
         # the exception, pass-1's prompt would be starved of links for
         # WY-style states.
-        tail = url_path[len(namespace):].rstrip("/")
+        tail = url_path[len(match_namespace):].rstrip("/")
         if not tail:
             continue
         if "/" in tail:
@@ -508,6 +548,22 @@ def _build_justia_link_tsv(html: str, parent_url: str) -> str:
             )
             if not is_foo_foo_html:
                 continue
+
+        if is_yearless_match:
+            # Reject "Other Years" cross-vintage navigation links — children
+            # whose first path segment is itself a 4-digit year. Without
+            # this filter, year injection would emit nonsense URLs like
+            # /codes/texas/2025/2024/ that don't resolve and would crash
+            # downstream fetches.
+            after_state = url_path[len(state_prefix):]
+            first_segment = after_state.split("/", 1)[0]
+            if re.fullmatch(r"\d{4}", first_segment):
+                continue
+            # Inject the year between the state-slug and the rest of the
+            # path, so emitted URLs are uniformly year-prefixed.
+            injected_path = state_prefix + year_to_inject + "/" + after_state
+            url = JUSTIA_BASE + injected_path
+
         if url in seen:
             continue
         seen.add(url)

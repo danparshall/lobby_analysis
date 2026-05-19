@@ -292,6 +292,143 @@ def test_build_justia_link_tsv_directory_parent_with_foo_foo_html_children() -> 
     assert "Public Officers" in title28_line
 
 
+def test_build_justia_link_tsv_injects_year_for_yearless_current_code_children() -> None:
+    """When Justia treats a year as the "current" code, its index page links
+    children WITHOUT the year segment (e.g., /codes/texas/government-code/
+    instead of /codes/texas/2025/government-code/). The year-prefixed URLs
+    still resolve server-side — Justia just doesn't render them in the
+    index links.
+
+    Empirically observed on TX 2025 (and 2026-05-19 across all 11 priority
+    states' state-year-index pages): year-prefixed parent URL, year-less
+    children. Without year injection, the TSV is empty and pass-1 has
+    nothing to reason over.
+
+    The helper must:
+    - Accept year-less children of a year-prefixed parent
+    - Inject the parent's year into emitted URLs so downstream URL handling
+      treats them as year-prefixed (and so the cached HTML on disk matches
+      the URL convention the rest of the pipeline expects).
+    """
+    from scoring.api_retrieval_agent import _build_justia_link_tsv
+
+    parent = "https://law.justia.com/codes/texas/2025/"
+    html = """
+    <html><body>
+    <a href="/codes/texas/government-code/">GOVERNMENT CODE</a>
+    <a href="/codes/texas/election-code/">ELECTION CODE</a>
+    <a href="/codes/texas/penal-code/">PENAL CODE</a>
+    <a href="/codes/texas/government-code/title-3/">Year-less grandchild (must be rejected)</a>
+    <a href="https://en.wikipedia.org/wiki/Texas">External (must be rejected)</a>
+    </body></html>
+    """
+    tsv = _build_justia_link_tsv(html, parent)
+    lines = tsv.splitlines()
+    urls = [line.split("\t", 1)[0] for line in lines]
+
+    # Year-less children of year-prefixed parent → year injected into emitted URL.
+    assert "https://law.justia.com/codes/texas/2025/government-code/" in urls, (
+        f"Expected year-injected government-code URL in TSV; got: {urls!r}"
+    )
+    assert "https://law.justia.com/codes/texas/2025/election-code/" in urls
+    assert "https://law.justia.com/codes/texas/2025/penal-code/" in urls
+
+    # Original (year-less) URLs must NOT appear — downstream consumers expect
+    # year-prefixed URLs uniformly.
+    assert "https://law.justia.com/codes/texas/government-code/" not in urls
+
+    # Grandchildren (more than one segment deeper) still rejected.
+    assert not any("title-3" in u for u in urls)
+
+    # External links still rejected.
+    assert not any("wikipedia" in u for u in urls)
+
+    # Anchor text preserved.
+    gov_line = next(l for l in lines if "government-code/" in l)
+    assert "GOVERNMENT CODE" in gov_line
+
+
+def test_build_justia_link_tsv_year_injection_applies_at_title_toc_level() -> None:
+    """The same year-less convention applies at pass-2 (title TOC). Parent
+    /codes/texas/2025/government-code/ links chapters as
+    /codes/texas/government-code/title-3/ (year stripped). The helper must
+    inject the year here too, so pass-2 reasoning sees year-prefixed URLs.
+    """
+    from scoring.api_retrieval_agent import _build_justia_link_tsv
+
+    parent = "https://law.justia.com/codes/texas/2025/government-code/"
+    html = """
+    <html><body>
+    <a href="/codes/texas/government-code/title-1/">Title 1</a>
+    <a href="/codes/texas/government-code/title-3/">Title 3 - LEGISLATIVE BRANCH</a>
+    <a href="/codes/texas/government-code/title-5/">Title 5</a>
+    </body></html>
+    """
+    tsv = _build_justia_link_tsv(html, parent)
+    urls = [line.split("\t", 1)[0] for line in tsv.splitlines()]
+    assert "https://law.justia.com/codes/texas/2025/government-code/title-3/" in urls, (
+        f"Expected year-injected title-3 URL in pass-2 TSV; got: {urls!r}"
+    )
+    assert "https://law.justia.com/codes/texas/government-code/title-3/" not in urls
+
+
+def test_build_justia_link_tsv_year_injection_rejects_other_year_nav_links() -> None:
+    """The state-year-index page contains an "Other Years" nav that links
+    to /codes/<state>/<otheryear>/ (year-prefixed under a DIFFERENT year).
+    Without filtering, year injection produces bogus double-year URLs like
+    /codes/texas/2025/2024/ — these would mislead the LLM into proposing
+    impossible URLs that crash downstream fetches.
+
+    Empirically observed on the real TX 2025 page (32 children: 30 real
+    codes + 2 "Other Years" nav links to 2024/2023).
+    """
+    from scoring.api_retrieval_agent import _build_justia_link_tsv
+
+    parent = "https://law.justia.com/codes/texas/2025/"
+    html = """
+    <html><body>
+    <a href="/codes/texas/government-code/">GOVERNMENT CODE</a>
+    <a href="/codes/texas/2024/">2024 Texas Stat.</a>
+    <a href="/codes/texas/2023/">2023 Texas Stat.</a>
+    </body></html>
+    """
+    tsv = _build_justia_link_tsv(html, parent)
+    urls = [line.split("\t", 1)[0] for line in tsv.splitlines()]
+
+    # The legitimate year-less child gets year-injected.
+    assert "https://law.justia.com/codes/texas/2025/government-code/" in urls
+
+    # The "Other Years" nav links must NOT become double-year URLs.
+    assert "https://law.justia.com/codes/texas/2025/2024/" not in urls, (
+        f"Double-year URL leaked into TSV: {urls!r}"
+    )
+    assert "https://law.justia.com/codes/texas/2025/2023/" not in urls
+    # And they don't appear in their original form either — they're not
+    # children of THIS vintage's code, just cross-vintage navigation.
+    assert not any(u.endswith("/2024/") or u.endswith("/2023/") for u in urls)
+
+
+def test_build_justia_link_tsv_year_injection_does_not_affect_yearprefixed_children() -> None:
+    """Regression rail: when both parent and children include the year (2024
+    and earlier — explicit historical snapshots), no injection happens and
+    the existing 3-pattern dispatch handles them unchanged.
+    """
+    from scoring.api_retrieval_agent import _build_justia_link_tsv
+
+    parent = "https://law.justia.com/codes/texas/2024/"
+    html = """
+    <html><body>
+    <a href="/codes/texas/2024/government-code/">GOVERNMENT CODE</a>
+    <a href="/codes/texas/2024/election-code/">ELECTION CODE</a>
+    </body></html>
+    """
+    tsv = _build_justia_link_tsv(html, parent)
+    urls = [line.split("\t", 1)[0] for line in tsv.splitlines()]
+    assert "https://law.justia.com/codes/texas/2024/government-code/" in urls
+    assert "https://law.justia.com/codes/texas/2024/election-code/" in urls
+    assert len(urls) == 2
+
+
 # ===========================================================================
 # Test 1 — single-title two-pass returns pass-2 URLs
 # ===========================================================================
