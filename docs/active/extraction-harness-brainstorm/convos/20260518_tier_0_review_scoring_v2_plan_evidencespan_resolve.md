@@ -1,5 +1,7 @@
 # 20260518 — Tier-0 plan review, scoring_v2 impl plan write, EvidenceSpan resolution
 
+> **FORWARD-POINTER 2026-05-19:** Two of this session's outputs were superseded one session later: (a) the Tier-0 plan revisions (hop=2, prompt-sha) became moot when the plan was tabled entirely after 4 preconditions failed at execution time; (b) the 0979779 EvidenceSpan migration was found to have introduced a structural circular import — `EvidenceSpan` ended up in the wrong module (`retrieval_v2.models`); fix is to relocate to `models_v2/citations.py`. The scoring_v2 impl plan (commit `067dfac`) survives as the escape-hatch path if direct-read fails empirically. See [`20260518_tier_0_execution_pivot_to_direct_read.md`](20260518_tier_0_execution_pivot_to_direct_read.md) for the pivot reasoning and [`plans/20260518_tier_0_direct_read_smoke_test.md`](../plans/20260518_tier_0_direct_read_smoke_test.md) for the replacement plan.
+
 **Date:** 2026-05-18
 **Branch:** extraction-harness-brainstorm
 **Predecessor:** [`20260518_synopsis_walkthrough_and_tier_0_scoping.md`](20260518_synopsis_walkthrough_and_tier_0_scoping.md) (same-day; this session reviewed its plan output)
