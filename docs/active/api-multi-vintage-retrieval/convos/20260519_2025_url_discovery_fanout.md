@@ -70,7 +70,7 @@ Each state bundle is at `docs/active/api-multi-vintage-retrieval/results/subagen
 | Question | Owner | Path |
 |---|---|---|
 | Phase C section-fetch — fetch the proposed_urls and save section bodies to `data/statutes/<STATE>/2025/sections/*.txt` | Next session | Pattern from 2015 fetch in [`20260518_fetch_2015_section_bodies.md`](../plans/_handoffs/20260518_fetch_2015_section_bodies.md) Step 3; use `rate_limit_seconds=2.5` |
-| CO + IL Article-level remediation | Next session or Phase C pipeline change | Either re-dispatch with tighter prompt, or have Phase C detect Article-shaped URLs and do section-discovery |
-| WA dedup policy — 29B canonical vs 42.17A legacy | Phase C planning | Two-source state; pick authoritative tag and/or dedup by semantic mirror |
+| CO + IL Article-level remediation ([#19](https://github.com/danparshall/lobby_analysis/issues/19)) | Next session or Phase C pipeline change | Either re-dispatch with tighter prompt, or have Phase C detect Article-shaped URLs and do section-discovery |
+| WA dedup policy — 29B canonical vs 42.17A legacy ([#20](https://github.com/danparshall/lobby_analysis/issues/20)) | Phase C planning | Two-source state; pick authoritative tag and/or dedup by semantic mirror |
 | What's the right granularity for the WV +10 sections? | Future calibration | The 24-section 2015 GT was a *minimum*; the 34-section 2025 bundle includes real lobbying-relevant additions |
 | OH 2015 (already on disk via batch-2 desktop run) is currently the only OH bundle that wasn't dispatched this session — does it need re-verification at 2025? | User | OH 2025 is already on disk from the archived statute-retrieval branch (30-URL GT-shape); skip per the handoff |
