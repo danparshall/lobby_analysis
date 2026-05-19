@@ -27,11 +27,13 @@ from .cells import (
     TimeThresholdCell,
     UpdateCadenceCell,
 )
+from .citations import CitationType, EvidenceSpan
 from .extraction import ExtractionRun, StateVintageExtraction
 
 __all__ = [
     "BinaryCell",
     "BoundedIntCell",
+    "CitationType",
     "CompendiumCell",
     "CompendiumCellSpec",
     "CountWithFTECell",
@@ -39,6 +41,7 @@ __all__ = [
     "EnumCell",
     "EnumSetCell",
     "EnumSetWithAmountsCell",
+    "EvidenceSpan",
     "ExtractionRun",
     "FloatCell",
     "FreeTextCell",

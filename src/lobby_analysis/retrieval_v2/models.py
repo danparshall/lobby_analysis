@@ -3,10 +3,10 @@
 Hierarchy:
 
 - :class:`EvidenceSpan` — one citation emitted by the Anthropic Citations API.
-  Wraps any of the three documented citation types (``char_location`` for
-  plain-text documents, ``page_location`` for PDFs, ``content_block_location``
-  for custom content blocks). Citation-type-specific fields default to None
-  so the same dataclass shape handles all three.
+  Re-exported from :mod:`lobby_analysis.models_v2.citations` (where it lives so
+  both cells and cross-references can import it without cycling through
+  ``retrieval_v2/__init__.py``). Existing call sites importing from
+  ``retrieval_v2`` or ``retrieval_v2.models`` continue to work.
 - :class:`CrossReference` — one tool-call worth of cross-reference data plus
   the citation spans the agent emitted in the preceding text (machine-verified
   provenance per the Citations API's text↔citation attachment).
@@ -23,30 +23,15 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
-CitationType = Literal["char_location", "page_location", "content_block_location"]
+from lobby_analysis.models_v2.citations import CitationType, EvidenceSpan
 
-
-class EvidenceSpan(BaseModel):
-    """A single citation span emitted by the Anthropic Citations API."""
-
-    model_config = {"frozen": True}
-
-    citation_type: CitationType
-    document_index: int
-    cited_text: str
-    document_title: str | None = None
-
-    # char_location (plain text source documents)
-    start_char_index: int | None = None
-    end_char_index: int | None = None
-
-    # page_location (PDF source documents)
-    start_page_number: int | None = None
-    end_page_number: int | None = None
-
-    # content_block_location (custom content blocks)
-    start_block_index: int | None = None
-    end_block_index: int | None = None
+__all__ = [
+    "CitationType",
+    "CrossReference",
+    "EvidenceSpan",
+    "RetrievalOutput",
+    "UnresolvableReference",
+]
 
 
 class CrossReference(BaseModel):

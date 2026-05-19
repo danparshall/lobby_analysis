@@ -20,7 +20,7 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-from lobby_analysis.retrieval_v2.models import EvidenceSpan
+from .citations import EvidenceSpan
 
 
 class CompendiumCell(BaseModel):
