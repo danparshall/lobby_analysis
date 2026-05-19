@@ -10,6 +10,80 @@
 
 ## Session log (newest first)
 
+### 2026-05-19 — 2025 URL discovery fan-out: 12 priority states (Phase B complete)
+
+- **Convo:** [`convos/20260519_2025_url_discovery_fanout.md`](convos/20260519_2025_url_discovery_fanout.md)
+- **Picked up from:** `104268e` (2026-05-19 desktop push: `20260519_fetch_2025_statute_bundles.md` handoff scoping the 2025 batch + `subagent_fetch_save.py` newly committed)
+- **Companion docs:** [`plans/_handoffs/20260519_fetch_2025_statute_bundles.md`](plans/_handoffs/20260519_fetch_2025_statute_bundles.md) (scope) + [`plans/_handoffs/20260519_subagent_dispatch_prompt.md`](plans/_handoffs/20260519_subagent_dispatch_prompt.md) (per-subagent template, authored + committed this session)
+- **Commits this session:** `28b1aab` (helper patch + 4 tests) → `775cf99` (dispatch prompt artifact) → `bab81e0` (batch 1: TX/MA/PA) → `a5901d4` (batch 2: CO/IL/AR) → `ff27389` (batch 3: WI/WA/AK) → `d97f7e8` (batch 4: MI/WV/CA)
+- **Subagent dispatch spend (Max plan):** 12 subagents × ~75k tokens each ≈ ~900k tokens total
+
+#### Topics Explored
+
+- **Branch pickup on a different machine.** User typed "pull api-multi-vintage" from Dans-MacBook-Air; the actual remote branch name is `api-multi-vintage-retrieval` and a fresh 2025 handoff had been pushed from the desktop earlier the same day (with the laptop as the named target machine). Created the worktree at `.worktrees/api-vintage` per the handoff convention.
+- **Environment setup on the laptop.** Initial `data/` symlink pointed to a phantom `/Users/dan/code/lobby_analysis/data` (gitignored on this machine, never materialized); corrected to `/Users/dan/data/lobby_analysis/` per user feedback. `.env.local` symlink removed (no Anthropic key needed for the subagent-dispatch path; direct-API path remains blocked by the spent Anthropic workspace credit). Playwright chromium browser installed (~91 MB).
+- **Pass-1 helper produces empty TSV on 2025 — structural finding.** First `subagent_fetch_save.py` invocation for TX 2025 returned 745-line HTML but 0-line TSV. Probed: TX 2025 state-year-index links children as `/codes/texas/government-code/` (year-LESS), not `/codes/texas/2025/government-code/`. Probed across 5 years (2025 / 2024 / 2023 / 2022 / 2015) to confirm the year-less convention is 2025-specific; probed at pass-2 (title TOC) and pass-3 (chapter leaf) to confirm the convention extends through every discovery level. Both URL forms resolve to identical content server-side.
+- **TDD patch for the year-less convention.** Per user's "TDD patch recommended" choice: 4 new tests in `tests/test_api_retrieval_agent_b3.py` (pass-1 year injection, pass-2 year injection, "Other Years" cross-vintage nav rejection, 2024-and-earlier regression rail). Patched `_build_justia_link_tsv` in `src/scoring/api_retrieval_agent.py` with a Pattern 4 branch: detect year-prefixed parent URL, also accept children matching the year-stripped namespace, inject the year on emission, reject child URLs whose first segment is itself a 4-digit year (the "Other Years" cross-vintage nav case discovered via real-page testing after the initial patch). Full suite 52 GREEN.
+- **Subagent dispatch prompt artifact.** Per user's "committed artifact" choice (vs inlined ad-hoc per Agent call): authored [`plans/_handoffs/20260519_subagent_dispatch_prompt.md`](plans/_handoffs/20260519_subagent_dispatch_prompt.md) as a parameterized self-contained brief. Captures the pass-1→pass-2→pass-3 procedure that was previously implicit in the 2026-05-18 desktop run, plus 12-state slug mapping, Cloudflare triage, vintage substitution, empty-TSV anomaly handling, and `result.json` schema.
+- **Four batches × 3 subagents in parallel** per the handoff's CF-sustainability finding (3 concurrent is the safe ceiling on a single IP). After each batch: verified bundle structure on disk, committed before launching the next batch.
+
+#### Provisional Findings
+
+12 states dispatched, 12 bundles produced, **0 Cloudflare blocks, 0 playwright_errors** across all 4 batches. **298 proposed URLs total.**
+
+**Section-level (10 states, 286 URLs):**
+
+| State | Vintage used | URLs | Real finding |
+|---|---|---|---|
+| TX | 2025 | 35 | Ch.305 restructured to subchapter A/B/C (was single directory-leaf in 2015). Post-2015 additions: §305.030 Foreign Adversary, §305.0064 Electronic Filing, §§305.0021/.0041/.0051/.0061-3/.0071. Tree depth 7. |
+| MA | 2025 | 11 | Stable vs 2015 (§§39, 41-50; §40 still repealed). |
+| PA | 2025 | 11 | Stable vs 2015 (§§13A01-13A11). Subagent correctly noted chapter-13 "Deleted by amendment" → chapter-13a. |
+| AR | **2024 (sub)** | 15 | Justia 404 on /2025/. **Title 10 Ch.1 went `[RESERVED]`** between 2015 and 2024 — real regime drop. |
+| WI | 2025 | 16 | Stable vs 2015. URL slug convention shifted from `13/13.61.html` → `chapter-13/section-13-61/`. |
+| WA | 2025 | 42 | **Full RCW reorganization 2024-25**: lobbying moved Title 42 Ch.42.17A → new Title 29B Ch.29B.50. Justia hosts both transitionally. 29 URLs from new canonical, 13 from legacy mirror. |
+| AK | 2025 | 20 | Stable vs 2015 (AS 24.45.011-.181 across 5 Articles). |
+| MI | 2025 | 23 | Stable vs 2015 (MCL 4.411-4.431 under Act 472 of 1978). |
+| WV | 2025 | 34 | **+10 sections vs 2015**: Art.2 added §§2a/3a/5a/5b; Art.3 added §§3a (reg fees) / 3b (conflict of interest) / 3c (training) / 11 (compliance audits). Articles 2A and 2B excluded as post-2015 additions outside disclosure scope. |
+| CA | 2025 | 56 | **+1 section vs 2015**: §86119 added to Ch.6 Art.1. Tree depth 6 (deepest). Multi-chapter regime correctly enumerated (Ch.6 core / Ch.2 defs / Ch.11 enforcement). |
+
+**Article-level (2 states, flagged for Phase C remediation):**
+
+- **CO 2024 (sub)** — 3 URLs at Article level (Art.6/18/18.5). Subagent rationalized stopping at Article-level by analogy to TX 2015's directory-leaf chapter — but CO Art.6 has section children and is NOT a leaf. Phase C will need section-discovery for CO.
+- **IL 2025** — 9 URLs: 1 valid leaf (25 ILCS 170 act-level via empty-TSV) + 8 Article URLs needing section expansion (5 ILCS 420 Arts 1/2/3/4A; 5 ILCS 430 Arts 1/5/10/50).
+
+**Sub-finding: dispatch-prompt recursion under-specification.** Generic Step 3 says "pass-3 per chosen chapter" with no explicit recursion when "chosen sections" turn out to be TOCs themselves. TX and AR subagents self-recursed in batch 1-2; CO and IL didn't. Per-state addenda added to batch 3-4 prompts ("recurse on each Article", "URLs must be section-level") fixed it for the remaining 6 states. The generic prompt remains under-specified for deep trees.
+
+#### Decisions Made
+
+- **TDD-patch route for the year-less convention** (vs work-around in subagent prompt / vs subagent post-processing) — committed at `28b1aab`.
+- **Subagent dispatch prompt as committed artifact** (vs inlined per call) — committed at `775cf99`.
+- **CO/IL Article-level bundles committed as-is, flagged for Phase C remediation** (vs re-dispatch now). Explicit cheaper-now / more-expensive-downstream trade-off.
+- **2.5s rate-limit** applies to Phase C `PlaywrightClient`; not relevant to Phase B subagent dispatch where each `subagent_fetch_save.py` runs as a one-shot subprocess.
+
+#### Results
+
+12 reproducibility bundles in `docs/active/api-multi-vintage-retrieval/results/subagent_canaries/`:
+- `TX_2025/`, `MA_2025/`, `PA_2025/` (batch 1)
+- `CO_2025/`, `IL_2025/`, `AR_2025/` (batch 2)
+- `WI_2025/`, `WA_2025/`, `AK_2025/` (batch 3)
+- `MI_2025/`, `WV_2025/`, `CA_2025/` (batch 4)
+
+Each bundle conforms to the schema in `subagent_canaries/README.md`: pass-1 HTML+TSV+chosen.json, pass-2 HTML+TSV+chosen.json per chosen title, pass-3 HTML+TSV+chosen.json per chosen chapter (and deeper TOCs subagents recursed into), and an aggregate `result.json` with `proposed_urls[]`, `pass1_chosen_titles`, `pass2_chosen_chapters`, `pass3_invoked_on`, `tree_depth`, `playwright_errors`, `notes`, and `prompt_git_rev`.
+
+#### Next Steps
+
+- **Phase C section-fetch for all 12 states.** Pattern from 2015 in [`20260518_fetch_2015_section_bodies.md`](plans/_handoffs/20260518_fetch_2015_section_bodies.md) Step 3; use `rate_limit_seconds=2.5`; smallest-first ordering (MA/PA at 11 → IL at 9-but-Article-level → AR/WI at 15-16 → AK at 20 → MI at 23 → TX at 35 → WV at 34 → WA at 42 → CA at 56); CO+IL need section-discovery first OR Phase C needs Article-shape-detection logic.
+- **WA dedup policy decision** — 29B canonical vs 42.17A legacy mirror; Phase C needs an authoritative-source tag or dedup-by-semantic-mirror policy.
+- **Generic dispatch prompt tightening** — Step 3 should be explicit about recursing pass-3 when chosen URLs are themselves TOC pages. Optional improvement; per-state addenda compensate today.
+- **OH 2025 idempotent skip already engaged** — 30 section files already on disk at `data/statutes/OH/2025/sections/` from the archived `statute-retrieval` branch; no re-discovery needed.
+
+#### What could have gone better
+
+- **Helper patch should have probed the real page during test design**, not after. The initial 3 tests passed but missed the "Other Years" cross-vintage nav case (`/codes/texas/2024/` link in the 2025 index page) which the real-world fetch surfaced — required a 4th test + an additional filter on the patch. Cheap fix because the test discipline was already in place; would have been costly if shipped to the subagent fan-out.
+- **Dispatch prompt Step 3 under-specification not caught at design time.** CO and IL bundles ended up Article-level because the prompt didn't explicitly say "recurse pass-3 when chosen URLs are themselves TOCs." Caught after batch 2; corrected via per-state addenda for batches 3-4. Generic prompt remains as-shipped.
+
+---
+
 ### 2026-05-15 — B4 parser hardening + pass-1 prompt strengthening + AR/WV re-canary
 
 - **Convo:** [`convos/20260515_b4_parser_hardening.md`](convos/20260515_b4_parser_hardening.md)
