@@ -1,0 +1,37 @@
+{
+  "state": "IL",
+  "vintage": 2015,
+  "actual_vintage_used": 2015,
+  "prompt_git_rev": "8db1ad4654ca49501f6f2138091f58faf98ba858",
+  "proposed_urls": [
+    {"url": "https://law.justia.com/codes/illinois/2015/chapter-25/act-25-ilcs-170/", "role": "core_chapter", "rationale": "25 ILCS 170 Lobbyist Registration Act — leaf page; full statute body in a single act-level document."},
+    {"url": "https://law.justia.com/codes/illinois/2015/chapter-5/act-5-ilcs-420/article-1/", "role": "support_chapter", "rationale": "5 ILCS 420 Art. 1 (Short Title, Definitions) — lobbyist definitions for the Governmental Ethics Act."},
+    {"url": "https://law.justia.com/codes/illinois/2015/chapter-5/act-5-ilcs-420/article-2/", "role": "support_chapter", "rationale": "5 ILCS 420 Art. 2 (Restricted Activities) — lobbying-adjacent restrictions on public officials."},
+    {"url": "https://law.justia.com/codes/illinois/2015/chapter-5/act-5-ilcs-420/article-3/", "role": "support_chapter", "rationale": "5 ILCS 420 Art. 3 (Code of Conduct) — official conduct rules tied to lobbyist interactions."},
+    {"url": "https://law.justia.com/codes/illinois/2015/chapter-5/act-5-ilcs-420/article-3a/", "role": "support_chapter", "rationale": "5 ILCS 420 Art. 3A (Governmental Appointees) — appointee disclosure obligations."},
+    {"url": "https://law.justia.com/codes/illinois/2015/chapter-5/act-5-ilcs-420/article-4a/", "role": "core_chapter", "rationale": "5 ILCS 420 Art. 4a (Disclosure of Economic Interests) — central statement-of-economic-interests filing regime."},
+    {"url": "https://law.justia.com/codes/illinois/2015/chapter-5/act-5-ilcs-430/article-1/", "role": "support_chapter", "rationale": "5 ILCS 430 Art. 1 (General Provisions) — definitions of 'lobbyist' and 'lobbying activity'."},
+    {"url": "https://law.justia.com/codes/illinois/2015/chapter-5/act-5-ilcs-430/article-5/", "role": "core_chapter", "rationale": "5 ILCS 430 Art. 5 (Ethical Conduct) — revolving-door / post-employment lobbying restrictions."},
+    {"url": "https://law.justia.com/codes/illinois/2015/chapter-5/act-5-ilcs-430/article-10/", "role": "core_chapter", "rationale": "5 ILCS 430 Art. 10 (Gift Ban) — lobbyist-to-official gift prohibitions."},
+    {"url": "https://law.justia.com/codes/illinois/2015/chapter-5/act-5-ilcs-430/article-20/", "role": "support_chapter", "rationale": "5 ILCS 430 Art. 20 (Executive Ethics Commission and Executive IGs) — executive-branch lobbying enforcement body."},
+    {"url": "https://law.justia.com/codes/illinois/2015/chapter-5/act-5-ilcs-430/article-25/", "role": "support_chapter", "rationale": "5 ILCS 430 Art. 25 (Legislative Ethics Commission and Legislative IG) — legislative-branch lobbying enforcement body."},
+    {"url": "https://law.justia.com/codes/illinois/2015/chapter-5/act-5-ilcs-430/article-50/", "role": "support_chapter", "rationale": "5 ILCS 430 Art. 50 (Penalties) — penalty schedule for ethics/lobbying violations."}
+  ],
+  "pass1_chosen_titles": [
+    "https://law.justia.com/codes/illinois/2015/chapter-25/",
+    "https://law.justia.com/codes/illinois/2015/chapter-5/"
+  ],
+  "pass2_chosen_chapters": [
+    "https://law.justia.com/codes/illinois/2015/chapter-25/act-25-ilcs-170/",
+    "https://law.justia.com/codes/illinois/2015/chapter-5/act-5-ilcs-420/",
+    "https://law.justia.com/codes/illinois/2015/chapter-5/act-5-ilcs-430/"
+  ],
+  "pass3_invoked_on": [
+    "https://law.justia.com/codes/illinois/2015/chapter-25/act-25-ilcs-170/",
+    "https://law.justia.com/codes/illinois/2015/chapter-5/act-5-ilcs-420/",
+    "https://law.justia.com/codes/illinois/2015/chapter-5/act-5-ilcs-430/"
+  ],
+  "tree_depth": 4,
+  "playwright_errors": [],
+  "notes": "IL 2015 uses hyphenated `chapter-N/` slugs and `act-N-ilcs-M/` per-act TOCs (differs from the 2010 numeric-slug `chapterN/M.html` convention noted in the prior). Parallel-regime confirmed: chapter-25 holds the Lobbyist Registration Act (25 ILCS 170, a depth-3 leaf — pass-3 TSV empty); chapter-5 holds the Governmental Ethics Act (5 ILCS 420) and the State Officials and Employees Ethics Act (5 ILCS 430), both depth-4 with article-level subpages. Pass-3 article selections filter by lobbying-disclosure scope (definitions, restrictions, gift ban, disclosure of economic interests, ethics-commission enforcement, penalties) and drop pure severability / unrelated articles (whistleblower, auditor general, transit boards, retrocession, etc.). Aligns with the 2010 prior (25 ILCS 170 + 5 ILCS 420 + 5 ILCS 430) at act level."
+}

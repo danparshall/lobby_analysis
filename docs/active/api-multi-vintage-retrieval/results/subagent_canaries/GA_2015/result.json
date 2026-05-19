@@ -1,0 +1,34 @@
+{
+  "state": "GA",
+  "vintage": 2015,
+  "actual_vintage_used": 2015,
+  "prompt_git_rev": "8db1ad4654ca49501f6f2138091f58faf98ba858",
+  "proposed_urls": [
+    {
+      "url": "https://law.justia.com/codes/georgia/2015/title-21/chapter-5/article-4/",
+      "role": "core_chapter",
+      "rationale": "Title 21 Ch. 5 Art. 4 (Public Officials' Conduct and Lobbyist Disclosure), O.C.G.A. 21-5-70 et seq. — the lobbyist-registration / lobbyist-expenditure-reporting statute body; article-level TOC page that contains the full section text inline."
+    },
+    {
+      "url": "https://law.justia.com/codes/georgia/2015/title-21/chapter-5/article-1/",
+      "role": "support_chapter",
+      "rationale": "Article 1 General Provisions of Ch. 5 (Ethics in Government) supplies the chapter-wide definitions (O.C.G.A. 21-5-3) and State Ethics Commission provisions cross-referenced by Article 4."
+    }
+  ],
+  "pass1_chosen_titles": [
+    "https://law.justia.com/codes/georgia/2015/title-21/"
+  ],
+  "pass2_chosen_chapters": [
+    "https://law.justia.com/codes/georgia/2015/title-21/chapter-5/"
+  ],
+  "pass3_invoked_on": [
+    "https://law.justia.com/codes/georgia/2015/title-21/chapter-5/",
+    "https://law.justia.com/codes/georgia/2015/title-21/chapter-5/article-4/"
+  ],
+  "tree_depth": 4,
+  "playwright_errors": [
+    "Cloudflare interstitial returned for https://law.justia.com/codes/georgia/2015/title-21/chapter-5/article-4/ across three consecutive Playwright fetches during the original batch-E run; pass3_article-4.html captured the challenge page (31,707 bytes) and pass3_article-4.tsv is empty.",
+    "Final retry 2026-05-18 (after user IP switch) also returned Cloudflare 'Just a moment...' interstitial — pass3_article-4.html overwritten with the new challenge page (31,729 bytes), pass3_article-4.tsv remained empty. IP switch alone did not clear the block; the bot signal is likely tied to the Playwright headless Chromium fingerprint, not purely IP."
+  ],
+  "notes": "GA tree is 4 levels deep (title > chapter > article > section). Pass-1 selected Title 21 (Elections); pass-2 of title-21 exposed only chapter-level URLs so chapter-5 (Ethics in Government) was selected; pass-3 of chapter-5 exposed article-level URLs and selected article-4 (core, lobbyist disclosure) plus article-1 (support, definitions / ethics commission). Intermediate pass-3 fetch on article-4 to enumerate sections was repeatedly Cloudflare-blocked across both the original run and a post-IP-switch retry; article-4 article-TOC URL stands as the proposed core_chapter leaf per pass-2 protocol rule 6 (chapter-level TOC pages that contain full statute text are valid proposals). Prior GA 2010 finding (7 sections § 21-5-70 to § 21-5-76) suggests the same structural depth at 2015 — a future direct-API run from a fully unblocked egress (or with relaxed Playwright fingerprinting) should be able to enumerate the per-section leaves. Other Ch. 5 articles (Art. 2 Campaign Contributions, Art. 2A Contributions to Candidates, Art. 3 Financial Disclosure Statements) are out of scope per pass-2 prompt rule 4 (campaign finance is a separate regime; financial disclosure for public officials is not lobbyist disclosure)."
+}

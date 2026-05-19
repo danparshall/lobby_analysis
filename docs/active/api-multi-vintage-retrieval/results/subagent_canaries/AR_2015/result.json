@@ -1,0 +1,45 @@
+{
+  "state": "AR",
+  "vintage": 2015,
+  "actual_vintage_used": 2015,
+  "prompt_git_rev": "8db1ad4654ca49501f6f2138091f58faf98ba858",
+  "proposed_urls": [
+    {"url": "https://law.justia.com/codes/arkansas/2015/title-21/chapter-8/subchapter-4/section-21-8-401/", "role": "support_chapter", "rationale": "Title — short title of the disclosure act covering Subch. 4-6."},
+    {"url": "https://law.justia.com/codes/arkansas/2015/title-21/chapter-8/subchapter-4/section-21-8-402/", "role": "support_chapter", "rationale": "Definitions used by the entire lobbying-disclosure regime."},
+    {"url": "https://law.justia.com/codes/arkansas/2015/title-21/chapter-8/subchapter-4/section-21-8-403/", "role": "support_chapter", "rationale": "Penalty provision for the lobbying-disclosure regime."},
+    {"url": "https://law.justia.com/codes/arkansas/2015/title-21/chapter-8/subchapter-4/section-21-8-404/", "role": "support_chapter", "rationale": "Investigation procedure for disclosure violations."},
+    {"url": "https://law.justia.com/codes/arkansas/2015/title-21/chapter-8/subchapter-4/section-21-8-405/", "role": "support_chapter", "rationale": "Supplemental-provisions clause for the disclosure regime."},
+    {"url": "https://law.justia.com/codes/arkansas/2015/title-21/chapter-8/subchapter-4/section-21-8-406/", "role": "core_chapter", "rationale": "Substantive gift/event-ticket disclosure rule applicable to lobbyists and officials."},
+    {"url": "https://law.justia.com/codes/arkansas/2015/title-21/chapter-8/subchapter-4/section-21-8-407/", "role": "core_chapter", "rationale": "Substantive gift-of-art disclosure rule."},
+    {"url": "https://law.justia.com/codes/arkansas/2015/title-21/chapter-8/subchapter-5/", "role": "support_chapter", "rationale": "Investigation by Attorney General — pass-3 empty TSV, subchapter page is the leaf."},
+    {"url": "https://law.justia.com/codes/arkansas/2015/title-21/chapter-8/subchapter-6/section-21-8-601/", "role": "core_chapter", "rationale": "Lobbyist registration requirement, exceptions, and termination."},
+    {"url": "https://law.justia.com/codes/arkansas/2015/title-21/chapter-8/subchapter-6/section-21-8-602/", "role": "core_chapter", "rationale": "Other required filings by lobbyists."},
+    {"url": "https://law.justia.com/codes/arkansas/2015/title-21/chapter-8/subchapter-6/section-21-8-603/", "role": "core_chapter", "rationale": "Lobbyist activity reports and public inspection."},
+    {"url": "https://law.justia.com/codes/arkansas/2015/title-21/chapter-8/subchapter-6/section-21-8-604/", "role": "core_chapter", "rationale": "Activity-report required contents."},
+    {"url": "https://law.justia.com/codes/arkansas/2015/title-21/chapter-8/subchapter-6/section-21-8-605/", "role": "core_chapter", "rationale": "Recordkeeping by lobbyists."},
+    {"url": "https://law.justia.com/codes/arkansas/2015/title-21/chapter-8/subchapter-6/section-21-8-606/", "role": "support_chapter", "rationale": "Duties of public officials in connection with lobbyist disclosure."},
+    {"url": "https://law.justia.com/codes/arkansas/2015/title-21/chapter-8/subchapter-6/section-21-8-607/", "role": "core_chapter", "rationale": "Prohibited acts by lobbyists."},
+    {"url": "https://law.justia.com/codes/arkansas/2015/title-10/chapter-1/", "role": "core_chapter", "rationale": "Title 10 (General Assembly) Ch. 1 General Provisions — legislative-branch lobbying provisions per the AR 2010 prior; pass-3 empty TSV confirms the chapter page is the leaf."}
+  ],
+  "pass1_chosen_titles": [
+    "https://law.justia.com/codes/arkansas/2015/title-21/",
+    "https://law.justia.com/codes/arkansas/2015/title-10/"
+  ],
+  "pass2_chosen_chapters": [
+    "https://law.justia.com/codes/arkansas/2015/title-21/chapter-8/subchapter-1/",
+    "https://law.justia.com/codes/arkansas/2015/title-21/chapter-8/subchapter-4/",
+    "https://law.justia.com/codes/arkansas/2015/title-21/chapter-8/subchapter-5/",
+    "https://law.justia.com/codes/arkansas/2015/title-21/chapter-8/subchapter-6/",
+    "https://law.justia.com/codes/arkansas/2015/title-10/chapter-1/"
+  ],
+  "pass3_invoked_on": [
+    "https://law.justia.com/codes/arkansas/2015/title-21/chapter-8/subchapter-1/",
+    "https://law.justia.com/codes/arkansas/2015/title-21/chapter-8/subchapter-4/",
+    "https://law.justia.com/codes/arkansas/2015/title-21/chapter-8/subchapter-5/",
+    "https://law.justia.com/codes/arkansas/2015/title-21/chapter-8/subchapter-6/",
+    "https://law.justia.com/codes/arkansas/2015/title-10/chapter-1/"
+  ],
+  "tree_depth": 4,
+  "playwright_errors": [],
+  "notes": "AR 2015 mirrors the AR 2010 structure (Title 21 Ch. 8 ethics + Title 10 Ch. 1 legislative). Tree depth required pass-3 fetches because Title 21 Ch. 8 is a chapter directory exposing 10 subchapters which in turn expose section-level leaves. One intermediate fetch was added at Title 21 Ch. 8 between pass-2 (title) and pass-3 (subchapter sections) — recorded as a pass-2 fetch (pass2_chapter-8.tsv) so the helper-saved TSVs naming stays consistent. Pass-3 also dropped Subch. 1 from the pass-2 selection: its 'General Provisions' name was misleading — its sections (§ 21-8-101 Nepotism, § 21-8-102 former-employee restrictions) are out of lobbying scope, and definitions for the regime actually live at § 21-8-402 inside Subch. 4. Final URL count: 16 (15 Title 21 + 1 Title 10), vs the AR 2010 prior's 5+1 — the 2015 tree exposes the same regime at deeper section granularity (each Subch. 4 and Subch. 6 section is its own page in 2015), so URL count differences reflect Justia's page granularity, not statute differences."
+}

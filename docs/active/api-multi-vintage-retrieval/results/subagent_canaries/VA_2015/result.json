@@ -1,0 +1,13 @@
+{
+  "state": "VA",
+  "vintage": 2015,
+  "actual_vintage_used": 2015,
+  "prompt_git_rev": "8db1ad4654ca49501f6f2138091f58faf98ba858",
+  "proposed_urls": [],
+  "pass1_chosen_titles": [],
+  "pass2_chosen_chapters": [],
+  "pass3_invoked_on": [],
+  "tree_depth": 0,
+  "playwright_errors": ["pass1 https://law.justia.com/codes/virginia/2015/ returned Cloudflare 'Just a moment...' challenge page (31602 bytes HTML, empty TSV) on both initial fetch and 1 retry — byte-identical responses confirm IP throttling, not transient failure"],
+  "notes": "VA 2015 canary BLOCKED at pass-1 by Cloudflare anti-bot. Continues the GA/NC pass-3 Cloudflare pattern flagged in task description but escalated: VA hit the challenge at the state-index level (pass-1), meaning no pass-2 or pass-3 was attempted (no chosen title to descend into). justia_unavailable left false because Justia very likely still hosts the page (VA 2010 successfully indexed Title 2.2 Ch. 4 Art. 3, §§ 2.2-418 to 2.2-435 — 18 sections); this is an IP-level throttle, not a content gap. Per protocol: 1 retry burned, then reported honestly. Reproducibility bundle saved: pass1_state_index.html (31602 bytes Cloudflare challenge) + empty pass1_state_index.tsv. A future direct-API run from an unblocked IP should replay against virginia/2015/ index and is expected to find the same Title 2.2 entry point used at the 2010 vintage."
+}

@@ -1,0 +1,50 @@
+{
+  "state": "NC",
+  "vintage": 2015,
+  "actual_vintage_used": 2015,
+  "prompt_git_rev": "8db1ad4654ca49501f6f2138091f58faf98ba858",
+  "proposed_urls": [
+    {"url": "https://law.justia.com/codes/north-carolina/2015/chapter-120c/article-1/", "role": "core_chapter", "rationale": "Article 1 - General Provisions: definitions and scope for the lobbying chapter."},
+    {"url": "https://law.justia.com/codes/north-carolina/2015/chapter-120c/article-2/", "role": "core_chapter", "rationale": "Article 2 - Registration: lobbyist and principal registration requirements."},
+    {"url": "https://law.justia.com/codes/north-carolina/2015/chapter-120c/article-3/", "role": "core_chapter", "rationale": "Article 3 - Prohibitions and Restrictions: gift bans, contingency fees, and conduct rules tied to lobbying."},
+    {"url": "https://law.justia.com/codes/north-carolina/2015/chapter-120c/article-4/", "role": "core_chapter", "rationale": "Article 4 - Reporting: lobbyist expenditure and activity reports."},
+    {"url": "https://law.justia.com/codes/north-carolina/2015/chapter-120c/article-5/", "role": "core_chapter", "rationale": "Article 5 - Liaison Personnel: registration/reporting for state-agency liaison personnel."},
+    {"url": "https://law.justia.com/codes/north-carolina/2015/chapter-120c/article-6/", "role": "core_chapter", "rationale": "Article 6 - Violations and Enforcement: penalties and enforcement provisions for the lobbying chapter."},
+    {"url": "https://law.justia.com/codes/north-carolina/2015/chapter-120c/article-7/", "role": "core_chapter", "rationale": "Article 7 - Exemptions: statutory exemptions from registration/reporting under the lobbying chapter."},
+    {"url": "https://law.justia.com/codes/north-carolina/2015/chapter-120c/article-8/", "role": "core_chapter", "rationale": "Article 8 - Miscellaneous: remaining provisions of the lobbying chapter."}
+  ],
+  "pass1_chosen_titles": ["https://law.justia.com/codes/north-carolina/2015/chapter-120c/"],
+  "pass2_chosen_chapters": [
+    "https://law.justia.com/codes/north-carolina/2015/chapter-120c/article-1/",
+    "https://law.justia.com/codes/north-carolina/2015/chapter-120c/article-2/",
+    "https://law.justia.com/codes/north-carolina/2015/chapter-120c/article-3/",
+    "https://law.justia.com/codes/north-carolina/2015/chapter-120c/article-4/",
+    "https://law.justia.com/codes/north-carolina/2015/chapter-120c/article-5/",
+    "https://law.justia.com/codes/north-carolina/2015/chapter-120c/article-6/",
+    "https://law.justia.com/codes/north-carolina/2015/chapter-120c/article-7/",
+    "https://law.justia.com/codes/north-carolina/2015/chapter-120c/article-8/"
+  ],
+  "pass3_invoked_on": [
+    "https://law.justia.com/codes/north-carolina/2015/chapter-120c/article-1/",
+    "https://law.justia.com/codes/north-carolina/2015/chapter-120c/article-2/",
+    "https://law.justia.com/codes/north-carolina/2015/chapter-120c/article-3/",
+    "https://law.justia.com/codes/north-carolina/2015/chapter-120c/article-4/",
+    "https://law.justia.com/codes/north-carolina/2015/chapter-120c/article-5/",
+    "https://law.justia.com/codes/north-carolina/2015/chapter-120c/article-6/",
+    "https://law.justia.com/codes/north-carolina/2015/chapter-120c/article-7/",
+    "https://law.justia.com/codes/north-carolina/2015/chapter-120c/article-8/"
+  ],
+  "tree_depth": 4,
+  "playwright_errors": [
+    "pass3 https://law.justia.com/codes/north-carolina/2015/chapter-120c/article-1/ — Cloudflare challenge did not clear in 30s (HTML title 'Just a moment...', 31710 bytes, TSV empty); confirmed via fresh-context retry and an isolated /tmp probe",
+    "pass3 https://law.justia.com/codes/north-carolina/2015/chapter-120c/article-2/ — Cloudflare challenge did not clear (HTML title 'Just a moment...', TSV empty)",
+    "pass3 https://law.justia.com/codes/north-carolina/2015/chapter-120c/article-3/ — Cloudflare challenge did not clear (HTML title 'Just a moment...', TSV empty)",
+    "pass3 https://law.justia.com/codes/north-carolina/2015/chapter-120c/article-4/ — Cloudflare challenge did not clear (HTML title 'Just a moment...', TSV empty)",
+    "pass3 https://law.justia.com/codes/north-carolina/2015/chapter-120c/article-5/ — Cloudflare challenge did not clear (HTML title 'Just a moment...', TSV empty)",
+    "pass3 https://law.justia.com/codes/north-carolina/2015/chapter-120c/article-6/ — Cloudflare challenge did not clear (HTML title 'Just a moment...', TSV empty)",
+    "pass3 https://law.justia.com/codes/north-carolina/2015/chapter-120c/article-7/ — Cloudflare challenge did not clear (HTML title 'Just a moment...', TSV empty)",
+    "pass3 https://law.justia.com/codes/north-carolina/2015/chapter-120c/article-8/ — Cloudflare challenge did not clear (HTML title 'Just a moment...', TSV empty)",
+    "pass3 probe https://law.justia.com/codes/north-carolina/2015/chapter-120c/article-1/section-120c-100/ (in /tmp, not saved to canary dir) — also Cloudflare-blocked, suggesting any URL below chapter-level on chapter-120c is currently walled, not just article TOCs"
+  ],
+  "notes": "Pass-1 and pass-2 completed cleanly and matched the NC 2010 canary's structural read: Chapter 120C (Lobbying) is the title-level entry; Chapter 138A (State Government Ethics Act) is officials-side and out of scope. Pass-2 enumerated 8 articles (1-8), matching the post-2006-reform consolidated regime referenced in the user-provided prior. Pass-3 is the failure point: all 8 article-TOC fetches returned the Cloudflare 'Just a moment...' challenge page (~31KB, identical sizes), and the link extractor honestly produced empty TSVs because no law.justia.com/codes/... links exist on a challenge page. I retried article-1 twice (once via the canary helper, once in an isolated /tmp dir) and probed a hypothesized section URL — all three came back blocked. This is the protocol's 'Playwright/Cloudflare error' stop-and-report condition. proposed_urls is filled from pass-2 (article TOCs) rather than pass-3 (section leaves), so downstream replay will fetch one level shallower than NC 2010 (which surfaced 32 sections across the 8 articles). For full parity with NC 2010, pass-3 will need to be rerun later, either by waiting out the Cloudflare hardening, increasing the challenge_timeout_seconds beyond 30s, or rotating egress IP. tree_depth is recorded as 4 (chapter > article > section) because that is the structural reality even though pass-3 could not enumerate the leaves this run."
+}

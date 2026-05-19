@@ -1,0 +1,33 @@
+{
+  "state": "CO",
+  "vintage": 2015,
+  "actual_vintage_used": 2016,
+  "prompt_git_rev": "8db1ad4654ca49501f6f2138091f58faf98ba858",
+  "proposed_urls": [
+    {"url": "https://law.justia.com/codes/colorado/2016/title-24/administration/article-6/part-3/section-24-6-301/",   "role": "core_chapter", "rationale": "§24-6-301 Definitions and legislative declaration for the lobbyist-regulation regime."},
+    {"url": "https://law.justia.com/codes/colorado/2016/title-24/administration/article-6/part-3/section-24-6-302/",   "role": "core_chapter", "rationale": "§24-6-302 Required disclosure statements (the disclosure obligation itself)."},
+    {"url": "https://law.justia.com/codes/colorado/2016/title-24/administration/article-6/part-3/section-24-6-303/",   "role": "core_chapter", "rationale": "§24-6-303 Registration as professional lobbyist, filing of disclosure statements, certificate of registration."},
+    {"url": "https://law.justia.com/codes/colorado/2016/title-24/administration/article-6/part-3/section-24-6-303.5/", "role": "core_chapter", "rationale": "§24-6-303.5 Lobbying by state officials and employees."},
+    {"url": "https://law.justia.com/codes/colorado/2016/title-24/administration/article-6/part-3/section-24-6-304/",   "role": "core_chapter", "rationale": "§24-6-304 Records preservation, public inspection, electronic access."},
+    {"url": "https://law.justia.com/codes/colorado/2016/title-24/administration/article-6/part-3/section-24-6-304.5/", "role": "core_chapter", "rationale": "§24-6-304.5 Examination of books and records (audit authority over lobbyist filings)."},
+    {"url": "https://law.justia.com/codes/colorado/2016/title-24/administration/article-6/part-3/section-24-6-305/",   "role": "core_chapter", "rationale": "§24-6-305 Secretary-of-State powers over registration certificates and penalties."},
+    {"url": "https://law.justia.com/codes/colorado/2016/title-24/administration/article-6/part-3/section-24-6-306/",   "role": "core_chapter", "rationale": "§24-6-306 Employment of legislators/legislative employees/state employees - filing of statement."},
+    {"url": "https://law.justia.com/codes/colorado/2016/title-24/administration/article-6/part-3/section-24-6-307/",   "role": "core_chapter", "rationale": "§24-6-307 Employment of unregistered persons."},
+    {"url": "https://law.justia.com/codes/colorado/2016/title-24/administration/article-6/part-3/section-24-6-308/",   "role": "core_chapter", "rationale": "§24-6-308 Prohibited practices."},
+    {"url": "https://law.justia.com/codes/colorado/2016/title-24/administration/article-6/part-3/section-24-6-309/",   "role": "core_chapter", "rationale": "§24-6-309 Offenses, penalties, injunctions (enforcement)."}
+  ],
+  "pass1_chosen_titles": [
+    "https://law.justia.com/codes/colorado/2016/title-24/"
+  ],
+  "pass2_chosen_chapters": [
+    "https://law.justia.com/codes/colorado/2016/title-24/administration/article-6/part-3/",
+    "https://law.justia.com/codes/colorado/2016/title-24/administration/article-6/part-1/",
+    "https://law.justia.com/codes/colorado/2016/title-24/administration/article-18.5/"
+  ],
+  "pass3_invoked_on": [
+    "https://law.justia.com/codes/colorado/2016/title-24/administration/article-6/part-3/"
+  ],
+  "tree_depth": 4,
+  "playwright_errors": [],
+  "notes": "CO 2015 vintage absent from Justia (https://law.justia.com/codes/colorado/2015/ returns 'Page not found'; earliest available vintage on /codes/colorado/ all-versions page is 2016). Substituted to 2016 (1 year off, within ±5 window). CO does have a lobbying regime - the 2016 CO_2016 silent-empty canary was Defect-2 (real regime missed), NOT a correctly-empty pair. The regime is C.R.S. Title 24 (Government - State) Art. 6 (Colorado Sunshine Law) Part 3 (Regulation of Lobbyists), §§24-6-301 through 24-6-309 (11 per-section leaves). Tree is 4 levels deep, not 3: state-index -> title-24 -> administration (categorical grouping) -> article-6 -> part-3. The unusual depth is because Justia's title-24 page groups articles under topical categories (administration, state-officers, etc.) rather than listing them flat; required one intermediate fetch (pass2_administration.tsv) beyond the standard pass-2 title snapshot to reach the article level. Two support_chapter candidates proposed in pass2 (Art. 6 Pt. 1 General Provisions for cross-referenced definitions; Art. 18.5 Independent Ethics Commission for enforcement linkage) - pass3 was only invoked on the core_chapter Part 3 per the task brief's 'For each chosen chapter URL'. Reproducibility bundle: pass0_all_versions.{html,tsv} documents the substitution evidence; pass1_state_index_2015_404.html preserves the 404 page; pass1_state_index.{html,tsv} are the substituted-year (2016) input the LLM judgment ran against."
+}

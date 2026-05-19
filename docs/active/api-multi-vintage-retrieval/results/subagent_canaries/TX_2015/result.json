@@ -1,0 +1,25 @@
+{
+  "state": "TX",
+  "vintage": 2015,
+  "actual_vintage_used": 2015,
+  "prompt_git_rev": "8db1ad4654ca49501f6f2138091f58faf98ba858",
+  "proposed_urls": [
+    {
+      "url": "https://law.justia.com/codes/texas/2015/government-code/title-3/subtitle-a/chapter-305/",
+      "role": "core_chapter",
+      "rationale": "Gov Code Title 3 Subtitle A Ch. 305 (Registration of Lobbyists) - full lobbying-disclosure statute body, directory-level leaf."
+    }
+  ],
+  "pass1_chosen_titles": [
+    "https://law.justia.com/codes/texas/2015/government-code/"
+  ],
+  "pass2_chosen_chapters": [
+    "https://law.justia.com/codes/texas/2015/government-code/title-3/subtitle-a/chapter-305/"
+  ],
+  "pass3_invoked_on": [
+    "https://law.justia.com/codes/texas/2015/government-code/title-3/subtitle-a/chapter-305/"
+  ],
+  "tree_depth": 5,
+  "playwright_errors": [],
+  "notes": "TX 2015 vintage available on Justia. Government Code title chosen at pass 1 (Election Code = campaign finance, intentionally excluded; Penal Code unrelated to lobbying disclosure). Tree is 5 levels deep: state -> code -> title -> subtitle -> chapter. Intermediate pass-2 fetches required at government-code/title-3/ and government-code/title-3/subtitle-a/. Compared with TX 2009 known-good which placed Ch. 305 under subtitle-c, TX 2015 places Ch. 305 under subtitle-a (Legislature) - subtitle reorganization confirmed by direct fetch (subtitle-c contains chapters 321-328 only). Pass-3 fetch on chapter-305/ returned an empty TSV, indicating it is a leaf directory page containing the full statute body (consistent with the TX 2009 directory-level full-chapter convention in example B of pass-2 prompt)."
+}

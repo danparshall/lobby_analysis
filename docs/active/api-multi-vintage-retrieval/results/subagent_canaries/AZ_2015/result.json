@@ -1,0 +1,13 @@
+{
+  "state": "AZ",
+  "vintage": 2015,
+  "actual_vintage_used": 2015,
+  "prompt_git_rev": "8db1ad4654ca49501f6f2138091f58faf98ba858",
+  "proposed_urls": [],
+  "pass1_chosen_titles": [],
+  "pass2_chosen_chapters": [],
+  "pass3_invoked_on": [],
+  "tree_depth": 0,
+  "playwright_errors": ["cloudflare_challenge_pass1: https://law.justia.com/codes/arizona/2015/ returned a 31599-byte 'Just a moment...' interstitial; retry after ~8s returned an identical 31599-byte challenge"],
+  "notes": "Cloudflare anti-bot block hit at pass-1 (state index) — not pass-3 as in the GA/NC incident. Two consecutive fetches of https://law.justia.com/codes/arizona/2015/ produced byte-identical 31599-byte Cloudflare challenge pages with empty TSV, so no URL snapshot was ever available to ground pass-1 judgment on. Per pass-1 protocol rule 3 ('Better to return nothing than to guess') chosen_titles is empty; per the orchestrator's '1 retry max' guidance no further fetches were attempted, and passes 2 and 3 were not invoked because they would have had no input. justia_unavailable=false in pass1_chosen.json because this is an IP-level throttle on the fetcher, not a Justia coverage gap — AZ 2010 was retrieved successfully on this branch (Title 41 Ch. 7 Art. 8.1, A.R.S. §§ 41-1231 to 41-1239, flat 2-level title>section tree). Reproducibility bundle on disk: pass1_state_index.html (the challenge page) and pass1_state_index.tsv (empty), so a future direct-API run can replay against the same inputs (or, more likely, re-fetch from a different IP once Cloudflare has cooled off). Recommend retry after IP cool-down or via a different egress before declaring AZ 2015 unreachable."
+}
