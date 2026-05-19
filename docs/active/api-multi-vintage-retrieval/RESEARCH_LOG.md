@@ -10,6 +10,54 @@
 
 ## Session log (newest first)
 
+### 2026-05-19 — 2015 + 2010 section-fetch execution + 2025 handoff doc
+
+- **Convo:** [`convos/20260519_fetch_2015_2010_sections.md`](convos/20260519_fetch_2015_2010_sections.md)
+- **Picked up from:** `8db1ad4` (the 2026-05-18 handoff `plans/_handoffs/20260518_fetch_2015_section_bodies.md`)
+- **Top commits:** `104268e` (handoffs + 17 2015 canary bundles + `subagent_fetch_save.py`); `b588b7b` (10 new 2010 canary bundles)
+- **Results:** [`results/20260519_2015_2010_section_fetch_inventory.md`](results/20260519_2015_2010_section_fetch_inventory.md)
+
+#### Topics Explored
+
+- **Cloudflare probe + 2015 section-fetch.** TX 2015 single-section probe returned 145 KB of real statute HTML (no CF challenge), so the full FETCH_ORDER (13 states, smallest-first) was driven via `/tmp/fetch_2015_sections.py` in the background.
+- **Rate-limit cutover mid-run** (5s → 2.5s) on user request, after 7 states had landed cleanly. Killed PID at a state boundary, removed the partial WA/2015 dir, relaunched. Resume logic auto-skipped the 7 completed states.
+- **2010 URL discovery** via four batches of 3 parallel Claude Code subagents (`general-purpose`), each running the three-pass discovery workflow on one (state, 2010) pair and writing a canary bundle in the same schema as the 2015 bundles.
+- **2010 section-fetch** driven by `/tmp/fetch_2010_sections.py` (clone of the 2015 driver), consuming the 137 URLs from the 10 new canary bundles. WI/OH/CA skipped via `dest.exists()` guard (already populated from `statute-retrieval` branch).
+- **2025 handoff doc** written for Dans-MacBook-Air, deferring procedural detail to the 2015 handoff and only flagging 2025-specific deltas.
+
+#### Provisional Findings
+
+- **Cloudflare held cleanly through ~450 sequential Justia hits this session.** Zero re-engagement at 2.5s rate limit. Significant update against the 2026-05-18 escalation pattern (afternoon CF blocks at pass-3 then pass-1). Possible explanations: IP-state aging, time-of-day, or both.
+- **All 13 2015 bundles + all 10 newly-fetched 2010 bundles passed the <500-byte CF-stub sanity check.** Median section sizes 1.7–14 KB across all states; no tiny files; no `playwright_errors` from any subagent.
+- **Three states needed vintage substitution at 2010:**
+  - TX → 2009 (−1, within ±5; matches curated path)
+  - CO → 2016 (+6, **outside ±5 window**; Justia hosts no CO before 2016)
+  - WA → 2009 (−1, within ±5; pre-42.17A reorg — 42.17A had a 2012 effective date so RCW 42.17 was operative during calendar 2010)
+- **Slug-convention drift between vintages** is widespread (MA, PA, IL, AR, AK, MI, WV). Same statute body, different Justia slug. Downstream consumers comparing raw URLs across vintages would treat them as disjoint sets.
+- **IL has dramatically different page granularity across vintages:** 3 URLs at 2010 (inline single-page acts) vs 12 at 2015 (per-article TOCs). Same statutory coverage.
+- **WA 2010 has a structural coverage gap:** Justia's 2009 listing starts at 42.17.030; missing the 2010 analogues of 42.17A.005 (definitions) and 42.17A.020 (reports-as-public-records). The subagent surfaced this in `notes` rather than papering over with the inoperative 42.17A side.
+- **`statute_retrieval.retrieve_statute_bundle()` is idempotent + atomic enough for kill-resume**, but the partial-bundle gotcha is real: kill mid-state leaves a partial-section dir that the next run's `if dest.exists()` skip-guard treats as done. Remediation in this session: manually `rm -rf` the partial dir between kill and restart.
+
+#### Decisions Made
+
+- **Halve rate limit** mid-run on user request.
+- **Default 2010 state list to "the 13 we just did at 2015"** per user pick (no documented 12-state set exists in the repo; this is the closest documented scope).
+- **Commit `subagent_fetch_save.py`** despite previous-agent "machine-local" docstring; needed on Dans-MacBook-Air for the 2025 work.
+- **`actual_vintage_used` tracking is non-negotiable** (user explicit confirmation).
+- **Skip WI/OH/CA via `dest.exists()`** rather than removing from FETCH_ORDER (keeps script intent visible).
+
+#### Results
+
+- [`results/20260519_2015_2010_section_fetch_inventory.md`](results/20260519_2015_2010_section_fetch_inventory.md) — per-state inventory of both fetch waves (file counts, byte sizes, `actual_vintage_used`, CF/coverage-validity flags)
+
+#### Next Steps
+
+- **2025 work on Dans-MacBook-Air** — per `plans/_handoffs/20260519_fetch_2025_statute_bundles.md`. URL discovery first (no 2025 canary bundles exist except curated OH/2025), then section fetch.
+- **GA/NC/AZ/VA URL discovery** at 2015 + 2010 still deferred (CF-blocked 2026-05-18).
+- **WY/FL/NY 2015** still lossy. For 2010: NY/WY already populated, FL not done.
+- **CO 2010 substitution-validity question** (6-year forward sub may introduce false structural-change signals if Sunshine Act was amended 2010-2016) — needs human review before treating CO 2010 as a calibration anchor.
+- **WA 2010 coverage gap on 42.17A.005/.020 analogues** — broaden pass-2 chapter selection at 2009 to include .010/.020 if hosted as per-section leaves.
+
 ### 2026-05-15 — B4 parser hardening + pass-1 prompt strengthening + AR/WV re-canary
 
 - **Convo:** [`convos/20260515_b4_parser_hardening.md`](convos/20260515_b4_parser_hardening.md)
