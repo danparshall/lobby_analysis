@@ -1,0 +1,49 @@
+{
+  "state": "WI",
+  "vintage": 2025,
+  "actual_vintage_used": 2025,
+  "prompt_git_rev": "a5901d471b353cefde9be02407346c0a6a6f2616",
+  "proposed_urls": [
+    {"url": "https://law.justia.com/codes/wisconsin/2025/chapter-13/section-13-61/",  "role": "core_chapter", "rationale": "Ch. 13 section 13.61 - Lobbying regulated; legislative purpose."},
+    {"url": "https://law.justia.com/codes/wisconsin/2025/chapter-13/section-13-62/",  "role": "core_chapter", "rationale": "Ch. 13 section 13.62 - Definitions for lobbying subchapter."},
+    {"url": "https://law.justia.com/codes/wisconsin/2025/chapter-13/section-13-621/", "role": "core_chapter", "rationale": "Ch. 13 section 13.621 - Exemptions from lobbying regulation."},
+    {"url": "https://law.justia.com/codes/wisconsin/2025/chapter-13/section-13-625/", "role": "core_chapter", "rationale": "Ch. 13 section 13.625 - Prohibited practices for lobbyists."},
+    {"url": "https://law.justia.com/codes/wisconsin/2025/chapter-13/section-13-63/",  "role": "core_chapter", "rationale": "Ch. 13 section 13.63 - Licenses for lobbyists; suspension or revocation."},
+    {"url": "https://law.justia.com/codes/wisconsin/2025/chapter-13/section-13-64/",  "role": "core_chapter", "rationale": "Ch. 13 section 13.64 - Lobbying registry."},
+    {"url": "https://law.justia.com/codes/wisconsin/2025/chapter-13/section-13-65/",  "role": "core_chapter", "rationale": "Ch. 13 section 13.65 - Lobbyist authorization."},
+    {"url": "https://law.justia.com/codes/wisconsin/2025/chapter-13/section-13-66/",  "role": "core_chapter", "rationale": "Ch. 13 section 13.66 - Restrictions on practice of lobbying."},
+    {"url": "https://law.justia.com/codes/wisconsin/2025/chapter-13/section-13-67/",  "role": "core_chapter", "rationale": "Ch. 13 section 13.67 - Identification of legislative and administrative proposals and topics."},
+    {"url": "https://law.justia.com/codes/wisconsin/2025/chapter-13/section-13-68/",  "role": "core_chapter", "rationale": "Ch. 13 section 13.68 - Principal's expense statement."},
+    {"url": "https://law.justia.com/codes/wisconsin/2025/chapter-13/section-13-685/", "role": "core_chapter", "rationale": "Ch. 13 section 13.685 - Duties of the ethics commission re: lobbying."},
+    {"url": "https://law.justia.com/codes/wisconsin/2025/chapter-13/section-13-69/",  "role": "core_chapter", "rationale": "Ch. 13 section 13.69 - Enforcement and penalties for lobbying violations."},
+    {"url": "https://law.justia.com/codes/wisconsin/2025/chapter-13/section-13-695/", "role": "core_chapter", "rationale": "Ch. 13 section 13.695 - Legislative activities of state agencies."},
+    {"url": "https://law.justia.com/codes/wisconsin/2025/chapter-13/section-13-71/",  "role": "core_chapter", "rationale": "Ch. 13 section 13.71 - Lobbyists restricted during daily sessions."},
+    {"url": "https://law.justia.com/codes/wisconsin/2025/chapter-13/section-13-74/",  "role": "core_chapter", "rationale": "Ch. 13 section 13.74 - Auditing of lobbying records."},
+    {"url": "https://law.justia.com/codes/wisconsin/2025/chapter-13/section-13-75/",  "role": "core_chapter", "rationale": "Ch. 13 section 13.75 - Fees for lobbying licensure/registration."}
+  ],
+  "pass1_chosen_titles": [
+    "https://law.justia.com/codes/wisconsin/2025/chapter-13/"
+  ],
+  "pass2_chosen_chapters": [
+    "https://law.justia.com/codes/wisconsin/2025/chapter-13/section-13-61/",
+    "https://law.justia.com/codes/wisconsin/2025/chapter-13/section-13-62/",
+    "https://law.justia.com/codes/wisconsin/2025/chapter-13/section-13-621/",
+    "https://law.justia.com/codes/wisconsin/2025/chapter-13/section-13-625/",
+    "https://law.justia.com/codes/wisconsin/2025/chapter-13/section-13-63/",
+    "https://law.justia.com/codes/wisconsin/2025/chapter-13/section-13-64/",
+    "https://law.justia.com/codes/wisconsin/2025/chapter-13/section-13-65/",
+    "https://law.justia.com/codes/wisconsin/2025/chapter-13/section-13-66/",
+    "https://law.justia.com/codes/wisconsin/2025/chapter-13/section-13-67/",
+    "https://law.justia.com/codes/wisconsin/2025/chapter-13/section-13-68/",
+    "https://law.justia.com/codes/wisconsin/2025/chapter-13/section-13-685/",
+    "https://law.justia.com/codes/wisconsin/2025/chapter-13/section-13-69/",
+    "https://law.justia.com/codes/wisconsin/2025/chapter-13/section-13-695/",
+    "https://law.justia.com/codes/wisconsin/2025/chapter-13/section-13-71/",
+    "https://law.justia.com/codes/wisconsin/2025/chapter-13/section-13-74/",
+    "https://law.justia.com/codes/wisconsin/2025/chapter-13/section-13-75/"
+  ],
+  "pass3_invoked_on": [],
+  "tree_depth": 4,
+  "playwright_errors": [],
+  "notes": "WI 2025 vintage available on Justia. WI Statutes have no 'title' layer — chapters are the top-level division. Tree is 4 levels deep: state -> chapter -> section -> (leaf section page). Pass-1 picked chapter-13/ (Legislative branch); chapter-11 (Campaign financing) intentionally excluded as separate regime. Pass-2 fetch on chapter-13/ returned a section-level TSV (per-section leaves), matching WI 2010 per-section-leaf convention (Example D in the pass-2 prompt). Pass-2 directly picked the 16 lobbying sections (13.61-13.75), so pass-3 was not invoked — there is no deeper level to drill into. URL slug convention changed from 2010 ('13/13.XX.html') to 2025 ('chapter-13/section-13-XX/'); the 16 section identifiers (13.61, 13.62, 13.621, 13.625, 13.63, 13.64, 13.65, 13.66, 13.67, 13.68, 13.685, 13.69, 13.695, 13.71, 13.74, 13.75) match the 2015 ground truth exactly. All chosen URLs are section-level leaves per the batch-2 lesson (URL ends in section-13-XX/ form)."
+}
