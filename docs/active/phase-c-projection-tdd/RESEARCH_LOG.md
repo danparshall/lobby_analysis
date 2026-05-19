@@ -40,6 +40,35 @@ The `data/` symlink convention from `skills/use-worktree/SKILL.md` was **skipped
 
 (Newest first.)
 
+### 2026-05-18 — Newmark 2017 + Newmark 2005 modules shipped
+
+Convo: [`convos/20260518_newmark_modules_shipped.md`](convos/20260518_newmark_modules_shipped.md)
+
+Following the same-day scope correction, shipped the deterministic Python for Newmark 2017 and Newmark 2005 in one session. Both modules use the `sunlight_2015.py` shape (frozen Pydantic score model + per-item helpers + dispatcher + top-level projector); zero LLM imports across both.
+
+- `src/lobby_analysis/projections/newmark_2017.py` — 305 lines. 14 in-scope items (7 def + 7 disclosure); 5 `prohib.*` items excluded. Exposes `def_section_total` + `disclosure_section_total` (each 0–7) — these are publishable Table-2 sub-aggregates. No `index_total` (`prohib.*` excluded).
+- `src/lobby_analysis/projections/newmark_2005.py` — 282 lines. 14 in-scope items (7 def + 1 freq + 6 disclosure); 4 `prohib_*` + 1 `penalty_stringency_2003` excluded. Imports `project_gifts_actor_agnostic_or` from `newmark_2017`. Introduces NEW `project_cadence_more_than_annual_or` helper (8-cell OR over sub-annual cadence cells; `_annual` / `_other` deliberately NOT read). Exposes only `per_item_scores` + `panel` label — NO sub-aggregate fields. Rationale: Newmark 2005 publishes only per-state totals (Table 1), not sub-aggregates; exposing them would smuggle an API claiming reproducibility against unpublished data.
+
+**Regression-guarded:**
+- No `index_total` API in either module (both rubrics' headlines require excluded items).
+- No `prohib.*` / `prohib_*` / `penalty_stringency_2003` helpers (dispatcher raises `KeyError`).
+- No-variation cells (Newmark 2017 `def.legislative_lobbying`, gifts OR) project per the cell value, not coerced.
+- Falsified-2017-speculation in Newmark 2005: NO `contributions_from_others` item; the cell-with-True doesn't affect 2005's output.
+
+**Tests:** 82 new (45 Newmark 2017 + 37 Newmark 2005), all passing. Full projections suite: 676 pass. Ruff clean.
+
+**Renames applied** (from spec doc working-names → v2 row IDs): 7 inherited from Newmark 2017's row-freeze (3 typed-dollar long-form; 2 gifts `_report_` → `_spending_report_`; 1 `_by_client` → `_by_payer`; 1 contributions-received `_report_` → `_spending_report_`) + 8 cadence renames in Newmark 2005 (`*_report_cadence_*` → `*_spending_report_cadence_*`).
+
+**Ground-truth deferred:** Newmark Tables 1 (2005) and 2 (2017) have not been extracted to CSV; per-state validation harness deferred until that extraction lands. Per-item helper tests + aggregation fixtures cover the projection logic in the meantime.
+
+**Process notes:**
+- `uv run pytest` in the worktree initially loaded the main repo's editable install (pre-existing footgun per MEMORY entry). Fixed by running through the worktree's venv directly (`<worktree>/.venv/bin/python -m pytest`). Also had to install `pytest` + `ruff` into the worktree's venv (they weren't synced).
+- 3 pre-existing `tests/test_pipeline.py` failures verified unrelated (missing `data/portal_snapshots/CA/2026-04-13` — cross-machine data-sync lag; data only has `2026-05-01` locally). Not fixed per "data symlink is intentional" guidance.
+
+**Next:** HG 2007 (Session B; 38 items, declarative `_ATOMIC_SPEC`), then FOCAL 2024 (Session C; 50 indicators weighted, L-N 2025 Suppl File 1 = 1,372-cell ground truth). After all 4 land + tests pass, branch is mergeable.
+
+---
+
 ### 2026-05-18 — Scope correction: this branch ships deterministic Python, nothing more
 
 Convo: [`convos/20260518_scope_correction.md`](convos/20260518_scope_correction.md)
