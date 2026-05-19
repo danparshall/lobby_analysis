@@ -1,0 +1,25 @@
+{
+  "state": "TX",
+  "vintage": 2010,
+  "actual_vintage_used": 2009,
+  "prompt_git_rev": "104268e008c6a17f0e107c6c64b22b66b018958e",
+  "proposed_urls": [
+    {
+      "url": "https://law.justia.com/codes/texas/2009/government-code/title-3-legislative-branch/chapter-305-registration-of-lobbyists/",
+      "role": "core_chapter",
+      "rationale": "Gov Code Title 3 Ch. 305 (Registration of Lobbyists) - full lobbying-disclosure statute body, directory-level leaf."
+    }
+  ],
+  "pass1_chosen_titles": [
+    "https://law.justia.com/codes/texas/2009/government-code/"
+  ],
+  "pass2_chosen_chapters": [
+    "https://law.justia.com/codes/texas/2009/government-code/title-3-legislative-branch/chapter-305-registration-of-lobbyists/"
+  ],
+  "pass3_invoked_on": [
+    "https://law.justia.com/codes/texas/2009/government-code/title-3-legislative-branch/chapter-305-registration-of-lobbyists/"
+  ],
+  "tree_depth": 4,
+  "playwright_errors": [],
+  "notes": "TX 2010 not hosted on Justia (https://law.justia.com/codes/texas/2010/ returns 'Page not found' - 404 evidence preserved in pass1_state_index_2010_404.html). Fell back to actual_vintage_used=2009 per curated path in src/scoring/lobbying_statute_urls.py. TX 2009 tree is 4 levels deep: state -> code -> title -> chapter (no subtitle layer, unlike TX 2015 which inserted subtitle-a). Government Code title chosen at pass 1 (Election Code = campaign finance, intentionally excluded; Penal Code unrelated). Title 3 (Legislative Branch) directly lists Ch. 305 as a sibling chapter; intermediate pass-2 fetch on title-3-legislative-branch/ required. Pass-3 fetch on chapter-305-registration-of-lobbyists/ returned an empty TSV, confirming it is a directory-level leaf containing the full statute body (matches the curated TX 2009 example B in pass-2 prompt). Compared with TX 2015 known-good which routes through subtitle-a, TX 2009 has the simpler title->chapter structure - subtitle reorganization is a post-2009 change."
+}

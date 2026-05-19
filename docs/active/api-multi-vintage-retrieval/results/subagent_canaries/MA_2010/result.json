@@ -1,0 +1,25 @@
+{
+  "state": "MA",
+  "vintage": 2010,
+  "actual_vintage_used": 2010,
+  "prompt_git_rev": "104268e008c6a17f0e107c6c64b22b66b018958e",
+  "proposed_urls": [
+    {"url": "https://law.justia.com/codes/massachusetts/2010/parti/titlei/chapter3/section39/", "role": "core_chapter", "rationale": "M.G.L. c. 3 s. 39: definitions applicable to sections 39-50, the MA legislative-agent / executive-agent lobbying-disclosure regime."},
+    {"url": "https://law.justia.com/codes/massachusetts/2010/parti/titlei/chapter3/section41/", "role": "core_chapter", "rationale": "M.G.L. c. 3 s. 41: docket of executive and legislative agents and lobbyists; annual registration statements, filing fee, identification cards, advisory opinions."},
+    {"url": "https://law.justia.com/codes/massachusetts/2010/parti/titlei/chapter3/section42/", "role": "core_chapter", "rationale": "M.G.L. c. 3 s. 42: prohibition on contingent-compensation agreements tied to legislative or executive decisions."},
+    {"url": "https://law.justia.com/codes/massachusetts/2010/parti/titlei/chapter3/section43/", "role": "core_chapter", "rationale": "M.G.L. c. 3 s. 43: itemized expenditure statements by executive and legislative agents; notification of legislators; public inspection; family-gift restrictions."},
+    {"url": "https://law.justia.com/codes/massachusetts/2010/parti/titlei/chapter3/section44/", "role": "core_chapter", "rationale": "M.G.L. c. 3 s. 44: registration of organizations attempting to influence legislation; expenditure statements; penalties."},
+    {"url": "https://law.justia.com/codes/massachusetts/2010/parti/titlei/chapter3/section45/", "role": "core_chapter", "rationale": "M.G.L. c. 3 s. 45: disqualification of executive or legislative agent; inquiry and adjudicatory proceedings."},
+    {"url": "https://law.justia.com/codes/massachusetts/2010/parti/titlei/chapter3/section46/", "role": "core_chapter", "rationale": "M.G.L. c. 3 s. 46: maintenance of the docket of executive and legislative agents; legislative-year definition."},
+    {"url": "https://law.justia.com/codes/massachusetts/2010/parti/titlei/chapter3/section47/", "role": "core_chapter", "rationale": "M.G.L. c. 3 s. 47: employers of executive or legislative agents — expenditure statements; filing; penalty; public inspection."},
+    {"url": "https://law.justia.com/codes/massachusetts/2010/parti/titlei/chapter3/section48/", "role": "core_chapter", "rationale": "M.G.L. c. 3 s. 48: penalties and enforcement procedures for violations of sections 40-44 and 47."},
+    {"url": "https://law.justia.com/codes/massachusetts/2010/parti/titlei/chapter3/section49/", "role": "core_chapter", "rationale": "M.G.L. c. 3 s. 49: proceedings to compel proper filing under sections 43, 44, 47; equitable / mandamus relief."},
+    {"url": "https://law.justia.com/codes/massachusetts/2010/parti/titlei/chapter3/section50/", "role": "core_chapter", "rationale": "M.G.L. c. 3 s. 50: scope exception — sections 39-50 inapplicable to public employees / agents or persons asked to appear before a committee."}
+  ],
+  "pass1_chosen_titles": ["https://law.justia.com/codes/massachusetts/2010/parti/"],
+  "pass2_chosen_chapters": ["https://law.justia.com/codes/massachusetts/2010/parti/titlei/chapter3/"],
+  "pass3_invoked_on": ["https://law.justia.com/codes/massachusetts/2010/parti/titlei/chapter3/"],
+  "tree_depth": 4,
+  "playwright_errors": [],
+  "notes": "MA Justia 4-level tree (Part > Title > Chapter > Section). 2010 vintage uses unhyphenated slugs (parti/titlei/chapter3/sectionNN/) vs. 2015's hyphenated (part-i/title-i/chapter-3/section-NN/). Required one intermediate fetch between pass 1 (Part list) and pass 2 chapter selection: parti -> titlei -> chapter3. Pass 3 of chapter 3 returned per-section leaves. The lobbying-disclosure block is sections 39-50; section 40 appears in the 2010 snapshot as a repealed stub ('Repealed, 2004, 149, Sec. 6') and is excluded from proposed URLs to match the 2015 convention — yielding 11 URLs vs. the in-snapshot 12. No Playwright/Cloudflare errors. Single regime; no parallel executive-branch title needed."
+}

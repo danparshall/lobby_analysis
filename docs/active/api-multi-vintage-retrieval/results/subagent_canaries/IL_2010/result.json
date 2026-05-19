@@ -1,0 +1,28 @@
+{
+  "state": "IL",
+  "vintage": 2010,
+  "actual_vintage_used": 2010,
+  "prompt_git_rev": "104268e008c6a17f0e107c6c64b22b66b018958e",
+  "proposed_urls": [
+    {"url": "https://law.justia.com/codes/illinois/2010/chapter25/465.html", "role": "core_chapter", "rationale": "25 ILCS 170 Lobbyist Registration Act — single-page act leaf; full statute body."},
+    {"url": "https://law.justia.com/codes/illinois/2010/chapter5/129.html", "role": "core_chapter", "rationale": "5 ILCS 420 Illinois Governmental Ethics Act — single-page act leaf containing lobbyist definitions, restricted activities, code of conduct, and disclosure of economic interests."},
+    {"url": "https://law.justia.com/codes/illinois/2010/chapter5/2529.html", "role": "core_chapter", "rationale": "5 ILCS 430 State Officials and Employees Ethics Act — single-page act leaf containing lobbyist gift ban, revolving-door restrictions, and ethics-commission enforcement structure."}
+  ],
+  "pass1_chosen_titles": [
+    "https://law.justia.com/codes/illinois/2010/chapter25.html",
+    "https://law.justia.com/codes/illinois/2010/chapter5.html"
+  ],
+  "pass2_chosen_chapters": [
+    "https://law.justia.com/codes/illinois/2010/chapter25/465.html",
+    "https://law.justia.com/codes/illinois/2010/chapter5/129.html",
+    "https://law.justia.com/codes/illinois/2010/chapter5/2529.html"
+  ],
+  "pass3_invoked_on": [
+    "https://law.justia.com/codes/illinois/2010/chapter25/465.html",
+    "https://law.justia.com/codes/illinois/2010/chapter5/129.html",
+    "https://law.justia.com/codes/illinois/2010/chapter5/2529.html"
+  ],
+  "tree_depth": 3,
+  "playwright_errors": [],
+  "notes": "IL 2010 uses the numeric `chapterN.html` + per-act `chapterN/<pagenum>.html` slug convention (the page-number-per-act mapping is opaque: 25 ILCS 170 = page 465, 5 ILCS 420 = page 129, 5 ILCS 430 = page 2529). This differs from the IL 2015 vintage which uses hyphenated `chapter-N/act-N-ilcs-M/article-K/` slugs. Parallel-regime confirmed (same act-level structure as 2015): chapter25 holds the Lobbyist Registration Act (25 ILCS 170), chapter5 holds the Governmental Ethics Act (5 ILCS 420) and the State Officials and Employees Ethics Act (5 ILCS 430). Critically, at the 2010 vintage all three act pages are depth-3 single-page leaves — pass-3 fetches returned 0-row TSVs for every act, with HTML bodies of 60-123KB. This is shallower than IL 2015, where 5 ILCS 420/430 exposed article-level subpages requiring pass-3 article filtering (tree_depth 4). Result: 3 final URLs at 2010 vs. 12 at 2015, but the same statutory coverage — the 2010 leaves contain the entire act text inline. No Cloudflare engagement; all fetches returned full HTML."
+}
