@@ -1,5 +1,7 @@
 # 20260518 — Review synopsis walkthrough and Tier 0 scoping
 
+> **FORWARD-POINTER 2026-05-19:** The Tier-0 plan this convo produced ([`plans/_tabled/20260518_tier_0_minimal_pipeline.md`](../plans/_tabled/20260518_tier_0_minimal_pipeline.md)) was attempted in execution and failed 4 preconditions; architecture pivoted to direct-read with cross-model verify. See [`20260518_tier_0_execution_pivot_to_direct_read.md`](20260518_tier_0_execution_pivot_to_direct_read.md) for the pivot reasoning and [`plans/20260518_tier_0_direct_read_smoke_test.md`](../plans/20260518_tier_0_direct_read_smoke_test.md) for the replacement plan. The Open Questions at the bottom of this convo are largely moot (Q1 hop count, Q4 deletion-plan ordering — both resolved before execution; Q2 success criterion — superseded by the new plan's success criteria; Q3 OH 2015 symlink — resolved by retarget to OH 2025).
+
 **Date:** 2026-05-18
 **Branch:** extraction-harness-brainstorm
 

@@ -27,6 +27,70 @@ The `data/` symlink convention from `skills/use-worktree/SKILL.md` was **skipped
 
 (Newest first.)
 
+### 2026-05-19 (Tier-0 direct-read plan: Steps 1–4 executed on Dans-MacBook-Air; Step 5 pending on a keyed machine) — 4 commits, +14 parser tests + 3 cold-load regression tests, all green
+
+Convo: [`convos/20260519_session_end_steps_1_to_4.md`](convos/20260519_session_end_steps_1_to_4.md)
+Plan: [`plans/20260518_tier_0_direct_read_smoke_test.md`](plans/20260518_tier_0_direct_read_smoke_test.md) — Steps 1–4 of 7 shipped this session; Steps 5–7 (run, writeup, finish-convo) pending.
+
+**What shipped (4 commits on top of `cce8542`):**
+
+- `62e02c0` — **Step 1:** relocated `EvidenceSpan` to new `src/lobby_analysis/models_v2/citations.py`. Breaks the cold-load cycle `chunks_v2 → models_v2.cells → retrieval_v2 → brief_writer → chunks_v2`. `retrieval_v2.models` re-exports for back-compat; all four import paths (`from lobby_analysis.retrieval_v2 import EvidenceSpan`, `.../retrieval_v2/models`, `.../models_v2`, `.../models_v2/citations`) resolve to the same class. Three new regression tests at `tests/test_v2_cold_load.py` verify cold-load from a fresh interpreter + that `models_v2.cells` doesn't pull `retrieval_v2` into `sys.modules` + identity preservation.
+- `a7fbbb6` — **Step 2:** `uv add openai` → 2.37.0.
+- `02cad4f` — **Step 3:** `scripts/tier_0_direct_read_smoke.py` with shared `RECORD_CELL_INPUT_SCHEMA`/`RECORD_UNSCOREABLE_INPUT_SCHEMA`, `ANTHROPIC_TOOLS`/`OPENAI_TOOLS` wrappers, and `parse_response(response, sdk)` returning `list[ParsedToolCall]`. 14 parser tests at `tests/test_tier_0_smoke_parser.py` cover both SDK shapes, raise-vs-skip policy for malformed responses, the cross-SDK schema-sharing invariant, and the returned-dict-is-an-independent-copy invariant.
+- `b0a1b2d` — **Step 4:** smoke-test body. Preflight (keys + bundle path → exit 2 on failure), statute loader (30 OH 2025 `.txt` files), cached system prompt, dispatch for both models, `_instantiate_cell` adapter covering scalar + dict-shape cells, raw + parsed JSON output with structured `provenance` field, side-by-side printer, $1/call cost ceiling (exit 3 on overrun). Verified preflight-no-keys path: exits cleanly before any API call.
+
+**Test deltas:** 480 → 497 passing (+14 parser, +3 cold-load). 3 pre-existing `test_pipeline.py` baseline failures unchanged (missing CA portal-snapshot fixture, unrelated).
+
+**Decisions resolved from the plan's open questions:**
+
+- Q1 (EvidenceSpan home) — `models_v2/citations.py` chosen per the plan recommendation.
+- Q3 (cited_section/justification placement) — option (a): per-cell wrapper dict `{cell, cell_class, cited_section, justification}`. `CompendiumCell` unchanged.
+
+Q2 (adversarial framing wording) and Q4 (cost ceiling) deferred to whoever runs Step 5.
+
+**Caveats logged for the next agent** (full detail in the convo):
+
+1. Pricing in `_PRICING_USD_PER_MTOK` is best-guess opus-4-**6** rates standing in for opus-4-**7** (the `personal_info.md` table is March 2026; opus-4-7 may differ).
+2. OH 2015 sections ARE on Dans-MacBook-Air now — the predecessor convo's claim that they were absent appears no longer true (data added since, or prior check missed). Doesn't change the retarget; just noted.
+3. Dict-shape cell adapter (TimeThreshold/TimeSpent/CountWithFTE/EnumSetWithAmounts) isn't exercised by `enforcement_and_audits` — all 4 cells are scalar (Binary/Enum/Graded).
+4. Cost ceiling aborts the WHOLE run if any one call exceeds $1 (strict reading of "stop and investigate").
+
+**Next session:** on a machine with both keys exported, run `uv run python scripts/tier_0_direct_read_smoke.py` and proceed to plan Steps 6 (writeup) and 7 (finish-convo).
+
+### 2026-05-18 → 19 (Tier-0 execution attempted; pivot to direct-read after 4 preconditions failed) — no code shipped; architecture reframed and captured in new plan + convo + superseding move on old plan
+
+Convo: [`convos/20260518_tier_0_execution_pivot_to_direct_read.md`](convos/20260518_tier_0_execution_pivot_to_direct_read.md)
+New plan: [`plans/20260518_tier_0_direct_read_smoke_test.md`](plans/20260518_tier_0_direct_read_smoke_test.md)
+Superseded plan: [`plans/_tabled/20260518_tier_0_minimal_pipeline.md`](plans/_tabled/20260518_tier_0_minimal_pipeline.md)
+
+**Attempted to execute Tier-0 end-to-end per the plan. Within three implementation steps, four independent preconditions failed in ways that weren't catchable from reading the plan alone — they only surfaced under execution.** Surfaced each, paused, asked. The user (after the third failure) pushed back on whether the plan's architecture was right at all, and the session pivoted from "execute Tier-0" to "supersede Tier-0 plan + write a new one."
+
+**The four preconditions:**
+1. **Wrong data paths.** Plan said `~/data/statutes/OH/2015/`; canonical layout is `~/data/lobby_analysis/statutes/OH/<vintage>/`. OH 2015 not on Dans-MacBook-Air (only 2010 + 2025). User authorized retarget to OH 2025 (commit `2b9528c`: plan banner + path correction + vintage swap in 7 sites + Step 1 symlink-shape rewrite). This commit *is durable* — the Tier-0 plan now references real paths — but doesn't recover the session from the later failures.
+2. **No `ANTHROPIC_API_KEY` on this machine.** Plan named live API dispatch as a prereq; `retrieval_v2/docs.md:78` already documented the laptop as keyless. Plan contradicted its own branch docs.
+3. **`scoring_v2/` is plan-only, not shipped code.** Plan called for a "thin wiring script" that "dispatches the scorer call ... using the scorer prompt + tool schemas inlined in the scoring_v2 implementation plan." Reality: only the 1380-line impl plan (`plans/20260514_brief_writer_implementation_plan.md`, written 2026-05-18 commit `067dfac`) exists. No `src/scoring/scorer_prompt_v2.md` on disk, no `record_cell` tool implementation, no parser for the scorer response. "Thin wiring script" understates the work by ~10×. Tier-0 as written = first-implementation of scoring_v2 wearing a smoke-test costume.
+4. **Circular import under cold-load.** `chunks_v2 → models_v2.cells → retrieval_v2.EvidenceSpan → retrieval_v2/__init__.py → retrieval_v2.tools → chunks_v2.build_chunks` — four-node cycle. `uv run python -c "from lobby_analysis.chunks_v2 import build_chunks"` fails with `ImportError`. Tests pass because they import lazily inside test functions; cold-load is where it bites. The 0979779 commit (EvidenceSpan migration) consolidated on the right *shape* (Citations-API span) but located the class in the wrong *module* (inside `retrieval_v2/`); that's the inversion that created the cycle. Plan's prior draft had warned "deletion requires a full import-graph audit; defer" and the audit didn't happen.
+
+**Architecture pivot (user-blessed in-session):** Walked through what retrieval+score actually buys us. Premise: statutes cross-reference sections not in the bundle; without retrieval-then-expand, the scorer emits "unscoreable" for any question whose answer lives in a referenced-but-not-fetched section. Empirical status of that premise: **untested**. The brainstorm Q1 locked chunks-as-dispatch-unit and the retrieval+score sequence against a worry, not against measured failure. User reframed: try the YAGNI simpler thing (direct-read) first; only build retrieval if direct-read fails empirically. Direct-read concretely: single API call, statute in cached system prompt (~50K tokens, well within Opus 4.7's 200K window), per-chunk user message + `record_cell` tool with free-text `cited_section` + 1-sentence `justification`. Machine-checkable provenance via a downstream verifier agent (Phase 2, separate plan) reading the cited section and ruling on the claim. **No Citations API in the primary call.** User has both Anthropic and OpenAI keys → Phase 1 is side-by-side comparison (Claude Opus 4.7 vs GPT 5.2); cross-model verification is Phase 2.
+
+**EvidenceSpan relocation is still load-bearing** even under direct-read, because the cycle bites any cold-load import of `chunks_v2` (which is needed for `enforcement_and_audits` cell specs). Right fix: `EvidenceSpan` is a Citations-API span primitive used (or potentially used) by both cells and cross-references — it's foundational provenance, not retrieval-specific. Relocate to `models_v2/citations.py`; cycle dissolves structurally. (My partial lazy-import patch to `brief_writer.py` was reverted in-session as treating-the-symptom not the cause.)
+
+**Decisions Made:**
+- **Tier-0 (original plan) is superseded.** Moved to `plans/_tabled/20260518_tier_0_minimal_pipeline.md` with a SUPERSEDED banner per the "never delete analytical work" rule. Relative links inside the file fixed to point `../../convos/` and `../../results/` from the deeper path. Tier-1 forward-pointer section near the bottom retained as valid input for Tier-1 planning.
+- **New plan written:** [`plans/20260518_tier_0_direct_read_smoke_test.md`](plans/20260518_tier_0_direct_read_smoke_test.md). Self-contained for the next agent: EvidenceSpan relocation as Step 1 (with a cold-load regression test added in the same commit), `uv add openai` as Step 2, single-call dual-model script as Steps 3-5, hand-eyeball + writeup + finish-convo as Steps 6-7. Success criteria stated. Cost ceiling $5; expected ≈ $0.60.
+- **Provenance via prose citation + verifier (deferred Phase 2).** `record_cell` tool gets `cited_section` (free-text statute reference) and `justification` (1-sentence prose) fields. `CompendiumCell.provenance` stays defaulted to `()` — Citations-API EvidenceSpans are not populated by direct-read; the field is retained for the escape-hatch path if direct-read fails.
+- **Cross-model framing is literal.** Both models will see each other's output downstream. Prompt language: "your response will be independently verified by another model reading the cited section." True statement once both models run, not a prompt-engineering trick.
+- **No code ships this session.** Pivot fully captured in docs only.
+
+**Findings worth carrying forward (beyond this branch):**
+1. **The Tier-0 plan was written under sycophantic load.** Confident-sounding executability that didn't survive contact with the filesystem or the import graph. Plan-write mitigation: every prerequisite stated in a plan should be `ls`'d or `grep`'d at plan-write time, not asserted from memory. The plan's own "Prerequisites" section was the right place to catch all four of tonight's failures.
+2. **0979779's "tight single commit" framing hid a real bug.** The migration *was* tight in line-count, but introduced a structural cycle the test suite couldn't catch (tests import lazily inside functions). "Tests pass" is necessary but not sufficient for migration safety when the import graph changes. For future schema migrations: add a cold-load smoke test (`python -c "from <package_root> import <foundational_module>"`) to verify the import graph still works from a fresh interpreter. New plan bakes this in.
+3. **YAGNI applies to architecture, not just to features.** Brainstorm Q1 locked retrieval+score-as-two-calls as an architectural choice without empirical grounding. Direct-read is the YAGNI default; multi-call architecture should require evidence of need (high unscoreable-rate) to ship.
+
+**Commits this session (2):** `2b9528c` (plan retarget 2015→2025 + path correction) + finish-convo bundle (this commit — supersede old plan, write new plan + convo, update RESEARCH_LOG + STATUS).
+
+**Next session.** Execute the new direct-read plan on Dans-MacBook-Pro or tarragon (both API keys exported). Plan is self-contained per the researcher norms.
+
 ### 2026-05-18 (Tier-0 review + scoring_v2 impl plan write + EvidenceSpan resolution) — three commits ship the load-bearing follow-ups from the synopsis review
 
 Convo: [`convos/20260518_tier_0_review_scoring_v2_plan_evidencespan_resolve.md`](convos/20260518_tier_0_review_scoring_v2_plan_evidencespan_resolve.md)
