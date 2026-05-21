@@ -1,0 +1,623 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "lobbying_definitions",
+    "run_index": 2,
+    "state_abbr": "OH",
+    "vintage_year": 2025,
+    "prompt_sha256": "f1f90342e807976476f79eb5321867e09f82a3f005caa9f17279c46e8d79cb43",
+    "timestamp_utc": "2026-05-21T13:52:07+00:00"
+  },
+  "wall_clock_seconds": 39.35783308302052,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 1141
+    },
+    "cache_creation_input_tokens": 1141,
+    "cache_read_input_tokens": 49735,
+    "inference_geo": "global",
+    "input_tokens": 6,
+    "output_tokens": 3940,
+    "server_tool_use": null,
+    "service_tier": "standard"
+  },
+  "cost_usd_estimate": 0.09853,
+  "legal_roster": [
+    [
+      "def_lobbying_activity_types",
+      "legal"
+    ],
+    [
+      "def_lobbyist_actor_types",
+      "legal"
+    ],
+    [
+      "law_defines_public_entity",
+      "legal"
+    ],
+    [
+      "law_includes_materiality_test",
+      "legal"
+    ],
+    [
+      "def_target_executive_agency",
+      "legal"
+    ],
+    [
+      "def_target_executive_staff",
+      "legal"
+    ],
+    [
+      "def_target_governors_office",
+      "legal"
+    ],
+    [
+      "def_target_independent_agency",
+      "legal"
+    ],
+    [
+      "def_target_legislative_branch",
+      "legal"
+    ],
+    [
+      "def_target_legislative_staff",
+      "legal"
+    ],
+    [
+      "def_actor_class_elected_officials",
+      "legal"
+    ],
+    [
+      "def_actor_class_public_employees",
+      "legal"
+    ],
+    [
+      "public_entity_def_relies_on_charter",
+      "legal"
+    ],
+    [
+      "public_entity_def_relies_on_ownership",
+      "legal"
+    ],
+    [
+      "public_entity_def_relies_on_revenue_structure",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "def_lobbying_activity_types",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": [
+          "retirement_system_lobbying",
+          "legislative_lobbying",
+          "executive_agency_lobbying"
+        ]
+      },
+      "cell_class": "EnumSetCell",
+      "cited_section": "§§101.70(E)-(F), 121.60(H)-(I), 101.90(H)-(I)",
+      "justification": "Ohio defines three lobbying regimes: legislative (\"actively advocate\"/\"legislative agent\" in §101.70), executive agency lobbying in §121.60, and retirement system lobbying in §101.90."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_lobbyist_actor_types",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": [
+          "executive_agency_lobbyist",
+          "legislative_agent",
+          "employer",
+          "retirement_system_lobbyist"
+        ]
+      },
+      "cell_class": "EnumSetCell",
+      "cited_section": "§§101.70(F)-(G), 121.60(C),(H), 101.90(C),(H)",
+      "justification": "The statutes define \"legislative agent\" (§101.70(F)), \"executive agency lobbyist\" (§121.60(H)), \"retirement system lobbyist\" (§101.90(H)), and \"employer\" across all three regimes."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "law_defines_public_entity",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.70(A)",
+      "justification": "Section 101.70(A) defines \"Person\" to include public entities such as departments, commissions, boards, publicly supported colleges/universities, counties, townships, municipal corporations, school districts, and other political subdivisions."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "law_includes_materiality_test",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§§101.70(F), 121.60(H), 101.90(H)",
+      "justification": "The lobbyist definitions require active advocacy/lobbying as \"one of the individual's main purposes\" (and on a \"regular and substantial basis\" for executive/retirement), establishing a materiality threshold for who qualifies as a lobbyist."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_executive_agency",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§121.60(F),(G),(I)",
+      "justification": "Section 121.60 defines \"executive agency\" and \"executive agency decision\" and §121.60(I) covers lobbying activity directed at executive agency officials, making executive agencies a lobbying target."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_executive_staff",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§121.60(E)(2),(M)",
+      "justification": "Section 121.60(M) defines \"Staff\" of executive agencies and §121.60(E)(2) includes \"any member of the staff\" of listed executive officers as a lobbying target."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_governors_office",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§§101.70(D),(E); 121.60(L)",
+      "justification": "The governor is expressly listed as a target in legislative lobbying expenditure/advocacy definitions (§101.70(D),(E)) and is included as an \"elected executive official\" under §121.60(L)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_independent_agency",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§§101.90(F), 121.60(F)",
+      "justification": "Section 101.90(F) defines retirement systems (independent boards) as lobbying targets, and §121.60(F) includes \"any other state agency, department, board, or commission\" subject to elected executive authority as executive agencies subject to lobbying rules."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_legislative_branch",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.70(B),(E)",
+      "justification": "Section 101.70(B) defines \"Legislation\" as matters pending before the general assembly and (E) makes communications with members of the general assembly the core of \"actively advocate.\""
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_legislative_staff",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.70(E),(J)",
+      "justification": "Section 101.70(E) includes \"any member of the staff of any public officer or employee listed\" as a lobbying target, and (J) defines \"Staff\" as state employees who formulate policy/exercise supervisory authority."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_actor_class_elected_officials",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.70(F)",
+      "justification": "Section 101.70(F) expressly excludes members of the general assembly, the governor, lieutenant governor, attorney general, secretary of state, treasurer, and auditor from the definition of \"legislative agent,\" meaning elected officials are not treated as a lobbyist actor class."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_actor_class_public_employees",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(E)",
+      "justification": "Section 101.72(E) contemplates \"an officer or employee of a state agency who actively advocates in a fiduciary capacity as a representative of that state agency,\" requiring the state agency to pay the registration fee — confirming public employees can be lobbyist actors under the legislative scheme (though §121.60(H) and §101.90(H) exclude such fiduciary-capacity employees from the executive/retirement lobbyist definitions)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "public_entity_def_relies_on_charter",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.70(A)",
+      "justification": "Section 101.70(A) enumerates public entities by institutional type (departments, commissions, political subdivisions, etc.) without reference to charter status or charter-based classification."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "public_entity_def_relies_on_ownership",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.70(A)",
+      "justification": "The \"Person\" definition in §101.70(A) lists public entities by category (state instrumentalities, political subdivisions) and does not condition status on government ownership of the entity."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "public_entity_def_relies_on_revenue_structure",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "low",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.70(A)",
+      "justification": "Section 101.70(A) includes \"publicly supported college or university\" among public entities, using a revenue/funding-source characteristic (\"publicly supported\") to identify the entity; otherwise the definition is institutional, not revenue-based."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "msg_01EznnED7eSjN7ncqsN1ypYf",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "I'll analyze each row against the Ohio statute text and record the appropriate cells.",
+        "type": "text"
+      },
+      {
+        "id": "toolu_01PSPycGnP9q7azxg7ssbT2b",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "def_lobbying_activity_types",
+          "axis": "legal",
+          "value": [
+            "legislative_lobbying",
+            "executive_agency_lobbying",
+            "retirement_system_lobbying"
+          ],
+          "confidence": "high",
+          "cited_section": "§§101.70(E)-(F), 121.60(H)-(I), 101.90(H)-(I)",
+          "justification": "Ohio defines three lobbying regimes: legislative (\"actively advocate\"/\"legislative agent\" in §101.70), executive agency lobbying in §121.60, and retirement system lobbying in §101.90."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_011jqFpz8XeYTmQccR1exeEo",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "def_lobbyist_actor_types",
+          "axis": "legal",
+          "value": [
+            "legislative_agent",
+            "executive_agency_lobbyist",
+            "retirement_system_lobbyist",
+            "employer"
+          ],
+          "confidence": "high",
+          "cited_section": "§§101.70(F)-(G), 121.60(C),(H), 101.90(C),(H)",
+          "justification": "The statutes define \"legislative agent\" (§101.70(F)), \"executive agency lobbyist\" (§121.60(H)), \"retirement system lobbyist\" (§101.90(H)), and \"employer\" across all three regimes."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01JTQfB7pRwJH1jLyXxU86vs",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "law_defines_public_entity",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.70(A)",
+          "justification": "Section 101.70(A) defines \"Person\" to include public entities such as departments, commissions, boards, publicly supported colleges/universities, counties, townships, municipal corporations, school districts, and other political subdivisions."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01HvJpd92QHf5sc1KGq6rhAw",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "law_includes_materiality_test",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§§101.70(F), 121.60(H), 101.90(H)",
+          "justification": "The lobbyist definitions require active advocacy/lobbying as \"one of the individual's main purposes\" (and on a \"regular and substantial basis\" for executive/retirement), establishing a materiality threshold for who qualifies as a lobbyist."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_012vSJ8UcbZsEAvnWkLz9tir",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "def_target_executive_agency",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§121.60(F),(G),(I)",
+          "justification": "Section 121.60 defines \"executive agency\" and \"executive agency decision\" and §121.60(I) covers lobbying activity directed at executive agency officials, making executive agencies a lobbying target."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01TeCosCHWzzGgr5Unt9qURs",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "def_target_executive_staff",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§121.60(E)(2),(M)",
+          "justification": "Section 121.60(M) defines \"Staff\" of executive agencies and §121.60(E)(2) includes \"any member of the staff\" of listed executive officers as a lobbying target."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01SkbZgLo8GZ5pFms6PKsjQ8",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "def_target_governors_office",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§§101.70(D),(E); 121.60(L)",
+          "justification": "The governor is expressly listed as a target in legislative lobbying expenditure/advocacy definitions (§101.70(D),(E)) and is included as an \"elected executive official\" under §121.60(L)."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01YGESMsEcX5cZaCn7CEj33p",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "def_target_independent_agency",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§§101.90(F), 121.60(F)",
+          "justification": "Section 101.90(F) defines retirement systems (independent boards) as lobbying targets, and §121.60(F) includes \"any other state agency, department, board, or commission\" subject to elected executive authority as executive agencies subject to lobbying rules."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01DnTTThkv676xyFH7KAjQww",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "def_target_legislative_branch",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.70(B),(E)",
+          "justification": "Section 101.70(B) defines \"Legislation\" as matters pending before the general assembly and (E) makes communications with members of the general assembly the core of \"actively advocate.\""
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01UsV2CsPJ2fSMBTHv7ewcjo",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "def_target_legislative_staff",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.70(E),(J)",
+          "justification": "Section 101.70(E) includes \"any member of the staff of any public officer or employee listed\" as a lobbying target, and (J) defines \"Staff\" as state employees who formulate policy/exercise supervisory authority."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_015sjrCaHStAF2zkvCNCg6KY",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "def_actor_class_elected_officials",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§101.70(F)",
+          "justification": "Section 101.70(F) expressly excludes members of the general assembly, the governor, lieutenant governor, attorney general, secretary of state, treasurer, and auditor from the definition of \"legislative agent,\" meaning elected officials are not treated as a lobbyist actor class."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01SwQx3dTRhFvVwhSQzTzS5A",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "def_actor_class_public_employees",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.72(E)",
+          "justification": "Section 101.72(E) contemplates \"an officer or employee of a state agency who actively advocates in a fiduciary capacity as a representative of that state agency,\" requiring the state agency to pay the registration fee — confirming public employees can be lobbyist actors under the legislative scheme (though §121.60(H) and §101.90(H) exclude such fiduciary-capacity employees from the executive/retirement lobbyist definitions)."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_015FXKpPKkWFe1G16WgvStqH",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "public_entity_def_relies_on_charter",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§101.70(A)",
+          "justification": "Section 101.70(A) enumerates public entities by institutional type (departments, commissions, political subdivisions, etc.) without reference to charter status or charter-based classification."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01WrZaJeN5KsREK1jZgyyYgA",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "public_entity_def_relies_on_ownership",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§101.70(A)",
+          "justification": "The \"Person\" definition in §101.70(A) lists public entities by category (state instrumentalities, political subdivisions) and does not condition status on government ownership of the entity."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01MEYkLMk7PuuDWrHQNCWycY",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "public_entity_def_relies_on_revenue_structure",
+          "axis": "legal",
+          "value": true,
+          "confidence": "low",
+          "cited_section": "§101.70(A)",
+          "justification": "Section 101.70(A) includes \"publicly supported college or university\" among public entities, using a revenue/funding-source characteristic (\"publicly supported\") to identify the entity; otherwise the definition is institutional, not revenue-based."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 1141
+      },
+      "cache_creation_input_tokens": 1141,
+      "cache_read_input_tokens": 49735,
+      "inference_geo": "global",
+      "input_tokens": 6,
+      "output_tokens": 3940,
+      "server_tool_use": null,
+      "service_tier": "standard"
+    }
+  }
+}

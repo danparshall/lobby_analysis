@@ -1,0 +1,132 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "enforcement_and_audits",
+    "run_index": 2,
+    "state_abbr": "OH",
+    "vintage_year": 2025,
+    "prompt_sha256": "f1f90342e807976476f79eb5321867e09f82a3f005caa9f17279c46e8d79cb43",
+    "timestamp_utc": "2026-05-21T14:01:07+00:00"
+  },
+  "wall_clock_seconds": 9.498053667019121,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 654
+    },
+    "cache_creation_input_tokens": 654,
+    "cache_read_input_tokens": 49735,
+    "inference_geo": "global",
+    "input_tokens": 6,
+    "output_tokens": 667,
+    "server_tool_use": null,
+    "service_tier": "standard"
+  },
+  "cost_usd_estimate": 0.016704999999999998,
+  "legal_roster": [
+    [
+      "lobbying_violation_penalties_imposed_in_practice",
+      "legal"
+    ],
+    [
+      "lobbying_disclosure_audit_required_in_law",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_violation_penalties_imposed_in_practice",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "ORC §101.99; §101.72(G); §101.71; §101.91",
+      "justification": "Section 101.99 establishes that violations of §101.71 (failure to register, failure to keep records, failure to file, or filing false statements) and §101.77 are misdemeanors (4th degree generally; 1st degree for knowingly false filings), and §101.72(G) authorizes late filing fees up to $100 — so the statute provides for penalties to be imposed for lobbying violations."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_disclosure_audit_required_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "review_only"
+      },
+      "cell_class": "EnumCell",
+      "cited_section": "ORC §101.72(G); §101.79; §121.62(G); §121.69",
+      "justification": "The statute requires the executive director of the joint legislative ethics committee to review each registration statement for completeness and to notify filers of deficiencies (§101.72(G), §121.62(G)), and authorizes the attorney general to investigate compliance (§101.79, §121.69), but it does not mandate formal financial audits of filings — only review and investigation upon apparent violation."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "msg_01X1cT5yuiH1S2HZcZpfQzC3",
+    "container": null,
+    "content": [
+      {
+        "id": "toolu_01VpHAQnvaGY9fmRq15hTkEe",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "lobbying_violation_penalties_imposed_in_practice",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "ORC §101.99; §101.72(G); §101.71; §101.91",
+          "justification": "Section 101.99 establishes that violations of §101.71 (failure to register, failure to keep records, failure to file, or filing false statements) and §101.77 are misdemeanors (4th degree generally; 1st degree for knowingly false filings), and §101.72(G) authorizes late filing fees up to $100 — so the statute provides for penalties to be imposed for lobbying violations."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_013NikcLp4uGvoaEf6nfX6AV",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "lobbying_disclosure_audit_required_in_law",
+          "axis": "legal",
+          "value": "review_only",
+          "confidence": "high",
+          "cited_section": "ORC §101.72(G); §101.79; §121.62(G); §121.69",
+          "justification": "The statute requires the executive director of the joint legislative ethics committee to review each registration statement for completeness and to notify filers of deficiencies (§101.72(G), §121.62(G)), and authorizes the attorney general to investigate compliance (§101.79, §121.69), but it does not mandate formal financial audits of filings — only review and investigation upon apparent violation."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 654
+      },
+      "cache_creation_input_tokens": 654,
+      "cache_read_input_tokens": 49735,
+      "inference_geo": "global",
+      "input_tokens": 6,
+      "output_tokens": 667,
+      "server_tool_use": null,
+      "service_tier": "standard"
+    }
+  }
+}
