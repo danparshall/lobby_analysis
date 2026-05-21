@@ -27,6 +27,49 @@ The `data/` symlink convention from `skills/use-worktree/SKILL.md` was **skipped
 
 (Newest first.)
 
+### 2026-05-21 (Tier-2 schema/adapter fixes: plan executed end-to-end) — 4 commits, +10 behavior tests, all green, no API spend
+
+Convo: [`convos/20260521_tier_2_schema_adapter_fixes_execution.md`](convos/20260521_tier_2_schema_adapter_fixes_execution.md)
+Plan: [`plans/20260521_tier_2_schema_adapter_fixes.md`](plans/20260521_tier_2_schema_adapter_fixes.md) — Steps A/B/C/E; Step D deferred.
+
+**What ran.** Executed the Tier-2 plan under strict TDD: cleared the 3
+`instantiation_failed` error classes the Tier-1 run surfaced (reported, not
+patched). Plan's 3 Questions settled with the user first — Q1 → option **(c)**
+(adapter sentinel, no shared-`models_v2` change); Q2 → **defer Step D** (the
+~$1 re-dispatch; both API keys unset this session); Q3 → enum-pinning + the
+verifier abstention-calibration policy **stay out of scope**.
+
+**Commits (on top of `1be98a5`, the Tier-2 plan commit):** `0403218` Fix A `_coerce_scalar_value`
+int/float→Decimal; `76c77e6` Fix B dict-shape value hint in
+`render_legal_roster`; `fd8b656` Fix C null-`FreeTextCell` → abstention in
+`_parse_and_instantiate`; `00e7257` ruff-format the test additions. All
+Step-E tests written first (RED: 5 driving fail, 5 guards pass), then each
+fix turned its tests green. Full suite **525 passed**, 8 skip, 3 pre-existing
+`test_pipeline.py` baseline failures (unrelated, `data/portal_snapshots/`).
+
+**Provisional findings.**
+
+- All three fixes behaved exactly as the plan's mechanism analysis predicted;
+  the RED phase failed precisely where expected (the Fix C RED showed the
+  `string_type` error — the Class C mechanism — confirming the diagnosis).
+- **Fix B scope call:** implemented the **keys-only** hint (roster line names
+  the dict-shape cell's JSON-object keys). The plan's line-51 example also
+  expands the `unit` `Literal` domain, but the Step-E test spec and
+  Implementation Details say keys only; with Step D deferred, a general
+  enum-domain renderer would ship unverified — left out as scope creep.
+- No new error classes in unit-test scope. Whether the fixes hold against
+  **real API output** is unverified — that is what the deferred Step D checks.
+
+**Verdict.** A/B/C are committed and green. The Tier-1 verdict's "qualified
+yes" for scaling legal-axis direct-read had 3 named blockers — blocker 1 (the
+3 schema/adapter fixes) is now cleared in code; blockers 2 (enum-domain
+pinning) and 3 (abstention-calibration policy) remain.
+
+**Next:** Step D re-dispatch verification (needs both API keys + ~$1; re-run
+the 2 error-bearing chunk groups into a fresh `results/` dir, zero-error pass
+criterion); then enum-domain pinning; then the Phase-2 verifier's
+abstention-calibration policy.
+
 ### 2026-05-21 (Tier-1 direct-read legal-axis plan: executed end-to-end) — 4 commits, +18 behavior tests, 36-dispatch run, all green
 
 Convo: [`convos/20260521_tier_1_legal_axis_execution.md`](convos/20260521_tier_1_legal_axis_execution.md)
