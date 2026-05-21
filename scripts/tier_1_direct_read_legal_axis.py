@@ -392,6 +392,24 @@ def _preflight() -> None:
         sys.exit(2)
 
 
+def _is_null_freetext_abstention(spec: Any, arguments: dict[str, Any]) -> bool:
+    """True for a record_cell whose target is a FreeTextCell and value is null.
+
+    The conditional ``*_other_specification`` rows correctly emit
+    ``value: null`` when their cadence condition does not hold, but
+    ``FreeTextCell.value`` is a non-optional ``str`` — strict validation
+    rejects null. This is error class C: the model is right and the schema
+    cannot represent "not applicable." Such a call is routed to an abstention
+    rather than recorded as an instantiation error.
+    """
+    from lobby_analysis.models_v2 import FreeTextCell
+
+    return (
+        spec.expected_cell_class is FreeTextCell
+        and arguments.get("value") is None
+    )
+
+
 def _parse_and_instantiate(
     response: Any, sdk: str, registry: dict[Any, Any]
 ) -> tuple[list[dict], list[dict], list[dict]]:
@@ -406,6 +424,14 @@ def _parse_and_instantiate(
             if spec is None:
                 errors.append(
                     {"reason": "unknown_row_axis", "key": list(key), "arguments": call.arguments}
+                )
+                continue
+            if _is_null_freetext_abstention(spec, call.arguments):
+                unscoreable.append(
+                    {
+                        **call.arguments,
+                        "reason": "conditional cell not applicable (value null)",
+                    }
                 )
                 continue
             try:
