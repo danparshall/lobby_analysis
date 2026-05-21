@@ -24,6 +24,7 @@ from __future__ import annotations
 import importlib.util
 import json
 import sys
+from decimal import Decimal
 from pathlib import Path
 
 import pytest
@@ -261,3 +262,173 @@ def test_dispatch_result_path_is_unique_per_triple(tmp_path):
         for run in (1, 2, 3)
     }
     assert len(paths) == 12
+
+
+# ---------------------------------------------------------------------------
+# Group 5 — Tier-2 schema/adapter fixes
+# (plan: docs/active/extraction-harness-brainstorm/plans/
+#         20260521_tier_2_schema_adapter_fixes.md)
+# ---------------------------------------------------------------------------
+
+
+# --- Fix A: int / float -> Decimal coercion -------------------------------
+
+
+def test_coerce_int_to_decimal_for_decimalcell():
+    """A bare JSON int (50) for a DecimalCell coerces to Decimal.
+
+    The Tier-1 'emit numbers as JSON numbers' nudge made GPT emit a bare
+    int; CompendiumCell strict mode rejects an int for a Decimal field."""
+    spec = _spec("lobbyist_registration_threshold_compensation_dollars", "legal")
+    assert spec.expected_cell_class.__name__ == "DecimalCell"
+    result = tier0._instantiate_cell(spec, _record_cell_args(50))
+    # model_dump(mode="json") serializes Decimal to a string.
+    assert result["cell"]["value"] == "50"
+
+
+def test_coerce_float_to_decimal_for_decimalcell():
+    """A bare JSON float (50.5) coerces to an exact Decimal (via str(), so no
+    binary-float artifact: Decimal(0.1) is wrong, Decimal('0.1') is right)."""
+    spec = _spec("lobbyist_registration_threshold_compensation_dollars", "legal")
+    result = tier0._instantiate_cell(spec, _record_cell_args(50.5))
+    assert result["cell"]["value"] == "50.5"
+
+
+def test_bool_value_not_coerced_to_decimal():
+    """bool is an int subclass but never a valid threshold — it must not be
+    coerced; strict-mode validation rejects it loudly instead."""
+    spec = _spec("lobbyist_registration_threshold_compensation_dollars", "legal")
+    with pytest.raises((ValueError, TypeError)):
+        tier0._instantiate_cell(spec, _record_cell_args(True))
+
+
+def test_coerce_scalar_value_int_and_float_directly():
+    """_coerce_scalar_value returns an exact Decimal for a non-string int /
+    float passed for a DecimalCell."""
+    from lobby_analysis.models_v2 import DecimalCell
+
+    int_result = tier0._coerce_scalar_value(DecimalCell, 50)
+    assert isinstance(int_result, Decimal)
+    assert int_result == Decimal("50")
+
+    float_result = tier0._coerce_scalar_value(DecimalCell, 50.5)
+    assert isinstance(float_result, Decimal)
+    assert float_result == Decimal("50.5")
+    assert str(float_result) == "50.5"
+
+
+def test_coerce_scalar_value_leaves_bool_uncoerced():
+    """A bool passed for a DecimalCell is returned untouched (not a Decimal),
+    so strict-mode validation can reject it downstream."""
+    from lobby_analysis.models_v2 import DecimalCell
+
+    assert tier0._coerce_scalar_value(DecimalCell, True) is True
+
+
+# --- Fix B: dict-shape value prompt hint ----------------------------------
+
+
+def test_legal_roster_names_dict_keys_for_dict_shape_cell():
+    """A TimeThresholdCell roster line names its JSON-object keys (magnitude,
+    unit) so the model emits a dict, not a bare scalar (error class B)."""
+    spec = _spec("lobbyist_registration_threshold_time_percent", "legal")
+    assert spec.expected_cell_class.__name__ == "TimeThresholdCell"
+    roster = tier1.render_legal_roster("registration_thresholds", "thresholds", [spec])
+    assert "magnitude" in roster
+    assert "unit" in roster
+    assert "JSON object" in roster
+
+
+def test_legal_roster_adds_no_shape_hint_for_scalar_cell():
+    """A scalar cell (BinaryCell) gets no dict-shape hint — the hint must not
+    push a scalar cell toward fabricating an object."""
+    spec = _spec("actor_executive_agency_registration_required", "legal")
+    assert spec.expected_cell_class.__name__ == "BinaryCell"
+    roster = tier1.render_legal_roster("registration", "reg", [spec])
+    assert "JSON object" not in roster
+    assert "magnitude" not in roster
+
+
+# --- Fix C: null-valued FreeTextCell routed to abstention -----------------
+
+
+def _record_cell_response(row_id: str, axis: str, value):
+    """An Anthropic-shaped response dict carrying one record_cell tool call.
+
+    parse_anthropic_response reads dicts via _attr_or_key, so a plain dict in
+    the wire shape exercises _parse_and_instantiate with no SDK object and no
+    API call."""
+    return {
+        "content": [
+            {
+                "type": "tool_use",
+                "name": "record_cell",
+                "input": {
+                    "row_id": row_id,
+                    "axis": axis,
+                    "value": value,
+                    "condition_text": None,
+                    "confidence": "high",
+                    "cited_section": "§101.70",
+                    "justification": "test fixture justification.",
+                },
+            }
+        ]
+    }
+
+
+def test_null_freetext_record_cell_routed_to_abstention():
+    """A record_cell with value:null for a FreeTextCell row is routed to the
+    unscoreable list as an abstention — not the errors list. The conditional
+    *_other_specification rows correctly emit null; the schema cannot hold it."""
+    from lobby_analysis.models_v2 import build_cell_spec_registry
+
+    registry = build_cell_spec_registry()
+    response = _record_cell_response(
+        "lobbyist_spending_report_cadence_other_specification", "legal", None
+    )
+    instantiated, unscoreable, errors = tier1._parse_and_instantiate(
+        response, "anthropic", registry
+    )
+    assert errors == []
+    assert instantiated == []
+    assert len(unscoreable) == 1
+    assert unscoreable[0]["row_id"] == (
+        "lobbyist_spending_report_cadence_other_specification"
+    )
+    assert unscoreable[0]["axis"] == "legal"
+    assert "reason" in unscoreable[0]
+
+
+def test_nonnull_freetext_record_cell_still_instantiates():
+    """A FreeTextCell record_cell with a real string value instantiates
+    normally — the null sentinel must not intercept genuine values."""
+    from lobby_analysis.models_v2 import build_cell_spec_registry
+
+    registry = build_cell_spec_registry()
+    response = _record_cell_response(
+        "lobbyist_spending_report_cadence_other_specification", "legal", "biennial"
+    )
+    instantiated, unscoreable, errors = tier1._parse_and_instantiate(
+        response, "anthropic", registry
+    )
+    assert errors == []
+    assert unscoreable == []
+    assert len(instantiated) == 1
+
+
+def test_null_decimalcell_record_cell_not_routed_to_abstention():
+    """The null sentinel is FreeTextCell-specific: a DecimalCell genuinely
+    accepts value:null (Decimal | None), so it instantiates, not abstains."""
+    from lobby_analysis.models_v2 import build_cell_spec_registry
+
+    registry = build_cell_spec_registry()
+    response = _record_cell_response(
+        "lobbyist_registration_threshold_compensation_dollars", "legal", None
+    )
+    instantiated, unscoreable, errors = tier1._parse_and_instantiate(
+        response, "anthropic", registry
+    )
+    assert errors == []
+    assert unscoreable == []
+    assert len(instantiated) == 1

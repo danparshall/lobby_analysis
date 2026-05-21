@@ -432,18 +432,29 @@ def _coerce_scalar_value(cls: type, raw_value: Any) -> Any:
     (``"2"`` for a GradedIntCell); ``CompendiumCell`` runs Pydantic in strict
     mode, which rejects a ``str`` for an ``int`` / ``float`` / ``Decimal`` /
     ``bool`` field. This keys on the cell class and coerces a ``str`` to the
-    field's target type. Non-string values pass through untouched.
+    field's target type. Non-string values pass through untouched, with one
+    exception: a ``DecimalCell`` also accepts a bare ``int`` / ``float`` — a
+    model nudged to "emit numbers as JSON numbers" emits one, and strict mode
+    rejects it for a ``Decimal`` field — so these coerce to ``Decimal``. A
+    ``bool`` is never coerced (it is an ``int`` subclass but never a valid
+    threshold); strict-mode validation rejects it.
 
     A string that cannot be cleanly coerced raises ``ValueError`` — the caller
     records it in the ``errors`` list rather than swallowing it (per plan).
 
     Note: ``DecimalCell.value`` is ``Decimal | None``; under strict mode a
     ``float`` would itself fail validation, so the coercion target is
-    ``Decimal`` (not ``float`` as the Tier-1 plan's prose says).
+    ``Decimal`` (not ``float`` as the Tier-1 plan's prose says). A ``float``
+    coerces via ``str()`` so ``Decimal(str(0.1))`` keeps no binary-float noise.
     """
+    name = cls.__name__
+    if name == "DecimalCell" and not isinstance(raw_value, (str, bool)):
+        if isinstance(raw_value, int):
+            return decimal.Decimal(raw_value)
+        if isinstance(raw_value, float):
+            return decimal.Decimal(str(raw_value))
     if not isinstance(raw_value, str):
         return raw_value
-    name = cls.__name__
     if name in _INT_VALUED_CELL_NAMES:
         try:
             return int(raw_value)
