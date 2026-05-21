@@ -15,6 +15,16 @@ This is the data-acquisition counterpart to Dan's Track A work (`statute-retriev
 
 (Newest entries first.)
 
+### 2026-05-22 — VPN workaround landed + handoff for LLM run
+
+- VPN reachability to OLAC has been the long-running blocker on (A') execution. Workaround landed this session: browser-saved the AER HTML at `data/oh_portal/html_test/`, then mirrored into the canonical layout at `data/oh_portal/raw/1427844/2026-05-21T18-52-26+00-00/raw.html` with a real `meta.json` (sha256, `fetch_method="browser-save-via-vpn-then-local-copy"`). Downstream tooling sees the same shape as a live fetch.
+- Wrote a one-off invocation that imports the shipped `extraction_brief` / `provenance` / `extract` modules and runs them against the local HTML — skips fetch only. Content verified to match the expected sample (Aichele/ARC Gaming, 4 bills, $20 Section II.D).
+- Closed [open question (c) from 2026-05-07](#open-questions): canonical `regime` literal is `"legislative"` (verified `git grep "regime=" origin/statute-extraction`); matches `extraction_brief.py:14`. No code change.
+- Pre-filled the validation results doc at [`results/20260507_oh_a_prime_validation.md`](results/20260507_oh_a_prime_validation.md) with source-derived ground truth (bills, expenditure totals, expected null patterns, pre-flagged schema gaps). Reduces the LLM-run step to tag-filling.
+- LLM call hit a workspace API quota cap (resets 2026-06-01). Handing off the actual extraction to a US-based colleague with their own key.
+- Side-note infra: worktree venv editable install is duplicated 4×; `PYTHONPATH=src .venv/bin/python -m ...` is the workaround. Not blocking.
+- Convo: [`convos/20260522_phase_3_handoff_prep.md`](convos/20260522_phase_3_handoff_prep.md).
+
 ### 2026-05-07 — (A') brainstorm + implementation plan
 
 - Pre-flight: caught up on a week of upstream work (compendium locked at 141 rows, schema bumped v1.1 → v1.2 → v1.3 with new `regime`/`registrant_role`/`condition_text` fields, `statute-retrieval` merged + archived, `statute-extraction` is Track A's active branch with iter-1 hitting 14/15 inter-run agreement on OH `definitions` chunk).
@@ -42,6 +52,7 @@ This is the data-acquisition counterpart to Dan's Track A work (`statute-retriev
 (Convo summaries land under `convos/YYYYMMDD_topic.md` and are listed here.)
 
 - [`20260507_oh_a_prime_brainstorm.md`](convos/20260507_oh_a_prime_brainstorm.md) — scope tier choice (A'/B'/C'), validation-strategy comparison (model-anchored / SMR-anchored / form-as-schema), regime selection (legislative), and 4-section design walk-through.
+- [`20260522_phase_3_handoff_prep.md`](convos/20260522_phase_3_handoff_prep.md) — VPN workaround landed (browser-save + canonical-layout mirror), regime literal verified, validation skeleton pre-filled with ground truth, LLM run handed off after workspace API cap surfaced.
 
 ## Open questions
 
