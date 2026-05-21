@@ -144,6 +144,22 @@ def build_legal_roster(chunk: Any) -> list[Any]:
     return [spec for spec in chunk.cell_specs if spec.axis == "legal"]
 
 
+def _value_shape_hint(cls: Any) -> str:
+    """Roster-line hint naming the JSON-object keys a dict-shape cell expects.
+
+    Empty string for scalar cells. The Tier-1 run surfaced a model emitting a
+    bare string for the one dict-shape cell in the legal roster
+    (``TimeThresholdCell`` — error class B); naming the keys steers it toward
+    a JSON object. Keys are derived from ``model_fields`` minus the common
+    ``CompendiumCell`` fields, so the helper generalizes to every dict-shape
+    class without a per-class table.
+    """
+    non_common = [f for f in cls.model_fields if f not in _COMMON_CELL_FIELDS]
+    if non_common == ["value"]:
+        return ""
+    return f" — emit `value` as a JSON object with keys: {', '.join(non_common)}"
+
+
 def render_legal_roster(chunk_id: str, topic: str, legal_specs: list[Any]) -> str:
     """Render a legal-only roster as the per-chunk user message."""
     lines = [
@@ -151,9 +167,10 @@ def render_legal_roster(chunk_id: str, topic: str, legal_specs: list[Any]) -> st
         f"`{chunk_id}` ({topic}):"
     ]
     for cs in legal_specs:
+        cls = cs.expected_cell_class
         lines.append(
             f"- row_id={cs.row_id!r}, axis='legal', "
-            f"expected_cell_class={cs.expected_cell_class.__name__}"
+            f"expected_cell_class={cls.__name__}{_value_shape_hint(cls)}"
         )
     lines.append("")
     lines.append(
