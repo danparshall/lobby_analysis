@@ -249,7 +249,10 @@ def test_is_dispatch_done_true_when_result_file_present(tmp_path):
 
 def test_is_dispatch_done_false_for_undispatched_triple(tmp_path):
     """A triple with no result file is reported not-done — it gets dispatched."""
-    assert tier1.is_dispatch_done(tmp_path, "gpt-5.2-2025-12-11", "registration_thresholds", 2) is False
+    assert (
+        tier1.is_dispatch_done(tmp_path, "gpt-5.2-2025-12-11", "registration_thresholds", 2)
+        is False
+    )
 
 
 def test_dispatch_result_path_is_unique_per_triple(tmp_path):
@@ -393,11 +396,10 @@ def test_null_freetext_record_cell_routed_to_abstention():
     assert errors == []
     assert instantiated == []
     assert len(unscoreable) == 1
-    assert unscoreable[0]["row_id"] == (
-        "lobbyist_spending_report_cadence_other_specification"
-    )
-    assert unscoreable[0]["axis"] == "legal"
-    assert "reason" in unscoreable[0]
+    abstained = unscoreable[0]
+    assert abstained["row_id"] == "lobbyist_spending_report_cadence_other_specification"
+    assert abstained["axis"] == "legal"
+    assert "reason" in abstained
 
 
 def test_nonnull_freetext_record_cell_still_instantiates():
