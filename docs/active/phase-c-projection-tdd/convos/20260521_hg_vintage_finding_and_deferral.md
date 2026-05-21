@@ -49,4 +49,4 @@ Implication: the Path A 1,900-cell ground truth is retrievable (per-state per-qu
 
 ## Captured Tasks
 
-<!-- Populated by capture-task skill -->
+- [#21: Resume HG implementation when 2003-vintage retrieval lands](https://github.com/danparshall/lobby_analysis/issues/21) — captured 2026-05-21
