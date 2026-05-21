@@ -17,6 +17,7 @@ script-shaped while still being testable.
 
 from __future__ import annotations
 
+import decimal
 import json
 from dataclasses import dataclass
 from typing import Any, Literal
@@ -419,6 +420,59 @@ def render_chunk_roster(chunk) -> str:  # type: ignore[no-untyped-def]
 # ---------------------------------------------------------------------------
 
 
+_INT_VALUED_CELL_NAMES: frozenset[str] = frozenset(
+    {"IntCell", "GradedIntCell", "BoundedIntCell"}
+)
+
+
+def _coerce_scalar_value(cls: type, raw_value: Any) -> Any:
+    """Coerce a JSON-string scalar to the Python type ``cls`` expects.
+
+    Tier-0 surfaced models emitting numeric answers as quoted JSON strings
+    (``"2"`` for a GradedIntCell); ``CompendiumCell`` runs Pydantic in strict
+    mode, which rejects a ``str`` for an ``int`` / ``float`` / ``Decimal`` /
+    ``bool`` field. This keys on the cell class and coerces a ``str`` to the
+    field's target type. Non-string values pass through untouched.
+
+    A string that cannot be cleanly coerced raises ``ValueError`` — the caller
+    records it in the ``errors`` list rather than swallowing it (per plan).
+
+    Note: ``DecimalCell.value`` is ``Decimal | None``; under strict mode a
+    ``float`` would itself fail validation, so the coercion target is
+    ``Decimal`` (not ``float`` as the Tier-1 plan's prose says).
+    """
+    if not isinstance(raw_value, str):
+        return raw_value
+    name = cls.__name__
+    if name in _INT_VALUED_CELL_NAMES:
+        try:
+            return int(raw_value)
+        except ValueError as exc:
+            raise ValueError(f"{name}: cannot coerce {raw_value!r} to int") from exc
+    if name == "FloatCell":
+        try:
+            return float(raw_value)
+        except ValueError as exc:
+            raise ValueError(f"{name}: cannot coerce {raw_value!r} to float") from exc
+    if name == "DecimalCell":
+        try:
+            return decimal.Decimal(raw_value)
+        except decimal.InvalidOperation as exc:
+            raise ValueError(
+                f"{name}: cannot coerce {raw_value!r} to Decimal"
+            ) from exc
+    if name == "BinaryCell":
+        low = raw_value.strip().lower()
+        if low == "true":
+            return True
+        if low == "false":
+            return False
+        raise ValueError(f"BinaryCell: cannot coerce {raw_value!r} to bool")
+    # String-typed cells (EnumCell / FreeTextCell / SectorClassificationCell /
+    # UpdateCadenceCell): a JSON string is already the field's target type.
+    return raw_value
+
+
 def _instantiate_cell(spec: Any, arguments: dict[str, Any]) -> dict[str, Any]:
     """Build a typed CompendiumCell + wrap with cited_section + justification.
 
@@ -478,6 +532,11 @@ def _instantiate_cell(spec: Any, arguments: dict[str, Any]) -> dict[str, Any]:
         # EnumSetCell takes a frozenset; the model emits a JSON array.
         if cls is EnumSetCell and isinstance(raw_value, list):
             raw_value = frozenset(raw_value)
+        else:
+            # Coerce JSON-string scalars to the field's target type — models
+            # sometimes emit numeric/boolean answers as quoted strings, which
+            # Pydantic strict mode rejects (Tier-0 criterion-5 failure).
+            raw_value = _coerce_scalar_value(cls, raw_value)
         cell = cls(value=raw_value, **common)
     elif cls in dict_shape_cells:
         if not isinstance(raw_value, dict):
