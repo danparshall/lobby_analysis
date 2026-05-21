@@ -27,6 +27,28 @@ The `data/` symlink convention from `skills/use-worktree/SKILL.md` was **skipped
 
 (Newest first.)
 
+### 2026-05-21 (Tier-1 direct-read legal-axis plan: executed end-to-end) — 4 commits, +18 behavior tests, 36-dispatch run, all green
+
+Convo: [`convos/20260521_tier_1_legal_axis_execution.md`](convos/20260521_tier_1_legal_axis_execution.md)
+Plan: [`plans/20260520_tier_1_direct_read_legal_axis.md`](plans/20260520_tier_1_direct_read_legal_axis.md) — all 8 steps.
+Writeup: [`results/tier_1/20260520_tier_1_legal_axis_writeup.md`](results/tier_1/20260520_tier_1_legal_axis_writeup.md)
+
+**What ran.** Legal-axis-only run over the 6 CPI-2015 C11 de-jure chunks (OH 2025, 84 legal cells): `[claude-opus-4-7, gpt-5.2] × 6 chunks × 3 runs` = 36 dispatches. Session cost $2.94 (ceiling $10). Plan Questions settled with the user first: SDK-default temp (Tier-0 ran at default 1.0, not temp-0 as Q1 assumed); N=3; scope ends at σ_noise; keep $10.
+
+**Commits (on top of `99de3cd`):** `aa970a5` Step 2 `_coerce_scalar_value`; `5a467d6` Step 4 runner `scripts/tier_1_direct_read_legal_axis.py`; `17a7a02` Step 6 18 behavior tests; `f3931e2` Step 7 writeup + 36 result JSONs. Suite: 515 passed (+3 baseline `test_pipeline.py` failures, unrelated).
+
+**Provisional findings.**
+
+- **σ_noise: Claude 85.7 % cells stable, GPT 73.8 %** — both deflated by unpinned-enum label churn (exact-match metric scores semantically-identical answers as unstable) and by the error-class incompletes. True model-reasoning floor is higher.
+- **Coercion fix works (criterion 3 met)** — zero Tier-0 string/int errors. The 18 errors are **3 new classes, reported not patched** per plan discipline: (A) `int → Decimal` strict rejection — the Step-2 "emit JSON numbers" nudge walked GPT into it; (B) dict-shape cell fed a scalar (`TimeThresholdCell` — the anticipated IND_197 failure); (C) non-optional `FreeTextCell` fed `null` (conditional `*_other_specification` rows; both models, 100 % of runs — a schema gap, the models were correct).
+- **Abstention-calibration problem reproduced at chunk scale** — GPT abstains on the *entire* `registration_thresholds` chunk because OH triggers lobbyist status qualitatively, not by dollar threshold; Claude encodes that as `0`. Largest source of cross-model divergence.
+- **Noise is chunk-correlated, not IID per cell** — `principal_spending_report` shows a 5–6-cell block flipping together on a single run-level misread.
+- Cross-model agreement 85 % (63/74 both-scored cells); criterion 4 verified (0 practical cells in any saved roster).
+
+**Verdict.** Legal-axis direct-read is "qualified yes" for scaling to 15 chunks / multi-vintage — 3 small schema/adapter fixes (A/B/C), enum-domain pinning, and an explicit abstention policy must land first. None architectural.
+
+**Next:** Tier-2 candidates — the 3 schema/adapter fixes; pin enum domains; design the Phase-2 verifier's abstention-calibration policy. CPI published-score comparison still waits on `phase-c-projection-tdd`.
+
 ### 2026-05-20 (Tier-0 direct-read plan: Steps 5–7 executed — the live smoke run + writeup) — no code changes; analysis + finish-convo
 
 Convo: [`convos/20260520_tier_0_direct_read_execution.md`](convos/20260520_tier_0_direct_read_execution.md)
