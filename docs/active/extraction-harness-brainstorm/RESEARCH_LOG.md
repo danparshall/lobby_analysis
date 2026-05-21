@@ -27,6 +27,26 @@ The `data/` symlink convention from `skills/use-worktree/SKILL.md` was **skipped
 
 (Newest first.)
 
+### 2026-05-20 (Tier-0 direct-read plan: Steps 5–7 executed — the live smoke run + writeup) — no code changes; analysis + finish-convo
+
+Convo: [`convos/20260520_tier_0_direct_read_execution.md`](convos/20260520_tier_0_direct_read_execution.md)
+Plan: [`plans/20260518_tier_0_direct_read_smoke_test.md`](plans/20260518_tier_0_direct_read_smoke_test.md) — Steps 5–7 of 7 (Steps 1–4 shipped 2026-05-19).
+Writeup: [`results/20260518_tier_0_direct_read_writeup.md`](results/20260518_tier_0_direct_read_writeup.md)
+
+**What ran.** Live dual-model smoke against OH 2025 `enforcement_and_audits` (2 rows × 2 axes = 4 cells). Both Claude Opus 4.7 and GPT-5.2 dispatched, parsed, and wrote all 4 raw/parsed JSON files on the first attempt. Total cost ≈ $0.10 (ceiling $5). Wall-clock: Claude 17.5 s, GPT 6.7 s.
+
+**Provisional findings.**
+
+- **Wiring works** — criteria 1–4, 7 met. Script ran end-to-end, no uncaught exceptions.
+- **Criterion 5 FAILED (Claude)** — Claude emitted `record_cell` for both `practical`-axis `GradedIntCell`s with `value="2"`/`"1"` (JSON strings); `GradedIntCell` wants `int`; Pydantic rejected both. Root cause: shared `RECORD_CELL_INPUT_SCHEMA` `value` is a loose `oneOf` including `string`. Encoding mismatch, not a reasoning error. **Left unpatched per the plan** — the failure mode is the deliverable; fix is Tier-1's job.
+- **Practical axis is structurally unanswerable from a statute-only bundle** — both practical cells ask about real-world behavior. GPT correctly abstained (`record_unscoreable_cell` ×2); Claude over-reached and scored them anyway. This is a data-*source* gap, **not** a retrieval gap — the Citations+retrieval escape hatch would hit the identical wall.
+- **Legal axis is viable** — `penalties…legal`: both models `True`, both correct, §101.99 verified verbatim. `audit_required_in_law, legal`: Claude scored `review_only` (correct; §101.72(G)+§101.79 verified verbatim), GPT abstained (over-conservative — a complete chapter not requiring an audit *is* a determinate answer).
+- **Sharp model divergence** — Claude scores aggressively (4/4 attempted), GPT abstains readily (3/4 unscoreable). They agree on statute facts, disagree on scoreability. GPT's 0 type-errors is an artifact of abstaining on the buggy cells, not better type handling.
+
+**Verdict.** Tier-0 selects neither plan branch cleanly: (1) fix the value-typing bug in Tier-1; (2) user decides practical-axis scope (exclude, or new evidence corpus); (3) proceed to Tier-1 direct-read on the legal axis across the 6 CPI-2015 de-jure chunks; (4) Phase-2 verifier needs an explicit abstention-calibration policy. Escape hatch not indicated.
+
+**Next:** Tier-1 legal-axis direct-read (after the typing fix); user decision on the practical axis.
+
 ### 2026-05-19 (Tier-0 direct-read plan: Steps 1–4 executed on Dans-MacBook-Air; Step 5 pending on a keyed machine) — 4 commits, +14 parser tests + 3 cold-load regression tests, all green
 
 Convo: [`convos/20260519_session_end_steps_1_to_4.md`](convos/20260519_session_end_steps_1_to_4.md)
