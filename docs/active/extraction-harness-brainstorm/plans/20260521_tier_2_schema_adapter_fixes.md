@@ -5,6 +5,7 @@
 **Originating conversation:** [`../convos/20260521_tier_1_legal_axis_execution.md`](../convos/20260521_tier_1_legal_axis_execution.md)
 
 **Executed:** [`../convos/20260521_tier_2_schema_adapter_fixes_execution.md`](../convos/20260521_tier_2_schema_adapter_fixes_execution.md) — 2026-05-21, Steps A/B/C/E; Step D deferred.
+**Step D executed:** [`../convos/20260521_tier_2_step_d_redispatch_verification.md`](../convos/20260521_tier_2_step_d_redispatch_verification.md) — 2026-05-21. Re-dispatch verification: Fixes A + C verified against real API output; Fix B partial — original class-B `TypeError` cleared, but a new finding surfaced (`TimeThresholdCell` cannot represent OH's qualitative trigger; routes to blocker 3, not enum-domain pinning). Pass criterion not met. Writeup: [`../results/tier_1/20260521_tier_2_step_d_redispatch_writeup.md`](../results/tier_1/20260521_tier_2_step_d_redispatch_writeup.md).
 
 **Context:** Tier-1 ([writeup](../results/tier_1/20260520_tier_1_legal_axis_writeup.md)) confirmed the Tier-0 string/int bug is fixed but surfaced 18 errors in 3 genuinely new classes. Per the Tier-1 plan's stop-and-report discipline they were documented, not patched. They are the named blocker (item 1 of 3) on the Tier-1 verdict's "qualified yes" for scaling legal-axis direct-read to all 15 chunks / multi-vintage. All three are small, well-understood, and non-architectural.
 

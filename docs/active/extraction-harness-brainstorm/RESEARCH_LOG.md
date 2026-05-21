@@ -27,6 +27,51 @@ The `data/` symlink convention from `skills/use-worktree/SKILL.md` was **skipped
 
 (Newest first.)
 
+### 2026-05-21 (Tier-2 Step D: re-dispatch verification) — 18 re-dispatches, $1.82, 2 of 3 fixes verified, 1 new finding
+
+Convo: [`convos/20260521_tier_2_step_d_redispatch_verification.md`](convos/20260521_tier_2_step_d_redispatch_verification.md)
+Plan: [`plans/20260521_tier_2_schema_adapter_fixes.md`](plans/20260521_tier_2_schema_adapter_fixes.md) — Step D (the deferred re-dispatch).
+Writeup: [`results/tier_1/20260521_tier_2_step_d_redispatch_writeup.md`](results/tier_1/20260521_tier_2_step_d_redispatch_writeup.md)
+
+**What ran.** Re-dispatched the 18 triples that each carried one
+`instantiation_failed` error in the Tier-1 legal-axis run (`registration_thresholds`,
+`lobbyist_spending_report`, `principal_spending_report` × 2 models × 3 runs),
+against the now-committed A/B/C fixes — the integration test the Tier-2
+execution session deferred for lack of API keys. Original Tier-1 JSONs for
+these chunks moved to `results/tier_1/_superseded/` (preserved); resume logic
+re-dispatched exactly the 18 missing triples. Cost **$1.8157** (the handoff's
+"~12 calls/~$1" undercounted — all 18 files carried errors).
+
+**Provisional findings.**
+
+- **Fix A (`int`→`Decimal`) — positively verified.** `gpt registration_thresholds`
+  emitted a bare JSON `"value": 50`; it instantiated cleanly to
+  `DecimalCell(Decimal("50"))`. Zero errors in all 3 gpt runs.
+- **Fix C (null `FreeTextCell` → abstention) — verified.** All 12 spending-report
+  dispatches error-free; the `*_other_specification` rows route to abstention.
+- **Fix B (dict-shape keys hint) — partial.** The hint steered claude off the
+  bare-string failure (class-B `TypeError` gone — all 3 runs emit a proper
+  `{magnitude, unit}` dict), **but a new error surfaced**: claude fills `unit`
+  with out-of-domain values because OH's lobbyist definition is a *qualitative*
+  "main purposes" test with no numeric time threshold, and `TimeThresholdCell`
+  cannot represent that. 3/3 claude `registration_thresholds` runs still error
+  → plan's zero-error pass criterion **not met**.
+- **The new finding routes to blocker 3 (abstention calibration), not blocker 2
+  (enum-domain pinning).** Pushed back on the handoff's framing: expanding the
+  `unit` enum domain would not help — none of the 4 valid units fit. GPT
+  abstains on this exact cell (correct); claude *under-abstains*. Structurally a
+  class-C sibling: model right, schema can't represent the answer. Fix B's hint
+  may aggravate the under-abstention by reading as "produce this shape."
+
+**Verdict.** Tier-1 blocker 1 (the schema/adapter fixes) is **partially
+cleared** — A and C verified against real output, original class-B mechanism
+cleared, but the `TimeThresholdCell` cell now fails in a way Fix B cannot reach
+(it is a should-be-abstention, not a typing bug). No patch — Step-D discipline.
+
+**Next:** blocker 3 — the Phase-2 verifier's abstention-calibration policy
+(the `TimeThresholdCell` qualitative-jurisdiction case is concrete evidence for
+it); then blocker 2 (enum-domain pinning), independent of the above.
+
 ### 2026-05-21 (Tier-2 schema/adapter fixes: plan executed end-to-end) — 4 commits, +10 behavior tests, all green, no API spend
 
 Convo: [`convos/20260521_tier_2_schema_adapter_fixes_execution.md`](convos/20260521_tier_2_schema_adapter_fixes_execution.md)

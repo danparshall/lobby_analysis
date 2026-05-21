@@ -1,0 +1,192 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "registration_thresholds",
+    "run_index": 3,
+    "state_abbr": "OH",
+    "vintage_year": 2025,
+    "prompt_sha256": "f1f90342e807976476f79eb5321867e09f82a3f005caa9f17279c46e8d79cb43",
+    "timestamp_utc": "2026-05-21T14:03:00+00:00"
+  },
+  "wall_clock_seconds": 9.647012708010152,
+  "usage": {
+    "completion_tokens": 574,
+    "prompt_tokens": 31424,
+    "total_tokens": 31998,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 31232
+    }
+  },
+  "cost_usd_estimate": 0.063028,
+  "legal_roster": [
+    [
+      "lobbyist_registration_threshold_compensation_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_threshold_expenditure_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_threshold_time_percent",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_itemization_de_minimis_threshold_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_de_minimis_threshold_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_de_minimis_threshold_time_percent",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [],
+  "unscoreable_emissions": [
+    {
+      "row_id": "lobbyist_registration_threshold_compensation_dollars",
+      "axis": "legal",
+      "reason": "The bundled Ohio sections define 'legislative agent' by qualitative time/purpose standards and require registration within 10 days of engagement, but they do not set any dollar-based compensation threshold for when registration is required."
+    },
+    {
+      "row_id": "lobbyist_registration_threshold_expenditure_dollars",
+      "axis": "legal",
+      "reason": "The bundled Ohio sections require registration based on 'engagement' as a legislative agent/executive agency lobbyist/retirement system lobbyist, not on an expenditures dollar threshold; no dollar trigger for registration appears in the provided text."
+    },
+    {
+      "row_id": "lobbyist_registration_threshold_time_percent",
+      "axis": "legal",
+      "reason": "The definition of 'legislative agent' refers to being engaged 'during at least a portion of the individual's time' and 'as one of the individual's main purposes' (and other lobbyist definitions use 'regular and substantial basis'), but no numeric time-percent threshold is specified in the provided text."
+    },
+    {
+      "row_id": "lobbyist_filing_de_minimis_threshold_dollars",
+      "axis": "legal",
+      "reason": "The bundled statute sets a $50 cumulative itemization trigger specifically for meals/food and beverages, but it does not state any overall de minimis dollar threshold below which lobbying expenditures generally need not be reported."
+    },
+    {
+      "row_id": "lobbyist_filing_de_minimis_threshold_time_percent",
+      "axis": "legal",
+      "reason": "The bundled statute does not provide any numeric time-percent de minimis threshold governing whether lobbying activity or expenditures must be reported; it sets reporting periods and itemization rules but no such percentage trigger."
+    }
+  ],
+  "errors": [
+    {
+      "reason": "instantiation_failed",
+      "key": [
+        "lobbyist_filing_itemization_de_minimis_threshold_dollars",
+        "legal"
+      ],
+      "error": "1 validation error for DecimalCell\nvalue\n  Input should be an instance of Decimal [type=is_instance_of, input_value=50, input_type=int]\n    For further information visit https://errors.pydantic.dev/2.13/v/is_instance_of",
+      "arguments": {
+        "row_id": "lobbyist_filing_itemization_de_minimis_threshold_dollars",
+        "axis": "legal",
+        "value": 50,
+        "condition_text": "Meals and other food and beverages expenditures by a legislative agent are itemized only when the cumulative calendar-year total to/for a particular covered official exceeds $50 (with stated exceptions for certain meetings).",
+        "confidence": "high",
+        "cited_section": "Ohio Rev. Code § 101.73(B)(3) (2025)",
+        "justification": "Section 101.73(B)(3) requires additional disclosure details for meals/food and beverage expenditures only when, added to previous payments in the same calendar year, they 'exceeded a total of fifty dollars' for a particular covered official/employee."
+      }
+    }
+  ],
+  "response": {
+    "id": "chatcmpl-DhyH68Inxhz7x6cup9FvhGC5BuKRH",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_imKuOP1ha0m1kut2wLnW0RP6",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_registration_threshold_compensation_dollars\", \"axis\": \"legal\", \"reason\": \"The bundled Ohio sections define 'legislative agent' by qualitative time/purpose standards and require registration within 10 days of engagement, but they do not set any dollar-based compensation threshold for when registration is required.\"}",
+                "name": "record_unscoreable_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_2lW8fhhZYqhx6F4KfDivkR6j",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_registration_threshold_expenditure_dollars\", \"axis\": \"legal\", \"reason\": \"The bundled Ohio sections require registration based on 'engagement' as a legislative agent/executive agency lobbyist/retirement system lobbyist, not on an expenditures dollar threshold; no dollar trigger for registration appears in the provided text.\"}",
+                "name": "record_unscoreable_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_agSKZoYSjVOWTmJWrEu3O1d4",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_registration_threshold_time_percent\", \"axis\": \"legal\", \"reason\": \"The definition of 'legislative agent' refers to being engaged 'during at least a portion of the individual's time' and 'as one of the individual's main purposes' (and other lobbyist definitions use 'regular and substantial basis'), but no numeric time-percent threshold is specified in the provided text.\"}",
+                "name": "record_unscoreable_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_ZoOmwi9PpFzNVqnEQrwwb7Tt",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_filing_itemization_de_minimis_threshold_dollars\", \"axis\": \"legal\", \"value\": 50, \"condition_text\": \"Meals and other food and beverages expenditures by a legislative agent are itemized only when the cumulative calendar-year total to/for a particular covered official exceeds $50 (with stated exceptions for certain meetings).\", \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code § 101.73(B)(3) (2025)\", \"justification\": \"Section 101.73(B)(3) requires additional disclosure details for meals/food and beverage expenditures only when, added to previous payments in the same calendar year, they 'exceeded a total of fifty dollars' for a particular covered official/employee.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_h8zQCyKDXzx48NdRIdDjqTnx",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_filing_de_minimis_threshold_dollars\", \"axis\": \"legal\", \"reason\": \"The bundled statute sets a $50 cumulative itemization trigger specifically for meals/food and beverages, but it does not state any overall de minimis dollar threshold below which lobbying expenditures generally need not be reported.\"}",
+                "name": "record_unscoreable_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_2xaNNs8q6xnPTSldIa8HPr3A",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_filing_de_minimis_threshold_time_percent\", \"axis\": \"legal\", \"reason\": \"The bundled statute does not provide any numeric time-percent de minimis threshold governing whether lobbying activity or expenditures must be reported; it sets reporting periods and itemization rules but no such percentage trigger.\"}",
+                "name": "record_unscoreable_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1779372172,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 574,
+      "prompt_tokens": 31424,
+      "total_tokens": 31998,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 31232
+      }
+    }
+  }
+}
