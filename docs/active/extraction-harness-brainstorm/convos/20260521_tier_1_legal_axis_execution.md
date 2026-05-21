@@ -111,6 +111,7 @@ missing CA portal-snapshot fixture), 8 skipped.
    `_coerce_scalar_value` to `int → Decimal` (A); make conditional
    `FreeTextCell` rows optional or give them an N/A encoding (C); give
    dict-shape `value` an explicit per-cell-class schema or prompt shape (B).
+   **Planned:** [`../plans/20260521_tier_2_schema_adapter_fixes.md`](../plans/20260521_tier_2_schema_adapter_fixes.md) (written this session, post-finish-convo, per the user's request).
 2. **Pin enum domains** (`enum_domains.py`) for the unpinned `EnumCell` /
    `EnumSetCell` rows — otherwise σ_noise and cross-model agreement undercount
    semantically-identical answers.

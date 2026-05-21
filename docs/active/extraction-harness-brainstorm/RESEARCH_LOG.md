@@ -47,7 +47,7 @@ Writeup: [`results/tier_1/20260520_tier_1_legal_axis_writeup.md`](results/tier_1
 
 **Verdict.** Legal-axis direct-read is "qualified yes" for scaling to 15 chunks / multi-vintage — 3 small schema/adapter fixes (A/B/C), enum-domain pinning, and an explicit abstention policy must land first. None architectural.
 
-**Next:** Tier-2 candidates — the 3 schema/adapter fixes; pin enum domains; design the Phase-2 verifier's abstention-calibration policy. CPI published-score comparison still waits on `phase-c-projection-tdd`.
+**Next:** the 3 schema/adapter fixes are planned in [`plans/20260521_tier_2_schema_adapter_fixes.md`](plans/20260521_tier_2_schema_adapter_fixes.md) (Tier-2, written this session). Still future work: pin enum domains; design the Phase-2 verifier's abstention-calibration policy. CPI published-score comparison still waits on `phase-c-projection-tdd`.
 
 ### 2026-05-20 (Tier-0 direct-read plan: Steps 5–7 executed — the live smoke run + writeup) — no code changes; analysis + finish-convo
 
