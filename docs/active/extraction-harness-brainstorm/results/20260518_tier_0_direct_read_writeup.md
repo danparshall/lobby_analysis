@@ -8,6 +8,8 @@ Originating convo: convos/20260518_tier_0_execution_pivot_to_direct_read.md
 
 **Run date:** 2026-05-20 (UTC) · **Machine:** Dans-MacBook-Air · **Chunk:** `enforcement_and_audits` · **State-vintage:** OH 2025
 
+> **Amended 2026-05-20** (same session, after the run): the original writeup framed the `practical`-axis result as an open "which data source?" decision. That was a misframing — the `practical` (de facto) axis belongs to **Prong 2**, not this prong. The two affected sections below ("Practical axis…" and "Architecture verdict" item 2) are corrected and marked `[Amended 2026-05-20.]`. See the convo for the clarification that prompted this.
+
 ## What the script does
 
 `scripts/tier_0_direct_read_smoke.py` makes a **single API call per model**. The full OH 2025 Chapter 101 statute bundle (30 section files, ≈36K tokens) is embedded in a cache-controlled system prompt; a per-chunk user message lists the 4 `enforcement_and_audits` cells and asks the model to answer each via `record_cell` (or abstain via `record_unscoreable_cell`). It dispatches Claude Opus 4.7 and GPT-5.2 independently, parses tool calls into typed `CompendiumCell` instances, and saves raw + parsed JSON per model. No retrieval pass, no Citations API, no orchestrator.
@@ -60,14 +62,16 @@ Root cause: the shared `RECORD_CELL_INPUT_SCHEMA` `value` field is a loose `oneO
 
 **Why GPT shows 0 errors:** not better type handling — GPT *abstained* (`record_unscoreable_cell`) on the exact two cells where Claude attempted a score. GPT never attempted a `GradedIntCell`, so it never reached the buggy path. If GPT had scored those cells it would likely have hit the same string/int ambiguity.
 
-## Practical axis: structurally unanswerable from a statute-only bundle
+## Practical axis (de facto): out of scope for this prong — Prong 2's job
 
-The most important finding. Both `practical`-axis cells ask about real-world behavior — *are penalties imposed* / *are audits conducted in practice*. A statute bundle cannot answer that.
+`[Amended 2026-05-20.]` Both `practical`-axis cells ask about real-world behavior — *are penalties imposed* / *are audits conducted in practice*. A statute bundle cannot answer that, and **it should not be asked to.** The project's de jure / de facto split is architectural and settled: **Prong 1 (this branch) measures de jure** — what the law requires, read from statute text. **Prong 2 measures de facto** — what states actually do — scored against the *same* compendium items (the SMR). The `practical` axis *is* the de facto axis (`practical_availability` in the v1.1 schema).
 
-- **GPT got this right.** Its two practical-axis unscoreable reasons ("no evidence penalties are actually imposed in practice," "no information on the frequency or extent of audits in practice") are well-calibrated — the statute text genuinely lacks enforcement data.
-- **Claude over-reached.** It scored both practical cells (`2`, `1`) while its own justifications concede the gap — e.g., "the bundle does not show enforcement statistics to confirm frequency in practice." Scoring a practical cell from purely legal text, by the model's own admission, is the weaker behavior.
+So the practical-axis result is not a gap to fix here:
 
-This is **not a direct-read architecture failure**, and critically **not something the Citations+retrieval escape hatch would fix** — retrieval over the same statute corpus hits the identical wall. Practical-axis cells need a *different data source* (enforcement records, agency reports, FOIA, news), not a different architecture.
+- **GPT got it right.** Its two practical-axis `record_unscoreable_cell` emissions are correct behavior — a de-jure-scoped scorer reading statute text *should* abstain on a de facto question.
+- **Claude made a real error.** It scored both practical cells (`2`, `1`) from statute text — answering a de facto question with de jure evidence — while its own justifications conceded the bundle lacks enforcement data.
+
+The fix is not a new data source. It is a **roster filter**: the Prong-1 scorer should only ever be handed `axis == "legal"` cells. STATUS.md records that the brief-writer brainstorm already locked exactly this ("legal-axis only; mixed chunks score only their legal cells") — the Tier-0 smoke simply hadn't applied the filter, so it handed the scorer all 4 cells of a mixed chunk. Tier-1 applies the filter. The de facto axis is picked up later by Prong 2, untouched by this pipeline.
 
 ## Model divergence (plan deliverable §7)
 
@@ -86,7 +90,7 @@ Two models, identical input, sharply different behavior:
 So Tier 0 does not cleanly select either forward branch from the plan. It selects a **third path**:
 
 1. **Fix the `value` typing bug** (schema tightening or `_instantiate_cell` coercion) — small, do it first in Tier 1.
-2. **Decide the scope of the `practical` axis.** Either (a) exclude practical-axis cells from a statute-fed pipeline, or (b) source a separate practical-evidence corpus. This is a research decision for the user, not an implementation detail.
+2. **Apply a legal-axis roster filter.** `[Amended 2026-05-20.]` The `practical` (de facto) axis is Prong 2's job, scored later against the same compendium items — not in scope for this de-jure pipeline, and not an open data-source question. Tier-1 filters the cell roster to `axis == "legal"` before dispatch (the brief-writer brainstorm already locked this).
 3. **Proceed to Tier 1 direct-read on the `legal` axis** across the 6 CPI-2015 de-jure chunks — that is what this run shows is ready.
 4. **The Claude-aggressive / GPT-conservative split** is itself a signal the Phase-2 verifier agent must handle: a verifier needs an explicit abstention-calibration policy, because the two models disagree on *when a cell is scoreable* even when they agree on the underlying statute facts.
 

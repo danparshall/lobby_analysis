@@ -45,7 +45,9 @@ Writeup: [`results/20260518_tier_0_direct_read_writeup.md`](results/20260518_tie
 
 **Verdict.** Tier-0 selects neither plan branch cleanly: (1) fix the value-typing bug in Tier-1; (2) user decides practical-axis scope (exclude, or new evidence corpus); (3) proceed to Tier-1 direct-read on the legal axis across the 6 CPI-2015 de-jure chunks; (4) Phase-2 verifier needs an explicit abstention-calibration policy. Escape hatch not indicated.
 
-**Next:** Tier-1 legal-axis direct-read (after the typing fix); user decision on the practical axis.
+**Addendum (same session).** User corrected the writeup's framing: the `practical` axis is the **de facto** axis = **Prong 2's** job (scored against the same compendium items); this prong is **de jure only**. GPT abstaining on practical cells = correct; Claude scoring them = a genuine error. Writeup amended (two sections marked `[Amended 2026-05-20.]`). **Tier-1 plan written:** [`plans/20260520_tier_1_direct_read_legal_axis.md`](plans/20260520_tier_1_direct_read_legal_axis.md) — legal-axis run over the 6 CPI-2015 C11 de-jure chunks (IND_196/197/199/201/203/207) + typing fix + per-dispatch checkpointing + σ_noise (N=3). Full de jure SMR for one state-vintage = 131 legal cells / 15 chunks; Tier-0 scored 2.
+
+**Next:** execute the Tier-1 plan.
 
 ### 2026-05-19 (Tier-0 direct-read plan: Steps 1–4 executed on Dans-MacBook-Air; Step 5 pending on a keyed machine) — 4 commits, +14 parser tests + 3 cold-load regression tests, all green
 

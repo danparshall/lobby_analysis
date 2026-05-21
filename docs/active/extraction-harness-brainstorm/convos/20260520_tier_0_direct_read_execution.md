@@ -50,12 +50,20 @@ The two models also diverged sharply in behavior on identical input, which is it
 
 ## Next Steps
 
-1. Tier-1: fix the `record_cell.value` string/int typing bug, then run direct-read legal-axis across the 6 CPI-2015 de-jure chunks (σ_noise via N=3 re-runs per model).
-2. User decision on practical-axis data source before any practical-axis scoring is attempted.
-3. Phase-2 verifier plan should treat abstention calibration as a first-class design problem.
+1. Execute [`../plans/20260520_tier_1_direct_read_legal_axis.md`](../plans/20260520_tier_1_direct_read_legal_axis.md) — Tier-1 legal-axis run (typing fix + legal roster filter + 6 CPI de-jure chunks + σ_noise).
+2. Phase-2 verifier plan should treat abstention calibration as a first-class design problem.
+3. Practical/de facto axis is Prong 2's territory — not this branch.
 
 ## Session mechanics / caveats for the next agent
 
 - **API keys came from `/Users/dan/code/lobby_analysis/.env.corporate`** (copied to the main worktree this session). That file is **not a clean env file** — lines 1–3 are `KEY=value`, but the rest is freeform scratch notes. `source`-ing the whole file runs the prose as shell commands. Load only the key lines: `. <(grep -E '^[A-Za-z_]+=' .env.corporate)`. The file is gitignored (`.env*`).
 - The keys are **live** (the dispatch authenticated and billed). They appeared in this session's transcript — worth rotating.
 - Dans-MacBook-Air now has working keys, contradicting the Steps 1–4 convo's "laptop is keyless" assumption.
+
+## Addendum (same session) — de jure/de facto clarification, writeup amended, Tier-1 plan written
+
+After the writeup landed, the user corrected a misframing in it. The `practical` axis **is** the **de facto** axis, and de facto measurement is **Prong 2's** job — scored against the *same* compendium items (the SMR). This prong (Prong 1) is **de jure only**. The writeup had framed the practical-axis cells coming back unscoreable as an open "which data source?" decision; that was never an open decision. GPT abstaining on the practical cells was *correct*; Claude scoring them was a *genuine error* (a de facto answer from de jure evidence). The fix is a one-line roster filter (`axis == "legal"`) — which the brief-writer brainstorm had already locked.
+
+- **Writeup amended** — [`../results/20260518_tier_0_direct_read_writeup.md`](../results/20260518_tier_0_direct_read_writeup.md): two sections corrected and marked `[Amended 2026-05-20.]`, plus a header note.
+- **SMR-status assessment.** A full *de jure* SMR for one state-vintage = **131 legal-axis cells across 15 chunks** (registry is 186 cells: 131 legal + 55 practical). Tier-0 scored 2 of those 131. Mechanically populating all 131 for OH 2025 is ~days away; a *trusted* SMR is not — the typing fix, Tier-1, the verifier agent (unbuilt), the Ralph loop/orchestrator (unowned per STATUS), and projection validation (`phase-c-projection-tdd`, not started) all sit in between. "Populating" and "trusting" the SMR are very different milestones.
+- **Tier-1 plan written** — [`../plans/20260520_tier_1_direct_read_legal_axis.md`](../plans/20260520_tier_1_direct_read_legal_axis.md): legal-axis-only run over the 6 CPI-2015 C11 de-jure chunks (items IND_196/197/199/201/203/207), with the value-typing fix, per-dispatch checkpointing, and σ_noise from N=3 re-runs. CPI published-score comparison deferred to when `phase-c-projection-tdd`'s projection functions land.
