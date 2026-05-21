@@ -40,6 +40,42 @@ The `data/` symlink convention from `skills/use-worktree/SKILL.md` was **skipped
 
 (Newest first.)
 
+### 2026-05-21 — HG vintage finding + deferral; FOCAL is next
+
+Convo: [`convos/20260521_hg_vintage_finding_and_deferral.md`](convos/20260521_hg_vintage_finding_and_deferral.md)
+Results: [`results/20260521_hg_vintage_correction.md`](results/20260521_hg_vintage_correction.md)
+
+User picked HG 2007 as next implementation. Per the plan's retrieval-gate, started a Path A scorecard retrieval attempt. The attempt surfaced that **the CPI "Hired Guns" rubric is a May 2003 survey, not a 2007 one** — no second survey was ever conducted. Wayback evidence (2008 + 2010 captures both titled "Lobby Disclosure Ranking 2003"), CPI's own archives roll-up (no Dec 2007 ranking article), and user's domain knowledge (CPI uses "Hired Guns" as a persistent topic tag, not a survey name) all converged. L-N 2024/2025's "2007" attribution is a grad-student misread of CPI's modern page metadata, propagated through three independent academic citations.
+
+**Topics explored**
+
+- Pre-flight status reconstructed: 5 of 8 rubrics shipped, HG + FOCAL outstanding, Opheim blocked.
+- HG retrieval-gate Path A attempt — wayback CDX scan of `projects.publicintegrity.org/hiredguns/*` showed ~200 captures spanning 2008-2010, all under "Lobby Disclosure Ranking 2003" framing.
+- Per-state per-question scorecard pages exist on wayback (50 states × `nationwide.aspx?st=XX&display=DRStateNumbers`, 2010-07-06 captures) — Path A 1,900-cell ground truth is retrievable in principle.
+- Cross-source vintage triangulation: wayback page titles, CPI archives roll-up dates, methodology PDF metadata (Firefox print, uninformative), L-N 2024/2025 bibliography refs.
+- Justia historical-coverage probe — Cloudflare TLS-fingerprint blocked curl + WebFetch from both residential Comcast egress and Anthropic egress. User probed manually from a browser; 13-state sample: 2 at 2003 (FL, WA), 9 at 2005-2006, 2 at 2010+.
+
+**Provisional findings**
+
+- **HG vintage = 2003** (statute data late-2002 / early-2003; CPI publication May 15, 2003). The "Q35-Q37 at 2002" detail from `items_HiredGuns.md §6` becomes coherent — prior-year agency self-report in an early-2003 survey, not mixed-vintage drift.
+- **L-N 2024/2025 carries a bibliographic citation error** on HG vintage. Three independent papers cite the methodology as 2007 via the modern `methodology-5/` URL accessed Jan 22, 2024. CPI's tag-vs-survey distinction (clarified by user) is the root cause: methodology page bears a "last updated 2007" stamp (date of Dec 2007 commentary article), grad students copied it as the methodology date. Doesn't impeach L-N's FOCAL framework coding (already factual-audit-clean); does flag that L-N's citation-quality bar has gaps on non-load-bearing details.
+- **Path A retrieval target is real and retrievable** but vintage-bound. Validation requires 2003-vintage statute snapshots feeding v2 cells. Today's cells reflect 2026 statutes; 23 years of statute drift would be measured as projection error.
+- **Justia 2003 coverage is partial and state-specific.** If 13-state sample generalizes, ~7-8 of 50 states would be vintage-exact at 2003. Most are 2005-2006. CPI's own *States Outpace Congress* (Mar 2006) explicitly documents 24 states making disclosure changes between 2003 and 2006 — can't mix 2005-2006 Justia data into a 2003 validation set.
+
+**Decisions made**
+
+- **Defer HG implementation** on this branch. Joins Opheim 1991 as blocked-on-vintage. Mergeable rubric scope contracts 8 → 6: CPI 2015 C11, PRI 2010, Sunlight 2015, Newmark 2017, Newmark 2005, FOCAL 2024.
+- **Defer the cross-cutting `CPI_2007_*` → `CPI_2003_*` rename.** Worth doing as a single sweep when HG implementation resumes alongside 2003-vintage retrieval; not worth touching archived `compendium-source-extracts/` material twice.
+- **FOCAL 2024 is next implementation** on this branch. Plan-set already drafted: `legal_core` → `contact_log` → `openness_timeliness` → `aggregation`, all converging on single `focal_2024.py`. Start with `20260518_focal_2024_legal_core_plan.md`.
+- **HG implementation captured as GH `task` issue** so the deferred-not-deleted state has a discoverable handle. Resurfaces when 2003-vintage retrieval becomes a research line.
+
+**Next steps**
+
+- Next session: read `plans/20260518_focal_2024_legal_core_plan.md`; TDD-implement FOCAL legal_core sub-module against `_ATOMIC_SPEC` declarative table; validate against L-N 2025 Suppl File 1's 1,372-cell weight matrix where legal-core-relevant cells are present. Honest counterfactual on FOCAL's partly-tier YAGNI collapse (binary 0/2 instead of partly-tier) — document over-scoring in module docstring.
+- Future research line (not this branch): 50-state 2003-vintage statute retrieval. Combines Justia 2003 codes (~7-8 states), wayback state portal captures (variable), state law-library archives (uncertain). Unblocks HG + naming-correction sweep + potentially benefits Opheim if 1988-89 coverage extends.
+
+---
+
 ### 2026-05-18 — Newmark 2017 + Newmark 2005 modules shipped
 
 Convo: [`convos/20260518_newmark_modules_shipped.md`](convos/20260518_newmark_modules_shipped.md)
