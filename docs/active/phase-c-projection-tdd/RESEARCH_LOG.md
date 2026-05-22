@@ -40,6 +40,39 @@ The `data/` symlink convention from `skills/use-worktree/SKILL.md` was **skipped
 
 (Newest first.)
 
+### 2026-05-21 — FOCAL 2024 legal-core TDD: descriptors + revolving_door + relationships shipped (12 of 26 items)
+
+Convo: [`convos/20260521_focal_2024_legal_core_tdd.md`](convos/20260521_focal_2024_legal_core_tdd.md)
+Plan: [`plans/20260518_focal_2024_legal_core_plan.md`](plans/20260518_focal_2024_legal_core_plan.md)
+
+Continued from earlier-same-day HG-deferral session. Started FOCAL 2024 implementation per the `legal_core` plan. Shipped descriptors (6 items, single-row binary + typed-IS-NOT-NULL), revolving_door (1 item), and relationships (4 binary + 1 vintage-gated `relationships.0`). Two commits, 42 per-item tests, full projections suite 676 → 718 (+42; ruff clean throughout).
+
+**Topics explored**
+
+- Phase-0 cross-check against the live v2 TSV: 35 legal-core row IDs verified present (no spec-doc-vs-v2 drift).
+- L-N 2025 CSV inspection for the Federal US LDA validation anchor: weighted sum 81, max 182, raw sum 42; matches the plan's 81/180 = 45% target after revolving_door.2 exclusion.
+- Cross-national vs US-state framing: surfaced explicitly mid-session that FOCAL was published as a cross-national framework (28 jurisdictions national-level); the CSV's "United States" row is the **federal LDA**, not any US state. No per-state FOCAL ground truth exists in the world. State-level validation will run via cross-rubric agreement (Plan 4).
+- Newmark 2017 module re-read to confirm the dispatcher pattern + helper signatures. FOCAL's 2-tier (0/2) binary reads, vintage gating, and OR-helper are extensions to that shape.
+- Permission-rule investigation: `uv run pytest` is the MEMORY-noted footgun (loads main's editable install in worktrees); workaround `.venv/bin/python -m pytest` triggers prompts because `Bash(python *)` is prefix-matched and doesn't cover the path-prefixed invocation. Dan added `Bash(.venv/bin/python *)` to the permission list.
+
+**Provisional findings**
+
+- **17th rename baked in (relationships.0)**: the plan's working name `relationships.lobbyist_list_2025` doesn't match L-N's published ID. The CSV uses `relationships.0` with `focal_2024_indicator_id_map = "(new in 2025)"`. Module docstring lists this as rename #17 alongside the 16 from the plan.
+- **Vintage gate semantics**: scope-mismatch raises KeyError, not UNABLE. UNABLE is reserved for data-missing; treating "this item isn't in vintage scope" as data-missing would silently mask aggregator iteration bugs.
+- **OR-helper is module-internal and generic** (`_project_binary_or_2tier(cells, row_ids)`); will be reused for financials.10 via the import-from-newmark path the plan recommends.
+
+**Decisions carried forward**
+
+- All 5 OQ defaults from the legal-core plan (scope.2 cutoffs $1000/5%, scope.3 staff AND-strict, descriptors/relationships.4 partly-tier YAGNI, per-battery subtotals informational only) are in force for subsequent sessions.
+- Sentinel + 2-tier binary return + `_MIN_VINTAGE`-gated KeyError pattern are settled; later batteries inherit.
+
+**Next steps**
+
+- Continue FOCAL legal-core: financials battery (11 items, biggest remaining), scope battery (4 items, all named helpers including the typed Set[enum] reads for scope.1/scope.4), ground-truth loader stub. After legal-core lands, Plan 2 (contact_log, 11 items) is next.
+- Convo for the continuation session: `20260522_focal_2024_legal_core_continued.md` (per-sub-plan granularity; overarching `focal_2024_tdd.md` lands at Plan 4 completion per the plan's "Closing the loop").
+
+---
+
 ### 2026-05-21 — HG vintage finding + deferral; FOCAL is next
 
 Convo: [`convos/20260521_hg_vintage_finding_and_deferral.md`](convos/20260521_hg_vintage_finding_and_deferral.md)
