@@ -40,6 +40,47 @@ The `data/` symlink convention from `skills/use-worktree/SKILL.md` was **skipped
 
 (Newest first.)
 
+### 2026-05-22 — FOCAL 2024 legal-core TDD continued: financials + scope batteries + ground-truth loader shipped (15 of 26 + loader; legal-core sub-plan complete)
+
+Convo: [`convos/20260522_focal_2024_legal_core_continued.md`](convos/20260522_focal_2024_legal_core_continued.md)
+Plan: [`plans/20260518_focal_2024_legal_core_plan.md`](plans/20260518_focal_2024_legal_core_plan.md)
+
+Closed out the FOCAL legal-core sub-plan. Shipped financials (11 items including the AND-3-tier `financials.6` helper and the imported-from-newmark_2017 `financials.10` rescale), scope (4 items via named helpers `_project_focal_scope_1` through `_project_focal_scope_4`), and the per-country ground-truth loader stub against `focal_2025_lacy_nichols_per_country_scores.csv`. Two commits, 112 new tests (74 per-item + 38 ground-truth), full projections suite 718 → 830 + 3 xfailed (Plan-4-deferred per-country aggregates). Ruff clean throughout.
+
+**Topics explored**
+
+- Financials.6 AND-3-tier helper shipped with **UNABLE-on-unknown** semantics rather than the plan's `bool()`-coerce-None pseudocode. Matches `relationships.1`'s principled OR convention from the prior session; silent-coerce would hide extraction holes.
+- Financials.10 imports `project_gifts_actor_agnostic_or` from `newmark_2017` and rescales 0/1 → 0/2 for FOCAL's per-item granularity. Coupling-test regression-guards drift in newmark's helper.
+- Scope.4's spec-doc P/N labels ("limited to influencing legislative changes" / "{face_to_face} only") don't atomize onto the 8-enum `Set[enum]` cell content. Projected parallel to scope.1's set-membership shape (full → 2, non-empty proper subset → 1, empty → 0); documented as known divergence. US LDA scope.4 = 2 sanity-checks the convention against the published anchor.
+- Scope.3 staff-AND vs major-branch precedence: known-FALSE major branch → 0 regardless of staff; all-major-branches TRUE + both staff TRUE → 2 (OQ2 strict); all-major TRUE + any staff FALSE → 1. UNABLE only when an axis is ambiguous between 2 and 1 or between {2,1} and 0.
+- Loader CSV missing-value flavors: 40 `"NA"` cells (L-N "not_assessable", concentrated on non-US scope/openness) + 15 empty cells (parliamentary `timeliness.2` in non-parliamentary jurisdictions) both collapse to `None` in the loader output. Downstream aggregation excludes from numerator AND denominator identically.
+- Indicator-ID convention: loader returns bare IDs (`"financials.1"`); callers add `focal_2024.` prefix for dispatcher comparison. Keeps the loader as a pure CSV reader.
+
+**Provisional findings**
+
+- **US Federal LDA legal-core raw sum = 23** across the 27 legal-core indicators. Verified verbatim against L-N 2025 Suppl Table 5 via 27 parametrized per-indicator tests.
+- **OQ1 cutoffs ($1000 / 5%) hold against US LDA validation.** LDA has $3000 comp + 20% time → both above cutoffs → significant=True → scope.2 = 0, matching published.
+- **No new spec-doc-vs-v2 renames discovered.** All row IDs for the 15 newly-implemented items were present in v2 TSV at session start.
+- **Module's compound-helper surface now consolidated** via `_COMPOUND_DISPATCH` dict (7 entries: `relationships.1`, `financials.6`, `financials.10`, `scope.1`-`scope.4`). Companion plans extend by adding entries; cleaner than the prior inline-if dispatch.
+
+**Decisions made**
+
+- `_project_binary_and_3tier` ships with UNABLE-on-unknown (diverges from plan pseudocode, matches project convention).
+- `_COMPOUND_DISPATCH` dict replaces inline if-chain in `project_focal_2024_item`.
+- Scope.4 set-membership semantics diverge from spec doc P/N labels (documented).
+- Loader returns `int | None` and bare indicator IDs (no module prefix).
+- `FOCAL_2024_LEGAL_CORE_INDICATORS` exported as a public frozenset for companion-plan + Plan-4 introspection.
+
+**Next steps**
+
+- **Plan 2 (FOCAL contact_log):** 11 items. Read [`plans/20260518_focal_2024_contact_log_plan.md`](plans/20260518_focal_2024_contact_log_plan.md) at next session start.
+- **Plan 3 (FOCAL openness + timeliness):** 12 items; practical-axis read pattern. Loader already loads these rows but `FOCAL_2024_LEGAL_CORE_INDICATORS` excludes them.
+- **Plan 4 (FOCAL aggregation):** top-level projector + US LDA federal-validation harness + cross-rubric harness for US states. Closing plan for FOCAL.
+
+Convo for the next session: `20260523_focal_2024_contact_log.md` (or similar — per-sub-plan granularity preserved per the legal-core plan's "Closing the loop").
+
+---
+
 ### 2026-05-21 — FOCAL 2024 legal-core TDD: descriptors + revolving_door + relationships shipped (12 of 26 items)
 
 Convo: [`convos/20260521_focal_2024_legal_core_tdd.md`](convos/20260521_focal_2024_legal_core_tdd.md)
