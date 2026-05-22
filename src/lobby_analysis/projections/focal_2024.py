@@ -142,12 +142,55 @@ _SINGLE_ROW_SPEC: Final[tuple[tuple[str, str, str], ...]] = (
     ("focal_2024.descriptors.4", "lobbyist_reg_form_includes_lobbyist_business_id", _BINARY),
     ("focal_2024.descriptors.5", "lobbyist_reg_form_includes_lobbyist_sector", _TYPED_NOT_NULL),
     ("focal_2024.descriptors.6", "lobbyist_reg_form_includes_employment_type", _BINARY),
+    # Revolving door battery (1 item in scope; revolving_door.2 excluded)
+    ("focal_2024.revolving_door.1", "lobbyist_reg_form_includes_lobbyist_prior_public_offices_held", _BINARY),
+    # Relationships battery (4 binary + 1 vintage-gated)
+    ("focal_2024.relationships.2", "lobbyist_or_principal_reg_form_includes_member_or_sponsor_names", _BINARY),
+    ("focal_2024.relationships.3", "lobbyist_or_principal_reg_form_includes_lobbyist_board_memberships", _BINARY),
+    ("focal_2024.relationships.4", "lobbyist_reg_form_includes_business_associations_with_officials", _BINARY),
+    # relationships.0 (2025-only "Lobbyist list") — also single-row binary, but
+    # vintage-gated via _MIN_VINTAGE below.
+    ("focal_2024.relationships.0", "principal_spending_report_lists_lobbyists_employed", _BINARY),
 )
 
 
 _SPEC_BY_ITEM: Final[dict[str, tuple[str, str]]] = {
     item_id: (row, kind) for item_id, row, kind in _SINGLE_ROW_SPEC
 }
+
+
+# ---------------------------------------------------------------------------
+# Vintage gating
+#
+# Items in this dict are scored only when ``vintage >= _MIN_VINTAGE[item]``.
+# A dispatcher call with a lower vintage raises KeyError ("not in scope for
+# this vintage"). Callers filter IN_SCOPE_ITEMS by vintage before
+# dispatching; the KeyError is a programming-error tripwire rather than a
+# silent skip (which would mask iteration-order bugs in the aggregator).
+# ---------------------------------------------------------------------------
+
+_MIN_VINTAGE: Final[dict[str, int]] = {
+    "focal_2024.relationships.0": 2025,
+}
+
+
+# ---------------------------------------------------------------------------
+# Compound-item helpers
+#
+# relationships.1 reads 2 binary rows under an OR:
+#   lobbyist_spending_report_includes_principal_names
+#   OR lobbyist_reg_form_lists_each_employer_or_principal
+#
+# financials.10 will reuse the same OR-pattern on the gifts/entertainment/
+# transport/lodging row pair (added with the financials battery; per the
+# plan, can also import newmark_2017's ``project_gifts_actor_agnostic_or``
+# and rescale 0/1 -> 0/2).
+# ---------------------------------------------------------------------------
+
+_REL_1_ROWS: Final[tuple[str, str]] = (
+    "lobbyist_spending_report_includes_principal_names",
+    "lobbyist_reg_form_lists_each_employer_or_principal",
+)
 
 
 # ---------------------------------------------------------------------------
@@ -191,13 +234,40 @@ def _project_typed_is_not_null_2tier(
     return 2
 
 
+def _project_binary_or_2tier(
+    cells: dict[str, Any], row_ids: tuple[str, ...]
+) -> int | Literal["unable_to_evaluate"]:
+    """Multi-row binary OR, 2-tier.
+
+    If ANY row's ``legal_availability`` is known TRUE -> 2 (the OR is
+    satisfied regardless of other sides).
+    If ALL rows' values are known FALSE -> 0.
+    Otherwise (at least one side unknown and no known-TRUE rescue) ->
+    ``"unable_to_evaluate"``.
+
+    Used by relationships.1 (principal-names OR lists-each-employer) and
+    inline-reusable for financials.10 (gifts actor-agnostic OR — though
+    that one will also be cross-checked against newmark_2017's
+    ``project_gifts_actor_agnostic_or`` when the financials battery lands).
+    """
+    values: list[bool | None] = []
+    for row_id in row_ids:
+        cell = cells.get(row_id)
+        values.append(cell.get(LEGAL_AXIS) if cell is not None else None)
+    if any(v is True for v in values):
+        return 2
+    if all(v is False for v in values):
+        return 0
+    return UNABLE_TO_EVALUATE
+
+
 # ---------------------------------------------------------------------------
 # Per-item dispatcher
 # ---------------------------------------------------------------------------
 
 
 def project_focal_2024_item(
-    item_id: str, cells: dict[str, Any]
+    item_id: str, cells: dict[str, Any], vintage: int = 2024
 ) -> int | Literal["unable_to_evaluate"]:
     """Project one FOCAL 2024 atomic item from v2 compendium cells.
 
@@ -207,14 +277,25 @@ def project_focal_2024_item(
       compound helper),
     * excluded items (``focal_2024.revolving_door.2``),
     * vintage-gated items called outside their vintage window
-      (e.g. ``focal_2024.relationships.0`` for ``vintage=2024``;
-      dispatcher signature gains a ``vintage`` arg when the relationships
-      battery lands).
+      (e.g. ``focal_2024.relationships.0`` for ``vintage=2024``).
 
     Compound helpers (scope.*, financials.6, financials.10) are dispatched
     inline as their respective batteries land.
     """
-    # Compound helpers will be inserted here as later batteries land.
+    # Vintage gate: items registered in _MIN_VINTAGE are scored only when
+    # vintage >= their minimum. A pre-min-vintage call is a programming
+    # error in the caller's IN_SCOPE_ITEMS iteration, not a data-missing
+    # condition — raise rather than return UNABLE_TO_EVALUATE.
+    min_v = _MIN_VINTAGE.get(item_id)
+    if min_v is not None and vintage < min_v:
+        raise KeyError(
+            f"{item_id!r} is gated by min_vintage={min_v}; called with "
+            f"vintage={vintage}"
+        )
+    # Compound helpers: relationships.1 reads an OR over 2 rows; scope.*,
+    # financials.6, financials.10 will be added as later batteries land.
+    if item_id == "focal_2024.relationships.1":
+        return _project_binary_or_2tier(cells, _REL_1_ROWS)
     row, kind = _SPEC_BY_ITEM[item_id]  # KeyError on unknown
     if kind == _BINARY:
         return _project_binary_2tier(cells, row)

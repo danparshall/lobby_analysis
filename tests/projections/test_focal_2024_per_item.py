@@ -210,6 +210,210 @@ def test_descriptors_6_contract_type_unable_when_row_missing():
 
 
 # ---------------------------------------------------------------------------
+# Revolving door battery — 1 item in scope (binary)
+#
+# revolving_door.1 -> lobbyist_reg_form_includes_lobbyist_prior_public_offices_held
+# revolving_door.2 is OUT (excluded by FOCAL-1 user-decision 2026-05-13).
+# ---------------------------------------------------------------------------
+
+
+def test_revolving_door_1_two_when_true():
+    cells = {
+        "lobbyist_reg_form_includes_lobbyist_prior_public_offices_held": _binary_cell(
+            True
+        )
+    }
+    assert project_focal_2024_item("focal_2024.revolving_door.1", cells) == 2
+
+
+def test_revolving_door_1_zero_when_false():
+    cells = {
+        "lobbyist_reg_form_includes_lobbyist_prior_public_offices_held": _binary_cell(
+            False
+        )
+    }
+    assert project_focal_2024_item("focal_2024.revolving_door.1", cells) == 0
+
+
+def test_revolving_door_1_unable_when_row_missing():
+    assert (
+        project_focal_2024_item("focal_2024.revolving_door.1", {})
+        == UNABLE_TO_EVALUATE
+    )
+
+
+# ---------------------------------------------------------------------------
+# Relationships battery — 4 binary items + 1 vintage-gated (relationships.0)
+#
+# relationships.0 (2025-only, "Lobbyist list") -> principal_spending_report_lists_lobbyists_employed
+#   Gated by vintage >= 2025. For vintage=2024 the dispatcher raises KeyError
+#   — the item is not in 2024-vintage scope at all (vs UNABLE_TO_EVALUATE,
+#   which is reserved for "data missing"). Caller filters IN_SCOPE_ITEMS by
+#   vintage before dispatching.
+#
+# relationships.1 (client list, binary OR over 2 rows) — first OR-helper:
+#   lobbyist_spending_report_includes_principal_names
+#   OR lobbyist_reg_form_lists_each_employer_or_principal
+#
+# relationships.2/.3/.4 single binary rows.
+# ---------------------------------------------------------------------------
+
+
+# --- relationships.0 (2025-only, vintage-gated) ---
+
+
+def test_relationships_0_keyerror_for_2024_vintage():
+    """Vintage 2024 doesn't include the 2025-only "Lobbyist list" indicator.
+    Dispatch raises KeyError (semantically "not in scope for this vintage").
+    """
+    with pytest.raises(KeyError):
+        project_focal_2024_item("focal_2024.relationships.0", {}, vintage=2024)
+
+
+def test_relationships_0_two_when_true_in_2025_vintage():
+    cells = {
+        "principal_spending_report_lists_lobbyists_employed": _binary_cell(True)
+    }
+    assert (
+        project_focal_2024_item(
+            "focal_2024.relationships.0", cells, vintage=2025
+        )
+        == 2
+    )
+
+
+def test_relationships_0_zero_when_false_in_2025_vintage():
+    cells = {
+        "principal_spending_report_lists_lobbyists_employed": _binary_cell(False)
+    }
+    assert (
+        project_focal_2024_item(
+            "focal_2024.relationships.0", cells, vintage=2025
+        )
+        == 0
+    )
+
+
+def test_relationships_0_unable_when_row_missing_in_2025_vintage():
+    assert (
+        project_focal_2024_item("focal_2024.relationships.0", {}, vintage=2025)
+        == UNABLE_TO_EVALUATE
+    )
+
+
+# --- relationships.1 (binary OR over 2 rows) ---
+
+
+_REL1_SPEND = "lobbyist_spending_report_includes_principal_names"
+_REL1_REGFORM = "lobbyist_reg_form_lists_each_employer_or_principal"
+
+
+def test_relationships_1_two_when_only_spending_side_true():
+    cells = {
+        _REL1_SPEND: _binary_cell(True),
+        _REL1_REGFORM: _binary_cell(False),
+    }
+    assert project_focal_2024_item("focal_2024.relationships.1", cells) == 2
+
+
+def test_relationships_1_two_when_only_regform_side_true():
+    cells = {
+        _REL1_SPEND: _binary_cell(False),
+        _REL1_REGFORM: _binary_cell(True),
+    }
+    assert project_focal_2024_item("focal_2024.relationships.1", cells) == 2
+
+
+def test_relationships_1_two_when_both_sides_true():
+    cells = {
+        _REL1_SPEND: _binary_cell(True),
+        _REL1_REGFORM: _binary_cell(True),
+    }
+    assert project_focal_2024_item("focal_2024.relationships.1", cells) == 2
+
+
+def test_relationships_1_zero_when_both_sides_false():
+    cells = {
+        _REL1_SPEND: _binary_cell(False),
+        _REL1_REGFORM: _binary_cell(False),
+    }
+    assert project_focal_2024_item("focal_2024.relationships.1", cells) == 0
+
+
+def test_relationships_1_unable_when_both_rows_missing():
+    assert (
+        project_focal_2024_item("focal_2024.relationships.1", {})
+        == UNABLE_TO_EVALUATE
+    )
+
+
+def test_relationships_1_two_when_one_side_true_other_missing():
+    """A known TRUE on either side wins the OR."""
+    cells = {_REL1_SPEND: _binary_cell(True)}
+    assert project_focal_2024_item("focal_2024.relationships.1", cells) == 2
+
+
+def test_relationships_1_unable_when_one_side_false_other_missing():
+    """A False on one side with the other unknown can't rule out
+    disclosure — return unable, not coerce to 0."""
+    cells = {_REL1_SPEND: _binary_cell(False)}
+    assert (
+        project_focal_2024_item("focal_2024.relationships.1", cells)
+        == UNABLE_TO_EVALUATE
+    )
+
+
+# --- relationships.2/.3/.4 (single binary rows) ---
+
+
+def test_relationships_2_member_sponsor_names_two_when_true():
+    cells = {
+        "lobbyist_or_principal_reg_form_includes_member_or_sponsor_names": _binary_cell(
+            True
+        )
+    }
+    assert project_focal_2024_item("focal_2024.relationships.2", cells) == 2
+
+
+def test_relationships_2_member_sponsor_names_zero_when_false():
+    cells = {
+        "lobbyist_or_principal_reg_form_includes_member_or_sponsor_names": _binary_cell(
+            False
+        )
+    }
+    assert project_focal_2024_item("focal_2024.relationships.2", cells) == 0
+
+
+def test_relationships_3_board_memberships_two_when_true():
+    cells = {
+        "lobbyist_or_principal_reg_form_includes_lobbyist_board_memberships": _binary_cell(
+            True
+        )
+    }
+    assert project_focal_2024_item("focal_2024.relationships.3", cells) == 2
+
+
+def test_relationships_4_business_associations_two_when_true():
+    """relationships.4 reads the binary cell; FOCAL "partly" sub-tier
+    (Y/N-only vs with-detail) is collapsed per OQ4 YAGNI."""
+    cells = {
+        "lobbyist_reg_form_includes_business_associations_with_officials": _binary_cell(
+            True
+        )
+    }
+    assert project_focal_2024_item("focal_2024.relationships.4", cells) == 2
+
+
+def test_relationships_4_business_associations_zero_when_false():
+    cells = {
+        "lobbyist_reg_form_includes_business_associations_with_officials": _binary_cell(
+            False
+        )
+    }
+    assert project_focal_2024_item("focal_2024.relationships.4", cells) == 0
+
+
+# ---------------------------------------------------------------------------
 # Excluded items regression guard
 # ---------------------------------------------------------------------------
 
