@@ -40,6 +40,75 @@ The `data/` symlink convention from `skills/use-worktree/SKILL.md` was **skipped
 
 (Newest first.)
 
+### 2026-05-22 — FOCAL 2024 contact_log TDD: 11 items shipped (Plan 2 of 4 complete)
+
+Convo: [`convos/20260522_focal_2024_contact_log.md`](convos/20260522_focal_2024_contact_log.md)
+Plan: [`plans/20260518_focal_2024_contact_log_plan.md`](plans/20260518_focal_2024_contact_log_plan.md)
+
+Closed out Plan 2 of the FOCAL 4-plan set in one session. Shipped the 11
+contact_log items (9 binary, 1 typed_is_not_null for contact_log.6
+communication_form enum, 1 OR-pair for contact_log.11 bill-id α-split)
+by extending `_SINGLE_ROW_SPEC` (10 entries) and `_COMPOUND_DISPATCH` (1
+entry, reusing `_project_binary_or_2tier`). Plus
+`FOCAL_2024_CONTACT_LOG_INDICATORS` public frozenset and ground-truth
+test extension. 58 new tests (40 per-item + 18 ground-truth); full
+projections suite 830 → 888 + 3 xfailed. Ruff clean.
+
+**Topics explored**
+
+- **Plan-vs-shipped architecture mismatch verified superficial.** Plan was
+  drafted before legal-core implementation; it described
+  `_ATOMIC_SPEC.update({...})` with helper-name strings that don't exist
+  in the shipped module. Every Plan 2 element maps cleanly to the
+  shipped `_SPEC_BY_ITEM` + `_COMPOUND_DISPATCH` shape — no architectural
+  decision required, just naming translation.
+- **All 3 plan Open Questions resolve trivially** to shipped patterns:
+  partly-tier over-scoring accepted (Plan 4 absorbs), OR uses existing
+  `_project_binary_or_2tier`, contact_log.6 uses existing
+  `_TYPED_NOT_NULL` kind (no new helper).
+- **Phase 0 cross-check clean.** All 12 v2 rows (11 items + α-pair
+  second row) present in TSV with verbatim names; 0 renames needed.
+- **OR-helper test parity with relationships.1.** 7 cases (4 truth-table
+  + 3 partial-missing) instead of plan's 4-case grid — partial-missing
+  semantics (T+missing → 2; F+missing → UNABLE) are load-bearing for
+  downstream extraction reliability.
+
+**Provisional findings**
+
+- **Federal US LDA contact_log raw values = `[1,0,1,0,0,0,0,0,1,0,1]`,
+  raw sum 4 / weighted 10** — verified verbatim via 11 parameterized
+  per-indicator tests against L-N 2025 per-country CSV.
+- **Partly-tier over-scoring quantified.** Four indicators publish raw=1
+  ("partly" tier): contact_log.1, .3, .9, .11. Binary projection
+  over-scores each by 1 raw point. Cumulative US LDA over-scoring on
+  contact_log subtotal: +4 raw / +10 weighted (projected 20 vs published
+  10). Documented in module docstring + ground-truth test docstrings.
+- **`_project_binary_or_2tier` reuse confirmed** as the FOCAL OR
+  convention. Now used by relationships.1 + contact_log.11; same
+  UNABLE-on-partial-missing semantics enforced by both.
+
+**Decisions made**
+
+- All 3 plan Open Questions defaulted to recommended resolutions.
+- `FOCAL_2024_CONTACT_LOG_INDICATORS` exported as public frozenset
+  (disjoint from `FOCAL_2024_LEGAL_CORE_INDICATORS`, regression-guarded).
+- Ground-truth test section headers cleaned up to reflect new structure
+  (legal-core presence + contact_log block + Plan 4 xfails).
+
+**Next steps**
+
+- **Plan 3 (FOCAL openness + timeliness):** 12 items; **practical-axis
+  read pattern enters this plan** (openness items typically read
+  `practical_availability`, not `legal_availability` — first FOCAL plan
+  to do so). Read [`plans/20260518_focal_2024_openness_timeliness_plan.md`](plans/20260518_focal_2024_openness_timeliness_plan.md) at next session start.
+- **Plan 4 (FOCAL aggregation):** top-level projector + US LDA validation
+  harness with ±15 raw tolerance absorbing contact_log's +10 weighted
+  over-scoring (plus openness/timeliness contributions).
+
+Convo for the next session: `<YYYYMMDD>_focal_2024_openness_timeliness.md`.
+
+---
+
 ### 2026-05-22 — FOCAL 2024 legal-core TDD continued: financials + scope batteries + ground-truth loader shipped (15 of 26 + loader; legal-core sub-plan complete)
 
 Convo: [`convos/20260522_focal_2024_legal_core_continued.md`](convos/20260522_focal_2024_legal_core_continued.md)
