@@ -102,7 +102,9 @@ rename is also new this session):
 
 from __future__ import annotations
 
+import csv
 from decimal import Decimal, InvalidOperation
+from pathlib import Path
 from typing import Any, Final, Literal
 
 from lobby_analysis.projections.newmark_2017 import (
@@ -623,3 +625,84 @@ def project_focal_2024_item(
     if kind == _TYPED_NOT_NULL:
         return _project_typed_is_not_null_2tier(cells, row)
     raise AssertionError(f"unknown spec kind {kind!r} for {item_id!r}")
+
+
+# ---------------------------------------------------------------------------
+# Ground-truth loader
+#
+# Reads the Lacy-Nichols 2025 per-country scores CSV
+# (``docs/historical/compendium-source-extracts/results/focal_2025_lacy_nichols_per_country_scores.csv``)
+# and returns ``{jurisdiction: {indicator_id: raw_score}}``. The 27 FOCAL
+# legal-core indicator IDs are listed in ``FOCAL_2024_LEGAL_CORE_INDICATORS``;
+# companion plans (contact_log, openness/timeliness) extend the indicator
+# set as their batteries land.
+#
+# Federal_US LDA (CSV row "United States") is the load-bearing per-item
+# validation anchor; other 27 jurisdictions are reference data.
+# ---------------------------------------------------------------------------
+
+
+#: 27 indicator IDs in this plan's legal-core scope (4 scope + 6 descriptors
+#: + 1 revolving_door + 5 relationships [includes 2025-only relationships.0]
+#: + 11 financials). IDs are bare (no ``focal_2024.`` prefix) — matches
+#: CSV wire format. Companion plans extend by adding their indicators.
+FOCAL_2024_LEGAL_CORE_INDICATORS: Final[frozenset[str]] = frozenset({
+    "scope.1", "scope.2", "scope.3", "scope.4",
+    "descriptors.1", "descriptors.2", "descriptors.3",
+    "descriptors.4", "descriptors.5", "descriptors.6",
+    "revolving_door.1",
+    "relationships.0", "relationships.1",
+    "relationships.2", "relationships.3", "relationships.4",
+    "financials.1", "financials.2", "financials.3",
+    "financials.4", "financials.5", "financials.6",
+    "financials.7", "financials.8", "financials.9",
+    "financials.10", "financials.11",
+})
+
+_GROUND_TRUTH_CSV_PARTS: Final[tuple[str, ...]] = (
+    "docs",
+    "historical",
+    "compendium-source-extracts",
+    "results",
+    "focal_2025_lacy_nichols_per_country_scores.csv",
+)
+
+
+def load_focal_2024_per_country_reference(
+    repo_root: Path,
+) -> dict[str, dict[str, int | None]]:
+    """Load per-jurisdiction per-indicator published raw scores.
+
+    Returns ``{jurisdiction_name: {indicator_id: raw_score | None}}`` where
+    ``indicator_id`` is the verbatim CSV value (e.g. ``"financials.1"``,
+    no module prefix), and ``raw_score`` is the published integer in
+    ``{0, 1, 2}``. A value of ``None`` represents L-N 2025's
+    "not_assessable" state (CSV ``raw_score == "NA"``); callers that
+    aggregate must exclude these cells from both the numerator and the
+    max-sum denominator. Callers comparing against the module's
+    ``focal_2024.*`` dispatcher keys must add the prefix themselves.
+
+    Includes all 28 L-N 2025 jurisdictions and all CSV indicator IDs
+    (legal-core + timeliness + openness + contact_log). Per the plan's
+    Phase C scope, the legal-core subset
+    (``FOCAL_2024_LEGAL_CORE_INDICATORS``) is the load-bearing slice;
+    companion plans validate their own slices. The US row carries no
+    ``None`` cells in legal-core. Across the full CSV the missing-value
+    cells split into 40 ``"NA"`` cells (the L-N "not_assessable" state,
+    concentrated on non-US scope.2/scope.3/scope.4) and 15 empty-string
+    cells (parliamentary-system observable ``timeliness.2`` in non-
+    parliamentary jurisdictions). Both flavors collapse to ``None`` for
+    callers; the source distinction is documented but not preserved.
+    """
+    csv_path = repo_root.joinpath(*_GROUND_TRUTH_CSV_PARTS)
+    reference: dict[str, dict[str, int | None]] = {}
+    with csv_path.open() as f:
+        for row in csv.DictReader(f):
+            jurisdiction = row["country"]
+            indicator_id = row["indicator_id"]
+            raw = row["raw_score"]
+            raw_score: int | None = (
+                None if raw == "NA" or raw.strip() == "" else int(raw)
+            )
+            reference.setdefault(jurisdiction, {})[indicator_id] = raw_score
+    return reference
