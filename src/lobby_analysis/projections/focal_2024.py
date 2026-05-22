@@ -102,7 +102,13 @@ rename is also new this session):
 
 from __future__ import annotations
 
+from decimal import Decimal, InvalidOperation
 from typing import Any, Final, Literal
+
+from lobby_analysis.projections.newmark_2017 import (
+    UNABLE_TO_EVALUATE as _NEWMARK_UNABLE,
+    project_gifts_actor_agnostic_or as _newmark_gifts_or,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -151,6 +157,21 @@ _SINGLE_ROW_SPEC: Final[tuple[tuple[str, str, str], ...]] = (
     # relationships.0 (2025-only "Lobbyist list") — also single-row binary, but
     # vintage-gated via _MIN_VINTAGE below.
     ("focal_2024.relationships.0", "principal_spending_report_lists_lobbyists_employed", _BINARY),
+    # Financials battery (11 items; 8 single-row + 3 compound).
+    # financials.6, .10 are compound helpers dispatched out-of-table below.
+    ("focal_2024.financials.1", "lobbyist_spending_report_includes_total_compensation", _BINARY),
+    ("focal_2024.financials.2", "lobbyist_spending_report_includes_compensation_broken_down_by_payer", _BINARY),
+    ("focal_2024.financials.3", "consultant_lobbyist_report_includes_income_by_source_type", _TYPED_NOT_NULL),
+    ("focal_2024.financials.4", "lobbyist_or_principal_spending_report_includes_lobbyist_count_total_and_FTE", _TYPED_NOT_NULL),
+    ("focal_2024.financials.5", "lobbyist_or_principal_spending_report_includes_time_spent_on_lobbying", _TYPED_NOT_NULL),
+    # financials.7 reuses the same v2 row as descriptors.6
+    # (lobbyist_reg_form_includes_employment_type). Binary read on a binary
+    # cell collapses the spec doc's "IS NOT NULL" framing to the binary
+    # value (FALSE → 0; TRUE → 2). The cell-share regression test pins this.
+    ("focal_2024.financials.7", "lobbyist_reg_form_includes_employment_type", _BINARY),
+    ("focal_2024.financials.8", "lobbyist_spending_report_includes_expenditure_per_issue", _BINARY),
+    ("focal_2024.financials.9", "lobbyist_or_principal_spending_report_includes_trade_association_dues_or_sponsorship", _BINARY),
+    ("focal_2024.financials.11", "lobbyist_spending_report_includes_campaign_contributions", _BINARY),
 )
 
 
@@ -191,6 +212,73 @@ _REL_1_ROWS: Final[tuple[str, str]] = (
     "lobbyist_spending_report_includes_principal_names",
     "lobbyist_reg_form_lists_each_employer_or_principal",
 )
+
+#: financials.6 reads both actor-side total-expenditures rows under an AND
+#: (lobbyist-side ∧ principal-side). 3-tier semantics: both TRUE → 2,
+#: exactly one TRUE → 1, both FALSE → 0, any unknown → UNABLE_TO_EVALUATE.
+_FIN_6_ROWS: Final[tuple[str, str]] = (
+    "lobbyist_spending_report_includes_total_expenditures",
+    "principal_spending_report_includes_total_expenditures",
+)
+
+
+# ---------------------------------------------------------------------------
+# Scope battery constants
+#
+# scope.1 / scope.4 set-membership full sets — extracted from FOCAL paper
+# Table 3 / Suppl File 1. The 9 organizational actor types and 8 activity
+# types are FOCAL-distinctive enumerations carried by the v2 cells.
+#
+# scope.2 calibration cutoffs (OQ1 defaults): $1000 / 5% time. Module-level
+# constants overridable per-test via the helper's keyword args.
+# ---------------------------------------------------------------------------
+
+_SCOPE_1_FULL_SET: Final[frozenset[str]] = frozenset({
+    "prof_consultant",
+    "inhouse_company",
+    "inhouse_org",
+    "prof_consultancy",
+    "law_firm",
+    "think_tank",
+    "research_institution",
+    "public_entity",
+    "govt_agency_employee",
+})
+
+_SCOPE_4_FULL_SET: Final[frozenset[str]] = frozenset({
+    "oral",
+    "written",
+    "electronic",
+    "virtual",
+    "meeting_organizing",
+    "events",
+    "phone_calls",
+    "emails",
+})
+
+#: scope.2 calibration defaults (OQ1). "Significant threshold" boundary in
+#: FOCAL paper line 1206-1208 is scorer-judgment. Defaults chosen to make
+#: US LDA's published scope.2 = 0 hold (US has $3000 comp + 20% time —
+#: both above these cutoffs).
+SCOPE_2_LOW_DOLLAR_CUTOFF: Final[Decimal] = Decimal("1000")
+SCOPE_2_LOW_TIME_CUTOFF: Final[Decimal] = Decimal("5")
+
+_SCOPE_2_COMP_ROW: Final[str] = "lobbyist_registration_threshold_compensation_dollars"
+_SCOPE_2_EXP_ROW: Final[str] = "lobbyist_registration_threshold_expenditure_dollars"
+_SCOPE_2_TIME_ROW: Final[str] = "lobbyist_registration_threshold_time_percent"
+
+_SCOPE_3_MAJOR_BRANCH_ROWS: Final[tuple[str, ...]] = (
+    "def_target_legislative_branch",
+    "def_target_executive_agency",
+    "def_target_governors_office",
+)
+_SCOPE_3_STAFF_ROWS: Final[tuple[str, str]] = (
+    "def_target_legislative_staff",
+    "def_target_executive_staff",
+)
+
+_SCOPE_1_ROW: Final[str] = "def_lobbyist_actor_types"
+_SCOPE_4_ROW: Final[str] = "def_lobbying_activity_types"
 
 
 # ---------------------------------------------------------------------------
@@ -261,9 +349,247 @@ def _project_binary_or_2tier(
     return UNABLE_TO_EVALUATE
 
 
+def _project_binary_and_3tier(
+    cells: dict[str, Any], row_ids: tuple[str, ...]
+) -> int | Literal["unable_to_evaluate"]:
+    """Multi-row binary AND, 3-tier.
+
+    Returns:
+        2 — when ALL rows are known TRUE.
+        1 — when at least one is known TRUE and at least one is known FALSE
+            (full set is known, but not all TRUE — "partly").
+        0 — when ALL rows are known FALSE.
+        ``"unable_to_evaluate"`` — when any row is missing or has axis None
+            and the answer cannot be determined from the known values alone.
+
+    Used by financials.6 (lobbyist-side ∧ principal-side total expenditures).
+    """
+    values: list[bool | None] = []
+    for row_id in row_ids:
+        cell = cells.get(row_id)
+        values.append(cell.get(LEGAL_AXIS) if cell is not None else None)
+    if any(v is None for v in values):
+        return UNABLE_TO_EVALUATE
+    if all(v is True for v in values):
+        return 2
+    if any(v is True for v in values):
+        return 1
+    return 0
+
+
+def _project_financials_10_from_newmark(
+    cells: dict[str, Any],
+) -> int | Literal["unable_to_evaluate"]:
+    """financials.10 (gifts/expenditures benefiting officials).
+
+    Imports ``project_gifts_actor_agnostic_or`` from ``newmark_2017`` (which
+    returns 0/1 on its actor-agnostic OR over the lobbyist-side + principal-
+    side gifts rows) and rescales to FOCAL's per-item 0/2 granularity.
+    UNABLE_TO_EVALUATE passes through unchanged.
+
+    The import couples this module to ``newmark_2017``'s helper stability —
+    a `test_financials_10_matches_newmark_2017_helper_rescaled` regression
+    test surfaces drift if newmark's semantics change.
+    """
+    result = _newmark_gifts_or(cells)
+    if result == _NEWMARK_UNABLE:
+        return UNABLE_TO_EVALUATE
+    return result * 2  # 0 → 0; 1 → 2
+
+
+# ---------------------------------------------------------------------------
+# Scope battery helpers
+# ---------------------------------------------------------------------------
+
+
+def _project_set_membership_3tier(
+    cells: dict[str, Any],
+    row_id: str,
+    full_set: frozenset[str],
+    partly_predicate: Any,
+) -> int | Literal["unable_to_evaluate"]:
+    """Generic 3-tier set-membership over a typed Set[enum] cell.
+
+    full_set match -> 2; partly_predicate(cell) -> 1; else -> 0.
+    Row absent or axis None -> ``"unable_to_evaluate"``.
+
+    ``partly_predicate`` receives the cell's frozen set value (after
+    coercion from list/set to frozenset). Callers supply the predicate
+    that captures the rubric's "partly" semantics for the specific battery
+    (e.g. scope.1 requires ``"prof_consultant" in cell``).
+    """
+    if row_id not in cells:
+        return UNABLE_TO_EVALUATE
+    raw = cells[row_id].get(LEGAL_AXIS)
+    if raw is None:
+        return UNABLE_TO_EVALUATE
+    cell_set = frozenset(raw)
+    if cell_set == full_set:
+        return 2
+    if partly_predicate(cell_set):
+        return 1
+    return 0
+
+
+def _project_focal_scope_1(
+    cells: dict[str, Any],
+) -> int | Literal["unable_to_evaluate"]:
+    """scope.1 — lobbyist actor types set-membership.
+
+    Full 9-set → 2; ``"prof_consultant"`` ∈ cell AND cell ≠ full → 1
+    (FOCAL "other exclusions"); ``cell == {"prof_consultant"}`` only → 0
+    (FOCAL "only consultant lobbyists"); empty or narrower → 0.
+    """
+    return _project_set_membership_3tier(
+        cells,
+        _SCOPE_1_ROW,
+        _SCOPE_1_FULL_SET,
+        partly_predicate=lambda s: "prof_consultant" in s and s != frozenset({"prof_consultant"}),
+    )
+
+
+def _project_focal_scope_4(
+    cells: dict[str, Any],
+) -> int | Literal["unable_to_evaluate"]:
+    """scope.4 — lobbying activity types set-membership.
+
+    Full 8-set → 2; non-empty proper subset → 1; empty → 0.
+
+    NOTE: FOCAL spec doc labels partly = "limited to influencing legislative
+    changes" and no = "{face_to_face} only". Neither atomizes onto the
+    8-enum ``Set[enum{oral, written, electronic, virtual, meeting_organizing,
+    events, phone_calls, emails}]`` cell content (no ``face_to_face``
+    enum bit, no ``legislative_changes_only`` flag). Module projects scope.4
+    parallel to scope.1's set-membership shape — full → 2, non-empty proper
+    subset → 1, empty → 0 — as the cleanest atomization of the available
+    cell data. Documented as a known divergence; US LDA scope.4 = 2 (full
+    set) sanity-checks the convention against the published anchor.
+    """
+    return _project_set_membership_3tier(
+        cells,
+        _SCOPE_4_ROW,
+        _SCOPE_4_FULL_SET,
+        partly_predicate=lambda s: len(s) > 0,
+    )
+
+
+def _coerce_threshold_decimal(raw: Any) -> Decimal | None:
+    """Coerce a typed-cell threshold value to ``Decimal``.
+
+    Accepts ``Decimal``, ``int``, ``float``, or a numeric string. Returns
+    None for None or empty string. Raises ``InvalidOperation`` on a
+    non-numeric string (a contract-violation in the cell — bubble up
+    rather than silently coerce to 0).
+    """
+    if raw is None or raw == "":
+        return None
+    if isinstance(raw, Decimal):
+        return raw
+    if isinstance(raw, (int, float)):
+        return Decimal(str(raw))
+    return Decimal(str(raw))
+
+
+def _project_focal_scope_2(
+    cells: dict[str, Any],
+    low_dollar_cutoff: Decimal = SCOPE_2_LOW_DOLLAR_CUTOFF,
+    low_time_cutoff: Decimal = SCOPE_2_LOW_TIME_CUTOFF,
+) -> int | Literal["unable_to_evaluate"]:
+    """scope.2 — no/low financial or time threshold for registration.
+
+    3-tier calibrated read:
+        any threshold > cutoff (significant)         → 0 (no)
+        any threshold present but none significant   → 1 (partly)
+        no thresholds (all three None)               → 2 (yes — anyone must register)
+
+    All three threshold rows must be present in ``cells`` (with axis value
+    None or a value) for projection — if any row is row-absent we cannot
+    distinguish "law specifies no threshold" from "we haven't extracted the
+    threshold yet". The 3-cell pattern is the canonical 5-rubric-confirmed
+    threshold-cell family; row-absent on any → UNABLE_TO_EVALUATE.
+    """
+    required = (_SCOPE_2_COMP_ROW, _SCOPE_2_EXP_ROW, _SCOPE_2_TIME_ROW)
+    for row in required:
+        if row not in cells:
+            return UNABLE_TO_EVALUATE
+    try:
+        comp = _coerce_threshold_decimal(cells[_SCOPE_2_COMP_ROW].get(LEGAL_AXIS))
+        exp = _coerce_threshold_decimal(cells[_SCOPE_2_EXP_ROW].get(LEGAL_AXIS))
+        time = _coerce_threshold_decimal(cells[_SCOPE_2_TIME_ROW].get(LEGAL_AXIS))
+    except InvalidOperation:
+        # Non-numeric threshold value is a cell-contract violation; surface
+        # as UNABLE rather than silently coerce.
+        return UNABLE_TO_EVALUATE
+    any_threshold = any(t is not None for t in (comp, exp, time))
+    if not any_threshold:
+        return 2
+    significant = (
+        (comp is not None and comp > low_dollar_cutoff)
+        or (exp is not None and exp > low_dollar_cutoff)
+        or (time is not None and time > low_time_cutoff)
+    )
+    if significant:
+        return 0
+    return 1
+
+
+def _project_focal_scope_3(
+    cells: dict[str, Any],
+) -> int | Literal["unable_to_evaluate"]:
+    """scope.3 — major-branch AND with staff-AND sub-projection (OQ2 strict).
+
+    Major branches in scope (legislative ∧ executive ∧ governor) determine
+    the top-level tier: if any major branch is FALSE → 0 (regardless of
+    staff). If any major-branch cell is missing → UNABLE (can't determine
+    top tier).
+
+    Once major branches are all TRUE, the staff cells discriminate between
+    2 (yes — all targets including staff) and 1 (partly — staff excluded).
+    OQ2 strict-AND: BOTH ``def_target_legislative_staff`` AND
+    ``def_target_executive_staff`` must be TRUE for ``staff_in_scope=True``.
+
+    Staff-cell-missing only causes UNABLE when the answer is still
+    ambiguous between 2 and 1 — i.e. when all major branches are TRUE.
+    If a major branch is already determined FALSE, the answer is 0 and
+    staff-cell-missing doesn't affect it.
+    """
+    major_vals: list[bool | None] = []
+    for row in _SCOPE_3_MAJOR_BRANCH_ROWS:
+        cell = cells.get(row)
+        major_vals.append(cell.get(LEGAL_AXIS) if cell is not None else None)
+    # If any major branch is known FALSE → 0; staff cells irrelevant.
+    if any(v is False for v in major_vals):
+        return 0
+    # All known TRUE so far — but if any is None, we can't decide between
+    # 0 (some branch FALSE) and {1, 2} (all branches TRUE).
+    if any(v is None for v in major_vals):
+        return UNABLE_TO_EVALUATE
+    # All major branches TRUE: read the staff cells.
+    staff_vals: list[bool | None] = []
+    for row in _SCOPE_3_STAFF_ROWS:
+        cell = cells.get(row)
+        staff_vals.append(cell.get(LEGAL_AXIS) if cell is not None else None)
+    if any(v is None for v in staff_vals):
+        return UNABLE_TO_EVALUATE
+    if all(v is True for v in staff_vals):
+        return 2
+    return 1
+
+
 # ---------------------------------------------------------------------------
 # Per-item dispatcher
 # ---------------------------------------------------------------------------
+
+
+_COMPOUND_DISPATCH: Final[dict[str, Any]] = {
+    "focal_2024.relationships.1": lambda cells: _project_binary_or_2tier(cells, _REL_1_ROWS),
+    "focal_2024.financials.6": lambda cells: _project_binary_and_3tier(cells, _FIN_6_ROWS),
+    "focal_2024.financials.10": _project_financials_10_from_newmark,
+    "focal_2024.scope.1": _project_focal_scope_1,
+    "focal_2024.scope.2": _project_focal_scope_2,
+    "focal_2024.scope.3": _project_focal_scope_3,
+    "focal_2024.scope.4": _project_focal_scope_4,
+}
 
 
 def project_focal_2024_item(
@@ -278,9 +604,6 @@ def project_focal_2024_item(
     * excluded items (``focal_2024.revolving_door.2``),
     * vintage-gated items called outside their vintage window
       (e.g. ``focal_2024.relationships.0`` for ``vintage=2024``).
-
-    Compound helpers (scope.*, financials.6, financials.10) are dispatched
-    inline as their respective batteries land.
     """
     # Vintage gate: items registered in _MIN_VINTAGE are scored only when
     # vintage >= their minimum. A pre-min-vintage call is a programming
@@ -292,10 +615,8 @@ def project_focal_2024_item(
             f"{item_id!r} is gated by min_vintage={min_v}; called with "
             f"vintage={vintage}"
         )
-    # Compound helpers: relationships.1 reads an OR over 2 rows; scope.*,
-    # financials.6, financials.10 will be added as later batteries land.
-    if item_id == "focal_2024.relationships.1":
-        return _project_binary_or_2tier(cells, _REL_1_ROWS)
+    if item_id in _COMPOUND_DISPATCH:
+        return _COMPOUND_DISPATCH[item_id](cells)
     row, kind = _SPEC_BY_ITEM[item_id]  # KeyError on unknown
     if kind == _BINARY:
         return _project_binary_2tier(cells, row)
