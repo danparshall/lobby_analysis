@@ -1088,6 +1088,346 @@ def test_scope_4_unable_when_axis_none():
 
 
 # ---------------------------------------------------------------------------
+# Contact log battery — 9 binary + 1 typed-IS-NOT-NULL + 1 OR-pair (Plan 2)
+#
+# All 11 items are FOCAL's most-distinctive battery; 9 introduce NEW v2 rows
+# read only by FOCAL at per-meeting granularity. Two items (.10, .11) reuse
+# existing Sunlight rows on the spending-report side.
+#
+# Partly-tier collapse (OQ3 YAGNI): FOCAL Suppl Table 3's "partly" sub-tiers
+# for .1, .3, .9, .11 are not extractable from v2 binary cells. Binary projection
+# (TRUE -> 2; FALSE -> 0) over-scores Federal US LDA by ~10 weighted points
+# on the contact_log subtotal (verified from CSV: .1, .3, .9, .11 each
+# publish raw=1 / weighted=2|2|3|3; binary projection would project raw=2 /
+# weighted=4|4|6|6 if the underlying v2 cells extract as TRUE). Tolerance
+# absorbed by Plan 4's aggregation harness; per-item helper tests here verify
+# the binary mapping is correct, not the partly-tier mismatch.
+#
+# contact_log.1  (org/interest)        -> lobbying_contact_log_includes_beneficiary_organization     [binary]
+# contact_log.2  (persons contacted)   -> lobbying_contact_log_includes_official_contacted_name      [binary]
+# contact_log.3  (institution/dept)    -> lobbying_contact_log_includes_institution_or_department    [binary]
+# contact_log.4  (meeting attendees)   -> lobbying_contact_log_includes_meeting_attendees            [binary]
+# contact_log.5  (date)                -> lobbying_contact_log_includes_date                         [binary]
+# contact_log.6  (form: enum)          -> lobbying_contact_log_includes_communication_form           [typed Optional[enum]]
+# contact_log.7  (location)            -> lobbying_contact_log_includes_location                     [binary]
+# contact_log.8  (materials shared)    -> lobbying_contact_log_includes_materials_shared             [binary]
+# contact_log.9  (topics discussed)    -> lobbying_contact_log_includes_topics_discussed             [binary]
+# contact_log.10 (outcomes/position)   -> lobbyist_spending_report_includes_position_on_bill         [binary, reused Sunlight row]
+# contact_log.11 (bill numbers)        -> {lobbyist_spending_report,lobbyist_reg_form}_includes_bill_or_action_identifier  [OR over 2 rows]
+# ---------------------------------------------------------------------------
+
+
+# --- contact_log.1 (binary beneficiary_organization) ---
+
+
+def test_contact_log_1_org_two_when_true():
+    cells = {
+        "lobbying_contact_log_includes_beneficiary_organization": _binary_cell(True)
+    }
+    assert project_focal_2024_item("focal_2024.contact_log.1", cells) == 2
+
+
+def test_contact_log_1_org_zero_when_false():
+    cells = {
+        "lobbying_contact_log_includes_beneficiary_organization": _binary_cell(False)
+    }
+    assert project_focal_2024_item("focal_2024.contact_log.1", cells) == 0
+
+
+def test_contact_log_1_org_unable_when_row_missing():
+    assert (
+        project_focal_2024_item("focal_2024.contact_log.1", {}) == UNABLE_TO_EVALUATE
+    )
+
+
+# --- contact_log.2 (binary official_contacted_name) ---
+
+
+def test_contact_log_2_official_name_two_when_true():
+    cells = {
+        "lobbying_contact_log_includes_official_contacted_name": _binary_cell(True)
+    }
+    assert project_focal_2024_item("focal_2024.contact_log.2", cells) == 2
+
+
+def test_contact_log_2_official_name_zero_when_false():
+    cells = {
+        "lobbying_contact_log_includes_official_contacted_name": _binary_cell(False)
+    }
+    assert project_focal_2024_item("focal_2024.contact_log.2", cells) == 0
+
+
+def test_contact_log_2_official_name_unable_when_row_missing():
+    assert (
+        project_focal_2024_item("focal_2024.contact_log.2", {}) == UNABLE_TO_EVALUATE
+    )
+
+
+# --- contact_log.3 (binary institution_or_department) ---
+
+
+def test_contact_log_3_institution_two_when_true():
+    cells = {
+        "lobbying_contact_log_includes_institution_or_department": _binary_cell(True)
+    }
+    assert project_focal_2024_item("focal_2024.contact_log.3", cells) == 2
+
+
+def test_contact_log_3_institution_zero_when_false():
+    cells = {
+        "lobbying_contact_log_includes_institution_or_department": _binary_cell(
+            False
+        )
+    }
+    assert project_focal_2024_item("focal_2024.contact_log.3", cells) == 0
+
+
+def test_contact_log_3_institution_unable_when_row_missing():
+    assert (
+        project_focal_2024_item("focal_2024.contact_log.3", {}) == UNABLE_TO_EVALUATE
+    )
+
+
+# --- contact_log.4 (binary meeting_attendees) ---
+
+
+def test_contact_log_4_attendees_two_when_true():
+    cells = {
+        "lobbying_contact_log_includes_meeting_attendees": _binary_cell(True)
+    }
+    assert project_focal_2024_item("focal_2024.contact_log.4", cells) == 2
+
+
+def test_contact_log_4_attendees_zero_when_false():
+    cells = {
+        "lobbying_contact_log_includes_meeting_attendees": _binary_cell(False)
+    }
+    assert project_focal_2024_item("focal_2024.contact_log.4", cells) == 0
+
+
+def test_contact_log_4_attendees_unable_when_row_missing():
+    assert (
+        project_focal_2024_item("focal_2024.contact_log.4", {}) == UNABLE_TO_EVALUATE
+    )
+
+
+# --- contact_log.5 (binary date) ---
+
+
+def test_contact_log_5_date_two_when_true():
+    cells = {"lobbying_contact_log_includes_date": _binary_cell(True)}
+    assert project_focal_2024_item("focal_2024.contact_log.5", cells) == 2
+
+
+def test_contact_log_5_date_zero_when_false():
+    cells = {"lobbying_contact_log_includes_date": _binary_cell(False)}
+    assert project_focal_2024_item("focal_2024.contact_log.5", cells) == 0
+
+
+def test_contact_log_5_date_unable_when_row_missing():
+    assert (
+        project_focal_2024_item("focal_2024.contact_log.5", {}) == UNABLE_TO_EVALUATE
+    )
+
+
+# --- contact_log.6 (typed Optional[enum] communication_form) ---
+
+
+def test_contact_log_6_form_two_when_in_person():
+    cells = {
+        "lobbying_contact_log_includes_communication_form": _typed_cell("in_person")
+    }
+    assert project_focal_2024_item("focal_2024.contact_log.6", cells) == 2
+
+
+def test_contact_log_6_form_two_when_video():
+    cells = {
+        "lobbying_contact_log_includes_communication_form": _typed_cell("video")
+    }
+    assert project_focal_2024_item("focal_2024.contact_log.6", cells) == 2
+
+
+def test_contact_log_6_form_two_when_phone():
+    cells = {
+        "lobbying_contact_log_includes_communication_form": _typed_cell("phone")
+    }
+    assert project_focal_2024_item("focal_2024.contact_log.6", cells) == 2
+
+
+def test_contact_log_6_form_zero_when_axis_none():
+    cells = {
+        "lobbying_contact_log_includes_communication_form": _typed_cell(None)
+    }
+    assert project_focal_2024_item("focal_2024.contact_log.6", cells) == 0
+
+
+def test_contact_log_6_form_zero_when_axis_empty_string():
+    cells = {"lobbying_contact_log_includes_communication_form": _typed_cell("")}
+    assert project_focal_2024_item("focal_2024.contact_log.6", cells) == 0
+
+
+def test_contact_log_6_form_unable_when_row_missing():
+    assert (
+        project_focal_2024_item("focal_2024.contact_log.6", {}) == UNABLE_TO_EVALUATE
+    )
+
+
+# --- contact_log.7 (binary location) ---
+
+
+def test_contact_log_7_location_two_when_true():
+    cells = {"lobbying_contact_log_includes_location": _binary_cell(True)}
+    assert project_focal_2024_item("focal_2024.contact_log.7", cells) == 2
+
+
+def test_contact_log_7_location_zero_when_false():
+    cells = {"lobbying_contact_log_includes_location": _binary_cell(False)}
+    assert project_focal_2024_item("focal_2024.contact_log.7", cells) == 0
+
+
+def test_contact_log_7_location_unable_when_row_missing():
+    assert (
+        project_focal_2024_item("focal_2024.contact_log.7", {}) == UNABLE_TO_EVALUATE
+    )
+
+
+# --- contact_log.8 (binary materials_shared) ---
+
+
+def test_contact_log_8_materials_two_when_true():
+    cells = {
+        "lobbying_contact_log_includes_materials_shared": _binary_cell(True)
+    }
+    assert project_focal_2024_item("focal_2024.contact_log.8", cells) == 2
+
+
+def test_contact_log_8_materials_zero_when_false():
+    cells = {
+        "lobbying_contact_log_includes_materials_shared": _binary_cell(False)
+    }
+    assert project_focal_2024_item("focal_2024.contact_log.8", cells) == 0
+
+
+def test_contact_log_8_materials_unable_when_row_missing():
+    assert (
+        project_focal_2024_item("focal_2024.contact_log.8", {}) == UNABLE_TO_EVALUATE
+    )
+
+
+# --- contact_log.9 (binary topics_discussed; partly-tier collapsed) ---
+
+
+def test_contact_log_9_topics_two_when_true():
+    """Binary projection: TRUE -> 2 regardless of whether FOCAL's "partly"
+    sub-tier (vague_or_unclear -> 1) would apply. The partly-tier collapse
+    over-scores Federal US LDA by 3 weighted points on this indicator."""
+    cells = {
+        "lobbying_contact_log_includes_topics_discussed": _binary_cell(True)
+    }
+    assert project_focal_2024_item("focal_2024.contact_log.9", cells) == 2
+
+
+def test_contact_log_9_topics_zero_when_false():
+    cells = {
+        "lobbying_contact_log_includes_topics_discussed": _binary_cell(False)
+    }
+    assert project_focal_2024_item("focal_2024.contact_log.9", cells) == 0
+
+
+def test_contact_log_9_topics_unable_when_row_missing():
+    assert (
+        project_focal_2024_item("focal_2024.contact_log.9", {}) == UNABLE_TO_EVALUATE
+    )
+
+
+# --- contact_log.10 (binary position_on_bill; reused Sunlight row) ---
+
+
+def test_contact_log_10_position_two_when_true():
+    cells = {
+        "lobbyist_spending_report_includes_position_on_bill": _binary_cell(True)
+    }
+    assert project_focal_2024_item("focal_2024.contact_log.10", cells) == 2
+
+
+def test_contact_log_10_position_zero_when_false():
+    cells = {
+        "lobbyist_spending_report_includes_position_on_bill": _binary_cell(False)
+    }
+    assert project_focal_2024_item("focal_2024.contact_log.10", cells) == 0
+
+
+def test_contact_log_10_position_unable_when_row_missing():
+    assert (
+        project_focal_2024_item("focal_2024.contact_log.10", {})
+        == UNABLE_TO_EVALUATE
+    )
+
+
+# --- contact_log.11 (binary OR over reg_form + spending_report bill_id) ---
+
+
+_CL11_SPEND = "lobbyist_spending_report_includes_bill_or_action_identifier"
+_CL11_REGFORM = "lobbyist_reg_form_includes_bill_or_action_identifier"
+
+
+def test_contact_log_11_bill_id_two_when_only_spending_side_true():
+    cells = {
+        _CL11_SPEND: _binary_cell(True),
+        _CL11_REGFORM: _binary_cell(False),
+    }
+    assert project_focal_2024_item("focal_2024.contact_log.11", cells) == 2
+
+
+def test_contact_log_11_bill_id_two_when_only_regform_side_true():
+    cells = {
+        _CL11_SPEND: _binary_cell(False),
+        _CL11_REGFORM: _binary_cell(True),
+    }
+    assert project_focal_2024_item("focal_2024.contact_log.11", cells) == 2
+
+
+def test_contact_log_11_bill_id_two_when_both_sides_true():
+    cells = {
+        _CL11_SPEND: _binary_cell(True),
+        _CL11_REGFORM: _binary_cell(True),
+    }
+    assert project_focal_2024_item("focal_2024.contact_log.11", cells) == 2
+
+
+def test_contact_log_11_bill_id_zero_when_both_sides_false():
+    cells = {
+        _CL11_SPEND: _binary_cell(False),
+        _CL11_REGFORM: _binary_cell(False),
+    }
+    assert project_focal_2024_item("focal_2024.contact_log.11", cells) == 0
+
+
+def test_contact_log_11_bill_id_unable_when_both_rows_missing():
+    assert (
+        project_focal_2024_item("focal_2024.contact_log.11", {})
+        == UNABLE_TO_EVALUATE
+    )
+
+
+def test_contact_log_11_bill_id_two_when_one_side_true_other_missing():
+    """A known TRUE on either side wins the OR."""
+    cells = {_CL11_SPEND: _binary_cell(True)}
+    assert project_focal_2024_item("focal_2024.contact_log.11", cells) == 2
+
+
+def test_contact_log_11_bill_id_unable_when_one_side_false_other_missing():
+    """A False on one side with the other unknown can't rule out the
+    disclosure existing on the missing side — return unable, not coerce
+    to 0."""
+    cells = {_CL11_SPEND: _binary_cell(False)}
+    assert (
+        project_focal_2024_item("focal_2024.contact_log.11", cells)
+        == UNABLE_TO_EVALUATE
+    )
+
+
+# ---------------------------------------------------------------------------
 # Excluded items regression guard
 # ---------------------------------------------------------------------------
 

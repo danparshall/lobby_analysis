@@ -35,6 +35,7 @@ from pathlib import Path
 import pytest
 
 from lobby_analysis.projections.focal_2024 import (
+    FOCAL_2024_CONTACT_LOG_INDICATORS,
     FOCAL_2024_LEGAL_CORE_INDICATORS,
     load_focal_2024_per_country_reference,
 )
@@ -180,7 +181,7 @@ def test_united_states_legal_core_raw_sum(reference):
 
 
 # ---------------------------------------------------------------------------
-# 27 reference countries: presence smoke test + xfail aggregates
+# 27 reference countries: presence smoke test (legal-core slice)
 # ---------------------------------------------------------------------------
 
 
@@ -216,6 +217,99 @@ def test_united_states_legal_core_has_no_na_cells(reference):
     for indicator in FOCAL_2024_LEGAL_CORE_INDICATORS:
         v = reference["United States"][indicator]
         assert v is not None, f"US/{indicator} is NA (not_assessable)"
+
+
+# ---------------------------------------------------------------------------
+# Contact log battery (Plan 2) — 11 indicators; Federal US LDA = 10 weighted
+# (raw sum 4) per L-N 2025 Suppl Table 5
+# ---------------------------------------------------------------------------
+
+
+def test_contact_log_indicator_set_has_11_items():
+    """11 atomic items: .1 through .11."""
+    assert len(FOCAL_2024_CONTACT_LOG_INDICATORS) == 11
+
+
+def test_contact_log_indicator_set_contains_expected_ids():
+    expected = {
+        "contact_log.1", "contact_log.2", "contact_log.3",
+        "contact_log.4", "contact_log.5", "contact_log.6",
+        "contact_log.7", "contact_log.8", "contact_log.9",
+        "contact_log.10", "contact_log.11",
+    }
+    assert expected == FOCAL_2024_CONTACT_LOG_INDICATORS
+
+
+def test_legal_core_and_contact_log_are_disjoint():
+    """Two indicator sets must not overlap — a single CSV row can only
+    belong to one battery."""
+    assert FOCAL_2024_LEGAL_CORE_INDICATORS.isdisjoint(
+        FOCAL_2024_CONTACT_LOG_INDICATORS
+    )
+
+
+def test_united_states_row_has_all_contact_log_indicators(reference):
+    us_keys = set(reference["United States"].keys())
+    assert FOCAL_2024_CONTACT_LOG_INDICATORS.issubset(us_keys)
+
+
+def test_all_united_states_contact_log_values_in_bounds(reference):
+    for indicator in FOCAL_2024_CONTACT_LOG_INDICATORS:
+        value = reference["United States"][indicator]
+        assert value in {0, 1, 2}, f"{indicator}={value} outside {{0,1,2}}"
+
+
+def test_united_states_contact_log_has_no_na_cells(reference):
+    """Federal US LDA validation anchor — no NA cells permitted on the
+    contact_log slice (CSV verified clean)."""
+    for indicator in FOCAL_2024_CONTACT_LOG_INDICATORS:
+        v = reference["United States"][indicator]
+        assert v is not None, f"US/{indicator} is NA (not_assessable)"
+
+
+@pytest.mark.parametrize(
+    "indicator,expected_raw",
+    [
+        ("contact_log.1", 1),   # partly (org/interest represented)
+        ("contact_log.2", 0),   # FALSE (names of persons contacted)
+        ("contact_log.3", 1),   # partly (institution/dept)
+        ("contact_log.4", 0),   # FALSE (meeting attendees)
+        ("contact_log.5", 0),   # FALSE (date)
+        ("contact_log.6", 0),   # FALSE (form: in-person/video/phone)
+        ("contact_log.7", 0),   # FALSE (location)
+        ("contact_log.8", 0),   # FALSE (materials shared)
+        ("contact_log.9", 1),   # partly (topics discussed)
+        ("contact_log.10", 0),  # FALSE (outcomes/position on bill)
+        ("contact_log.11", 1),  # partly (bill numbers)
+    ],
+)
+def test_united_states_contact_log_values_match_published(
+    reference, indicator, expected_raw
+):
+    """Verbatim against L-N 2025 Suppl Table 5 — the Federal US LDA per-
+    indicator anchor for the contact_log battery. .1, .3, .9, .11 are
+    "partly" (raw=1) tier; the others are FALSE (raw=0). Binary projection
+    over-scores .1/.3/.9/.11 by 1 raw point each (4 raw / 10 weighted
+    cumulative); tolerance absorbed by Plan 4's aggregation harness."""
+    assert reference["United States"][indicator] == expected_raw
+
+
+def test_united_states_contact_log_raw_sum(reference):
+    """Sum of the 11 contact_log US values (raw) = 4.
+
+    .1=1 + .2=0 + .3=1 + .4=0 + .5=0 + .6=0 + .7=0 + .8=0 + .9=1 + .10=0
+    + .11=1 = 4.
+    """
+    total = sum(
+        reference["United States"][indicator]
+        for indicator in FOCAL_2024_CONTACT_LOG_INDICATORS
+    )
+    assert total == 4
+
+
+# ---------------------------------------------------------------------------
+# 27 reference countries: per-country aggregate xfails (Plan 4 territory)
+# ---------------------------------------------------------------------------
 
 
 @pytest.mark.xfail(

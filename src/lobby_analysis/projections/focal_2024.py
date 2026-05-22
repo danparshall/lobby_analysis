@@ -13,10 +13,12 @@ validation runs through cross-rubric agreement, not direct FOCAL match.
 This module is built **incrementally across 4 sub-plans** all converging
 on the same ``_SPEC_BY_ITEM`` dispatcher dict:
 
-1. **Legal core (this plan)** — 26 items: scope 4 + descriptors 6 +
+1. **Legal core** (landed 2026-05-22) — 27 items: scope 4 + descriptors 6 +
    relationships 4+1 + revolving_door 1 + financials 11. Module skeleton,
    score model, ground-truth loader stub.
-2. **Contact log** — 11 items (companion plan).
+2. **Contact log** (landed 2026-05-22) — 11 items: .1–.10 single-row
+   (.6 typed enum, rest binary) + .11 OR-pair across reg_form +
+   spending_report sides for the bill-id α form-type split.
 3. **Openness + timeliness** — 12 items (companion plan).
 4. **Aggregation** — weighted sum + US LDA federal validation + ranking
    (companion plan); ships ``project_focal_2024(cells, jurisdiction, vintage)``.
@@ -51,6 +53,12 @@ documented in the plan's OQ3/OQ4):
   or 0 (under-score) per the binary cell.
 * relationships.4: FOCAL distinguishes "Y/N only" (P=1) from "with detail"
   (Y=2); v2 has the binary cell only. Binary read projects to 2 if TRUE.
+* contact_log.1, .3, .9, .11: FOCAL "P=some entries incomplete" /
+  "vague_or_unclear" / "general_list_not_specific" sub-tiers collapse to
+  binary. On Federal US LDA the underlying v2 cells extract as TRUE for
+  all four, projecting raw=2 each vs published raw=1; cumulative weighted
+  over-scoring on contact_log = +10 points (projected subtotal 20 vs
+  published 10). Tolerance absorbed by Plan 4's aggregation harness.
 
 Tolerance budget for Federal US LDA target (81 raw points): ±15 raw on
 the 180-max scale per the aggregation plan (Plan 4 owns the validation
@@ -174,6 +182,25 @@ _SINGLE_ROW_SPEC: Final[tuple[tuple[str, str, str], ...]] = (
     ("focal_2024.financials.8", "lobbyist_spending_report_includes_expenditure_per_issue", _BINARY),
     ("focal_2024.financials.9", "lobbyist_or_principal_spending_report_includes_trade_association_dues_or_sponsorship", _BINARY),
     ("focal_2024.financials.11", "lobbyist_spending_report_includes_campaign_contributions", _BINARY),
+    # Contact log battery (Plan 2; 9 binary + 1 typed_is_not_null + 1 OR-pair).
+    # contact_log.11 is compound (OR over reg_form + spending_report sides);
+    # dispatched out-of-table via _COMPOUND_DISPATCH below.
+    #
+    # Partly-tier collapse (OQ3 YAGNI): .1, .3, .9, .11 publish raw=1 ("partly")
+    # on Federal US LDA but project to 2 (full) under the binary read since v2
+    # cells don't carry the partly-tier sub-criteria. Cumulative over-scoring
+    # on US LDA contact_log = +10 weighted points (projected 20 vs published
+    # 10); Plan 4's aggregation harness budgets this.
+    ("focal_2024.contact_log.1", "lobbying_contact_log_includes_beneficiary_organization", _BINARY),
+    ("focal_2024.contact_log.2", "lobbying_contact_log_includes_official_contacted_name", _BINARY),
+    ("focal_2024.contact_log.3", "lobbying_contact_log_includes_institution_or_department", _BINARY),
+    ("focal_2024.contact_log.4", "lobbying_contact_log_includes_meeting_attendees", _BINARY),
+    ("focal_2024.contact_log.5", "lobbying_contact_log_includes_date", _BINARY),
+    ("focal_2024.contact_log.6", "lobbying_contact_log_includes_communication_form", _TYPED_NOT_NULL),
+    ("focal_2024.contact_log.7", "lobbying_contact_log_includes_location", _BINARY),
+    ("focal_2024.contact_log.8", "lobbying_contact_log_includes_materials_shared", _BINARY),
+    ("focal_2024.contact_log.9", "lobbying_contact_log_includes_topics_discussed", _BINARY),
+    ("focal_2024.contact_log.10", "lobbyist_spending_report_includes_position_on_bill", _BINARY),
 )
 
 
@@ -221,6 +248,15 @@ _REL_1_ROWS: Final[tuple[str, str]] = (
 _FIN_6_ROWS: Final[tuple[str, str]] = (
     "lobbyist_spending_report_includes_total_expenditures",
     "principal_spending_report_includes_total_expenditures",
+)
+
+#: contact_log.11 reads the α form-type-split pair (spending_report side
+#: + reg_form side) under an OR. FOCAL framing: "Targeted areas of public
+#: policy or legislation, including bill numbers" — disclosure exists if
+#: present on either filing surface. Same OR semantics as relationships.1.
+_CL_11_ROWS: Final[tuple[str, str]] = (
+    "lobbyist_spending_report_includes_bill_or_action_identifier",
+    "lobbyist_reg_form_includes_bill_or_action_identifier",
 )
 
 
@@ -591,6 +627,7 @@ _COMPOUND_DISPATCH: Final[dict[str, Any]] = {
     "focal_2024.scope.2": _project_focal_scope_2,
     "focal_2024.scope.3": _project_focal_scope_3,
     "focal_2024.scope.4": _project_focal_scope_4,
+    "focal_2024.contact_log.11": lambda cells: _project_binary_or_2tier(cells, _CL_11_ROWS),
 }
 
 
@@ -657,6 +694,15 @@ FOCAL_2024_LEGAL_CORE_INDICATORS: Final[frozenset[str]] = frozenset({
     "financials.4", "financials.5", "financials.6",
     "financials.7", "financials.8", "financials.9",
     "financials.10", "financials.11",
+})
+
+#: 11 indicator IDs in Plan 2's contact_log scope. IDs are bare (no
+#: ``focal_2024.`` prefix) — matches CSV wire format.
+FOCAL_2024_CONTACT_LOG_INDICATORS: Final[frozenset[str]] = frozenset({
+    "contact_log.1", "contact_log.2", "contact_log.3",
+    "contact_log.4", "contact_log.5", "contact_log.6",
+    "contact_log.7", "contact_log.8", "contact_log.9",
+    "contact_log.10", "contact_log.11",
 })
 
 _GROUND_TRUTH_CSV_PARTS: Final[tuple[str, ...]] = (
