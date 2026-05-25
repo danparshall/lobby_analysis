@@ -1,0 +1,81 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260518_tier_0_execution_pivot_to_direct_read.md",
+    "script": "scripts/tier_0_direct_read_smoke.py",
+    "model": "claude-opus-4-7",
+    "chunk_id": "enforcement_and_audits",
+    "state_abbr": "OH",
+    "vintage_year": 2025,
+    "prompt_sha256": "6da027def2b2b6249d65c063ad22ec06133a3f648c1f8a58b3d6a1b8c37036b1",
+    "timestamp_utc": "2026-05-20T23:59:24+00:00"
+  },
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_violation_penalties_imposed_in_practice",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.99; §101.71; §101.72(G); §101.77",
+      "justification": "Section 101.99 establishes criminal penalties (fourth-degree misdemeanor for failure-to-register/record/file violations under 101.71(A)-(C), 101.77, 101.97; first-degree misdemeanor for knowingly filing a false statement under 101.71(D)), and §101.72(G) authorizes a $12.50/day late filing fee up to $100 — so the law on its face provides penalties for lobbying violations."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_disclosure_audit_required_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "review_only"
+      },
+      "cell_class": "EnumCell",
+      "cited_section": "§101.72(G); §101.79",
+      "justification": "Section 101.72(G) directs the executive director of the Joint Legislative Ethics Committee to \"review each registration statement\" for completeness and issue deficiency notices, and §101.79 permits the Attorney General to investigate compliance — but no provision mandates systematic financial audits of lobbyist filings, so the regime is review/investigation only rather than a required audit."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [
+    {
+      "reason": "instantiation_failed",
+      "key": [
+        "lobbying_violation_penalties_imposed_in_practice",
+        "practical"
+      ],
+      "error": "1 validation error for GradedIntCell\nvalue\n  Input should be a valid integer [type=int_type, input_value='2', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.13/v/int_type",
+      "arguments": {
+        "row_id": "lobbying_violation_penalties_imposed_in_practice",
+        "axis": "practical",
+        "value": "2",
+        "confidence": "medium",
+        "cited_section": "§101.79; §101.99; §101.72(G)",
+        "justification": "The statute creates a concrete enforcement pathway — the Attorney General investigates and refers apparent violations to the Franklin County prosecutor (§101.79), criminal misdemeanor penalties are specified (§101.99), and the Joint Legislative Ethics Committee assesses automatic late fees (§101.72(G)) — indicating a functioning penalty regime, though the bundle does not show enforcement statistics to confirm frequency in practice."
+      }
+    },
+    {
+      "reason": "instantiation_failed",
+      "key": [
+        "lobbying_disclosure_audit_required_in_law",
+        "practical"
+      ],
+      "error": "1 validation error for GradedIntCell\nvalue\n  Input should be a valid integer [type=int_type, input_value='1', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.13/v/int_type",
+      "arguments": {
+        "row_id": "lobbying_disclosure_audit_required_in_law",
+        "axis": "practical",
+        "value": "1",
+        "confidence": "medium",
+        "cited_section": "§101.72(G); §101.73(E); §101.79",
+        "justification": "The statute provides only a facial review of filings by the executive director (§101.72(G)) and discretionary AG investigations (§101.79), with recordkeeping retention required for two years (§101.73(E)), but no mandated audit program — indicating weak practical audit oversight beyond completeness review."
+      }
+    }
+  ]
+}

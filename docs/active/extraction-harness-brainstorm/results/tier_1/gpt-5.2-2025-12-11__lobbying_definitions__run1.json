@@ -1,0 +1,503 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "lobbying_definitions",
+    "run_index": 1,
+    "state_abbr": "OH",
+    "vintage_year": 2025,
+    "prompt_sha256": "f1f90342e807976476f79eb5321867e09f82a3f005caa9f17279c46e8d79cb43",
+    "timestamp_utc": "2026-05-21T14:01:43+00:00"
+  },
+  "wall_clock_seconds": 22.375884749926627,
+  "usage": {
+    "completion_tokens": 1589,
+    "prompt_tokens": 31614,
+    "total_tokens": 33203,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.0775705,
+  "legal_roster": [
+    [
+      "def_lobbying_activity_types",
+      "legal"
+    ],
+    [
+      "def_lobbyist_actor_types",
+      "legal"
+    ],
+    [
+      "law_defines_public_entity",
+      "legal"
+    ],
+    [
+      "law_includes_materiality_test",
+      "legal"
+    ],
+    [
+      "def_target_executive_agency",
+      "legal"
+    ],
+    [
+      "def_target_executive_staff",
+      "legal"
+    ],
+    [
+      "def_target_governors_office",
+      "legal"
+    ],
+    [
+      "def_target_independent_agency",
+      "legal"
+    ],
+    [
+      "def_target_legislative_branch",
+      "legal"
+    ],
+    [
+      "def_target_legislative_staff",
+      "legal"
+    ],
+    [
+      "def_actor_class_elected_officials",
+      "legal"
+    ],
+    [
+      "def_actor_class_public_employees",
+      "legal"
+    ],
+    [
+      "public_entity_def_relies_on_charter",
+      "legal"
+    ],
+    [
+      "public_entity_def_relies_on_ownership",
+      "legal"
+    ],
+    [
+      "public_entity_def_relies_on_revenue_structure",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "def_lobbying_activity_types",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": [
+          "attempting_to_influence_retirement_system_decisions",
+          "attempting_to_influence_executive_agency_decisions",
+          "attempting_to_influence_legislation"
+        ]
+      },
+      "cell_class": "EnumSetCell",
+      "cited_section": "OH Rev Code §§ 101.70(E), 121.60(I), 101.90(I) (2025)",
+      "justification": "The code defines covered lobbying activity as direct communications to promote/advocate/oppose legislation (§101.70(E)), contacts to influence an executive agency decision (§121.60(I)), and contacts to influence a retirement system decision (§101.90(I))."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_lobbyist_actor_types",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": [
+          "individual"
+        ]
+      },
+      "cell_class": "EnumSetCell",
+      "cited_section": "OH Rev Code § 101.70(F); § 121.60(H); § 101.90(H) (2025)",
+      "justification": "Each of the three lobbyist categories is defined as a natural person (\"any individual\" legislative agent; \"any person\" executive agency lobbyist; \"any person\" retirement system lobbyist), not as an entity."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "law_defines_public_entity",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev Code § 101.70(A) (2025)",
+      "justification": "\"Person\" expressly includes state instrumentalities and political subdivisions (counties, townships, municipal corporations, school districts, etc.), which is a statutory definition encompassing public entities."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "law_includes_materiality_test",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev Code § 121.60(H); § 101.90(H) (2025)",
+      "justification": "Both \"executive agency lobbyist\" and \"retirement system lobbyist\" require lobbying as a main purpose on a \"regular and substantial basis,\" which functions as a materiality/substantiality threshold."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_executive_agency",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev Code § 121.60(F), (I) (2025)",
+      "justification": "Executive agency lobbying is defined as contacts to influence an \"executive agency decision\" by communicating with specified executive-branch officials, and \"executive agency\" is defined in §121.60(F)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_executive_staff",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev Code § 121.60(B), (E)(2), (M) (2025)",
+      "justification": "The executive-agency lobbying definitions and expenditure coverage include \"a member of the staff\" of listed executive officials, and \"staff\" is defined in §121.60(M)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_governors_office",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev Code § 101.70(D),(E); § 121.60(B),(L) (2025)",
+      "justification": "Legislative lobbying targets include the governor and governor's staff (§101.70(D),(E)), and executive-agency lobbying targets include the governor as an \"elected executive official\" (§121.60(B),(L))."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_independent_agency",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev Code § 101.70(B),(D),(E) (2025)",
+      "justification": "\"Legislation\" includes matters pending before the controlling board (§101.70(B)), and legislative lobbying/expenditure definitions include communications with and expenditures to controlling board members (§101.70(D),(E))."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_legislative_branch",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev Code § 101.70(B),(E) (2025)",
+      "justification": "\"Legislation\" is defined as matters pending before the general assembly and related actions (§101.70(B)), and \"actively advocate\" requires direct communication with members of the general assembly (§101.70(E))."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_legislative_staff",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev Code § 101.70(D),(E),(J) (2025)",
+      "justification": "Legislative lobbying includes communications with and expenditures to \"any member of the staff\" of listed officials (§101.70(D),(E)), and \"staff\" is defined in §101.70(J)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_actor_class_elected_officials",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev Code § 101.70(F); § 121.60(H); § 101.90(H) (2025)",
+      "justification": "Each lobbyist definition excludes certain elected/appointed officials (e.g., members of the general assembly and elected executive officials in §101.70(F); officers/employees of agencies in fiduciary capacity in §121.60(H) and §101.90(H)), showing the statute addresses elected officials as an actor class in defining who is (not) a lobbyist."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_actor_class_public_employees",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev Code § 101.70(F); § 121.60(H); § 101.90(H) (2025)",
+      "justification": "The lobbyist definitions expressly carve out public officers/employees acting in a fiduciary capacity or holding specified public positions, thereby treating public employees as an actor class for definitional purposes."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "public_entity_def_relies_on_charter",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev Code § 101.70(A) (2025)",
+      "justification": "The definition of \"person\" includes enumerated governmental units and instrumentalities but does not condition inclusion on being chartered or incorporated by a government."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "public_entity_def_relies_on_ownership",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev Code § 101.70(A) (2025)",
+      "justification": "Nothing in the enumerated public-entity inclusions (state instrumentalities and political subdivisions) turns on government ownership or ownership percentage."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "public_entity_def_relies_on_revenue_structure",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev Code § 101.70(A) (2025)",
+      "justification": "The statute's public-entity coverage is based on the entity being a state instrumentality or political subdivision, not on revenue sources such as public funding percentages."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "chatcmpl-DhyFe0sHMDuPGGXtvfoMATi22Aeqc",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_4f9EIM22BUxLOZI2Wif2DBF3",
+              "function": {
+                "arguments": "{\"row_id\": \"def_lobbying_activity_types\", \"axis\": \"legal\", \"value\": [\"attempting_to_influence_legislation\", \"attempting_to_influence_executive_agency_decisions\", \"attempting_to_influence_retirement_system_decisions\"], \"confidence\": \"high\", \"cited_section\": \"OH Rev Code §§ 101.70(E), 121.60(I), 101.90(I) (2025)\", \"justification\": \"The code defines covered lobbying activity as direct communications to promote/advocate/oppose legislation (§101.70(E)), contacts to influence an executive agency decision (§121.60(I)), and contacts to influence a retirement system decision (§101.90(I)).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_RiJrKRqxCec5KZ5gjy5Lseud",
+              "function": {
+                "arguments": "{\"row_id\": \"def_lobbyist_actor_types\", \"axis\": \"legal\", \"value\": [\"individual\"], \"confidence\": \"high\", \"cited_section\": \"OH Rev Code § 101.70(F); § 121.60(H); § 101.90(H) (2025)\", \"justification\": \"Each of the three lobbyist categories is defined as a natural person (\\\"any individual\\\" legislative agent; \\\"any person\\\" executive agency lobbyist; \\\"any person\\\" retirement system lobbyist), not as an entity.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_YUbhn95aQ8lCnDFWX2Lvnpyu",
+              "function": {
+                "arguments": "{\"row_id\": \"law_defines_public_entity\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"OH Rev Code § 101.70(A) (2025)\", \"justification\": \"\\\"Person\\\" expressly includes state instrumentalities and political subdivisions (counties, townships, municipal corporations, school districts, etc.), which is a statutory definition encompassing public entities.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_OBhpNmmJpscq81Qe9zAsstRN",
+              "function": {
+                "arguments": "{\"row_id\": \"law_includes_materiality_test\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"OH Rev Code § 121.60(H); § 101.90(H) (2025)\", \"justification\": \"Both \\\"executive agency lobbyist\\\" and \\\"retirement system lobbyist\\\" require lobbying as a main purpose on a \\\"regular and substantial basis,\\\" which functions as a materiality/substantiality threshold.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_ZTi9ul1X3uEgcOTYwLG3LVM0",
+              "function": {
+                "arguments": "{\"row_id\": \"def_target_executive_agency\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"OH Rev Code § 121.60(F), (I) (2025)\", \"justification\": \"Executive agency lobbying is defined as contacts to influence an \\\"executive agency decision\\\" by communicating with specified executive-branch officials, and \\\"executive agency\\\" is defined in §121.60(F).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_NINny1UhFexfFfBczsfeQMUt",
+              "function": {
+                "arguments": "{\"row_id\": \"def_target_executive_staff\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"OH Rev Code § 121.60(B), (E)(2), (M) (2025)\", \"justification\": \"The executive-agency lobbying definitions and expenditure coverage include \\\"a member of the staff\\\" of listed executive officials, and \\\"staff\\\" is defined in §121.60(M).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_3qVm6kh5eVSDCFAR7xsKYVZl",
+              "function": {
+                "arguments": "{\"row_id\": \"def_target_governors_office\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"OH Rev Code § 101.70(D),(E); § 121.60(B),(L) (2025)\", \"justification\": \"Legislative lobbying targets include the governor and governor's staff (§101.70(D),(E)), and executive-agency lobbying targets include the governor as an \\\"elected executive official\\\" (§121.60(B),(L)).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_9dfxoQoCQ8dJnQBEumpXxwiJ",
+              "function": {
+                "arguments": "{\"row_id\": \"def_target_independent_agency\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"OH Rev Code § 101.70(B),(D),(E) (2025)\", \"justification\": \"\\\"Legislation\\\" includes matters pending before the controlling board (§101.70(B)), and legislative lobbying/expenditure definitions include communications with and expenditures to controlling board members (§101.70(D),(E)).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_pcu055R2knC8K8ylocHvNZwz",
+              "function": {
+                "arguments": "{\"row_id\": \"def_target_legislative_branch\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"OH Rev Code § 101.70(B),(E) (2025)\", \"justification\": \"\\\"Legislation\\\" is defined as matters pending before the general assembly and related actions (§101.70(B)), and \\\"actively advocate\\\" requires direct communication with members of the general assembly (§101.70(E)).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_SkqlZ6vleBJg7uMoxooliYDN",
+              "function": {
+                "arguments": "{\"row_id\": \"def_target_legislative_staff\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"OH Rev Code § 101.70(D),(E),(J) (2025)\", \"justification\": \"Legislative lobbying includes communications with and expenditures to \\\"any member of the staff\\\" of listed officials (§101.70(D),(E)), and \\\"staff\\\" is defined in §101.70(J).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_1xf6Gnwcd8Cciu2NsjJEiWTQ",
+              "function": {
+                "arguments": "{\"row_id\": \"def_actor_class_elected_officials\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"OH Rev Code § 101.70(F); § 121.60(H); § 101.90(H) (2025)\", \"justification\": \"Each lobbyist definition excludes certain elected/appointed officials (e.g., members of the general assembly and elected executive officials in §101.70(F); officers/employees of agencies in fiduciary capacity in §121.60(H) and §101.90(H)), showing the statute addresses elected officials as an actor class in defining who is (not) a lobbyist.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_Q70YyHtOHyPvUT9AruKaVP8i",
+              "function": {
+                "arguments": "{\"row_id\": \"def_actor_class_public_employees\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"OH Rev Code § 101.70(F); § 121.60(H); § 101.90(H) (2025)\", \"justification\": \"The lobbyist definitions expressly carve out public officers/employees acting in a fiduciary capacity or holding specified public positions, thereby treating public employees as an actor class for definitional purposes.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_VlKCX537XoxpljNu7YFwa2ll",
+              "function": {
+                "arguments": "{\"row_id\": \"public_entity_def_relies_on_charter\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"OH Rev Code § 101.70(A) (2025)\", \"justification\": \"The definition of \\\"person\\\" includes enumerated governmental units and instrumentalities but does not condition inclusion on being chartered or incorporated by a government.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_ULWx4dd50U8TSm1nT2OPJfaE",
+              "function": {
+                "arguments": "{\"row_id\": \"public_entity_def_relies_on_ownership\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"OH Rev Code § 101.70(A) (2025)\", \"justification\": \"Nothing in the enumerated public-entity inclusions (state instrumentalities and political subdivisions) turns on government ownership or ownership percentage.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_otB6vbiku2WSFLGDSY7XPF6B",
+              "function": {
+                "arguments": "{\"row_id\": \"public_entity_def_relies_on_revenue_structure\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"OH Rev Code § 101.70(A) (2025)\", \"justification\": \"The statute's public-entity coverage is based on the entity being a state instrumentality or political subdivision, not on revenue sources such as public funding percentages.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1779372082,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 1589,
+      "prompt_tokens": 31614,
+      "total_tokens": 33203,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 0
+      }
+    }
+  }
+}

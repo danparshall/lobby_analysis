@@ -1,0 +1,137 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "enforcement_and_audits",
+    "run_index": 1,
+    "state_abbr": "OH",
+    "vintage_year": 2025,
+    "prompt_sha256": "f1f90342e807976476f79eb5321867e09f82a3f005caa9f17279c46e8d79cb43",
+    "timestamp_utc": "2026-05-21T14:00:57+00:00"
+  },
+  "wall_clock_seconds": 12.691421375027858,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 49735,
+    "inference_geo": "global",
+    "input_tokens": 660,
+    "output_tokens": 894,
+    "server_tool_use": null,
+    "service_tier": "standard"
+  },
+  "cost_usd_estimate": 0.025650000000000003,
+  "legal_roster": [
+    [
+      "lobbying_violation_penalties_imposed_in_practice",
+      "legal"
+    ],
+    [
+      "lobbying_disclosure_audit_required_in_law",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_violation_penalties_imposed_in_practice",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "ORC §101.99; §101.72(G)",
+      "justification": "Section 101.99 authorizes misdemeanor penalties (fourth degree for failure-to-file/register and contingent-fee violations; first degree for knowingly filing false statements) for violations of §§101.71, 101.77, 101.91, and 101.97, and §101.72(G) authorizes a late filing fee of $12.50/day up to $100, demonstrating the law authorizes penalties for lobbying violations."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_disclosure_audit_required_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": "no_audit_required"
+      },
+      "cell_class": "EnumCell",
+      "cited_section": "ORC §101.72(G); §101.79",
+      "justification": "Section 101.72(G) requires only that the executive director review each registration statement for completeness of required information (not a substantive audit), and §101.79 permits the attorney general to investigate apparent violations but does not mandate any systematic audit of lobbyist disclosure filings."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "msg_01BBmehMLBLAra1uKEBRsLtu",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "I'll analyze the statute text for both questions.\n\n**Row 1: lobbying_violation_penalties_imposed_in_practice (legal)** - Does the law authorize penalties for violations? Yes - §101.99 specifies misdemeanor penalties, §101.71/§101.91 prohibits acts, §101.72(G) authorizes late filing fees. The de jure question is whether penalties exist in law.\n\n**Row 2: lobbying_disclosure_audit_required_in_law (legal)** - Does the statute require audits of disclosure filings? The statute requires review of registration statements for completeness (§101.72(G), §101.92(G), §121.62(G)) and authorizes AG investigation (§101.79, §121.69), but does not mandate systematic audits of expenditure/disclosure filings.",
+        "type": "text"
+      },
+      {
+        "id": "toolu_01Nt3geqtQ1Q8GfEeq43r5k8",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "lobbying_violation_penalties_imposed_in_practice",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "ORC §101.99; §101.72(G)",
+          "justification": "Section 101.99 authorizes misdemeanor penalties (fourth degree for failure-to-file/register and contingent-fee violations; first degree for knowingly filing false statements) for violations of §§101.71, 101.77, 101.91, and 101.97, and §101.72(G) authorizes a late filing fee of $12.50/day up to $100, demonstrating the law authorizes penalties for lobbying violations."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01M3UJr9KJjbmSoxEf6TbMox",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "lobbying_disclosure_audit_required_in_law",
+          "axis": "legal",
+          "value": "no_audit_required",
+          "confidence": "medium",
+          "cited_section": "ORC §101.72(G); §101.79",
+          "justification": "Section 101.72(G) requires only that the executive director review each registration statement for completeness of required information (not a substantive audit), and §101.79 permits the attorney general to investigate apparent violations but does not mandate any systematic audit of lobbyist disclosure filings."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 49735,
+      "inference_geo": "global",
+      "input_tokens": 660,
+      "output_tokens": 894,
+      "server_tool_use": null,
+      "service_tier": "standard"
+    }
+  }
+}

@@ -1,0 +1,123 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "enforcement_and_audits",
+    "run_index": 1,
+    "state_abbr": "OH",
+    "vintage_year": 2025,
+    "prompt_sha256": "f1f90342e807976476f79eb5321867e09f82a3f005caa9f17279c46e8d79cb43",
+    "timestamp_utc": "2026-05-21T14:07:01+00:00"
+  },
+  "wall_clock_seconds": 3.9834186249645427,
+  "usage": {
+    "completion_tokens": 195,
+    "prompt_tokens": 31325,
+    "total_tokens": 31520,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 30208
+    }
+  },
+  "cost_usd_estimate": 0.057548749999999996,
+  "legal_roster": [
+    [
+      "lobbying_violation_penalties_imposed_in_practice",
+      "legal"
+    ],
+    [
+      "lobbying_disclosure_audit_required_in_law",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_violation_penalties_imposed_in_practice",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code § 101.99; § 101.71; § 101.91; § 121.61",
+      "justification": "The cited provisions establish criminal penalties for specified violations (and prohibit certain acts) but do not require that penalties be imposed 'in practice,' so the statute itself does not mandate real-world enforcement outcomes."
+    }
+  ],
+  "unscoreable_emissions": [
+    {
+      "row_id": "lobbying_disclosure_audit_required_in_law",
+      "axis": "legal",
+      "reason": "The provided statutory sections address registration, reporting, investigations, and penalties, but do not state any requirement for periodic audits of lobbying disclosure filings."
+    }
+  ],
+  "errors": [],
+  "response": {
+    "id": "chatcmpl-DhyL47yabr8WrLnV5HXT7NzYU1fPm",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_jRVIC23JRItfjTttqR2ezMgQ",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbying_violation_penalties_imposed_in_practice\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code § 101.99; § 101.71; § 101.91; § 121.61\", \"justification\": \"The cited provisions establish criminal penalties for specified violations (and prohibit certain acts) but do not require that penalties be imposed 'in practice,' so the statute itself does not mandate real-world enforcement outcomes.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_2pxoiNjrxtCOvBsFptdJQJ1Z",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbying_disclosure_audit_required_in_law\", \"axis\": \"legal\", \"reason\": \"The provided statutory sections address registration, reporting, investigations, and penalties, but do not state any requirement for periodic audits of lobbying disclosure filings.\"}",
+                "name": "record_unscoreable_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1779372418,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 195,
+      "prompt_tokens": 31325,
+      "total_tokens": 31520,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 30208
+      }
+    }
+  }
+}

@@ -1,0 +1,192 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "registration_thresholds",
+    "run_index": 2,
+    "state_abbr": "OH",
+    "vintage_year": 2025,
+    "prompt_sha256": "f1f90342e807976476f79eb5321867e09f82a3f005caa9f17279c46e8d79cb43",
+    "timestamp_utc": "2026-05-21T14:02:50+00:00"
+  },
+  "wall_clock_seconds": 10.178347542067058,
+  "usage": {
+    "completion_tokens": 547,
+    "prompt_tokens": 31424,
+    "total_tokens": 31971,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 31232
+    }
+  },
+  "cost_usd_estimate": 0.06265,
+  "legal_roster": [
+    [
+      "lobbyist_registration_threshold_compensation_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_threshold_expenditure_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_threshold_time_percent",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_itemization_de_minimis_threshold_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_de_minimis_threshold_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_de_minimis_threshold_time_percent",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [],
+  "unscoreable_emissions": [
+    {
+      "row_id": "lobbyist_registration_threshold_compensation_dollars",
+      "axis": "legal",
+      "reason": "Bundled provisions define who is a 'legislative agent'/'executive agency lobbyist' but do not set any compensation dollar threshold that triggers registration; registration is required upon 'engagement' and 'main purpose' criteria without a dollar amount."
+    },
+    {
+      "row_id": "lobbyist_registration_threshold_expenditure_dollars",
+      "axis": "legal",
+      "reason": "No expenditure dollar threshold for registration appears in the provided sections; registration is required within ten days of engagement regardless of expenditures."
+    },
+    {
+      "row_id": "lobbyist_registration_threshold_time_percent",
+      "axis": "legal",
+      "reason": "Definitions use qualitative standards ('at least a portion of the individual's time' and 'as one of the individual's main purposes on a regular and substantial basis') but provide no quantitative time percentage threshold."
+    },
+    {
+      "row_id": "lobbyist_filing_de_minimis_threshold_dollars",
+      "axis": "legal",
+      "reason": "The statute requires reporting of total expenditures and itemization for certain categories, but it does not provide a general dollar de minimis below which expenditures need not be reported (other than the separate $50 meal itemization rule)."
+    },
+    {
+      "row_id": "lobbyist_filing_de_minimis_threshold_time_percent",
+      "axis": "legal",
+      "reason": "No time-percentage threshold for filing (as opposed to registration) is stated in the provided filing provisions; filings are tied to being a registered agent/lobbyist and periodic deadlines, not time spent."
+    }
+  ],
+  "errors": [
+    {
+      "reason": "instantiation_failed",
+      "key": [
+        "lobbyist_filing_itemization_de_minimis_threshold_dollars",
+        "legal"
+      ],
+      "error": "1 validation error for DecimalCell\nvalue\n  Input should be an instance of Decimal [type=is_instance_of, input_value=50, input_type=int]\n    For further information visit https://errors.pydantic.dev/2.13/v/is_instance_of",
+      "arguments": {
+        "row_id": "lobbyist_filing_itemization_de_minimis_threshold_dollars",
+        "axis": "legal",
+        "value": 50,
+        "condition_text": "Applies to itemizing a legislative agent's meal/food-and-beverage expenditures to/for a particular covered official; reporting triggered when the agent's cumulative calendar-year meal payments to/for that official exceed $50 (with specified exceptions).",
+        "confidence": "high",
+        "cited_section": "OH Rev. Code § 101.73(B)(3) (2025)",
+        "justification": "Section 101.73(B)(3) requires additional disclosure fields for meal/food-and-beverage expenditures when, added to earlier such payments in the same calendar year, they exceed a total of fifty dollars for a particular covered official."
+      }
+    }
+  ],
+  "response": {
+    "id": "chatcmpl-DhyGuzLDOg1xi6hBtQkyJGRlAn5gD",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_F4BvOojZvyMSORJ9kXKsm6d5",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_registration_threshold_compensation_dollars\", \"axis\": \"legal\", \"reason\": \"Bundled provisions define who is a 'legislative agent'/'executive agency lobbyist' but do not set any compensation dollar threshold that triggers registration; registration is required upon 'engagement' and 'main purpose' criteria without a dollar amount.\"}",
+                "name": "record_unscoreable_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_txBaCAUmCXE7NC3TNOUzFvly",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_registration_threshold_expenditure_dollars\", \"axis\": \"legal\", \"reason\": \"No expenditure dollar threshold for registration appears in the provided sections; registration is required within ten days of engagement regardless of expenditures.\"}",
+                "name": "record_unscoreable_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_2bTvK72cgXwIsuA8Q3SiJDKv",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_registration_threshold_time_percent\", \"axis\": \"legal\", \"reason\": \"Definitions use qualitative standards ('at least a portion of the individual's time' and 'as one of the individual's main purposes on a regular and substantial basis') but provide no quantitative time percentage threshold.\"}",
+                "name": "record_unscoreable_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_kfYd1HhxJBQkUmhQH2YQkM0X",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_filing_itemization_de_minimis_threshold_dollars\", \"axis\": \"legal\", \"value\": 50, \"condition_text\": \"Applies to itemizing a legislative agent's meal/food-and-beverage expenditures to/for a particular covered official; reporting triggered when the agent's cumulative calendar-year meal payments to/for that official exceed $50 (with specified exceptions).\", \"confidence\": \"high\", \"cited_section\": \"OH Rev. Code § 101.73(B)(3) (2025)\", \"justification\": \"Section 101.73(B)(3) requires additional disclosure fields for meal/food-and-beverage expenditures when, added to earlier such payments in the same calendar year, they exceed a total of fifty dollars for a particular covered official.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_vKfBAlBU2MRcASLRJ2jw2QKs",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_filing_de_minimis_threshold_dollars\", \"axis\": \"legal\", \"reason\": \"The statute requires reporting of total expenditures and itemization for certain categories, but it does not provide a general dollar de minimis below which expenditures need not be reported (other than the separate $50 meal itemization rule).\"}",
+                "name": "record_unscoreable_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_k128hnmEyBN8xR5wusIHnyLT",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_filing_de_minimis_threshold_time_percent\", \"axis\": \"legal\", \"reason\": \"No time-percentage threshold for filing (as opposed to registration) is stated in the provided filing provisions; filings are tied to being a registered agent/lobbyist and periodic deadlines, not time spent.\"}",
+                "name": "record_unscoreable_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1779372160,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 547,
+      "prompt_tokens": 31424,
+      "total_tokens": 31971,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 31232
+      }
+    }
+  }
+}

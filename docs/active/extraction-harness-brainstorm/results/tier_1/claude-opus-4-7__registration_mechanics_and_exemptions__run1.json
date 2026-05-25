@@ -1,0 +1,348 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "registration_mechanics_and_exemptions",
+    "run_index": 1,
+    "state_abbr": "OH",
+    "vintage_year": 2025,
+    "prompt_sha256": "f1f90342e807976476f79eb5321867e09f82a3f005caa9f17279c46e8d79cb43",
+    "timestamp_utc": "2026-05-21T13:54:13+00:00"
+  },
+  "wall_clock_seconds": 20.465079374960624,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 49735,
+    "inference_geo": "global",
+    "input_tokens": 921,
+    "output_tokens": 1953,
+    "server_tool_use": null,
+    "service_tier": "standard"
+  },
+  "cost_usd_estimate": 0.05343,
+  "legal_roster": [
+    [
+      "lobbyist_registration_required",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_renewal_cadence",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_amendment_deadline_days",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_deadline_days_after_first_lobbying",
+      "legal"
+    ],
+    [
+      "separate_registrations_for_lobbyists_and_clients",
+      "legal"
+    ],
+    [
+      "lobbyist_required_to_submit_photograph_with_registration",
+      "legal"
+    ],
+    [
+      "exemption_for_govt_official_capacity_exists",
+      "legal"
+    ],
+    [
+      "exemption_partial_for_govt_agencies",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(A)",
+      "justification": "Section 101.72(A) requires each legislative agent and employer to file an initial registration statement with the joint legislative ethics committee within ten days following an engagement."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_renewal_cadence",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": 2
+      },
+      "cell_class": "IntCell",
+      "cited_section": "§101.72(F)",
+      "justification": "Section 101.72(F) provides that the registration is valid until the next 31st of December of an even-numbered year, indicating a biennial (2-year) registration cycle."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_amendment_deadline_days",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": 15
+      },
+      "cell_class": "IntCell",
+      "cited_section": "§101.72(G)",
+      "justification": "Section 101.72(G) requires a person notified of a deficiency to file an amended registration statement not later than fifteen days after receiving the notice."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_deadline_days_after_first_lobbying",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": 10
+      },
+      "cell_class": "IntCell",
+      "cited_section": "§101.72(A)",
+      "justification": "Section 101.72(A) requires the initial registration statement to be filed within ten days following an engagement of a legislative agent."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "separate_registrations_for_lobbyists_and_clients",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(A) and (C)",
+      "justification": "Section 101.72(A) requires both legislative agents and employers to file registration statements, and (C) requires a separate registration for each engagement if a lobbyist has multiple employers, demonstrating separate registrations for lobbyists and clients/employers."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_required_to_submit_photograph_with_registration",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(A)",
+      "justification": "Section 101.72(A) enumerates required registration contents (name, business address, occupation, employer info, description of legislation) and does not require a photograph."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "exemption_for_govt_official_capacity_exists",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.70(F)",
+      "justification": "Section 101.70(F) excludes from \"legislative agent\" members of the general assembly, staff of the general assembly, the governor, lieutenant governor, attorney general, secretary of state, treasurer, and auditor of state, providing an exemption for those acting in official government capacity."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "exemption_partial_for_govt_agencies",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(E)",
+      "justification": "Section 101.72(E) provides a partial exemption: officers or employees of a state agency who actively advocate in a fiduciary capacity need not file expenditure statements under §101.73, though the agency must still pay the registration fee."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "msg_01DLf2kvm8jJkMWCsPx1Bwkg",
+    "container": null,
+    "content": [
+      {
+        "id": "toolu_01VAQeph3UgYTPckH9gPBVzk",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "lobbyist_registration_required",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.72(A)",
+          "justification": "Section 101.72(A) requires each legislative agent and employer to file an initial registration statement with the joint legislative ethics committee within ten days following an engagement."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01JUQy64vowtk9snW1LyaRsA",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "lobbyist_registration_renewal_cadence",
+          "axis": "legal",
+          "value": "2",
+          "confidence": "high",
+          "cited_section": "§101.72(F)",
+          "justification": "Section 101.72(F) provides that the registration is valid until the next 31st of December of an even-numbered year, indicating a biennial (2-year) registration cycle."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01C2JFLSRiz2yoq31BWUbzbR",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "lobbyist_registration_amendment_deadline_days",
+          "axis": "legal",
+          "value": "15",
+          "confidence": "medium",
+          "cited_section": "§101.72(G)",
+          "justification": "Section 101.72(G) requires a person notified of a deficiency to file an amended registration statement not later than fifteen days after receiving the notice."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_0124XcvoTv1hDJ1A72AmZzk4",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "lobbyist_registration_deadline_days_after_first_lobbying",
+          "axis": "legal",
+          "value": "10",
+          "confidence": "high",
+          "cited_section": "§101.72(A)",
+          "justification": "Section 101.72(A) requires the initial registration statement to be filed within ten days following an engagement of a legislative agent."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_011bqxk9229uWj9XcGvVNPo1",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "separate_registrations_for_lobbyists_and_clients",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.72(A) and (C)",
+          "justification": "Section 101.72(A) requires both legislative agents and employers to file registration statements, and (C) requires a separate registration for each engagement if a lobbyist has multiple employers, demonstrating separate registrations for lobbyists and clients/employers."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_011ukjA9LutQeCpeVpuMkf6W",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "lobbyist_required_to_submit_photograph_with_registration",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§101.72(A)",
+          "justification": "Section 101.72(A) enumerates required registration contents (name, business address, occupation, employer info, description of legislation) and does not require a photograph."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_013x1oNpm89BCRJLSnsjmrCU",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "exemption_for_govt_official_capacity_exists",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.70(F)",
+          "justification": "Section 101.70(F) excludes from \"legislative agent\" members of the general assembly, staff of the general assembly, the governor, lieutenant governor, attorney general, secretary of state, treasurer, and auditor of state, providing an exemption for those acting in official government capacity."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_0152fwbYqGgoCkyUMK9oDHRS",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "exemption_partial_for_govt_agencies",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.72(E)",
+          "justification": "Section 101.72(E) provides a partial exemption: officers or employees of a state agency who actively advocate in a fiduciary capacity need not file expenditure statements under §101.73, though the agency must still pay the registration fee."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 49735,
+      "inference_geo": "global",
+      "input_tokens": 921,
+      "output_tokens": 1953,
+      "server_tool_use": null,
+      "service_tier": "standard"
+    }
+  }
+}

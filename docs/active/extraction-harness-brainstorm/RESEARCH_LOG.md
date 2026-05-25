@@ -1,0 +1,599 @@
+# Research Log: extraction-harness-brainstorm
+
+Created: 2026-05-14
+Purpose: Track B successor branch (per Option B locked 2026-05-13). Brainstorm-then-plan: design the **single** extraction harness / prompt architecture per the Compendium 2.0 success criterion #2 ("ONE extraction pipeline — same prompt structure, same model, same retrieval approach, applied uniformly across rows, states, and years"). The v2 row set (181 rows) is the input contract. Goal of this branch's kickoff session: a written plan (`docs/active/extraction-harness-brainstorm/plans/`) ready for the first TDD implementation session.
+
+> **Predecessor:** Cut off `main` at `8bfc225` post-archive of `compendium-source-extracts` (merged 2026-05-14 as `cac1469`; archived to `docs/historical/compendium-source-extracts/`).
+>
+> **Row-freeze contract:** [`compendium/disclosure_side_compendium_items_v2.tsv`](../../../compendium/disclosure_side_compendium_items_v2.tsv) — 181 rows. Promoted from `docs/historical/...` to repo-level `compendium/` on 2026-05-14 by the `compendium-v2-promote` branch (live contract for the two parallel-running successors; v1 artifacts retained at `compendium/_deprecated/v1/`). Decision log at [`20260513_row_freeze_decisions.md`](../../historical/compendium-source-extracts/results/projections/20260513_row_freeze_decisions.md). Idempotent regen via `tools/freeze_canonicalize_rows.py`. (Path is live on main after `compendium-v2-promote` merges; until then read via the worktree-local view.)
+>
+> **Compendium 2.0 success criterion:** see the ⭐ section in [`../../../STATUS.md`](../../../STATUS.md). This branch is direct work on criterion #2 (ONE extraction pipeline).
+>
+> **Carry-forward prompt architecture (from now-dead `statute-extraction` iter-2):** the v2 scorer prompt + chunk-frame preamble (`src/scoring/chunk_frames/definitions.md`) + tightened row-description axis labels. Iter-1 dispatched against OH 2025 `definitions` chunk achieved 93.3% inter-run agreement (3 temp-0 claude-opus-4-7 runs); the materiality-gate canary captured `required_conditional` + verbatim `condition_text` across all three regimes. **Note:** iter-2's tightened row descriptions targeted the v1.2 (141-row) compendium and may need redoing against the v2 (181-row) compendium.
+
+## Out of scope for this branch
+
+- Multi-vintage OH statute retrieval — that lives on `oh-statute-retrieval` (Track A).
+- Per-rubric projection function implementations — that lives on `phase-c-projection-tdd`.
+- Full 50-state rollout — this branch's deliverable is a *single-state pilot-ready* plan + harness, not 50-state production scale.
+
+## Data symlink note
+
+The `data/` symlink convention from `skills/use-worktree/SKILL.md` was **skipped at branch creation** because (a) `data/` is now fully gitignored post-2026-05-14 rename (`data/compendium/` → repo-root `compendium/`) so the prior conflict is resolved but (b) on this machine no gitignored data under `data/` actually exists yet to share. When this branch's first kickoff session generates gitignored data (e.g., extraction runs, scoring results), the kickoff agent should decide its own symlink approach at that point.
+
+---
+
+## Sessions
+
+(Newest first.)
+
+### 2026-05-21 (Tier-2 Step D: re-dispatch verification) — 18 re-dispatches, $1.82, 2 of 3 fixes verified, 1 new finding
+
+Convo: [`convos/20260521_tier_2_step_d_redispatch_verification.md`](convos/20260521_tier_2_step_d_redispatch_verification.md)
+Plan: [`plans/20260521_tier_2_schema_adapter_fixes.md`](plans/20260521_tier_2_schema_adapter_fixes.md) — Step D (the deferred re-dispatch).
+Writeup: [`results/tier_1/20260521_tier_2_step_d_redispatch_writeup.md`](results/tier_1/20260521_tier_2_step_d_redispatch_writeup.md)
+
+**What ran.** Re-dispatched the 18 triples that each carried one
+`instantiation_failed` error in the Tier-1 legal-axis run (`registration_thresholds`,
+`lobbyist_spending_report`, `principal_spending_report` × 2 models × 3 runs),
+against the now-committed A/B/C fixes — the integration test the Tier-2
+execution session deferred for lack of API keys. Original Tier-1 JSONs for
+these chunks moved to `results/tier_1/_superseded/` (preserved); resume logic
+re-dispatched exactly the 18 missing triples. Cost **$1.8157** (the handoff's
+"~12 calls/~$1" undercounted — all 18 files carried errors).
+
+**Provisional findings.**
+
+- **Fix A (`int`→`Decimal`) — positively verified.** `gpt registration_thresholds`
+  emitted a bare JSON `"value": 50`; it instantiated cleanly to
+  `DecimalCell(Decimal("50"))`. Zero errors in all 3 gpt runs.
+- **Fix C (null `FreeTextCell` → abstention) — verified.** All 12 spending-report
+  dispatches error-free; the `*_other_specification` rows route to abstention.
+- **Fix B (dict-shape keys hint) — partial.** The hint steered claude off the
+  bare-string failure (class-B `TypeError` gone — all 3 runs emit a proper
+  `{magnitude, unit}` dict), **but a new error surfaced**: claude fills `unit`
+  with out-of-domain values because OH's lobbyist definition is a *qualitative*
+  "main purposes" test with no numeric time threshold, and `TimeThresholdCell`
+  cannot represent that. 3/3 claude `registration_thresholds` runs still error
+  → plan's zero-error pass criterion **not met**.
+- **The new finding routes to blocker 3 (abstention calibration), not blocker 2
+  (enum-domain pinning).** Pushed back on the handoff's framing: expanding the
+  `unit` enum domain would not help — none of the 4 valid units fit. GPT
+  abstains on this exact cell (correct); claude *under-abstains*. Structurally a
+  class-C sibling: model right, schema can't represent the answer. Fix B's hint
+  may aggravate the under-abstention by reading as "produce this shape."
+
+**Verdict.** Tier-1 blocker 1 (the schema/adapter fixes) is **partially
+cleared** — A and C verified against real output, original class-B mechanism
+cleared, but the `TimeThresholdCell` cell now fails in a way Fix B cannot reach
+(it is a should-be-abstention, not a typing bug). No patch — Step-D discipline.
+
+**Next:** blocker 3 — the Phase-2 verifier's abstention-calibration policy
+(the `TimeThresholdCell` qualitative-jurisdiction case is concrete evidence for
+it); then blocker 2 (enum-domain pinning), independent of the above.
+
+### 2026-05-21 (Tier-2 schema/adapter fixes: plan executed end-to-end) — 4 commits, +10 behavior tests, all green, no API spend
+
+Convo: [`convos/20260521_tier_2_schema_adapter_fixes_execution.md`](convos/20260521_tier_2_schema_adapter_fixes_execution.md)
+Plan: [`plans/20260521_tier_2_schema_adapter_fixes.md`](plans/20260521_tier_2_schema_adapter_fixes.md) — Steps A/B/C/E; Step D deferred.
+
+**What ran.** Executed the Tier-2 plan under strict TDD: cleared the 3
+`instantiation_failed` error classes the Tier-1 run surfaced (reported, not
+patched). Plan's 3 Questions settled with the user first — Q1 → option **(c)**
+(adapter sentinel, no shared-`models_v2` change); Q2 → **defer Step D** (the
+~$1 re-dispatch; both API keys unset this session); Q3 → enum-pinning + the
+verifier abstention-calibration policy **stay out of scope**.
+
+**Commits (on top of `1be98a5`, the Tier-2 plan commit):** `0403218` Fix A `_coerce_scalar_value`
+int/float→Decimal; `76c77e6` Fix B dict-shape value hint in
+`render_legal_roster`; `fd8b656` Fix C null-`FreeTextCell` → abstention in
+`_parse_and_instantiate`; `00e7257` ruff-format the test additions. All
+Step-E tests written first (RED: 5 driving fail, 5 guards pass), then each
+fix turned its tests green. Full suite **525 passed**, 8 skip, 3 pre-existing
+`test_pipeline.py` baseline failures (unrelated, `data/portal_snapshots/`).
+
+**Provisional findings.**
+
+- All three fixes behaved exactly as the plan's mechanism analysis predicted;
+  the RED phase failed precisely where expected (the Fix C RED showed the
+  `string_type` error — the Class C mechanism — confirming the diagnosis).
+- **Fix B scope call:** implemented the **keys-only** hint (roster line names
+  the dict-shape cell's JSON-object keys). The plan's line-51 example also
+  expands the `unit` `Literal` domain, but the Step-E test spec and
+  Implementation Details say keys only; with Step D deferred, a general
+  enum-domain renderer would ship unverified — left out as scope creep.
+- No new error classes in unit-test scope. Whether the fixes hold against
+  **real API output** is unverified — that is what the deferred Step D checks.
+
+**Verdict.** A/B/C are committed and green. The Tier-1 verdict's "qualified
+yes" for scaling legal-axis direct-read had 3 named blockers — blocker 1 (the
+3 schema/adapter fixes) is now cleared in code; blockers 2 (enum-domain
+pinning) and 3 (abstention-calibration policy) remain.
+
+**Next:** Step D re-dispatch verification (needs both API keys + ~$1; re-run
+the 2 error-bearing chunk groups into a fresh `results/` dir, zero-error pass
+criterion); then enum-domain pinning; then the Phase-2 verifier's
+abstention-calibration policy.
+
+### 2026-05-21 (Tier-1 direct-read legal-axis plan: executed end-to-end) — 4 commits, +18 behavior tests, 36-dispatch run, all green
+
+Convo: [`convos/20260521_tier_1_legal_axis_execution.md`](convos/20260521_tier_1_legal_axis_execution.md)
+Plan: [`plans/20260520_tier_1_direct_read_legal_axis.md`](plans/20260520_tier_1_direct_read_legal_axis.md) — all 8 steps.
+Writeup: [`results/tier_1/20260520_tier_1_legal_axis_writeup.md`](results/tier_1/20260520_tier_1_legal_axis_writeup.md)
+
+**What ran.** Legal-axis-only run over the 6 CPI-2015 C11 de-jure chunks (OH 2025, 84 legal cells): `[claude-opus-4-7, gpt-5.2] × 6 chunks × 3 runs` = 36 dispatches. Session cost $2.94 (ceiling $10). Plan Questions settled with the user first: SDK-default temp (Tier-0 ran at default 1.0, not temp-0 as Q1 assumed); N=3; scope ends at σ_noise; keep $10.
+
+**Commits (on top of `99de3cd`):** `aa970a5` Step 2 `_coerce_scalar_value`; `5a467d6` Step 4 runner `scripts/tier_1_direct_read_legal_axis.py`; `17a7a02` Step 6 18 behavior tests; `f3931e2` Step 7 writeup + 36 result JSONs. Suite: 515 passed (+3 baseline `test_pipeline.py` failures, unrelated).
+
+**Provisional findings.**
+
+- **σ_noise: Claude 85.7 % cells stable, GPT 73.8 %** — both deflated by unpinned-enum label churn (exact-match metric scores semantically-identical answers as unstable) and by the error-class incompletes. True model-reasoning floor is higher.
+- **Coercion fix works (criterion 3 met)** — zero Tier-0 string/int errors. The 18 errors are **3 new classes, reported not patched** per plan discipline: (A) `int → Decimal` strict rejection — the Step-2 "emit JSON numbers" nudge walked GPT into it; (B) dict-shape cell fed a scalar (`TimeThresholdCell` — the anticipated IND_197 failure); (C) non-optional `FreeTextCell` fed `null` (conditional `*_other_specification` rows; both models, 100 % of runs — a schema gap, the models were correct).
+- **Abstention-calibration problem reproduced at chunk scale** — GPT abstains on the *entire* `registration_thresholds` chunk because OH triggers lobbyist status qualitatively, not by dollar threshold; Claude encodes that as `0`. Largest source of cross-model divergence.
+- **Noise is chunk-correlated, not IID per cell** — `principal_spending_report` shows a 5–6-cell block flipping together on a single run-level misread.
+- Cross-model agreement 85 % (63/74 both-scored cells); criterion 4 verified (0 practical cells in any saved roster).
+
+**Verdict.** Legal-axis direct-read is "qualified yes" for scaling to 15 chunks / multi-vintage — 3 small schema/adapter fixes (A/B/C), enum-domain pinning, and an explicit abstention policy must land first. None architectural.
+
+**Next:** the 3 schema/adapter fixes are planned in [`plans/20260521_tier_2_schema_adapter_fixes.md`](plans/20260521_tier_2_schema_adapter_fixes.md) (Tier-2, written this session). Still future work: pin enum domains; design the Phase-2 verifier's abstention-calibration policy. CPI published-score comparison still waits on `phase-c-projection-tdd`.
+
+### 2026-05-20 (Tier-0 direct-read plan: Steps 5–7 executed — the live smoke run + writeup) — no code changes; analysis + finish-convo
+
+Convo: [`convos/20260520_tier_0_direct_read_execution.md`](convos/20260520_tier_0_direct_read_execution.md)
+Plan: [`plans/20260518_tier_0_direct_read_smoke_test.md`](plans/20260518_tier_0_direct_read_smoke_test.md) — Steps 5–7 of 7 (Steps 1–4 shipped 2026-05-19).
+Writeup: [`results/20260518_tier_0_direct_read_writeup.md`](results/20260518_tier_0_direct_read_writeup.md)
+
+**What ran.** Live dual-model smoke against OH 2025 `enforcement_and_audits` (2 rows × 2 axes = 4 cells). Both Claude Opus 4.7 and GPT-5.2 dispatched, parsed, and wrote all 4 raw/parsed JSON files on the first attempt. Total cost ≈ $0.10 (ceiling $5). Wall-clock: Claude 17.5 s, GPT 6.7 s.
+
+**Provisional findings.**
+
+- **Wiring works** — criteria 1–4, 7 met. Script ran end-to-end, no uncaught exceptions.
+- **Criterion 5 FAILED (Claude)** — Claude emitted `record_cell` for both `practical`-axis `GradedIntCell`s with `value="2"`/`"1"` (JSON strings); `GradedIntCell` wants `int`; Pydantic rejected both. Root cause: shared `RECORD_CELL_INPUT_SCHEMA` `value` is a loose `oneOf` including `string`. Encoding mismatch, not a reasoning error. **Left unpatched per the plan** — the failure mode is the deliverable; fix is Tier-1's job.
+- **Practical axis is structurally unanswerable from a statute-only bundle** — both practical cells ask about real-world behavior. GPT correctly abstained (`record_unscoreable_cell` ×2); Claude over-reached and scored them anyway. This is a data-*source* gap, **not** a retrieval gap — the Citations+retrieval escape hatch would hit the identical wall.
+- **Legal axis is viable** — `penalties…legal`: both models `True`, both correct, §101.99 verified verbatim. `audit_required_in_law, legal`: Claude scored `review_only` (correct; §101.72(G)+§101.79 verified verbatim), GPT abstained (over-conservative — a complete chapter not requiring an audit *is* a determinate answer).
+- **Sharp model divergence** — Claude scores aggressively (4/4 attempted), GPT abstains readily (3/4 unscoreable). They agree on statute facts, disagree on scoreability. GPT's 0 type-errors is an artifact of abstaining on the buggy cells, not better type handling.
+
+**Verdict.** Tier-0 selects neither plan branch cleanly: (1) fix the value-typing bug in Tier-1; (2) user decides practical-axis scope (exclude, or new evidence corpus); (3) proceed to Tier-1 direct-read on the legal axis across the 6 CPI-2015 de-jure chunks; (4) Phase-2 verifier needs an explicit abstention-calibration policy. Escape hatch not indicated.
+
+**Addendum (same session).** User corrected the writeup's framing: the `practical` axis is the **de facto** axis = **Prong 2's** job (scored against the same compendium items); this prong is **de jure only**. GPT abstaining on practical cells = correct; Claude scoring them = a genuine error. Writeup amended (two sections marked `[Amended 2026-05-20.]`). **Tier-1 plan written:** [`plans/20260520_tier_1_direct_read_legal_axis.md`](plans/20260520_tier_1_direct_read_legal_axis.md) — legal-axis run over the 6 CPI-2015 C11 de-jure chunks (IND_196/197/199/201/203/207) + typing fix + per-dispatch checkpointing + σ_noise (N=3). Full de jure SMR for one state-vintage = 131 legal cells / 15 chunks; Tier-0 scored 2.
+
+**Next:** execute the Tier-1 plan.
+
+### 2026-05-19 (Tier-0 direct-read plan: Steps 1–4 executed on Dans-MacBook-Air; Step 5 pending on a keyed machine) — 4 commits, +14 parser tests + 3 cold-load regression tests, all green
+
+Convo: [`convos/20260519_session_end_steps_1_to_4.md`](convos/20260519_session_end_steps_1_to_4.md)
+Plan: [`plans/20260518_tier_0_direct_read_smoke_test.md`](plans/20260518_tier_0_direct_read_smoke_test.md) — Steps 1–4 of 7 shipped this session; Steps 5–7 (run, writeup, finish-convo) pending.
+
+**What shipped (4 commits on top of `cce8542`):**
+
+- `62e02c0` — **Step 1:** relocated `EvidenceSpan` to new `src/lobby_analysis/models_v2/citations.py`. Breaks the cold-load cycle `chunks_v2 → models_v2.cells → retrieval_v2 → brief_writer → chunks_v2`. `retrieval_v2.models` re-exports for back-compat; all four import paths (`from lobby_analysis.retrieval_v2 import EvidenceSpan`, `.../retrieval_v2/models`, `.../models_v2`, `.../models_v2/citations`) resolve to the same class. Three new regression tests at `tests/test_v2_cold_load.py` verify cold-load from a fresh interpreter + that `models_v2.cells` doesn't pull `retrieval_v2` into `sys.modules` + identity preservation.
+- `a7fbbb6` — **Step 2:** `uv add openai` → 2.37.0.
+- `02cad4f` — **Step 3:** `scripts/tier_0_direct_read_smoke.py` with shared `RECORD_CELL_INPUT_SCHEMA`/`RECORD_UNSCOREABLE_INPUT_SCHEMA`, `ANTHROPIC_TOOLS`/`OPENAI_TOOLS` wrappers, and `parse_response(response, sdk)` returning `list[ParsedToolCall]`. 14 parser tests at `tests/test_tier_0_smoke_parser.py` cover both SDK shapes, raise-vs-skip policy for malformed responses, the cross-SDK schema-sharing invariant, and the returned-dict-is-an-independent-copy invariant.
+- `b0a1b2d` — **Step 4:** smoke-test body. Preflight (keys + bundle path → exit 2 on failure), statute loader (30 OH 2025 `.txt` files), cached system prompt, dispatch for both models, `_instantiate_cell` adapter covering scalar + dict-shape cells, raw + parsed JSON output with structured `provenance` field, side-by-side printer, $1/call cost ceiling (exit 3 on overrun). Verified preflight-no-keys path: exits cleanly before any API call.
+
+**Test deltas:** 480 → 497 passing (+14 parser, +3 cold-load). 3 pre-existing `test_pipeline.py` baseline failures unchanged (missing CA portal-snapshot fixture, unrelated).
+
+**Decisions resolved from the plan's open questions:**
+
+- Q1 (EvidenceSpan home) — `models_v2/citations.py` chosen per the plan recommendation.
+- Q3 (cited_section/justification placement) — option (a): per-cell wrapper dict `{cell, cell_class, cited_section, justification}`. `CompendiumCell` unchanged.
+
+Q2 (adversarial framing wording) and Q4 (cost ceiling) deferred to whoever runs Step 5.
+
+**Caveats logged for the next agent** (full detail in the convo):
+
+1. Pricing in `_PRICING_USD_PER_MTOK` is best-guess opus-4-**6** rates standing in for opus-4-**7** (the `personal_info.md` table is March 2026; opus-4-7 may differ).
+2. OH 2015 sections ARE on Dans-MacBook-Air now — the predecessor convo's claim that they were absent appears no longer true (data added since, or prior check missed). Doesn't change the retarget; just noted.
+3. Dict-shape cell adapter (TimeThreshold/TimeSpent/CountWithFTE/EnumSetWithAmounts) isn't exercised by `enforcement_and_audits` — all 4 cells are scalar (Binary/Enum/Graded).
+4. Cost ceiling aborts the WHOLE run if any one call exceeds $1 (strict reading of "stop and investigate").
+
+**Next session:** on a machine with both keys exported, run `uv run python scripts/tier_0_direct_read_smoke.py` and proceed to plan Steps 6 (writeup) and 7 (finish-convo).
+
+### 2026-05-18 → 19 (Tier-0 execution attempted; pivot to direct-read after 4 preconditions failed) — no code shipped; architecture reframed and captured in new plan + convo + superseding move on old plan
+
+Convo: [`convos/20260518_tier_0_execution_pivot_to_direct_read.md`](convos/20260518_tier_0_execution_pivot_to_direct_read.md)
+New plan: [`plans/20260518_tier_0_direct_read_smoke_test.md`](plans/20260518_tier_0_direct_read_smoke_test.md)
+Superseded plan: [`plans/_tabled/20260518_tier_0_minimal_pipeline.md`](plans/_tabled/20260518_tier_0_minimal_pipeline.md)
+
+**Attempted to execute Tier-0 end-to-end per the plan. Within three implementation steps, four independent preconditions failed in ways that weren't catchable from reading the plan alone — they only surfaced under execution.** Surfaced each, paused, asked. The user (after the third failure) pushed back on whether the plan's architecture was right at all, and the session pivoted from "execute Tier-0" to "supersede Tier-0 plan + write a new one."
+
+**The four preconditions:**
+1. **Wrong data paths.** Plan said `~/data/statutes/OH/2015/`; canonical layout is `~/data/lobby_analysis/statutes/OH/<vintage>/`. OH 2015 not on Dans-MacBook-Air (only 2010 + 2025). User authorized retarget to OH 2025 (commit `2b9528c`: plan banner + path correction + vintage swap in 7 sites + Step 1 symlink-shape rewrite). This commit *is durable* — the Tier-0 plan now references real paths — but doesn't recover the session from the later failures.
+2. **No `ANTHROPIC_API_KEY` on this machine.** Plan named live API dispatch as a prereq; `retrieval_v2/docs.md:78` already documented the laptop as keyless. Plan contradicted its own branch docs.
+3. **`scoring_v2/` is plan-only, not shipped code.** Plan called for a "thin wiring script" that "dispatches the scorer call ... using the scorer prompt + tool schemas inlined in the scoring_v2 implementation plan." Reality: only the 1380-line impl plan (`plans/20260514_brief_writer_implementation_plan.md`, written 2026-05-18 commit `067dfac`) exists. No `src/scoring/scorer_prompt_v2.md` on disk, no `record_cell` tool implementation, no parser for the scorer response. "Thin wiring script" understates the work by ~10×. Tier-0 as written = first-implementation of scoring_v2 wearing a smoke-test costume.
+4. **Circular import under cold-load.** `chunks_v2 → models_v2.cells → retrieval_v2.EvidenceSpan → retrieval_v2/__init__.py → retrieval_v2.tools → chunks_v2.build_chunks` — four-node cycle. `uv run python -c "from lobby_analysis.chunks_v2 import build_chunks"` fails with `ImportError`. Tests pass because they import lazily inside test functions; cold-load is where it bites. The 0979779 commit (EvidenceSpan migration) consolidated on the right *shape* (Citations-API span) but located the class in the wrong *module* (inside `retrieval_v2/`); that's the inversion that created the cycle. Plan's prior draft had warned "deletion requires a full import-graph audit; defer" and the audit didn't happen.
+
+**Architecture pivot (user-blessed in-session):** Walked through what retrieval+score actually buys us. Premise: statutes cross-reference sections not in the bundle; without retrieval-then-expand, the scorer emits "unscoreable" for any question whose answer lives in a referenced-but-not-fetched section. Empirical status of that premise: **untested**. The brainstorm Q1 locked chunks-as-dispatch-unit and the retrieval+score sequence against a worry, not against measured failure. User reframed: try the YAGNI simpler thing (direct-read) first; only build retrieval if direct-read fails empirically. Direct-read concretely: single API call, statute in cached system prompt (~50K tokens, well within Opus 4.7's 200K window), per-chunk user message + `record_cell` tool with free-text `cited_section` + 1-sentence `justification`. Machine-checkable provenance via a downstream verifier agent (Phase 2, separate plan) reading the cited section and ruling on the claim. **No Citations API in the primary call.** User has both Anthropic and OpenAI keys → Phase 1 is side-by-side comparison (Claude Opus 4.7 vs GPT 5.2); cross-model verification is Phase 2.
+
+**EvidenceSpan relocation is still load-bearing** even under direct-read, because the cycle bites any cold-load import of `chunks_v2` (which is needed for `enforcement_and_audits` cell specs). Right fix: `EvidenceSpan` is a Citations-API span primitive used (or potentially used) by both cells and cross-references — it's foundational provenance, not retrieval-specific. Relocate to `models_v2/citations.py`; cycle dissolves structurally. (My partial lazy-import patch to `brief_writer.py` was reverted in-session as treating-the-symptom not the cause.)
+
+**Decisions Made:**
+- **Tier-0 (original plan) is superseded.** Moved to `plans/_tabled/20260518_tier_0_minimal_pipeline.md` with a SUPERSEDED banner per the "never delete analytical work" rule. Relative links inside the file fixed to point `../../convos/` and `../../results/` from the deeper path. Tier-1 forward-pointer section near the bottom retained as valid input for Tier-1 planning.
+- **New plan written:** [`plans/20260518_tier_0_direct_read_smoke_test.md`](plans/20260518_tier_0_direct_read_smoke_test.md). Self-contained for the next agent: EvidenceSpan relocation as Step 1 (with a cold-load regression test added in the same commit), `uv add openai` as Step 2, single-call dual-model script as Steps 3-5, hand-eyeball + writeup + finish-convo as Steps 6-7. Success criteria stated. Cost ceiling $5; expected ≈ $0.60.
+- **Provenance via prose citation + verifier (deferred Phase 2).** `record_cell` tool gets `cited_section` (free-text statute reference) and `justification` (1-sentence prose) fields. `CompendiumCell.provenance` stays defaulted to `()` — Citations-API EvidenceSpans are not populated by direct-read; the field is retained for the escape-hatch path if direct-read fails.
+- **Cross-model framing is literal.** Both models will see each other's output downstream. Prompt language: "your response will be independently verified by another model reading the cited section." True statement once both models run, not a prompt-engineering trick.
+- **No code ships this session.** Pivot fully captured in docs only.
+
+**Findings worth carrying forward (beyond this branch):**
+1. **The Tier-0 plan was written under sycophantic load.** Confident-sounding executability that didn't survive contact with the filesystem or the import graph. Plan-write mitigation: every prerequisite stated in a plan should be `ls`'d or `grep`'d at plan-write time, not asserted from memory. The plan's own "Prerequisites" section was the right place to catch all four of tonight's failures.
+2. **0979779's "tight single commit" framing hid a real bug.** The migration *was* tight in line-count, but introduced a structural cycle the test suite couldn't catch (tests import lazily inside functions). "Tests pass" is necessary but not sufficient for migration safety when the import graph changes. For future schema migrations: add a cold-load smoke test (`python -c "from <package_root> import <foundational_module>"`) to verify the import graph still works from a fresh interpreter. New plan bakes this in.
+3. **YAGNI applies to architecture, not just to features.** Brainstorm Q1 locked retrieval+score-as-two-calls as an architectural choice without empirical grounding. Direct-read is the YAGNI default; multi-call architecture should require evidence of need (high unscoreable-rate) to ship.
+
+**Commits this session (2):** `2b9528c` (plan retarget 2015→2025 + path correction) + finish-convo bundle (this commit — supersede old plan, write new plan + convo, update RESEARCH_LOG + STATUS).
+
+**Next session.** Execute the new direct-read plan on Dans-MacBook-Pro or tarragon (both API keys exported). Plan is self-contained per the researcher norms.
+
+### 2026-05-18 (Tier-0 review + scoring_v2 impl plan write + EvidenceSpan resolution) — three commits ship the load-bearing follow-ups from the synopsis review
+
+Convo: [`convos/20260518_tier_0_review_scoring_v2_plan_evidencespan_resolve.md`](convos/20260518_tier_0_review_scoring_v2_plan_evidencespan_resolve.md)
+Predecessor convo (same day): [`convos/20260518_synopsis_walkthrough_and_tier_0_scoping.md`](convos/20260518_synopsis_walkthrough_and_tier_0_scoping.md)
+Plan written this session (via subagent): [`plans/20260514_brief_writer_implementation_plan.md`](plans/20260514_brief_writer_implementation_plan.md) (commit `067dfac`)
+Plan edited this session: [`plans/20260518_tier_0_minimal_pipeline.md`](plans/20260518_tier_0_minimal_pipeline.md)
+
+**Reviewed the Tier-0 plan critically and shipped its load-bearing follow-ups in three commits.** Review surfaced a dependency-graph error in the predecessor session's plan — the "4 v2 modules to wire up" framing conflated the retrieval brief-writer (shipped) with the scorer brief-writer (not built; lives in a `scoring_v2/` module that didn't exist on this branch). User confirmed the impl plan was never written (only a sketch + handoff existed since 2026-05-14), green-lit subagent dispatch.
+
+**Subagent (`general-purpose`) wrote `plans/20260514_brief_writer_implementation_plan.md`** off the existing `_handoffs/20260514_brief_writer_impl_plan_write_handoff.md` — 1400 lines, mirroring the retrieval impl plan structure. 51 named test signatures across 6 test files (8 tools + 7 models + 16 brief-writer + 9 parser + 8 prompt-invariant + 3 integration); full v2 scorer prompt drafted and inlined (7 cell-anchored rules, zero PRI key leakage); full `RECORD_CELL_TOOL` + `RECORD_UNSCOREABLE_CELL_TOOL` JSON schemas inlined; phase ordering bakes in the retrieval-lesson (prompt md before brief_writer because brief_writer reads prompt at call time). Subagent's non-obvious calls: `row_id` as plain string with parser-side registry validation (not a 186-entry enum); `ScoringOutput.chunk_id: str` per-call; parser logs+skips on unknown `(row_id, axis)` rather than raising; specialized `_instantiate_with_special_shapes` adapter for cell-classes whose tool `value` is a dict not a scalar. Commit `067dfac`; no AskUserQuestion escalations (locked package was complete enough).
+
+**Verified subagent's audit independently** — `grep -rn "provenance=" tests/ src/` returns 1 line (`tests/test_models_v2_cells.py:69`), matching the subagent's claim. But the broader `EvidenceSpan` import-surface audit (not in the subagent's scope) revealed the Tier-0 plan's "deletion requires full import-graph audit; defer" assertion was overcautious — actual surface was 6 files / 5 edit sites / 130 line-diff. User authorized full deletion now (not deferred). Commit `0979779`: deleted `src/lobby_analysis/models_v2/provenance.py` + `tests/test_models_v2_provenance.py`; migrated `CompendiumCell.provenance: EvidenceSpan | None = None` → `tuple[retrieval_v2.EvidenceSpan, ...] = ()`; updated 3 other files (init exports, init-test imports, wrapper-field-propagation test). 480 pass / 8 skip / 3 pre-existing `test_pipeline.py` baseline failures unchanged (was 484 — the 4 deleted tests targeted dead code). Closes Fork 1 from the 2026-05-16 review synopsis.
+
+**Tier-0 plan edits applied** (two from user pre-confirmation + two follow-ups from `0979779`): hop=2 locked in Step 3 (was an "implementer's call" open question; matches Tier 1 parity); `prompt_sha` capture added to Step 5 (sha256 of scorer prompt content, persisted in results JSON) + writeup; Step 2 collapsed to verify-already-done against commit `0979779`; Questions section cleaned up (removed Q1 hop + Q4 Step-2-ordering, both resolved/moot). Scoring_v2 impl plan Phase 7 collapsed similarly as commit `2d8e395`.
+
+**Not addressed this session** (held per user): four deeper Tier-0 issues from the review — Step 2's failing test was testing-anti-pattern by the plan's own definition (tests Pydantic acceptance of a tuple type), success criterion #3 (`cells == 2`) forecloses `record_unscoreable_cell` outcomes, Step 6 implies a refactor not named in Steps 3–5, cost budget $1–2/run is unsourced. Likely worth deeper Tier-0 rewrite after scoring_v2 ships and the actual API surface is concrete.
+
+**Commits this session (4):** `067dfac` scoring_v2 impl plan (subagent) → `0979779` EvidenceSpan retirement + schema migration → `2d8e395` scoring_v2 plan Phase 7 narrative collapse → finish-convo bundle (this commit).
+
+**Process note.** The predecessor session today wrote `20260518_synopsis_walkthrough_and_tier_0_scoping.md` + `plans/20260518_tier_0_minimal_pipeline.md` but didn't run finish-convo — both files were sitting untracked when this session started. This session's finish-convo absorbs the predecessor's work into the bundle (separate RESEARCH_LOG entry below for the predecessor; both convos tracked here for the first time). The doc-system-is-persistent-memory rule says end-of-session commits must land graph self-consistent — closing the predecessor's gap is part of this session's responsibility because it was sitting in this worktree.
+
+**Next session.** Either: (a) implementation session for `scoring_v2` (API-launched sub-branch, strict TDD per the now-existing plan, ~similar shape to the retrieval impl session); or (b) deeper Tier-0 rewrite to address the 4 unaddressed review issues once scoring_v2 ships; or (c) practical-axis brief-writer brainstorm as the next sibling component (per Q6 deferral). User decides priority.
+
+### 2026-05-18 (synopsis walkthrough + Tier-0 scoping) — Fork 1 resolved, H-F2 reframed, Tier-0 plan written
+
+Convo: [`convos/20260518_synopsis_walkthrough_and_tier_0_scoping.md`](convos/20260518_synopsis_walkthrough_and_tier_0_scoping.md)
+Plan: [`plans/20260518_tier_0_minimal_pipeline.md`](plans/20260518_tier_0_minimal_pipeline.md)
+Source review synopsis: [`results/20260516_review_synopsis.md`](results/20260516_review_synopsis.md)
+
+**Walked the 2026-05-16 review synopsis end-to-end and produced three substantive moves** (full audit trail in convo): (1) **Fork 1 resolved** — `CompendiumCell.provenance` uses `retrieval_v2.EvidenceSpan` (Citations-API span); `models_v2.EvidenceSpan` retired as dead code (deletion deferred per this session; later resolved 2026-05-18 in commit `0979779` per the session above). (2) **H-F2 reframed** — the Ralph loop IS the orchestrator (not a missing 5th component), so the load-bearing next move is building the smallest end-to-end pipeline that runs. (3) **Tier-0 / Tier-1 scoping landed against CPI 2015 vs OH 2015** — CPI has the strongest ground truth (700 per-state-per-item cells); Tier-0 = 1 chunk × 1 (state, vintage) × no projection (smoke-test wiring only); Tier-1 = 6 chunks covering CPI's 6 de-jure items + σ_noise via N=3 re-runs + first real Ralph-loop data point.
+
+Plan output: [`plans/20260518_tier_0_minimal_pipeline.md`](plans/20260518_tier_0_minimal_pipeline.md) — 7 implementation steps + Tier-1 forward-pointer + success criteria + confidence checkpoints with stop conditions. Per the convo's Open Questions section, the plan left several decisions for later (hop count, Step 2 ordering) — later resolved 2026-05-18 in the session above.
+
+**Process note (recorded later).** This session did not run finish-convo before being interrupted; both the convo file and the Tier-0 plan sat untracked in the worktree until the follow-up session committed them in its finish-convo bundle. The cross-session continuity is recorded in the follow-up convo's "Cross-session continuity note" section.
+
+### 2026-05-14 (harness review dispatch) — post-framing audit of 3 shipped components + `scoring_v2` lock against RESEARCH_ARC; 3 findings logged
+
+Convo: [`convos/20260514_post_framing_harness_review.md`](convos/20260514_post_framing_harness_review.md)
+Handoff consumed: [`plans/_handoffs/20260514_post_framing_harness_review_handoff.md`](plans/_handoffs/20260514_post_framing_harness_review_handoff.md)
+Output report: [`results/20260514_post_framing_review.md`](results/20260514_post_framing_review.md) (commit `0ccbb86`)
+Sibling parallel review (different scope, different session): [`docs/historical/compendium-source-extracts/results/20260514_post_framing_review.md`](../../historical/compendium-source-extracts/results/20260514_post_framing_review.md) (commit `770f866` — compendium-2.0 audit from the parallel handoff)
+
+**Dispatcher session.** Spawned a `general-purpose` subagent against the harness-review handoff (parent session on `main` worktree, no Nori pre-flight reads — handoff was self-contained by design). Subagent read RESEARCH_ARC + this branch's RESEARCH_LOG + the 3 shipped v2 modules + the in-flight scorer prompt + the brief-writer brainstorm/handoff + the 4 impl plans; answered the 6 handoff questions; saved one report under `results/`; committed `0ccbb86` on this branch; did not push, did not touch STATUS.md or RESEARCH_LOG.md (per handoff constraint — parent session handles those). Reviewer subagent still alive (id `a00a165fb531e34aa`) for follow-up if needed.
+
+**Findings, severity-tagged per handoff:**
+
+1. **[SHOULD-FIX] `EvidenceSpan` is two incompatible public classes.** `models_v2.EvidenceSpan` (section_reference + 200-char quote) and `retrieval_v2.EvidenceSpan` (citation_type + char/page/block indices) are both exported. The `scoring_v2` brainstorm Q8 locked `CompendiumCell.provenance: tuple[EvidenceSpan, ...]` without naming which class. Cannot be unified by aliasing — statute-axis semantics vs Citations-API provenance shape. Decision needed before the `scoring_v2` impl plan is written.
+
+2. **[SHOULD-FIX] Ralph loop has no home in the 4-component architecture.** Noise-floor re-runs (N independent invocations at fixed prompt-sha) + per-rubric loss aggregation across (state, vintage) aren't ownable by any of `models_v2` / `chunks_v2` / `retrieval_v2` / `scoring_v2`. "The orchestrator" is uniformly named as out-of-scope across chunks (line 147), retrieval (line 130), and brief-writer (lines 86, 185) brainstorms. Recommendation: name the orchestrator as the next-component-after-`scoring_v2` and track it. Pairs with the compendium-review's BLOCKER finding (per-rubric `Σ |diff|` normalization) — both findings imply the Ralph-loop layer needs explicit named ownership, not implicit "the orchestrator will do it."
+
+3. **[OBSERVATION] Practical-axis seam in `StateVintageExtraction`.** Legal-only scoring leaves 50 practical-only cells + 5 dual-axis practical halves missing. Q6 defers practical-axis brief-writer correctly, but the cell-space is flat across the registry / chunks manifest / `StateVintageExtraction.cells`. Without a typed-state distinction (`partial=True` flag, or separate `Legal/PracticalAxisExtraction` types merging into `StateVintageExtraction`), Phase C consumers can silently project from half-filled SMRs.
+
+**Other reviewer notes.** Phase C dict-access pattern is a natural fit (Q1), with a small accessor helper (`smr.get_cell(row_id, axis)`) recommended to avoid 8 projection modules each implementing defensive lookups. Reuse budget retrieval → practical-axis sibling ≈ 30-40% structural (kwargs-returning brief-writer pattern, parser shape, cell-class dispatch carry; tools / document-block construction / prompt content are statute-specific) (Q3). Scale-failure diagnostics fine at T0/T1; at T2+ one quiet mode — unknown tool names get skipped silently after citation-buffer reset (intentional, but masks model-hallucinated tool names) — and zero-output chunks won't raise without a minimum-emit-count diagnostic (Q4). Of 10 brainstorm Q-locks, only Q8 needs reopening; Q3 is borderline for Ralph reproducibility — `ExtractionRun.prompt_sha` semantics need clarification (just prompt-sha, or `(prompt_sha, retrieval_output_sha)`?) so retrieval-output drift doesn't read as prompt-noise (Q5). Pause-and-surface directive flow already wired into the brief-writer handoff (lines 72, 192, 210); concrete bullet list of T1-failure modes is the impl-plan-writer's deliverable (Q6).
+
+**Open questions for user input** (none locked this session; all surfaced for next):
+
+1. Which `EvidenceSpan` shape backs `CompendiumCell.provenance`?
+2. Does the `scoring_v2` impl plan name the Ralph-loop orchestrator as the next component, or are the four meant to suffice?
+3. Should `ExtractionRun.prompt_sha` include retrieval-output hash for Ralph reproducibility?
+
+**Next session.** User decides the 3 open questions above; then the `scoring_v2` impl plan gets written per [`plans/_handoffs/20260514_brief_writer_impl_plan_write_handoff.md`](plans/_handoffs/20260514_brief_writer_impl_plan_write_handoff.md), with Findings 1-3 folded into scope (Finding 1 ⇒ explicit provenance-type decision in plan; Finding 2 ⇒ orchestrator named in "Things this plan does not ship"; Finding 3 ⇒ typed-state distinction or `partial=True` flag). The compendium-review's Findings 2/4 (doc-vs-data drift; mapping-doc pre-rename IDs) may be picked up in parallel.
+
+### 2026-05-14 (compendium review dispatch) — post-framing audit of Compendium 2.0 against RESEARCH_ARC; 4 findings logged
+
+Convo: [`convos/20260514_post_framing_compendium_review_dispatch.md`](convos/20260514_post_framing_compendium_review_dispatch.md)
+Handoff consumed: [`plans/_handoffs/20260514_post_framing_compendium_review_handoff.md`](plans/_handoffs/20260514_post_framing_compendium_review_handoff.md)
+Output report: [`docs/historical/compendium-source-extracts/results/20260514_post_framing_review.md`](../../historical/compendium-source-extracts/results/20260514_post_framing_review.md) (commit `770f866`)
+Sibling parallel review (different scope, different session): [`results/20260514_post_framing_review.md`](results/20260514_post_framing_review.md) (commit `0ccbb86` — harness-internals audit from the parallel handoff)
+
+**Dispatcher session: spawned a `general-purpose` subagent against the compendium-review handoff, then logged its findings here for future-agent discoverability.** The substantive review (read RESEARCH_ARC, 9 per-rubric projection mappings, freeze-decisions log, naming-conventions doc) was done entirely by the subagent under "read-only outside the report file, commit-but-don't-push, no STATUS.md edits" constraints. Tree clean on entry, clean on exit; only file added is the report under `docs/historical/`.
+
+**Top findings (severity-tagged per handoff):**
+
+1. **BLOCKER for Phase C.** Per-state per-atomic-item ground truth for the Ralph loop exists *only* for CPI 2015 (700 cells) and Sunlight 2015 (200 cells). The other six rubrics validate at sub-aggregate, weak-inequality, or zero-US-state granularity. RESEARCH_ARC's `loss(prompt) = Σ |diff|` will silently weight whichever rubric has the most projectable summands. RESEARCH_ARC §"Three risks" risk #1 names this abstractly; this is the concrete version. **`phase-c-projection-tdd` should pick an explicit per-rubric normalization at kickoff before any projection code is written.**
+2. **SHOULD-FIX (doc-vs-data drift).** TSV says all 181 rows `status=firm`; README + NAMING_CONVENTIONS say "180 firm + 1 path_b_unvalidated". OS-1's unvalidated status is encoded only via `n_rubrics=0` + a magic string. Pick a side.
+3. **SHOULD-FIX (framing-driven asymmetry).** Legal-vs-practical gap is queryable for *artifact existence* (the 5 dual-axis rows) but not for *content-field surfacing*. 35 `lobbyist_spending_report_includes_*` + 13 `lobbyist_reg_form_includes_*` + 9 `lobbying_contact_log_includes_*` rows are legal-only with no practical sibling. Two routes flagged: per-content-field practical cells (~50+ new rows, expensive) vs. a single `practical_axis_observed_fields: Set[row_id]` envelope outside the 181-row TSV. Belongs to Prong-2 brief-writer at spin-up, not v2 re-opening.
+4. **OBSERVATION.** 9 projection mapping docs use **pre-rename** row IDs throughout (247 old-name occurrences, by §10.1 design). Phase C name lookups must route through §10.1's resolver or `row_id_renamer.RENAMES`. Cheap mitigation: a one-off `tools/check_mapping_doc_row_ids.py` as a pre-merge guard on projection PRs.
+
+**Q2 (axis seam) clean — no finding.** Q5 (P1-product residue) lone candidate: **OS-1** (`separate_registrations_for_lobbyists_and_clients`); flagged per handoff, not proposed for removal.
+
+**Reviewer punted on:** PRI 2010 mapping deep-read (919 lines; spot-check only) and whether `compendium-v2-promote`'s deprecation broke any caller. Worth a separate sweep if the user wants either.
+
+**Process note (head-fake recorded for future sessions):** when post-spawn `git log` showed two new commits both touching files named `20260514_post_framing_review.md`, this session's agent jumped to "the reviewer clobbered the parallel review" without checking the parent dirs (`docs/historical/...` vs `docs/active/...`). Corrected within the same turn. Lesson generalizes — identical basenames across different parent dirs is exactly the failure shape that "check the full path before claiming collision" guards against.
+
+**Mid-session continuation (2026-05-15):** user pointed at the parallel harness review's report (commit `0ccbb86`) and asked for a consolidated plan applying both reviews' recommendations, for a fresh agent to execute. Audited "concur" framing before drafting: the two reviews concur thematically on Ralph-loop undersupport (compendium = uneven loss-function ground truth across the 8 rubrics; harness = no orchestrator component) but their other findings are complementary across surfaces (compendium = schema/docs; harness = code modules), not duplicative. **Plan written at** [`plans/20260515_apply_post_framing_review_recommendations_plan.md`](plans/20260515_apply_post_framing_review_recommendations_plan.md): 6 phases scoped to this branch only. Phases 1-2 are mechanical (status-drift doc fix, orchestrator-gap naming, row-ID consistency tool TDD-built). Phases 3-4 are **brainstorm-gated** (EvidenceSpan duplication — 3 options; SMR partiality marker — 2 options) so the fresh agent doesn't silently relock what the reviewer flagged. Phase 5 writes handoff notes for the deferred findings (C-F1 Ralph-loop per-rubric normalization → `phase-c-projection-tdd`; C-F3 legal-vs-practical content-field gap → practical-axis sibling brainstorm; Q5 OS-1 watchpoint). TSV-side verification done this session: `status` column is 181/181 `firm`, so C-F2's doc/data drift is real.
+
+**Multi-committer artifact recorded (resolved):** the prior turn's commit `58a8222` (this session's first finish-convo) inadvertently absorbed the parallel harness-review parent session's mid-flight RESEARCH_LOG edit — the harness-review entry above (commit `0ccbb86`) was added to this file between my session-start Read and my Edit, and my `git add docs/.../RESEARCH_LOG.md` staged the combined state. The parallel session's own finish-convo landed 2 minutes later as commit `e93c7db` (convo file + STATUS one-liner; their commit message explicitly acknowledged that my commit had swept up their RESEARCH_LOG edit and chose not to re-touch it). **Net result: link graph is consistent on origin as of `e93c7db`** — the harness-review entry's link to `convos/20260514_post_framing_harness_review.md` resolves; the convo file is tracked. The transient inconsistency between `58a8222` push and `e93c7db` push (≈2 minutes) is now closed. Recorded for future-agent self-awareness — the shared-worktree `git add <file>` pattern is exactly the failure shape the multi-committer rule against this pattern guards against, even when it ultimately resolves cleanly.
+
+**Next session.** Fresh agent executes the plan starting from Phase 0 (read + orient). User decides up-front (a) whether Phases 3/4 brainstorm now (pre-locking for the fresh agent) or stay as gates the fresh agent surfaces; (b) whether to split the plan into smaller plans for parallel execution.
+
+### 2026-05-14 (research arc doc) — three-prong arc + Prong 1 internals + Ralph loop doc landed on main
+
+Convo: [`convos/20260514_research_arc_doc.md`](convos/20260514_research_arc_doc.md)
+Doc: [`docs/RESEARCH_ARC.md`](../../../RESEARCH_ARC.md) (repo-level; main `86dc02e`, this branch `ee75e3a`)
+
+**Started as a branch-status query, evolved into a research-arc review with three user-initiated reframes of the agent's mental model, and produced one repo-level doc landed on main via cherry-pick.** No code changes; no extraction-harness component movement; no plan revisions. Pure framing work that hardens the project's link graph for future agents (and other fellows).
+
+**The three reframes** (corrections to agent framing, all from user):
+
+1. **Phase C is the Ralph-loop evaluation function, not a downstream sanity-check.** No 50-state typed-cell ground truth exists — that's the gap this project fills — so projecting our extracted cells back into each rubric's published scoring rule and comparing to published per-state scores is the only tractable accuracy signal for Prong 1. The Ralph loop closes via that signal.
+2. **Prong 2 + Prong 3 is the product; Prong 1 is upstream scaffolding.** The SMR encodes what each state's regime *legally requires*; the gap vs. what portals *actually expose* is itself a research artifact. Prong 1 also makes Prong 2 dramatically cheaper (shared typed-cell schema across 50 state pipelines instead of 50 bespoke extractors). "Stairs of leverage" pattern: prior-art rubrics → Prong 1 (via Phase C eval); Prong 1 → Prong 2.
+3. **Locked rubric order is mostly convenience, not a rigid signal-strength gradient.** Order respects dependencies (Newmark 2005 → Newmark 2017; HG 2007 → Track A's HG retrieval sub-task) and starts where ground truth is strongest, but reordering on empirical results is fine.
+
+**Ralph-loop concretization** (added to the doc after user provided the loop shape): objective `loss(prompt) = Σ over (state, vintage, rubric) |f_rubric(SMR) − published_score|`; single scalar. Noise floor `σ_noise` from independent re-runs is a prerequisite (otherwise the loop chases 1σ flukes). Three risks named up front: implicit weighting in `Σ |diff|` across unequal-size rubrics; Goodhart on projection-distance (rubrics have degenerate solutions); cost asymmetry (single-state OH-only ≈ $4/iter vs 50-state ≈ $150/iter under ARCHITECTURE.md's $50–500/mo budget). Track A's across-vintage stability check is the only signal that *doesn't* go through a rubric — load-bearing for Goodhart defense.
+
+**Cross-track milestone surfaced:** the first Ralph-loop iteration end-to-end needs three things landed across three branches simultaneously — `scoring_v2` (this branch) + CPI 2015 C11 projection (`phase-c-projection-tdd`) + OH 2015 statute bundle (`oh-statute-retrieval`). Named in the doc. This walks back an earlier agent overclaim that "harness feature-complete for a single-state pilot after scoring_v2 ships" — that's *extraction-complete*, not *quality-validated*.
+
+**Mid-session fast-forward:** integrated 2 unseen commits on `origin/extraction-harness-brainstorm` (`5f262e9` fixture decouple + `7d6f20d` desktop T1 convo) before the new doc commit. No conflicts; no file overlap with `docs/RESEARCH_ARC.md`. Doc's `retrieval_v2` status line ("T1 smoke validated on desktop") happened to land consistent with the just-pulled RESEARCH_LOG state.
+
+**Cherry-pick path executed cleanly:** `git pull --ff-only` on this branch → commit doc (`ee75e3a`) → switch to main worktree (already at `f6cf909` from session-start fetch, fast-forwarded by `compendium-naming-docs` PR #10 merge during the session) → `git cherry-pick ee75e3a` (clean; lands as `86dc02e`) → push both branches. Multi-committer rules respected throughout.
+
+**Discoverability follow-up deferred per user.** `README.md`'s repo-layout section doesn't reference `docs/RESEARCH_ARC.md`. Easy one-line edit when desired.
+
+**Next session.** Brief-writer/scorer-v2 implementation plan per the prior session's outstanding handoff at [`plans/_handoffs/20260514_brief_writer_impl_plan_write_handoff.md`](plans/_handoffs/20260514_brief_writer_impl_plan_write_handoff.md). That's the actual next work session; the research-arc doc was a sidebar that happened to fit cleanly here.
+
+### 2026-05-14 (retrieval impl T1 + fixture decouple) — desktop T1 cleared; parser fixture decoupled from integration write path
+
+Convo: [`convos/20260514_retrieval_v2_t1_and_fixture_decouple.md`](convos/20260514_retrieval_v2_t1_and_fixture_decouple.md)
+Predecessor: [`convos/20260514_retrieval_implementation.md`](convos/20260514_retrieval_implementation.md) (laptop shipped retrieval_v2 at T0 with T1 deferred)
+Concurrent: [`convos/20260514_brief_writer_brainstorm.md`](convos/20260514_brief_writer_brainstorm.md) (parallel session; clean fast-forward, no file overlap)
+
+**Cleared the T1 smoke gate on the desktop machine.** Ran `uv run pytest tests/test_retrieval_v2_integration.py` against the real Anthropic Citations API: **3/3 passed in ~21s, ~$0.06** (three separate `messages.create` calls). Real API attaches citations to text blocks, fires `record_cross_reference` tool calls on the tiny statute fixture, and parser yields valid `RetrievalOutput` with non-empty `evidence_spans`. T1 cleared on first try; no SDK auth/schema/400 issues; Opus 4.7's adaptive `thinking` block confirmed present in real responses (parser passes through, matches plan's documented behavior).
+
+**Then 3 parser unit tests went red** — exactly the failure mode the laptop convo's "Open Questions" section pre-flagged. Diagnosis: NOT a parser bug; **test design coupling**. The integration test's side-effect-write to `sample_response.json` (same file parser unit tests consume) caused hand-crafted-shape-specific assertions to break against the new real-shape data: (1) hardcoded `§311.005` literal in pairing test where real fixture has `§99.005`; (2,3) two tests asserting on `unresolvable_references[0]` / `len == 1` where real fixture has zero unresolvable refs (agent didn't emit any — the tiny 2-sentence statute has no unresolvable cross-refs to emit).
+
+**Per Phase 7 of the retrieval impl plan ("pause-and-surface, don't silently patch"), surfaced to user with full diagnosis and 3 options.** User locked **Option A: split fixture paths**:
+
+- `tests/fixtures/retrieval_v2/sample_response_handcrafted.json` (committed, md5 `d2e3fe0a…` — pristine from laptop session) → parser unit tests pin here; exercises edge cases real API may not naturally produce on a tiny fixture (mixed tool types, multi-tool buffer reset invariant).
+- `tests/fixtures/retrieval_v2/sample_response_real.json` (gitignored) → T1 writes here as ad-hoc local-inspection aid; no test consumes it.
+
+**Did NOT silently patch the parser or dumb-down the unit tests to match the new fixture shape** — both would have lost real coverage signal. The optional shape-tolerant-against-real-fixture test was punted under YAGNI (T1 itself tests parser-against-real on every desktop run).
+
+**One commit** (`5f262e9`): rename `sample_response.json` → `sample_response_handcrafted.json` (100% similarity preserved in git), gitignore rule for `sample_response_real.json`, 2 test-file path edits + docstring cleanup, ruff clean. Post-fix state: parser unit suite 8/8, full retrieval_v2 unit suite 48/48, T1 re-run against new path 3/3 (verified the rename works end-to-end against real API; second ~$0.06 spent).
+
+**Surfaced for future work (NOT done this session):**
+
+- **`thinking` block in parser docs.** Now empirically confirmed in Opus 4.7 real responses; parser handles transparently but `parser.py` docstring may not mention this as a tested path. Quick fix when scoring_v2 next touches the parser.
+- **Unresolvable-reference live-test.** Currently un-exercised against real API; tiny_statute.txt is too clean. Would need a deliberately-messy fixture (phantom section reference, ambiguous "the act"). Worth raising in scoring impl, where `record_unscoreable_cell` has an analogous untested path.
+- **Permissions/uv-resolution finding.** `uv run pytest` from inside the worktree resolves to the worktree's `.venv` correctly (despite parent shell's `VIRTUAL_ENV` pointing at main) — uv emits a diagnostic warning then ignores the env var. Updated the prior memory note (`feedback_pytest_in_worktree.md`) with an addendum: the safe sequence is `uv sync --extra dev` from inside the worktree first, then `uv run pytest …`. Also matches the pre-approved `Bash(uv *)` rule, avoiding permission prompts that `.venv/bin/pytest` triggers.
+
+**Sequencing unchanged:** cells ✓ → chunks ✓ → **retrieval ✓ (T0 + T1)** → brief-writer (brainstorm done concurrently, impl plan write next per its handoff) → practical-axis sibling brainstorm.
+
+### 2026-05-14 (brief-writer brainstorm) — all 10 Q's + 2 pushbacks locked; impl-plan-write handed off
+
+Plan sketch: [`plans/20260514_brief_writer_plan_sketch.md`](plans/20260514_brief_writer_plan_sketch.md)
+Convo: [`convos/20260514_brief_writer_brainstorm.md`](convos/20260514_brief_writer_brainstorm.md)
+Outgoing handoff: [`plans/_handoffs/20260514_brief_writer_impl_plan_write_handoff.md`](plans/_handoffs/20260514_brief_writer_impl_plan_write_handoff.md)
+
+**Brainstormed the v2 scoring harness (legal-axis path) end-to-end with user-in-loop; all architectural Q's locked.** Two pushbacks against the prior session strategy accepted in the opening exchange before any plan-sketch was written:
+
+1. **Combine brief-writer + scorer-prompt-rewrite into ONE component.** Kickoff handoff split them; retrieval's experience (prompt and brief-writer ship in one session, tightly coupled — brief-writer reads prompt at call time, prompt assumes brief-writer's tool definitions) said split was wrong. User agreed.
+2. **Follow retrieval's SDK + Citations + tool use pattern.** Effectively makes the deferred-SDK-adoption decision a settled question — retrieval already added `anthropic>=0.102` to `pyproject.toml`. "ONE pipeline" criterion consistency. User agreed.
+
+**Locked package (full audit trail in convo's "Decisions made" table + "Locked package (synthesis)" section):**
+
+- **Q6: Practical-axis cells → DEFER to sibling brainstorm.** Second pushback against the user's "combine" decision: combine was about prompt+brief-writer *for legal scoring*, not legal+practical. v1 had 2 brief-writers (`build_subagent_brief` portal, `build_statute_subagent_brief` statute) for exactly this reason. Citations API behavior on portal HTML/PDF empirically unmeasured. This component's scope is legal-axis only; mixed chunks score only their legal cells; practical-axis (50 cells + practical halves of 5 dual-axis rows) becomes the next sibling brainstorm.
+- **Q4: Optional disk-loaded preambles, ship 0.** `src/scoring/chunk_frames_v2/<chunk_id>.md` if present, else skip silently. The scholarly v2 rewrite of v1 Rule 6 (PRI A5-A11 + C0 functional-public-entity substantive guidance) lands in preambles when authored — empirical-informed by T1+ evidence of where the model under-grounds. Impl plan ships 0 preambles.
+- **Q1: Parameterized `chunks: list[str]`, default per-chunk.** Mirrors retrieval; accuracy-first; iter-1's 7-row baseline is the comparison point.
+- **Q2: Single polymorphic `record_cell` + `record_unscoreable_cell`.** 2 tools total, mirrors retrieval's surface. Parser dispatches by `row_id` → `CompendiumCellSpec.expected_cell_class`. Per-cell-type (15) tools deferred until T2+ evidence shows the model mis-types values.
+- **Q3: All statutes + retrieval annotations as user text.** Same statute set retrieval consumed — cache-friendly cross-call sharing. RetrievalOutput's cross_references summarized in user text (relevance + chunk_ids_affected + key evidence_spans).
+- **Q7-sub: Separate `UnscoreableCell` + `record_unscoreable_cell` tool.** Direct parallel to retrieval's `UnresolvableReference` / `record_unresolvable_reference`. No `CompendiumCell` wrapper field churn. Symmetric `ScoringOutput.cells` + `ScoringOutput.unscoreable_cells`.
+- **Q7-rules: v1 rule-by-rule disposition.** Drop 1, 7 (Citations + tool-use enforce); replace 6 (preambles), 8 (tool-use); morph 3 (parser validates per-cell-type); keep 2 (escape valve = Q7-sub), 4 (confidence), 5 (read full statute layered — promoted load-bearing).
+- **Q8: `CompendiumCell.provenance` → `tuple[EvidenceSpan, ...]`.** Mirror retrieval; Citations returns multiple spans per claim; low blast radius (Phase C consumer-side not yet ramped); impl-plan-writer audits existing fixture usages.
+- **Q9: `ScoringOutput` Pydantic model mirroring `RetrievalOutput`.** Scoped to one call: `(state_abbr, vintage_year, chunk_id)` + `cells` + `unscoreable_cells` tuples.
+- **Q10: `src/lobby_analysis/scoring_v2/` + `src/scoring/scorer_prompt_v2.md`.** Boring; mirrors retrieval naming; no broader reorg.
+
+**Six locked Q's mirror retrieval directly** (Q1, Q2, Q3, Q7-sub, Q8, Q9, Q10). Symmetry is intentional — process inertia at the architectural-pattern layer reduces review surface and gives a code-reviewable parallel structure across the two LLM-calling modules.
+
+**Things this brainstorm is locking blind on** (3, flagged in convo + handoff): Citations API + tool use composition under longer statutes + more tool calls per response (retrieval's T1 smoke is the canary); `CompendiumCell.provenance` schema change tolerance (Phase C consumer-side); practical-axis brief-writer feasibility (entirely deferred).
+
+**Session strategy: hand off to impl-plan-write session.** User chose the handoff option over writing the impl plan in this session. Outgoing handoff specifies: write `plans/20260514_brief_writer_implementation_plan.md` — TDD-shaped, API-launchable, mirror retrieval impl plan structure (inline the full v2 prompt + tool schemas; list 30+ test signatures by name; phase-by-phase commit boundary). The impl-plan-writer does NOT re-litigate locked decisions; it translates them. Cycle continuation: brainstorm done → impl-plan-write next → impl session in API-launched sub-branch after.
+
+**Process notes.** (1) Agent pushed back on the kickoff handoff's 4-component framing **before** writing the plan-sketch — the sketch reflects the consolidated framing rather than re-litigating the handoff's split mid-document. (2) Two architectural pushbacks batched into a single AskUserQuestion call; both accepted; saved a round-trip. (3) Per the user memory note about doc system being persistent memory, not patchwork: drafted plan-sketch + brainstorm convo before any Phase-2 Q calls so the link graph was consistent at every commit boundary. Plan-sketch carries a "Brainstorm outcome" back-link at the top to the convo's locked decisions; convo carries forward-links to plan-sketch + handoff; handoff carries back-links to convo + plan-sketch + retrieval impl plan + retrieval impl convo. (4) Second pushback (Q6 = defer practical) was a deliberate re-fork of the kickoff "combine" decision on a different seam — surfaced explicitly. (5) Six of 10 Q's locked on agent's "mirror retrieval" hunches; one Q4 deferred scholarly work (v1 Rule 6 content not rewritten this session — lands in preambles when authored, downstream).
+
+**Next session.** Impl-plan-write per the outgoing handoff. After impl-plan ships, two paths in parallel: (a) implementation session in API-launched sub-branch executing the plan under strict TDD; (b) **practical-axis brief-writer brainstorm** as sibling component — covers the 4 practical-only chunks + practical halves of 5 dual-axis chunks; depends on cells + chunks + this session's `scoring_v2` model bindings.
+
+### 2026-05-14 (retrieval impl) — retrieval_v2 module landed under strict TDD; T1 smoke deferred to desktop
+
+Convo: [`convos/20260514_retrieval_implementation.md`](convos/20260514_retrieval_implementation.md)
+Plan executed: [`plans/20260514_retrieval_implementation_plan.md`](plans/20260514_retrieval_implementation_plan.md)
+Originating brainstorm: [`convos/20260514_retrieval_brainstorm.md`](convos/20260514_retrieval_brainstorm.md)
+
+**Executed the retrieval implementation plan end-to-end under strict TDD on the laptop (Dans-MacBook-Air).** 51 RED tests written first (commit `a5d05c5`), then five GREEN commits each turning one test file green in sequence. **T0 unit gate is fully green** (full suite 400 → **448 pass** = +48 retrieval_v2 tests); 3 pre-existing `test_pipeline.py` FileNotFoundErrors unchanged from baseline. **T1 smoke (integration test against the real Anthropic Citations API) is deferred to a desktop run** — laptop has no `ANTHROPIC_API_KEY`; user flagged this mid-session and asked to defer T1 explicitly. Integration test machinery is in place: `tiny_statute.txt` fixture committed; `tests/test_retrieval_v2_integration.py` skips cleanly without the key (verified `3 skipped in 0.01s`). Desktop run = `uv run pytest tests/test_retrieval_v2_integration.py` with key in env.
+
+**The deliverable: `src/lobby_analysis/retrieval_v2/`.** Five thin modules:
+
+- `tools.py` — `CROSS_REFERENCE_TOOL` + `UNRESOLVABLE_REFERENCE_TOOL` JSON-schema definitions. `chunk_ids_affected.enum` sourced from `build_chunks()`; **coupling test** (`test_cross_reference_tool_chunk_ids_enum_matches_chunks_manifest`) enforces no drift between this tool schema and the chunks manifest.
+- `models.py` — frozen Pydantic models. `EvidenceSpan` (polymorphic over the 3 documented Citations API citation types); `CrossReference` / `UnresolvableReference` (`evidence_spans: tuple[EvidenceSpan, ...]` from preceding text blocks); `RetrievalOutput` (scoped to `(state_abbr, vintage_year, hop)` with hop ∈ [1, 2]).
+- `brief_writer.py` — `build_retrieval_brief(state, vintage, statute_bundle, chunks, url_pattern="")` returns the `messages.create()` kwargs dict. Does **not** call the SDK; the orchestrator dispatches. Model `claude-opus-4-7`, `thinking={"type": "adaptive"}`, `output_config={"effort": "high"}`, no sampling params (would 400 on Opus 4.7). System block + document blocks both ephemeral-cached.
+- `parser.py` — `parse_retrieval_response(message, state_abbr, vintage_year, hop)`. Polymorphic over SDK `Message` objects (attr access) and JSON dicts (key access) — same path works for fixtures + real responses. Pairing rule: citations on text blocks accumulate; on `tool_use` block, buffer flushes onto that tool's `evidence_spans` and resets. Unknown tool names still reset (prevents stale spans bleeding into next valid call). Other block types (`thinking`, `server_tool_use`) pass through.
+- `__init__.py` + `docs.md` — 9 public names; module-level docs matching `chunks_v2`/`models_v2` pattern.
+
+Plus `src/scoring/retrieval_agent_prompt_v2.md` — the v2 prompt (chunk-anchored, zero PRI rubric leakage, Rule 5 instructs "cite before each tool call" making the parser's pairing rule non-vacuous).
+
+**Plan deviations surfaced and resolved (2, both flagged in convo).**
+
+1. **Phase ordering (P6 → P4 → P5).** The brief_writer reads the prompt file at call time (`_PROMPT_PATH.read_text()` inside `build_retrieval_brief`), so Phase 6 (write `retrieval_agent_prompt_v2.md`) had to land before Phase 4 (brief_writer) for tests to clear. Commit messages preserve plan-numbered phase names ("Phase 6 of plan", "Phase 4 of plan") so the audit trail stays intact.
+2. **Cell roster format.** Plan's `_format_cell_roster` used `spec.description[:120]`, but `CompendiumCellSpec` has only `(row_id, axis, expected_cell_class)` — no description. The underlying compendium TSV also has no description column (only provenance fields: `rubrics_reading`, `n_rubrics`, `notes`). Adapted format to `- {row_id} ({axis}) [{cell_class}]` per cell; row_ids are self-describing in this codebase.
+
+**Surfaced for user / next agent: side-effect in `test_parser_handles_real_api_response`.** Plan design has the integration test write the real API response to `tests/fixtures/retrieval_v2/sample_response.json` on every successful run (overwriting the hand-crafted fixture from Phase 5). Functionally that means parser unit-test fixture churns across runs; pro/con argument in the convo. Plan author chose pro; if fixture-churn-induced parser flakes show up at T2+, gate the write with `if not SAMPLE_RESPONSE_PATH.exists():`. Not changing until the user weighs in or T2-T4 show real noise.
+
+**Commits this session (8):** `a5d05c5` RED tests → `191873b` tools.py (P2) → `16beb1d` models.py (P3) → `1686474` prompt.md (P6, executed early) → `97a3fee` brief_writer.py (P4) → `aab535f` parser.py + fixture (P5) → `22703fa` tiny_statute.txt (P7 prep) → `d1fa512` exports + docs.md + ruff (P8).
+
+**Next session.** Either: (a) **desktop T1 run** — Dan runs `uv run pytest tests/test_retrieval_v2_integration.py` on Dans-MacBook-Pro with `ANTHROPIC_API_KEY`; on success the test side-effects `sample_response.json` with the real shape; if parser unit tests then go red, pause-and-surface (per plan Phase 7 'Things that may go wrong'). Or (b) **brief-writer brainstorm** — the cleaner next downstream component (orthogonal to retrieval; depends only on cells + chunks, both shipped). Plan-sketch → brainstorm → impl-plan cycle, same convention as chunks and retrieval. Scorer-prompt rewrite is the fourth component; depends on retrieval bundle shape (now known: `RetrievalOutput.cross_references[*].evidence_spans` carries cited statute support).
+
+### 2026-05-14 (chunks impl) — chunks_v2 module landed under strict TDD (Phases 0-7)
+
+Convo: [`convos/20260514_chunks_implementation.md`](convos/20260514_chunks_implementation.md)
+Plan executed: [`plans/20260514_chunks_implementation_plan.md`](plans/20260514_chunks_implementation_plan.md)
+Handoff consumed: [`plans/_handoffs/20260514_chunks_implementation_handoff.md`](plans/_handoffs/20260514_chunks_implementation_handoff.md)
+
+**Executed the chunks implementation plan end-to-end under strict TDD.** 24 tests written first (RED, commit `8450bd6`), then five GREEN commits in sequence — each turned exactly its target test file green. Full repo suite went **374 → 400 pass** (+26 chunks tests), 5 skip, 3 pre-existing `test_pipeline.py` `FileNotFoundError`s unchanged (user-approved baseline carried from the cell-models session).
+
+**The deliverable: `src/lobby_analysis/chunks_v2/`.** A pure-data partition layer parallel to `models_v2/`:
+
+- `chunks.py` — `Chunk` and `ChunkDef` frozen dataclasses (both validated by `__post_init__`: snake_case `chunk_id`, non-empty tuple `cell_specs` / `member_row_ids`, `axis_summary ∈ {legal, practical, mixed}`) + `build_chunks(registry=None, manifest=None) -> list[Chunk]`.
+- `manifest.py` — `CHUNKS_V2: tuple[ChunkDef, ...]` — the hand-curated 15-chunk manifest covering 181 TSV rows = 186 cells, verified against the real registry both at plan-write time and in Phase 0 of this session.
+- `__init__.py` — public exports: `Chunk`, `ChunkDef`, `build_chunks`, `CHUNKS_V2`.
+- `docs.md` — module-level documentation with the 15-chunk table + invariant summary + downstream-consumer pointers.
+
+**Plan deviations surfaced and resolved (3, all minor):**
+
+1. **Architecture-diagram vs Phase-2-wording inconsistency.** The plan placed `ChunkDef` in `manifest.py` per the diagram, but Phase 2 said to implement both `Chunk` and `ChunkDef` in `chunks.py`. Went with Phase 2 wording — splitting `ChunkDef` into `manifest.py` would have induced a circular import once `build_chunks()` lands (chunks.py needs `CHUNKS_V2`; manifest.py would need `ChunkDef`). Recorded in convo + commit `487e713`.
+2. **`build_chunks(manifest=CHUNKS_V2)` default-arg circular import.** Rewrote as `manifest: tuple[ChunkDef, ...] | None = None` with a lazy `from .manifest import CHUNKS_V2` inside the function body. Same caller behavior; eliminates the module-load cycle. Commit `c98ebd0`.
+3. **`ChunkDef.__post_init__` snake_case regex fix.** Plan's draft used `chunk_id.replace("_", "").isalnum() and chunk_id[0].isalpha()` which lets `"BadCaps"` through. Replaced with `re.fullmatch(r"^[a-z][a-z0-9_]*$", chunk_id)` to match the plan's test #4 explicitly. Commit `487e713`.
+
+**No manifest refinements applied this session.** The plan flagged 3 potential refinement targets (the 2-row `enforcement_and_audits` chunk, the `other_lobbyist_filings` catch-all assignment of `lobbyist_or_principal_spending_report_includes_contributions_received_for_lobbying`, the legal/practical mix in `oversight_and_government_subjects`). All hold under the partition invariant; brief-writer brainstorm can revisit if a real reason surfaces.
+
+**Phase-by-phase invariant: each phase's commit turns its target test file green.** Pre-flight reads + handoff verification confirmed working tree clean, `4c49888 retrieval_v2: scaffolding` from the prior killed session on HEAD (left untouched per handoff), and `src/lobby_analysis/chunks_v2/` non-existent on any branch. Phase 0's one-off coverage script (`/tmp/verify_chunks_coverage.py`) confirmed 186/186 cell coverage against the real registry — no TSV drift since plan-write time.
+
+**Commits this session (7):** `087edb6` scaffolding → `8450bd6` RED tests → `487e713` Chunk+ChunkDef → `b9731ee` CHUNKS_V2 manifest → `c98ebd0` build_chunks → `54949c4` __init__ exports → `65fa872` ruff format pass.
+
+**Next session.** Retrieval implementation sub-branch is unblocked — Phase 1 onward of [`plans/20260514_retrieval_implementation_plan.md`](plans/20260514_retrieval_implementation_plan.md) can now run (Phase 0 already shipped at `4c49888` from the killed parallel session; this session deliberately did not touch `retrieval_v2/`). After retrieval lands, brief-writer is the cleaner next brainstorm (orthogonal to retrieval; depends only on cells + chunks, both shipped); scorer-prompt rewrite waits on retrieval bundle shape.
+
+### 2026-05-14 (pickup) — Retrieval brainstorm completed; Citations API pivot; impl plan written
+
+Convo: [`convos/20260514_retrieval_brainstorm.md`](convos/20260514_retrieval_brainstorm.md) (Phase 2 added — locked Q's + audit table)
+Plan: [`plans/20260514_retrieval_implementation_plan.md`](plans/20260514_retrieval_implementation_plan.md) — TDD-shaped, API-launchable
+Handoff consumed: [`plans/_handoffs/20260514_retrieval_brainstorm_handoff.md`](plans/_handoffs/20260514_retrieval_brainstorm_handoff.md)
+
+**Resumed retrieval brainstorm at Phase 2** per handoff. Re-engaged with the aggregate-cost lens explicitly surfaced (~8,000 calls per design cycle for per-chunk dispatch vs ~800 for per-(state, vintage); 10× delta). Initial agent recommendation was per-(state, vintage) on cost grounds — **user pushed back**: "If it's dirt cheap but only 50% accuracy, that's not actually a win." Re-anchored on **accuracy gate before cost optimization**. Q1 lock: parameterized `chunks: list[str]` dispatch unit, default per-chunk for experiments; iter-1's 93.3% baseline is the per-chunk-against-7-cells comparison point. Batches up empirically (tiny fixture → 1 chunk → N chunks → 50 states × 4 vintages) — never commit to full rollout without intermediate accuracy data.
+
+**Citations API pivot.** Mid-Phase-2, user surfaced the Anthropic **Citations API** as a feature the prior session hadn't considered. This is load-bearing: Citations structurally enforces provenance grounding (every cited claim has a verbatim span pointing back to a source document). Verified the current API surface via WebFetch of [`platform.claude.com/docs/en/build-with-claude/citations.md`](https://platform.claude.com/docs/en/build-with-claude/citations.md): GA, no beta header, works on `claude-opus-4-7`. Three document types supported (plain text → char-level citations, PDF → page-level, custom content → block-level); we use plain text since we have `papers/text/` extractions. **Hard incompatibility:** Citations + Structured Outputs (`output_config.format`) → 400 error — so v1's strict JSON output schema can't be enforced via structured outputs. **Solution:** tool use. Define `record_cross_reference` and `record_unresolvable_reference` tools; agent calls one per finding; citations attach to text blocks preceding each tool call as machine-verified provenance. Tool use **is** compatible with citations.
+
+**Locked package** (full rationale in convo Phase 2):
+
+- Q1: parameterized dispatch unit (`chunks: list[str]`), default per-chunk
+- Q2: tool use (α) replacing JSON output schema; `chunk_ids_affected` is a tool input field
+- Q3: chunk-name + count + descriptive anchors (not cell-row-id enumeration; not chunk-name-only)
+- Q4: cell-aware at input, chunk-coarse at output
+- Q6: prompt markdown + Python brief-writer + tool definitions + parser + Pydantic models (full Python module — brief-writer no longer YAGNI)
+- Q7: `src/scoring/retrieval_agent_prompt_v2.md` + `src/lobby_analysis/retrieval_v2/`
+- SDK: `anthropic>=0.102` added to `pyproject.toml` (closes deferred kickoff Q; current version verified via PyPI WebFetch 2026-05-14)
+- Model/thinking/effort: `claude-opus-4-7`, `thinking={"type": "adaptive"}`, `output_config={"effort": "high"}`; no sampling params (would 400 on Opus 4.7)
+- Data dir: `data/retrieval_v2/{state}_{vintage}/` local-only in worktree
+
+**Implementation plan: 10 phases (0-9), 1 commit per phase.** Full v2 prompt markdown inlined in Phase 6 (chunks-plan precedent: load-bearing artifacts are plan-anchored). Full tool schemas inlined in Phase 2 with `chunk_ids_affected.enum` sourced from `build_chunks()` (coupling test catches drift). 30+ test signatures listed by name across 6 test files (tools, models, brief-writer, parser, prompt invariants, integration). **Integration test runs automatically on every `uv run pytest`** when `ANTHROPIC_API_KEY` is set (skipif gate); 2-sentence statute fixture + `max_tokens=2000` keeps cost ≈ $0.02 per run. Empirical validation gates T0-T4 — this plan implements through T1 (smoke test); T2-T4 (single-OH-chunk → multi-chunk → 50-state) are downstream.
+
+**Things this brainstorm + plan is locking blind on** (both author and implementer first-time Citations users; flagged in convo + Phase 7 of plan): citation-to-tool-call attribution behavior (does Claude actually emit cited reasoning before each tool call, or sometimes consolidate at end?); cache_control on document blocks (does it work alongside citations?); tool-use + citations composition; plain-text char-level citation accuracy on `papers/text/` extractions (PDF→text may have non-standard whitespace affecting sentence chunking). **Phase 7 integration test is designed to surface these — instructs implementer to pause and surface to user rather than silently patch the parser if real-API behavior diverges from documented behavior.**
+
+**Process notes.** (1) The pickup session almost locked Q1 on the per-(state, vintage) framing the cost lens favors before catching that the empirical accuracy floor was undefined — user correction in real time reframed the package around accuracy first, cost second. (2) Citations API pivot was substantial: the entire output-schema decision (Q2) and deliverable-shape decision (Q6) had to be rewritten mid-brainstorm. The plan-sketch's `cell_ids_affected: list[tuple[str, str]]` field is gone; the brief-writer that was YAGNI in the pre-pivot package is now load-bearing. Documented the pre-pivot answers in the convo's "Decisions made (audit trail)" table so future readers can see why the lock changed. (3) Saved a real-API-call decision for the implementer (the integration test is the first time Citations API is exercised in this codebase) — explicitly built-in pause-and-surface instructions in Phase 7 of the plan, rather than expecting silent patching.
+
+**Process note 2: user mid-session correction on the cost framing.** When I led with the cost lens for per-(state, vintage) in the AskUserQuestion, the user pushed back with the accuracy floor argument — and I rolled the cost framing back into "secondary to accuracy gate" in the locked package. The aggregate-cost analysis is still in the convo Phase 2 as decision context (it's a real argument that should inform later batch-size scaling), but it doesn't drive Q1's default.
+
+**Next session.** Implementer (separate API-launched sub-branch per user's session strategy) executes the impl plan. After implementation lands, **brief-writer brainstorm** is the cleaner next component (orthogonal to retrieval; depends on chunks + cells which both exist). **Scorer-prompt rewrite** is the fourth component, depends on retrieval bundle shape (which will be known once retrieval lands).
+
+### Addendum (same day, post-finish-convo)
+
+User caught a real defect in the retrieval impl plan: **chunks_v2 was treated as if it had shipped, but the chunks impl has not been executed yet.** Three places in the retrieval plan import from `lobby_analysis.chunks_v2` (tools.py, brief_writer.py, coupling test), so the retrieval implementation hard-blocks on chunks shipping. State of play confirmed:
+
+- `src/lobby_analysis/chunks_v2/` does not exist on any branch (`git log --all -- src/lobby_analysis/chunks_v2/` returns zero commits)
+- `src/lobby_analysis/models_v2/` exists and is shipped (cell models complete)
+- A parallel agent session had picked up the retrieval impl plan and executed Phase 0 (local commit `4c49888 retrieval_v2: scaffolding (empty module + anthropic SDK dependency)`) before hitting the same dependency wall and stopping; user killed that session
+- The 4c49888 commit is a clean Phase 0 execution: adds `anthropic>=0.102` to pyproject.toml + uv.lock, creates empty placeholder files in `src/lobby_analysis/retrieval_v2/` + `tests/fixtures/retrieval_v2/.gitkeep`. Safe to keep; the chunks impl session does not touch retrieval_v2/.
+
+**Remediation:**
+
+- Wrote [`_handoffs/20260514_chunks_implementation_handoff.md`](plans/_handoffs/20260514_chunks_implementation_handoff.md) — chunks impl session handoff for fresh agent. Explains state of play, points at the chunks impl plan, names what NOT to touch (retrieval_v2/ scaffolding from the killed session).
+- Added a Prerequisite section + Phase-0-already-done note at the top of [`20260514_retrieval_implementation_plan.md`](plans/20260514_retrieval_implementation_plan.md). Future retrieval impl sessions verify chunks has shipped before proceeding past Phase 0, and skip re-running Phase 0 if the 4c49888 commit is already on HEAD.
+- Sequencing for the user's 4-component strategy: cells ✓ done; chunks → retrieval → brief-writer → scorer-prompt is the now-locked implementation order. Chunks unblocks retrieval; retrieval unblocks scorer-prompt (since scorer-prompt benefits from knowing retrieval's bundle shape); brief-writer is parallelizable with retrieval but cleanest to do after chunks.
+
+
+
+Plan sketches: [`plans/20260514_chunks_plan_sketch.md`](plans/20260514_chunks_plan_sketch.md) + [`plans/20260514_retrieval_plan_sketch.md`](plans/20260514_retrieval_plan_sketch.md)
+Brainstorm convos: [`convos/20260514_chunks_brainstorm.md`](convos/20260514_chunks_brainstorm.md) + [`convos/20260514_retrieval_brainstorm.md`](convos/20260514_retrieval_brainstorm.md) (retrieval in progress)
+Implementation plan: [`plans/20260514_chunks_implementation_plan.md`](plans/20260514_chunks_implementation_plan.md)
+Handoff: [`plans/_handoffs/20260514_retrieval_brainstorm_handoff.md`](plans/_handoffs/20260514_retrieval_brainstorm_handoff.md)
+
+**Session strategy locked by user: brainstorm-and-plan all 4 downstream components in this branch with user-in-loop, then launch implementations as parallel API sub-branches that merge back.** This session covered component 1 (chunks) end-to-end and component 2 (retrieval) plan-sketch + Phase-1-brainstorm only. Two remain after retrieval (brief-writer, scorer-prompt rewrite).
+
+**Chunks (complete).** Brainstorm resolved 7 Q's. **Critical revision** to the prior brainstorm's Q1 (5-12 rows/chunk): user surfaced prompt-caching architecture (statute in cached `system` block, chunk content in uncached `user`), which makes per-chunk cost largely chunk-size-independent. Revised lock: **~30 row soft cap, 34 hard cap** (for the natural `lobbyist_spending_report` single-chunk cluster). Iter-1's 7-row anchor remains an empirical reference point but is no longer a constraint. **Q3:** same chunk for both halves of all 5 combined-axis rows. **Q4:** `list[Chunk]` frozen dataclass (`chunk_id`, `topic`, `cell_specs: tuple[CompendiumCellSpec, ...]`, `axis_summary`, `notes`). **Q6:** `src/lobby_analysis/chunks_v2/` parallel to `models_v2/`. All locked via AskUserQuestion. Sub-Q's (size bounds Q2, stability mechanism Q5, function signature Q7, manifest storage sub-Q) proposed-and-locked: hand-curated `tuple[ChunkDef, ...]` constant in `manifest.py`; coverage test enforces partition invariant at `build_chunks()` call time; `build_chunks(registry=None) -> list[Chunk]` mirrors cell-models' default-param pattern. **Implementation plan inlines a complete 15-chunk manifest** covering 181/181 rows = 186/186 cells, no duplicates, no typos — verified by plan-author against the real TSV at this branch's HEAD. Chunk sizes range 2 rows (`enforcement_and_audits`, 4 cells via 2 combined-axis rows) to 34 rows (`lobbyist_spending_report`). Spiritual successor to iter-1's 7-row `definitions` chunk is `lobbying_definitions` (15 rows: 6 `def_target_*` + 2 `def_actor_class_*` + 3 `public_entity_def_*` + 4 singletons including `law_includes_materiality_test`).
+
+**Retrieval (in progress).** Plan-sketch enumerates 7 Q's around scope (per-chunk vs per-state-vintage), output schema replacement for `rubric_items_affected`, substantive guidance translation, cell-aware vs cell-agnostic dispatch, deliverable shape (markdown only vs prompt + brief-writer vs prompt + brief-writer + parser), file location. Brainstorm convo's Phase 1 reading complete: identified the v1 prompt's two rubric-coupling sites (Rule 2 "person definition controls A5-A11/C0-C3" substantive anchor; output schema's `rubric_items_affected` field) and computed legal-vs-practical cell breakdown per chunk (5 fully-practical chunks don't need statute retrieval at all). Phase 2 stopped at Q1/Q3/Q6 ask — user wanted to clarify before locking. Four hunches floated in the final exchange (per-chunk retrieval may be cheap under prompt caching; v1 is identify-only not fetch-and-bundle; chunk-level anchors may simplify Q3; per-chunk dispatch may collapse the cell-level output schema in Q2). **User surfaced a load-bearing addendum after the AskUserQuestion:** even if per-chunk dispatch is cheap *per call* under caching, the **aggregate cost** (50 states × ~4 vintages × ~3-5 prompt-tuning iterations × ~10 legal-axis chunks if per-chunk = 6,000-10,000 calls per design cycle, vs ~600-1,000 if per-(state, vintage)) is an order-of-magnitude argument against per-chunk dispatch. This reweights Q1 hunch (i) — the per-call efficiency framing obscured the aggregate-rollout cost. **Next agent finishes this brainstorm + writes the TDD-shaped implementation plan + runs finish-convo;** see [`plans/_handoffs/20260514_retrieval_brainstorm_handoff.md`](plans/_handoffs/20260514_retrieval_brainstorm_handoff.md) for full pickup, including the aggregate-cost lens.
+
+**No code written this session.** Docs only: 6 new files in `docs/active/extraction-harness-brainstorm/` (2 plan sketches, 2 brainstorm convos, 1 implementation plan, 1 handoff). Session is the model for the remaining 2 downstream components (brief-writer, scorer-prompt rewrite) — each follows the same plan-sketch → brainstorm → impl-plan cycle.
+
+**Process notes.** (1) Initial chunks Q1 framing batched 4 options without the "hand-curated manifest" option that ultimately landed — user pushed back on the prompt-caching grounds and asked how many chunks pure first-2-token splitting would produce (53, mostly singletons); revised options exposed the manifest path. (2) Two AskUserQuestion calls hit a UI bug where the user couldn't answer all 4 batched Q's; second call (3 Q's instead of 4) worked cleanly. (3) Initial manifest draft had ~30 row_id typos (missing `_registration_required` suffixes etc.); rebuilt with a coverage-verification script that the implementer should re-run at Phase 0.
+
+**Next session.** Next agent picks up retrieval per handoff. After retrieval lands, components 3 (brief-writer — consumes chunks + cells; orthogonal to retrieval; the cleaner next pick) and 4 (scorer-prompt rewrite — informed by retrieval bundle shape) remain.
+
+### 2026-05-14 — v2 Pydantic cell models implementation (Phases 0-9 under strict TDD)
+
+Convo: [`convos/20260514_v2_pydantic_cell_models_implementation.md`](convos/20260514_v2_pydantic_cell_models_implementation.md)
+Plan: [`plans/20260514_v2_pydantic_cell_models_implementation_plan.md`](plans/20260514_v2_pydantic_cell_models_implementation_plan.md)
+
+**Executed the implementation plan end-to-end under strict TDD.** All 68 tests written first (RED, commit `44eee71`), then implementation phases 1-7 turned each phase's tests green in sequence. Phase 8 ran the full suite (374 pass / 5 skip / 3 pre-existing test_pipeline.py failures unchanged from baseline — user-approved). Phase 9 is this entry + STATUS update + finish-convo.
+
+**The deliverable: `src/lobby_analysis/models_v2/` module.** A pure-data typed cell model layer parallel to v1.1 at `src/lobby_analysis/models/` (v1.1 untouched per Q4 decision):
+
+- `cells.py` — `CompendiumCell` ABC (`frozen=True`, wrapper fields: `cell_id`, `conditional`, `condition_text`, `confidence`, `provenance`) + 15 concrete subclasses (BinaryCell, DecimalCell, IntCell, FloatCell, GradedIntCell, BoundedIntCell, EnumCell, EnumSetCell, FreeTextCell + 6 specialized: UpdateCadenceCell, TimeThresholdCell, TimeSpentCell, SectorClassificationCell, CountWithFTECell, EnumSetWithAmountsCell).
+- `cell_spec.py` — `CompendiumCellSpec` (frozen dataclass) + `build_cell_spec_registry()` returning the canonical 186-entry `dict[tuple[row_id, axis], CompendiumCellSpec]` (181 TSV rows + 5 legal+practical doublings). Uses a `_CELL_TYPE_PARSER` table + a generic combined-axis splitter — no per-row hard-coding.
+- `extraction.py` — `StateVintageExtraction(state, vintage, run_id, cells)` with post-validator enforcing `cell.cell_id` matches its dict key; `ExtractionRun(run_id, model_version, prompt_sha, started_at, completed_at)`.
+- `provenance.py` — `EvidenceSpan(section_reference, artifact_path, quoted_span, url)` with 200-char `quoted_span` cap.
+- `__init__.py` — public surface: 21 names re-exported.
+
+**Phase 7 cross-module edit:** added `load_v2_compendium_typed() -> list[CompendiumCellSpec]` to `src/lobby_analysis/compendium_loader.py` as the typed wrapper around the registry. Phase C adopts at its own pace; the raw-dict `load_v2_compendium()` is unchanged.
+
+**Specialized cell struct-shape resolution.** The handoff's instruction to read each specialized row's `notes` column turned out to be a partial map of the territory: `notes` carries provenance only (`'single-rubric (focal_2024)'`) or is empty (`UpdateCadenceCell`, `TimeThresholdCell`). Struct shapes live in the source-rubric projection mappings at `docs/historical/compendium-source-extracts/results/projections/{focal_2024,hiredguns_2007,newmark_2017,newmark_2005}_projection_mapping.md`. Surfaced all 6 to user with proposed shapes (anchored to the mappings); user approved all 6. Documented under "Decisions Made" in the convo.
+
+**Unanticipated 7th cell_type.** The TSV has `typed Optional[int_months] (or enum)` for `lobbyist_registration_renewal_cadence` — not catalogued in the plan. User-approved YAGNI mapping to existing `IntCell` (the "months" semantic is documentation; the type stays `int | None`). The "(or enum)" suffix remains in the parser table as documentation.
+
+**Plan's 29-distinct-cell_types claim was off.** Actual: 23 distinct values. Data-driven parser handles this without code change; flagged in convo's Topics Explored.
+
+**Pre-existing CI failures unchanged.** 3 `test_pipeline.py` failures (portal-snapshot fixture data missing — same as on main, same as the previous v2-promote session). User approved leaving them.
+
+**Commits this session (10):** `62daee7` scaffolding → `44eee71` RED tests → `de507f3` EvidenceSpan → `e3de953` ABC+BinaryCell → `5cac6bc` numerics → `ea6faf5` enum/freetext/specialized → `0e1ed2a` registry → `7c882b1` extraction container → `368cc21` exports+typed loader → `c66d808` ruff format pass.
+
+**Next session.** The cell model layer unblocks 4 downstream components (chunk-grouping function, brief-writer module, retrieval-agent v2 generalization, scorer prompt rewrite). Each is its own brainstorm + TDD plan + implementation cycle. Pick one and start with a brainstorm session. SDK-vs-subagent-dispatch decision deferred until the first LLM-calling component lands. Dedicated handoff at [`plans/_handoffs/20260514_next_session_kickoff.md`](plans/_handoffs/20260514_next_session_kickoff.md) — dependency graph, recommendation (chunk-grouping first), cycle convention, and the two deferred decisions (data/ symlink, Anthropic SDK).
+
+### 2026-05-14 — Extraction harness brainstorm (Phase 1 reading + Phase 2 architectural decisions) + first TDD plan
+
+Convo: [`convos/20260514_extraction_harness_brainstorm.md`](convos/20260514_extraction_harness_brainstorm.md)
+Plan: [`plans/20260514_v2_pydantic_cell_models_implementation_plan.md`](plans/20260514_v2_pydantic_cell_models_implementation_plan.md)
+Antecedent agenda: [`plans/20260514_kickoff_plan_sketch.md`](plans/20260514_kickoff_plan_sketch.md)
+
+**The "real" brainstorm session.** Executed the plan-sketch's Phases 1-3 agenda: read 7 carry-forward artifacts, resolved 6 architectural questions + 1 new one (legal/practical axis split surfaced by Phase 1 reading), wrote the first TDD-able implementation plan.
+
+**Mid-session merge.** `compendium-v2-promote` merged to main as `0a6804f` while this session was running (flagged finding #1: v2 TSV path wasn't actually on main at session start; user merged it mid-session). This branch was then `git merge main`'d to bring the canonical `compendium/disclosure_side_compendium_items_v2.tsv` path live on the worktree before the plan was written, matching `phase-c-projection-tdd`'s pattern (merge, not rebase).
+
+**Phase 2 locked decisions (full rationale in convo).**
+
+- **Q0 (new) — Cell ID space:** `(compendium_row_id, axis_str)` flat 186-key space (181 rows: 126 legal-only + 50 practical-only get one entry; 5 legal+practical get two). User-confirmed via AskUserQuestion. Supersedes `compendium/README.md`'s `{row_id: typed_value}` phrasing for the 5 combined-axis rows.
+- **Q1 — Prompt granularity:** Hybrid — chunked-by-domain (5-12 rows) with chunk-frame preambles + per-row instructions, same template across all chunks. Preserves iter-1's empirical 93.3% on the 7-row `definitions` chunk.
+- **Q2 — Retrieval approach:** Two-pass (cross-ref walking → bundle scoring), carry forward from `src/scoring/retrieval_agent_prompt.md`. Empirical bundle-size measurement added as downstream task.
+- **Q3 — Iteration unit:** Per-(state, vintage) as deliverable unit; per-(state, vintage, chunk) as execution unit. Multi-year reliability tested by running same pipeline against `oh-statute-retrieval`'s 4-vintage OH set.
+- **Q4 — v2 Pydantic model shape:** New module `src/lobby_analysis/models_v2/` (user-confirmed); per-cell-type subclasses of `CompendiumCell` ABC; `StateVintageExtraction` container keyed by `(row_id, axis)`; `ExtractionRun` provenance wrapper.
+- **Q5 — Conditional / materiality-gate:** Wrapper fields (`conditional: bool`, `condition_text: str | None`), not a cell-type variant. Orthogonal to value type.
+- **Q6 — Provenance per cell:** Inside the wrapper (`provenance: EvidenceSpan | None`), not parallel. Matches v1.1 `EvidenceSource`-inside-`FieldRequirement` precedent.
+
+**Findings from Phase 1 reading flagged in convo:**
+
+1. `compendium-v2-promote` was unmerged at session start (resolved mid-session by user merge).
+2. **Anthropic SDK is NOT in `pyproject.toml`.** Iter-1 worked via Claude Code subagent dispatch. The v2 harness inherits this pattern; SDK is not added by the first implementation plan.
+3. The v2 TSV's 5 `legal+practical` rows carry axis-conditional `cell_type` strings (e.g., `"binary (legal) + typed int 0-100 step 25 (practical)"`), surfacing Q0. Not in plan-sketch's Open Questions; surfaced explicitly to user.
+
+**First implementation plan: v2 Pydantic cell models** (plan-sketch's recommendation, reaffirmed). 9 phases: scaffolding → `EvidenceSpan` → `CompendiumCell` ABC + `BinaryCell` → numeric subclasses → enum/specialized subclasses → `CompendiumCellSpec` registry (186-cell roster) → `StateVintageExtraction` + `ExtractionRun` → `__init__.py` + `load_v2_compendium_typed()` → suite-wide green + lint → RESEARCH_LOG + finish-convo. Pure-data; no LLM calls; unblocks Phase C.
+
+**No code written this session** — docs only: brainstorm convo, implementation plan, this log entry, back-reference annotation in the plan sketch. Implementation work begins in the next session.
+
+### 2026-05-14 — Kickoff orientation + plan sketch (NOT the real brainstorm)
+
+Convo: [`convos/20260514_kickoff_orientation.md`](convos/20260514_kickoff_orientation.md)
+Plan: [`plans/20260514_kickoff_plan_sketch.md`](plans/20260514_kickoff_plan_sketch.md)
+
+**Originating context.** This branch was assigned plan-sketch work as a side-effect of the 2026-05-14 coordination session on `compendium-v2-promote` (see [`../../compendium-v2-promote/convos/20260514_compendium_v2_promote.md`](../../compendium-v2-promote/convos/20260514_compendium_v2_promote.md), available post-merge). User wanted a "solidly sketched" plan in `plans/` so the kickoff agent isn't reading skeleton stubs cold.
+
+**Locked decisions carried forward.** This branch owns the v2 Pydantic model rewrite (model shape = extraction output shape; Phase C consumes as a downstream contract). The v2 row contract is at `compendium/disclosure_side_compendium_items_v2.tsv` (181 rows × 8 columns). The ⛔ PRI-out-of-bounds banner is gone — PRI is 1 of 8 rubrics on even footing.
+
+**Sketch contents.** Three-phase agenda for the first real brainstorm session: (1) read carry-forward material (existing `src/scoring/scorer_prompt.md` + `retrieval_agent_prompt.md` on main; `chunk_frames/definitions.md` on `origin/statute-extraction`; predecessor harness plan in historical); (2) resolve 6 architectural questions (prompt granularity, retrieval approach, iteration unit, Pydantic model shape, conditional/materiality cell values, provenance per cell); (3) capture decisions in a follow-up implementation plan with a single TDD-able first component picked. **Recommended first component:** v2 Pydantic cell models — pure-data, easy to TDD, unblocks both this branch and Phase C.
+
+**Open questions flagged for the real kickoff.** Does `oh-statute-retrieval` block first end-to-end test? Phase C's preferred input shape (Pydantic models vs raw dicts)? Where does the v2 model module live (in-place at `src/lobby_analysis/models/` vs new `models_v2/`)?
+
+**Not implementation work.** No code, no tests written; only docs (the convo + plan sketch + this RESEARCH_LOG update + the Row-freeze contract path migration).
+
