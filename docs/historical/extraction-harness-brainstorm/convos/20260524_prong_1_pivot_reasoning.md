@@ -1,7 +1,7 @@
 # 20260524 — Prong 1 pause + gather-first / v2.2 pivot reasoning
 
 **Date:** 2026-05-24
-**Branch:** convo-prong-1-pivot-reasoning (thin holding branch — session ran on `main` after a clean-worktrees pass; the substantive output is captured in PRs #22–#26)
+**Filed under:** `docs/historical/extraction-harness-brainstorm/convos/` — this branch's Tier-1 / Tier-2 work drove the pivot, so the reasoning trace lives in its historical record. The session itself ran on `main` after a clean-worktrees pass (no associated research branch was active); the substantive output is captured in PRs #22–#26.
 **Machine:** Dans-MacBook-Air
 
 ## Summary
@@ -97,7 +97,7 @@ This was the realization that drove the pivot.
 - **When Prong 1 resumes (post-gather-first), does it open a new branch or pick up one of the archived names with explicit v2.2 framing?** Worth deciding before starting that work. The gather-first stage probably wants its own branch (e.g., `gather-first-50-state-extraction` or similar) — Phase C / extraction-harness work resumes after v2.2 design lands.
 - **What's the boundary between "gather" and "structure"?** The decision says JSON with freeform answer + citation + confidence. But the chunk structure (15 chunks × 181 rows) is still useful organization. Open: does the gather pass keep the 15-chunk organization for dispatch, or treat each row as fully independent? Cheaper to keep chunking (caches the statute bundle once per chunk), but commits to a structural choice.
 - **Cross-state heterogeneity vs single-state depth.** Gather-first across "all 50 states" was the framing; in practice 5-8 priority states is the operating scope. Does the v2.2 design wait for all priority states, or can it be designed from N=3 if those 3 cover the obvious failure modes (numeric, qualitative, mixed)?
-- **Where does this convo doc actually live?** Currently held on `convo-prong-1-pivot-reasoning` branch; cleanest long-term home is probably `docs/historical/extraction-harness-brainstorm/convos/` since that's the branch whose Tier-1/Tier-2 work most directly drove the pivot — but that's a follow-up integration decision.
+- ~~**Where does this convo doc actually live?**~~ Resolved 2026-05-25: relocated from the thin `convo-prong-1-pivot-reasoning` holding branch into `docs/historical/extraction-harness-brainstorm/convos/` and merged to main. The holding branch was then deleted.
 
 ## Session conventions / process notes
 
