@@ -1,0 +1,13 @@
+{
+  "state": "NC",
+  "vintage": 2025,
+  "actual_vintage_used": null,
+  "prompt_git_rev": "291fb7dc1d1eff755641ed5171931a481193720f",
+  "proposed_urls": [],
+  "pass1_chosen_titles": [],
+  "pass2_chosen_chapters": [],
+  "pass3_invoked_on": [],
+  "tree_depth": 0,
+  "playwright_errors": ["cloudflare_blocked_at_pass1"],
+  "notes": "Pass-1 fetch of https://law.justia.com/codes/north-carolina/2025/ returned a Cloudflare 'Just a moment... / Performing security verification' challenge page (Ray ID a0203fdfbb2d0dd9; cf-turnstile-response widget visible in HTML head). The Playwright session did not clear the challenge before the helper saved the HTML, so the resulting pass1_state_index.tsv is empty (no anchor links extracted from the challenge HTML). Per dispatch prompt Step 1 Cloudflare-triage rule: STOP at the affected pass, no retries, no probing. State per addendum: NC lobbying regime is GS Ch. 120C (Lobbying Law of 2006), and the expected pass-1 pick was the Chapter 120C title-page URL under the NC 2025 state index; pass-2 was expected to enumerate 8 articles (Art. 1 General Provisions through Art. 8 Miscellaneous); pass-3 was expected to recurse into each article TOC to surface ~32 section-level URLs total. None of that was reachable because the state-index fetch itself was blocked. Re-canary later under a different IP / session per dispatcher guidance."
+}
