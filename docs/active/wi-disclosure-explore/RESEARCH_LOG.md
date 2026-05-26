@@ -6,6 +6,45 @@ Index for the `wi-disclosure-explore` branch. One entry per session, newest firs
 
 ---
 
+## Session: 2026-05-26 — wi_tier_2_phase_4_materialize
+
+### Topics Explored
+- Phase 4 materializer design (iterators, TSV writers, orchestrator) + Phase 5 CLI wrapper
+- Idempotency vs `extracted_at`: parsers stamp `datetime.now()` into provenance; TSV omits that field by design
+- Tagged-union iterator yield (parsed tuple OR `ParseFailure`) for clean dispatch in the orchestrator
+- TSV row schemas — 5 output TSVs + 1 warnings TSV, sort orders, JSON-serialization of contact_details
+- Smoke-test against real on-disk corpus + spot-check of plan anchors (Dairy / WCTA / Brooks)
+
+### Provisional Findings
+- **Materializer structurally clean — 36/36 GREEN on first implementation.** No iteration needed on iterator behavior, TSV schemas, or orchestrator's row-count return value.
+- **Idempotency holds on real data.** Two consecutive smoke runs against the 944+776 corpus produced identical row counts in the same wall time. `test_repeated_runs_produce_byte_identical_output` covers the byte-identity proof at the synthetic-input level.
+- **0 parse failures, not the 1 the plan + prior convos anticipated.** The Neumann-Ortiz 12717 soft-404 is already stored as `html=null` by the fetcher's body-marker detection from the auth-scrape session, so the iterator silently skips it via the null-html branch — it never reaches the ParseError → ParseFailure path. The soft-404 IS handled correctly, just via a different path than the plan's framing implied. Worth surfacing in Phase 7's writeup.
+- **WCTA 12997 emits 1 filing (2025-H2 at $0/0/0), not 2.** The 2025-H1 column on its page is empty rather than populated-with-zero. Low-spend-exempt principals don't necessarily file zero-rows across all periods — they file in whichever periods the portal records something for. Refinement of expectations, not a bug.
+- **Output volume profile** (944 principal + 776 lobbyist checkpoints):
+  - 944 Organization rows + 773 Person rows + 1,706 expenditure-report rows + 3,092 activity-report rows (exactly 773 × 4 — matches the lobbyist parser's "always 4 filings per page" contract) + 7,345 per-item bill-effort rows + 0 parse failures.
+  - 19.2 s wall.
+
+### Decisions Made
+- **TSV idempotency strategy:** omit `extracted_at` from row schemas; include `source_url` (stable from URL template). Provenance stays correct in-memory, TSV row schemas trimmed for idempotency.
+- **Iterator yield shape:** tagged-union (parsed tuple OR `ParseFailure`), `isinstance(rec, ParseFailure)` dispatching in the orchestrator. Cleaner than mixed-type returns or side-channel failure lists.
+- **TSV writer factorization:** 6 public writer functions (one per output file) + one orchestrator. Each writer takes a `Sequence`, sorts deterministically, returns row count.
+- **Phase 5 ship strategy:** thin argparse CLI pass-through, no new tests (plan-locked). Verified end-to-end against the real corpus.
+- **Pause point:** Dan picked "Phase 5 only, then finish-convo" via in-session AskUserQuestion. Phases 6 (run/spot-check writeup) and 7 (WCTA doc-drift fix + results writeup) deferred to a follow-up session.
+
+### Results
+- Convo: [`convos/20260526_wi_tier_2_phase_4_materialize.md`](convos/20260526_wi_tier_2_phase_4_materialize.md)
+- Commits (3 code + 1 convo): `1132529` (RED tests, 36 across 11 classes), `69a268b` (GREEN materializer, 36/36), `eff2cda` (CLI), plus this finish-convo commit
+- Test deltas: +36 GREEN on new `tests/test_wi_tier_2_materialize.py`. Full suite **1537 passed** + 3 pre-existing baseline failures + 3 skipped + 3 xfailed. No regressions.
+- Smoke run output (gitignored): `~/data/lobby_analysis/disclosures/WI/_tier_2_smoke/` — intentionally NOT the documented Phase 6 path so Dan can re-run cleanly there.
+
+### Next Steps
+- **Phase 6 + Phase 7 in one session.** Re-run the CLI to the proper output dir, inspect TSVs at scale, write `results/20260526_wi_tier_2_parser_results.md` documenting the 0-vs-1 parse-failures finding + WCTA single-filing finding + top-10 by spend + bucket distribution. Apply WCTA doc-drift fix.
+- **Alternative path: PR + merge `wi-disclosure-explore` now.** Phase 4 (materializer) + Phase 5 (CLI) are the load-bearing pieces. If Dan calls the branch done at the parser+materializer layer, PR + merge is a natural milestone; Phase 6/7 could land later via a small separate branch.
+- **Address ContactDetail quality** (still open from Phase 3 convo) — eyeball `WI_lobbyists.tsv`'s `contact_details_json` in Phase 6 to decide whether a small refactor is warranted.
+- **Held over (orthogonal):** lobbying@wi.gov reply, SAL parser/ingest, cross-session principal_id stability.
+
+---
+
 ## Session: 2026-05-26 — wi_tier_2_phases_2_3_green
 
 ### Topics Explored
