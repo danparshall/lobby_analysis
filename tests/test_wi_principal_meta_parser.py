@@ -338,7 +338,7 @@ class TestPercentAllocationItemRows:
             }
 
     def test_dairy_contains_known_bill(self):
-        """Assembly Bill 30 (item_id 24598) → 1% in 2025 Jan-Jun per the
+        """Assembly Bill 30 (item_id 24598) → 2% in 2025 Jan-Jun per the
         fixture's HTML."""
         _, _, _, items = parse_principal_meta(
             _load("principal_11590_populated.html"), 11590
@@ -350,7 +350,7 @@ class TestPercentAllocationItemRows:
         ]
         assert len(ab30_2025_h1) == 1
         assert ab30_2025_h1[0]["item_name"] == "Assembly Bill 30"
-        assert ab30_2025_h1[0]["percent"] == "1%"
+        assert ab30_2025_h1[0]["percent"] == "2%"
 
     def test_lexia_topics_not_yet_assigned_100pct(self):
         """Lexia 11348: only Topics-Not-Yet-Assigned bucket is populated;
