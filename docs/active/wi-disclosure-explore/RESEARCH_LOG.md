@@ -34,7 +34,7 @@ Index for the `wi-disclosure-explore` branch. One entry per session, newest firs
 - Test deltas: +24 GREEN on `tests/test_wi_principal_meta_parser.py`, +14 GREEN on new `tests/test_wi_lobbyist_time_report_parser.py`. Full suite 1500 pass + 3 pre-existing baseline failures + 1 surfaced RED (AB30).
 
 ### Next Steps
-- **Resolve the AB30 RED test** per Dan's eventual option choice (edit to `2%`, switch to AB93/24710 at `1%`, or leave RED). One-line edit either way.
+- ~~**Resolve the AB30 RED test**~~ — **resolved** by a parallel-session agent picking option 1 (edit test to `"2%"`); committed at `d15571e`. All 25 principal-meta parser tests now GREEN; full suite at **1501 passed** + 3 pre-existing baseline failures.
 - **Phase 4 — Tier-2 materializer.** TDD against on-disk checkpoint JSONs; emit 4 TSVs + `WI_principal_bill_efforts.tsv`; soft-404/ParseError rows route to `_tier_2_parse_failures.tsv`.
 - **Phase 5+** — CLI wrapper, run + spot-check on Dan's machine, WCTA 12997 doc-drift fix, results writeup.
 - **Alternative path:** PR + merge `wi-disclosure-explore` after Phase 4-6 — Dan's call.

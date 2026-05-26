@@ -240,3 +240,20 @@ on-disk checkpoint JSONs (gitignored, available via the worktree's
 `data/` symlink). The one outstanding RED (`test_dairy_contains_known_bill`)
 is the AB30 surfaced finding — orthogonal to materializer work and
 awaiting Dan's resolution.
+
+## Post-session update — AB30 RED resolved
+
+After the initial finish-convo commit landed (`a93342e`), a parallel
+agent in this same worktree edited
+`tests/test_wi_principal_meta_parser.py` directly per **option 1** of
+the three options surfaced via the in-session AskUserQuestion: change
+the expectation from `"1%"` to `"2%"` to match the fixture body.
+Two-line diff (docstring + assertion). Committed by this session at
+`d15571e` once Dan asked to re-run finish-convo.
+
+Result: all 25 tests in `tests/test_wi_principal_meta_parser.py` now
+pass. Full suite: **1501 passed**, 3 pre-existing `test_pipeline.py`
+baseline failures. The surfaced finding from "Open Questions" above
+is closed; the convo's Next Steps list no longer carries the AB30
+resolution as a blocker for the next session's Phase 4 materializer
+work.
