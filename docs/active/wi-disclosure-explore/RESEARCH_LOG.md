@@ -6,6 +6,34 @@ Index for the `wi-disclosure-explore` branch. One entry per session, newest firs
 
 ---
 
+## Session: 2026-05-26 — wi_principal_side_scrape_plan
+
+### Topics Explored
+- Re-fetch of `/Who/LobbyistInformation/2025REG/Information/12694` (Schlaak detail page) to verify the prior session's structural omission finding is persistent
+- Bilateral re-check: also re-POSTed the LobbyistList grid AJAX (`/Who/Lobbyists/2025REG/ShowLobbyistList?pageSize=1000`) to confirm Schlaak is still absent from THAT side
+- Reconnaissance over 42 captured principal HTMLs from the gap investigation to characterize size distribution + parse target for the new plan
+- Reuse analysis on `src/lobby_analysis/io/wi/` — fetcher is lobbyist-URL-specific; plan needs to refactor generic or duplicate
+- Composition of the principal universe for the scrape: `{dir .xls}` ∪ `{auth graph}` = 944 distinct IDs
+
+### Provisional Findings
+- **Bilateral omission persists.** Both Schlaak's detail page (25,551 bytes, sha256 `bf616576fb1b2632`) and the grid AJAX (353,140 bytes, sha256 `68b792835c41547f`, 774 IDs) are byte-identical to the captures from ~5 hours earlier. Schlaak still absent from grid, page still resolves.
+- **Byte-identity is itself informative.** Suggests edge-cached / daily-snapshot serving rather than live DB query — the "few hours later" check is weaker than originally framed because we may be hitting the same materialized snapshot both times. The 16-month tenure pinpoint from the prior session remains the dominant evidence for structural-vs-transient.
+- **Principal page sizes are much smaller than originally estimated.** Empirical: 26 KB min / 40 KB median / 47 KB mean / 157 KB max across 42 captures (biased toward ceased + low-volume). Original convo's "~560 KB" was a bad spot-check. Even 3× the upper bound (active-high-volume principals) gives ~140 MB total, not 500 MB.
+- **Wall time at delay=1.0 for 944 pages: ~17 min.** Bounded by politeness, not transfer; same envelope as the lobbyist scrape's 851 sec / ~14 min for 774. The "~5 hr" framing in the prior session's "Next Steps" was wrong.
+- **WCTA → Schlaak back-link confirmed in capture.** `principal_12997.html` regex-search for `/Who/LobbyistInformation/2025REG/Information/(\d+)` yields `[12694]`. Parse target well-defined.
+
+### Results
+- Plan: [`plans/wi_principal_side_scrape.md`](plans/wi_principal_side_scrape.md) — 12 implementation steps, 6 parser tests (RED → GREEN), unification module with `discovered_via ∈ {lobbyist, principal, both}` + `lobbyist_in_grid` provenance flag, decision point on fetcher refactor-vs-duplicate, 4 open questions for Dan.
+- Re-fetch artifacts (gitignored, durable): `~/data/lobby_analysis/disclosures/WI/_principal_gap_investigation/lobbyist_12694_recheck.html` (byte-identical to prior) + `~/data/lobby_analysis/disclosures/WI/_principal_gap_investigation/lobbyist_grid_2025REG_recheck.html` (byte-identical to prior fixture).
+- Convo: [`convos/20260526_wi_principal_side_scrape_plan.md`](convos/20260526_wi_principal_side_scrape_plan.md).
+
+### Next Steps
+- Execute [`plans/wi_principal_side_scrape.md`](plans/wi_principal_side_scrape.md). First implementation step asks Dan whether to refactor `authorization_fetcher.py` to a generic `entity_fetcher.py` (DRY, recommended) or duplicate as `principal_fetcher.py` (safer for lobbyist code path).
+- Pre-flight Step 6 of the plan: sample one known-large active principal page (Wisconsin Hospital Association or Auto Dealers, both with 15 lobbyists) to bound the size-distribution upper end before kicking off the full 944-principal scrape.
+- Still held over from prior sessions: (1) `lobbying@wi.gov` reply, (3) State Agency Liaisons table pull (one extra `curl` while at the portal; plan-adjacent).
+
+---
+
 ## Session: 2026-05-26 — wi_principal_gap_investigation
 
 ### Topics Explored
