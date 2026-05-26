@@ -65,7 +65,7 @@ def write_authorizations_tsv(
                 {
                     "lobbyist_id": row.lobbyist_id,
                     "principal_id": row.principal_id,
-                    "authorized_on": row.authorized_on.isoformat(),
+                    "authorized_on": row.authorized_on.isoformat() if row.authorized_on else "",
                     "withdrawn_on": row.withdrawn_on.isoformat() if row.withdrawn_on else "",
                 }
             )

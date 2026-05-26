@@ -56,6 +56,18 @@ class _SessionLike(Protocol):
     def get(self, url: str, **kwargs: Any) -> Any: ...
 
 
+def _is_soft_404(html: str) -> bool:
+    """The WI portal returns HTTP 200 with a "Page Not Found" body for
+    nonexistent lobbyist IDs. Distinguishable by the page title and an
+    ``<h1>Page Not Found</h1>`` heading — neither marker appears on a
+    real lobbyist detail page.
+    """
+    return (
+        "<title>Page Not Found" in html
+        or "Page Not Found</h1>" in html
+    )
+
+
 def fetch_lobbyist_page(
     lobbyist_id: int,
     session: _SessionLike,
@@ -94,6 +106,8 @@ def fetch_lobbyist_page(
             continue
 
         response.raise_for_status()
+        if _is_soft_404(response.text):
+            return None
         return response.text
 
     # Exhausted retries on 5xx — re-raise the last error.

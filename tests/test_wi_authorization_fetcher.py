@@ -109,6 +109,24 @@ def test_fetcher_returns_none_on_404_without_raising():
     assert html is None
 
 
+def test_fetcher_returns_none_on_soft_404_with_200_status():
+    """The WI portal returns HTTP 200 with a "Page Not Found" body for
+    nonexistent lobbyist IDs (observed: lobbyist 12717 in the 2026-05-26
+    scrape). Status-code-only detection would treat this as a real
+    fetch and feed an error-page body into the parser, which would then
+    fail loudly on a missing "Principals Represented" section. The
+    fetcher must short-circuit on the body marker too."""
+    soft_404_body = """<!DOCTYPE html><html><head>
+        <title>Page Not Found -  Lobbying in Wisconsin</title>
+        </head><body><h1 class="display-4">Page Not Found</h1>
+        </body></html>"""
+    fake = _FakeSession([_FakeResponse(200, soft_404_body)])
+
+    html = fetch_lobbyist_page(12717, session=fake, delay=0.0)
+
+    assert html is None
+
+
 def test_fetch_or_load_returns_cached_payload_when_checkpoint_exists(
     tmp_path: Path,
 ):

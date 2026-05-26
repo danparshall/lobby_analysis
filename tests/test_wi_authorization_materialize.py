@@ -111,3 +111,26 @@ def test_write_tsv_roundtrip(tmp_path: Path):
 
 def test_iter_handles_empty_checkpoint_dir(tmp_path: Path):
     assert list(iter_authorizations_from_checkpoints(tmp_path)) == []
+
+
+def test_write_tsv_handles_none_authorized_on(tmp_path: Path):
+    """A small fraction of live-portal rows show Authorized On = N/A
+    (pending or data-entry artifacts), so ``authorized_on`` can be
+    None on a real Authorization. The TSV writer must produce a blank
+    cell for these — not raise, not write "None"."""
+    rows = [
+        Authorization(11112, 11415, None, None),
+        Authorization(12666, 12818, None, date(2025, 7, 31)),
+    ]
+    out = tmp_path / "join.tsv"
+
+    n = write_authorizations_tsv(rows, out)
+
+    assert n == 2
+    with out.open("r", encoding="utf-8") as fh:
+        reader = csv.DictReader(fh, delimiter="\t")
+        data = list(reader)
+    assert data[0]["authorized_on"] == ""
+    assert data[0]["withdrawn_on"] == ""
+    assert data[1]["authorized_on"] == ""
+    assert data[1]["withdrawn_on"] == "2025-07-31"

@@ -61,11 +61,17 @@ class ParseError(ValueError):
 @dataclass(frozen=True)
 class Authorization:
     """A single (lobbyist, principal) authorization edge for one
-    legislative session."""
+    legislative session.
+
+    ``authorized_on`` is ``None`` in the small fraction of rows where the
+    live portal shows ``Authorized On = N/A`` (pending or data-entry
+    artifacts — observed in 4 of 2251 rows from the 2026-05-26 scrape).
+    Silently dropping these would lose real edges from the join table.
+    """
 
     lobbyist_id: int
     principal_id: int
-    authorized_on: date
+    authorized_on: date | None
     withdrawn_on: date | None
 
 
@@ -113,7 +119,10 @@ def parse_lobbyist_authorizations(
         principal_cell, _exclusive_cell, authorized_cell, withdrawn_cell = cells[:4]
 
         principal_id = _extract_principal_id(principal_cell, lobbyist_id)
-        authorized_on = _extract_date(authorized_cell, "Authorized On", lobbyist_id)
+        # Both date cells can be "N/A" in live data — pending or
+        # data-entry artifacts. We don't drop such rows; we preserve
+        # the edge with None date(s).
+        authorized_on = _extract_optional_date(authorized_cell, "Authorized On", lobbyist_id)
         withdrawn_on = _extract_optional_date(withdrawn_cell, "Withdrawn On", lobbyist_id)
 
         authorizations.append(
@@ -155,17 +164,6 @@ def _cell_value_text(cell, label: str) -> str:
     if label_span is not None:
         label_span.extract()
     return cell.get_text(strip=True)
-
-
-def _extract_date(cell, label: str, lobbyist_id: int) -> date:
-    text = _cell_value_text(cell, label)
-    try:
-        return datetime.strptime(text, "%m/%d/%Y").date()
-    except ValueError as exc:
-        raise ParseError(
-            f"Could not parse '{label}' date '{text}' for "
-            f"lobbyist_id={lobbyist_id}."
-        ) from exc
 
 
 def _extract_optional_date(cell, label: str, lobbyist_id: int) -> date | None:

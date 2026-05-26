@@ -92,6 +92,42 @@ def test_empty_principals_section_returns_empty_list():
     assert result == []
 
 
+def test_authorized_on_can_be_none_when_value_is_na():
+    """The live portal sometimes shows ``Authorized On = N/A`` (a small
+    number of rows where the relationship is in the database but no
+    dates have been finalized — pending, or a data-entry artifact). The
+    parser must represent these as ``authorized_on=None`` rather than
+    raising — losing the row entirely would silently drop edges from
+    the join table.
+
+    Surfaced 2026-05-26 by the full live scrape: 4 of 2251 rows across
+    the 774 lobbyists had this shape (lobbyists 11112, 12666, 12748,
+    13865 — Wisconsin Reading Corps shows up in two of the four)."""
+    html = """
+    <html><body>
+      <h3>Principals Represented</h3>
+      <table><thead><tr><th>Principal Name</th><th>Exclusive?</th>
+        <th>Authorized On</th><th>Withdrawn On</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="label"><a href="/Who/PrincipalInformation/2025REG/Information/11415?tab=Lobbyists">Wisconsin Reading Corps</a></td>
+          <td><span class="table-responsive-stack-thead">Exclusive?</span> No</td>
+          <td><span class="table-responsive-stack-thead">Authorized On</span> N/A</td>
+          <td><span class="table-responsive-stack-thead">Withdrawn On</span> N/A</td>
+        </tr>
+      </tbody></table>
+    </body></html>
+    """
+
+    result = parse_lobbyist_authorizations(html, lobbyist_id=11112)
+
+    assert len(result) == 1
+    assert result[0].lobbyist_id == 11112
+    assert result[0].principal_id == 11415
+    assert result[0].authorized_on is None
+    assert result[0].withdrawn_on is None
+
+
 def test_missing_section_raises_parse_error_not_silent_empty():
     """If the page structure no longer carries the "Principals Represented"
     section at all, the parser must FAIL LOUDLY (raise ParseError) — not
