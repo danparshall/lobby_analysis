@@ -1,0 +1,13 @@
+{
+  "state": "NC",
+  "vintage": 2015,
+  "actual_vintage_used": null,
+  "prompt_git_rev": "b25007089d68fd338308123aa6ef927828ef4651",
+  "proposed_urls": [],
+  "pass1_chosen_titles": [],
+  "pass2_chosen_chapters": [],
+  "pass3_invoked_on": [],
+  "tree_depth": 0,
+  "playwright_errors": ["cloudflare_blocked_at_pass1"],
+  "notes": "NC 2015 third attempt: Cloudflare blocked at pass-1 state index fetch (https://law.justia.com/codes/north-carolina/2015/). HTML title 'Just a moment...' confirmed CF challenge in first 5000 chars; TSV emitted empty. This is the THIRD consecutive CF block on NC: (1) 2026-05-18 pass-3 CF-blocked on all 8 articles (archived at NC_2015_20260519_pass3_cf_blocked/), (2) 2026-05-26 earlier pass-1 CF-blocked (archived at NC_2015_20260526_cf_blocked_pass1/), (3) this attempt pass-1 CF-blocked despite the user changing egress IP between attempts (2) and (3). Three CF blocks under two distinct IPs strongly suggests NC's Justia TOCs are durably walled — pattern is more consistent with a state/path-specific CF rule than with per-IP rate-limiting or session state. Recommend treating NC vintages as requiring a different retrieval path (e.g., direct LexisNexis/NCGA mirror, or human-in-the-loop fetch) rather than further subagent retries under varied IPs."
+}
