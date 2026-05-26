@@ -6,6 +6,45 @@ Index for the `wi-disclosure-explore` branch. One entry per session, newest firs
 
 ---
 
+## Session: 2026-05-26 — wi_principal_side_scrape_implementation
+
+### Topics Explored
+- Pre-flight Step 6: size sample on Wisconsin Hospital Association + Auto/Truck Dealers (top-tied at 15 lobbyists) to bound page-size upper end before kicking off the full scrape
+- Correction of the prior session's SAL endpoint URL — actual path is `/Who/StateAgencies/2025REG/ExcelExport`, not `/ReportExport?outRpt=Excel`
+- Fetcher refactor: extract generic `entity_fetcher.fetch_entity_page` / `fetch_or_load_entity` parameterized by URL template + ID kwarg + checkpoint id_field_name; lobbyist + principal fetchers become thin wrappers
+- TDD pass on all new principal-side modules: parser (6 tests), id_discovery (4 tests), materialize (5 tests), unification (6 tests), entity_fetcher (6 tests) — RED → GREEN before commit on each
+- Pandas + xlrd added as production deps for the principal-id discovery `.xls` read; corrected the prior session's "3 header rows" note (it's 5)
+- Schlaak-class enumeration via the unified `discovered_via` + `lobbyist_in_grid` provenance schema
+- Filter-rule hypothesis investigation: cross-checked Steinbruecker (NEW Schlaak-class case) and Schlaak against `WI_directory_lobbyists.xls` + their live detail pages
+
+### Provisional Findings
+- **Pre-flight size sample:** WHA = 338 KB (2.15× the prior gap-investigation max of 157 KB); AutoTruckDealers = 100 KB. Worst-case full scrape ≈ 320 MB / 17 min wall, well under the original "500 MB / 5 hr" framing.
+- **Discovery numbers match the plan exactly:** 904 .xls + 942 auth-graph = **944 union, 902 intersection, 40 auth-only, 2 dir-only = [12900, 12997]** — the two principals predicted by the gap investigation. Cross-validation passed.
+- **Full scrape clean:** 944/944 fetched in 1170.9 s (19.5 min, ~1.25 s/req); **0 hard 404s, 0 soft-404s** on principal pages (vs 1 soft-404 on lobbyist side; principal endpoint is cleaner).
+- **Principal side is a strict superset of lobbyist side:** 0 rows `discovered_via='lobbyist'`, 3 rows `discovered_via='principal'`, 2,251 rows `discovered_via='both'`. The principal-side scrape catches every edge the lobbyist side caught, plus 3 additional ones.
+- **2 Schlaak-class lobbyists** (`discovered_via='principal' AND lobbyist_in_grid=false`):
+  - **12694 = Schlaak** (WCTA, license current, structural anomaly persists)
+  - **11513 = Steinbruecker (NEW)** — ACLU of Wisconsin, license surrendered 5/25/2026 (same day as `.xls` print). He IS in the .xls (the snapshot caught him pre-surrender) but NOT in the grid (which reflects the same-day surrender). The .xls's Surrendered Date column is empty for him.
+- **1 soft-404 recovery** (`discovered_via='principal' AND lobbyist_in_grid=true`): 12717 = Neumann-Ortiz / Voces — both rosters knew about her, but her lobbyist-side detail page returns soft-404 in the portal; the principal-side scrape recovered her edge via the back-link.
+- **Lobbyist-side scrape is ~99.9% edge-complete and ~99.7% lobbyist-complete on this 2026-05-26 snapshot.** The blind spot the gap investigation flagged is *real* (Steinbruecker confirms it's not just one weird lobbyist) but *small*.
+- **The directory `.xls` is a point-in-time snapshot, NOT a "still active" filter.** Refuted by the Steinbruecker case (in .xls with empty Surrendered Date despite his detail page showing a surrender on the .xls print date).
+- **Withdrawn dates agree perfectly between the two sides** — zero warnings emitted by the unify step's disagreement-warning instrumentation across all 2,251 `discovered_via='both'` rows.
+
+### Results
+- Code (8 commits): generic `entity_fetcher.py`, `principal_fetcher.py`, `principal_parser.py`, `principal_id_discovery.py`, `principal_materialize.py`, `unify_authorizations.py`, `scrape_principals.py` CLI, `unify_authorizations_cli.py` CLI; **27 new behavior tests, all green** (97 WI tests total: 76 broader + 21 new wave; 3 pre-existing `test_pipeline.py` failures are scoring/pri-2026-rescore-owned, same as prior session)
+- Fixtures: `tests/fixtures/wi/principal_{12997,11348,11530}.html` (WCTA / Lexia / privacy-redacted)
+- Data (gitignored): 944 `{principal_id}.json` checkpoints under `~/data/lobby_analysis/disclosures/WI/_principal_scrape_checkpoints/`, principal-side TSV (2,254 rows), unified TSV with provenance (2,254 rows × 6 cols), SAL table at `WI_directory_state_agency_liaisons.xls` (2,599 liaison rows × 13 cols)
+- Convo: [`convos/20260526_wi_principal_side_scrape_implementation.md`](convos/20260526_wi_principal_side_scrape_implementation.md)
+- Results: [`results/20260526_wi_principal_side_scrape_results.md`](results/20260526_wi_principal_side_scrape_results.md)
+
+### Next Steps
+- **Schlaak's grid exclusion remains unexplained.** Email to `lobbying@wi.gov` (Dan handling — same email thread as the prior session's draft) is the cheapest path to a clean answer. Brute-force ID enumeration in 10000–13500 range is deferred per the plan's "What could change."
+- **Cross-session principal_id stability**: still held over; relevant for time-series. Now-resolved: principal-side scrape is the right edge source for that analysis.
+- **State Agency Liaisons table**: grabbed in pre-flight (2,599 rows × 13 cols at `WI_directory_state_agency_liaisons.xls`). NOT yet wired into a parser / ingestion pipeline; held over.
+- **PR + merge of `wi-disclosure-explore`?** Dan's call. The branch has shipped two end-to-end scrapes + the unification deliverable; natural milestone.
+
+---
+
 ## Session: 2026-05-26 — wi_principal_side_scrape_plan
 
 ### Topics Explored
