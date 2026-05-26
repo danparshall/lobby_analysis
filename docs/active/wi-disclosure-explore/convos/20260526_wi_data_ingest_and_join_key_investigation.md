@@ -52,3 +52,7 @@ This session produced no analytical results files (no plots, tables, or analysis
 - **Is `Principal ID` stable across sessions?** Important if we want to time-series the authorization graph across biennia. Untested — would need to fetch a 2023REG principal page and check whether the same entity has the same ID.
 - **What is the rate-limit posture of `lobbying.wi.gov`?** The 2026-05-01 portal snapshot fetched 16 pages without issue. 776 detail pages at 1 req/sec ≈ 13 min — likely safe but not guaranteed. Plan specifies polite defaults.
 - **State agency liaisons** — a third entity table (`/Who/StateAgencies/.../ReportExport?outRpt=Excel`) exists but was not pulled this session. Lower priority but worth grabbing for completeness when next agent is at the portal anyway.
+
+## Captured Tasks
+
+- [#28: Pull WI expenditure data (15-day reports + 6-month SLAEs)](https://github.com/danparshall/lobby_analysis/issues/28) — captured 2026-05-26
