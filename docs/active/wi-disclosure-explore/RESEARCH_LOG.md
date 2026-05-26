@@ -6,6 +6,35 @@ Index for the `wi-disclosure-explore` branch. One entry per session, newest firs
 
 ---
 
+## Session: 2026-05-26 — wi_principal_gap_investigation
+
+### Topics Explored
+- Bidirectional set-difference reconstruction of the auth-graph ⇄ directory `.xls` principal-ID gap; asymmetric pair `(40 auth-only, 2 dir-only)` netting to the headline 38
+- Live-portal classification of all 40 auth-only principal IDs via `/Who/PrincipalInformation/2025REG/Information/{id}` (1.0 s delay, descriptive UA)
+- Investigation of the 2 dir-only principals to identify which lobbyists they reference, with cross-checks against (a) the cached 774-ID LobbyistList grid HTML, (b) our 745-with-auth scrape result, (c) the 776-row `WI_directory_lobbyists.xls`
+- Direct fetch of an "invisible" lobbyist's detail page to confirm he's real, licensed, currently authorized, and 16 months tenured
+
+### Provisional Findings
+- **Headline 40-principal gap fully explained.** 38 of 40 are cleanly ceased (directory `.xls` filter is empirically `cessation_date IS NULL`); 2 are privacy-redacted "low-spend pledge" entities under the WI Ethics Commission's <$500/year exemption (principal-info detail suppressed but authorization graph fully visible).
+- **WI portal data model has 3 principal states**, not 2: active, ceased, and active-but-suppressed (low-spend pledge). The third class matters because their auth graph IS published; our scrape correctly captures them via lobbyist-side pages.
+- **Structural finding (more important than the headline gap):** the LobbyistList grid AJAX response is **not exhaustive**. At least one currently-active, licensed, currently-authorized Wisconsin lobbyist (Schlaak, ID 12694) is silently omitted from BOTH the grid response (774 IDs) and `WI_directory_lobbyists.xls` (776 rows). His detail page resolves cleanly by direct URL. The omission isn't a race condition — he was in the system 16 months before our scrape.
+- **Our auth graph has unknown lobbyist-side completeness.** Can't bound the Schlaak-class population from this side. The principal-side scrape (handoff option 4) is the only mechanism to enumerate it — reframes (4) from "cheap insurance / cross-validation" to "the only way to bound a real completeness gap."
+- **The 2 dir-only principals are downstream consequences:** Voces (12900) ← lob 12717 (the prior session's already-documented soft-404) → orphaned in our graph; WCTA (12997) ← lob 12694 (the Schlaak case) → invisible to our discovery layer.
+
+### Results
+- [`results/20260526_wi_principal_gap_investigation_results.md`](results/20260526_wi_principal_gap_investigation_results.md) — full writeup: gap arithmetic, classification of all 40 IDs, structural finding analysis, open questions
+- New committed test fixtures: `tests/fixtures/wi/principal_{10949,10973,11017}.html` (Apex Clean Energy, Secure Elections Project, Indivior — canonical ceased-principal examples for future parser tests)
+- Gitignored investigation artifacts (durable under `~/data/lobby_analysis/disclosures/WI/_principal_gap_investigation/`): 40 auth-only principal HTMLs + 2 dir-only principal HTMLs + 1 lobbyist HTML (Schlaak) + `gap_classification.csv`
+
+### Next Steps
+- **Re-prioritize handoff option (4)** — principal-side scrape — given its newly-clarified completeness role. The case for spending the ~500 MB / ~5 hr wall is now stronger than it was in the prior session's framing.
+- Before executing (4): quick re-fetch of `/Who/LobbyistInformation/2025REG/Information/12694` to confirm Schlaak's omission from the grid isn't a one-day glitch — cheap, single HTTP call.
+- Investigate the License Type column in `WI_directory_lobbyists.xls` — what value does Neumann-Ortiz have, what value does Schlaak's detail page list? Could help characterize the directory's lobbyist-side filter rule.
+- Still held over from prior session: (1) reply from `lobbying@wi.gov`, (3) State Agency Liaisons table pull.
+- Convo: [`convos/20260526_wi_principal_gap_investigation.md`](convos/20260526_wi_principal_gap_investigation.md).
+
+---
+
 ## Session: 2026-05-26 — wi_authorization_scrape_implementation
 
 ### Topics Explored
