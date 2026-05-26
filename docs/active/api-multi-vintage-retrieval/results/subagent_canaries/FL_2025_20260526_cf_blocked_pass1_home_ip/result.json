@@ -1,0 +1,13 @@
+{
+  "state": "FL",
+  "vintage": 2025,
+  "actual_vintage_used": null,
+  "prompt_git_rev": "b368aa2e8f615cfa3aa80d3e7c4a605b9464db08",
+  "proposed_urls": [],
+  "pass1_chosen_titles": [],
+  "pass2_chosen_chapters": [],
+  "pass3_invoked_on": [],
+  "tree_depth": 0,
+  "playwright_errors": ["cloudflare_blocked_at_pass1"],
+  "notes": "Pass-1 fetch of https://law.justia.com/codes/florida/2025/ returned a Cloudflare 'Just a moment...' challenge page (title tag confirms CF interstitial; meta http-equiv=refresh content=360; cdn-cgi/challenge-platform script src). HTML size 31745 bytes; TSV empty as expected for a CF-challenge page (no statute links to extract). Dispatched per CF-probe protocol from home IP (Dans-MacBook-Air.local) on 2026-05-26 23:15 UTC after 6 prior dispatches today CF-blocked at pass-1 across 2 distinct egress IPs. This third IP also blocked — CF-block is not solely IP-keyed for this account/UA fingerprint. Stopped at pass-1 per dispatch protocol — no retry, no escalation, no fingerprint-evasion. FL is a split-regime state (Title III Ch.11 legislative + Title X Ch.112 executive) per the FL state-specific addendum; neither could be reached. No vintage substitution attempted because the block was at the CF layer, not a 404 — substituting 2024/2023 would re-trigger the same CF challenge."
+}
