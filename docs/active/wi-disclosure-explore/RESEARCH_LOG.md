@@ -6,6 +6,41 @@ Index for the `wi-disclosure-explore` branch. One entry per session, newest firs
 
 ---
 
+## Session: 2026-05-26 — wi_tier_2_phases_2_3_green
+
+### Topics Explored
+- Phase 2 GREEN implementation of `principal_meta_parser.py` per the prior session's locked 4-element contract
+- Same-h4-text-different-section gotcha mitigation (scope bucket walk to the Percent Allocation section row)
+- Panel-ID prefix variance across buckets (`panel-billeffort-*`, `panel-budgetbillsubjecteffort-*`, etc.) — integer suffix IS the item ID
+- The `test_dairy_contains_known_bill` fixture/expectation mismatch on AB30 (test says 1%, fixture body says 2%); chose to surface for Dan rather than self-patch
+- Phase 3 RED + GREEN of `lobbyist_time_report_parser.py` against Brooks 11052 + Pfaff 11042 fixtures
+- Two structural differences between principal-side and lobbyist-side tables: `<h3>` vs `<h4>` heading, `2025\nJanuary - June` vs `January 2025 to June 2025` period format, in-progress columns suppressed (principal) vs explicit-zero (lobbyist)
+
+### Provisional Findings
+- **Phase 2 parser structurally clean — 24 of 25 driving tests green on first implementation.** No iteration needed on the structural cases (REDACTED whitelist, bucket-scoped walk, panel-ID extraction, zero-as-real-data, empty-cell-skip).
+- **AB30 RED is a test-author clerical error, not a parser bug.** Fixture body on `principal_11590_populated.html` line 5221 shows `2%` for `panel-billeffort-24598` (Assembly Bill 30) in 2025 H1; the test asserts `1%`. Likely confusion with adjacent `panel-billeffort-24710` (Assembly Bill 93) which IS at 1%. Surfaced separately per Dan's call; 1 RED test landed pending resolution.
+- **Phase 3 parser also clean — 14 of 14 tests green on first implementation.** Pfaff fixture's `[125.00, 74.00, 0, 0]` / `[259.50, 276.00, 0, 0]` is a fresh measurement this session and matches the realistic 2-populated/2-zero norm documented in the prior convo.
+- **Two-element vs four-element return-tuple asymmetry between the parsers is genuine.** The lobbyist side has no analog of the principal-side Business/Lobbying-Interests/CEO strongs (no side-channel dict), and no analog of the Percent Allocation bill-itemized cross-tab (no per-item list). Reflects WI portal reality.
+- **Lobbyist `address` ContactDetail is best-effort and likely conflates firm name + phone digits into the address value** — no tests assert on address contents. Phase 6 spot-check item, not blocking.
+
+### Decisions Made
+- Land Phase 2 with 24/25 GREEN; surface `test_dairy_contains_known_bill` for separate Dan-resolution rather than auto-edit either side (Dan's explicit "pause and surface" call).
+- Filing ID format: `WI-{principal|lobbyist}-{id}-{expenditure|activity}-{year}-{H1|H2}`.
+- Defer address-extraction cleanup until Phase 6 spot-check surfaces a need.
+
+### Results
+- Convo: [`convos/20260526_wi_tier_2_phases_2_3_green.md`](convos/20260526_wi_tier_2_phases_2_3_green.md)
+- Commits (3 code + 1 convo): `ef7b8dd` (Phase 2 GREEN parser, 24/25), `194d6b4` (Phase 3 RED tests), `b65c245` (Phase 3 GREEN parser, 14/14), plus this finish-convo commit
+- Test deltas: +24 GREEN on `tests/test_wi_principal_meta_parser.py`, +14 GREEN on new `tests/test_wi_lobbyist_time_report_parser.py`. Full suite 1500 pass + 3 pre-existing baseline failures + 1 surfaced RED (AB30).
+
+### Next Steps
+- **Resolve the AB30 RED test** per Dan's eventual option choice (edit to `2%`, switch to AB93/24710 at `1%`, or leave RED). One-line edit either way.
+- **Phase 4 — Tier-2 materializer.** TDD against on-disk checkpoint JSONs; emit 4 TSVs + `WI_principal_bill_efforts.tsv`; soft-404/ParseError rows route to `_tier_2_parse_failures.tsv`.
+- **Phase 5+** — CLI wrapper, run + spot-check on Dan's machine, WCTA 12997 doc-drift fix, results writeup.
+- **Alternative path:** PR + merge `wi-disclosure-explore` after Phase 4-6 — Dan's call.
+
+---
+
 ## Session: 2026-05-26 — wi_tier_2_parser_implementation
 
 ### Topics Explored
