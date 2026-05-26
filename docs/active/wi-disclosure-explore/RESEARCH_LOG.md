@@ -6,6 +6,47 @@ Index for the `wi-disclosure-explore` branch. One entry per session, newest firs
 
 ---
 
+## Session: 2026-05-26 — wi_tier_2_parser_implementation
+
+### Topics Explored
+- Phase 0 fixture capture — checkpoint JSON shape, ranking heuristic for populated allocation buckets, top-30 by HTML size with `no_results=0` filter
+- Same-h4-text-different-section pattern (`Legislative Bills/Resolutions` h4 appears under both `<h3>Lobbying Interests</h3>` and `<h3>Percent Allocation of Lobbying Effort</h3>`)
+- Snapshot-timing structural finding (only 3 of 770 lobbyists have all 4 Time Report Summary periods populated; 420 match the realistic 2-populated/2-zero norm)
+- Phase 1 v1.2 schema bump on `LobbyingFiling` (`total_hours_communicating` + `total_hours_other`) under strict TDD
+- Phase 2 HTML reconnaissance — Total Lobbying Effort table shape (3 rows × N period columns) vs Percent Allocation bill-itemized nested-card structure
+- Whether to bucket-total Percent Allocation %s at parse time (decision: no, per-item rows)
+- Where to home CEO Name / Business Or Interest / Lobbying Interests prose given v1.1 `Organization` has no free-text catch-all (decision: side-channel dict)
+- Phase 2 RED test design (21 driving tests across 5 fixtures)
+
+### Provisional Findings
+- **Dairy Business Association (11590)** is the only top-30-by-size principal with `no_results=0` in the Percent Allocation section — captured as the canonical fully-populated fixture. **Wisconsin Manufacturers & Commerce (11637)** captured as the high-volume / sparse-allocation variant ($911,593.49 spend, 10 lobbyists, 2.1 MB HTML). **Bryan Brooks (11052)** captured as the top lobbyist fixture (41 principals, realistic 2-populated/2-zero Time Report Summary pattern).
+- **v1.2 schema bump shipped clean.** `LobbyingFiling.total_hours_communicating` and `total_hours_other` (both `float | None = None`) added in `f50c7e7`. 7 RED tests → 7 GREEN. No breakage to the 119 prior model tests, no breakage to the 49 existing WI tests. The full suite remains at 1462 pass + same 3 pre-existing `test_pipeline.py` baseline failures (archived-line ownership; orthogonal to Tier-2).
+- **Total Lobbying Effort table only shows COMPLETED semesters** on the 2026-05-26 snapshot (2025 Jan-Jun + 2025 Jul-Dec). The Percent Allocation section shows all 4 biennium periods with empty cells for in-progress 2026 columns.
+- **Percent Allocation is bill-itemized**, not bucket-totaled. Each of the 6 bucket cards either reads "No X found." or contains item cards with per-period % tables. Bucket-level rollup requires summing per-item %s — Dan locked the call to skip the rollup and ship per-item rows.
+- **v1.1 `Organization` has no clean home** for CEO Name / Business Or Interest / Lobbying Interests prose. Side-channel dict is the pragmatic shim until v1.3 lifts these into typed Organization fields alongside the planned `LobbyingEffortAllocation` sub-entity.
+- **`ContactDetail.type` v1.1 Literal is `{"address", "phone", "email", "website"}`** — NOT `"url"`. Caught in test design.
+
+### Decisions Made
+- **Q1 (LobbyingFiling.provenance) → YES** — populate `source_url` (principal-info detail page URL) and `extracted_at` (parse-time timestamp).
+- **Q2 (other cheap add-ins) → NONE** — only the Phase 7 WCTA name fix.
+- **Q3 (Percent Allocation aggregation) → per-item rows** — parser emits a fourth tuple element (list of dicts) keyed (principal_id, bucket, item_id, item_name, item_description, period_label, percent). Long-term v1.3 lifts to typed `LobbyingEffortAllocation` sub-entity.
+- **Q4 (CEO/Business/Lobbying-Interests prose location) → side-channel dict** — parser's second tuple element. Long-term v1.3 lifts to typed `Organization` fields.
+- **Phase 2 parser contract locked:** `parse_principal_meta(html, principal_id) -> tuple[Organization, dict, list[LobbyingFiling], list[dict]]`. `REDACTED_PRINCIPAL_IDS = {11530, 13137}` module constant.
+
+### Results
+- Convo: [`convos/20260526_wi_tier_2_parser_implementation.md`](convos/20260526_wi_tier_2_parser_implementation.md)
+- Commits (7, all pushed): `3ccc042` (cp_perm_diag cleanup), `01388e6` (Phase 0 fixtures: 11590 Dairy + 11637 WMC + 11052 Brooks), `0debed0` (v1.2 RED), `f50c7e7` (v1.2 GREEN — `LobbyingFiling` gains 2 hours fields), `698897b` (v1.2 noridoc update), `a5dae17` (mid-session convo checkpoint), `0481559` (Phase 2 RED — 21 driving tests for principal-meta parser)
+- Test deltas: +7 GREEN model tests (v1.2), +21 RED parser tests (Phase 2). Full suite 1462 pass + same 3 pre-existing baseline failures.
+
+### Next Steps
+- **Phase 2 GREEN** — next session: implement `src/lobby_analysis/io/wi/principal_meta_parser.py` per the contract locked in the convo's "Decisions Made" section. 21 RED tests already in place at `tests/test_wi_principal_meta_parser.py`. Implementation guidance in the convo's "Next Steps" section.
+- **Phase 3** — lobbyist Time Report Summary parser against `lobbyist_11052_populated.html` (simpler structure than principal-meta; same TDD discipline).
+- **Phase 4** — materializer; will emit 4 TSVs per the plan plus a new `WI_principal_bill_efforts.tsv` for the per-item allocation rows.
+- **Phases 5-7** — CLI wrapper; data run + spot-check; doc-drift fix (WCTA 12997 name) + results writeup.
+- **Held over (orthogonal):** lobbying@wi.gov reply, SAL table parser/ingest, cross-session principal_id stability, potential PR + merge of `wi-disclosure-explore`.
+
+---
+
 ## Session: 2026-05-26 — wi_tier_2_parser_plan
 
 ### Topics Explored
