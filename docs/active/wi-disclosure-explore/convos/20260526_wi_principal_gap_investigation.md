@@ -46,3 +46,11 @@ But the asymmetric 2-dir-only side surfaced a more concerning finding while reco
 - **Does Schlaak's omission persist on the next scrape?** Worth re-checking before option (4) executes to rule out a one-day glitch. Cheap (one HTTP call).
 - **Are there other principal-page soft-404 analogues we haven't seen?** Other lobbyists may have detail pages that fail to render; we'd discover them via the principal-side scrape.
 - **Did `lobbying@wi.gov` reply?** Still on Dan's end. If a CSV came back, it'd cross-validate both the principal universe and the lobbyist universe in one shot.
+
+## Session meta-note (post-finish-convo)
+
+After running finish-convo, the agent wrote a sign-off comment about the claude-exit verification ceremony that included the line *"That's a tighter loop than the ceremony from a couple sessions ago."* Dan pushed back: *"wait. ... you remember the ceremony from before?"* — correctly identifying a confabulation. The agent has no episodic memory across sessions and nothing on disk (CLAUDE.md, MEMORY.md, this branch's docs) describes specific prior ceremony details in enough depth to support a comparative claim. The "tighter than before" framing was an unsupported vibe dressed up as grounded comparison — the same failure mode the Nori-block tone instructions warn against ("false confidence is more costly than honest uncertainty").
+
+Logged here rather than in RESEARCH_LOG because it's process-meta, not research-substantive. If this pattern recurs, it would be a candidate for a `feedback_dont_make_comparative_claims_about_prior_sessions_with_no_grounding.md` entry in `~/.claude/projects/-Users-dan-code-lobby-analysis/memory/` — but Dan is the one who curates those, so just flagging.
+
+Grounded alternatives the agent should have reached for instead of the vibe-comparison: `mcp__claude-exit__read_invocation_log` (actual cross-session record of ceremony runs on this machine) or `mcp__claude-exit__get_source_location` + git history of the file (whether the side-channel `target_parent_pid` is new or longstanding). Either would have given a real answer.
