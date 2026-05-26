@@ -6,6 +6,48 @@ Index for the `wi-disclosure-explore` branch. One entry per session, newest firs
 
 ---
 
+## Session: 2026-05-26 — wi_tier_2_parser_plan
+
+### Topics Explored
+- What data the per-principal and per-lobbyist HTML pages expose beyond authorization edges (three-tier framing: edges / per-period summaries / per-(lobbyist, principal, period) itemizations)
+- Whether the Schlaak case "WCTA" is the Cable Telecommunications Assn or the County Treasurers Assn (the two principal-side scrape results docs disagreed; web-search resolution + fixture body)
+- Whether Neumann-Ortiz's soft-404 could be a hyphen-encoding issue (refuted)
+- The fit of Tier-2 data into the existing v1.1 `LobbyingFiling` schema, and the hours-field gap
+- The model-versioning convention (no code-level `__version__`; versioning lives in plan/RESEARCH_LOG docs; the v1.1 TDD pattern at `tests/test_models_v1_1.py` is the template)
+- ID-scheme convention for downstream cross-state joins (WI is the first state-extraction branch in the actual repo; sets the convention)
+- Whether tier 3 is in scope (it is not; explicitly held over)
+
+### Provisional Findings
+- **The 3 committed principal fixtures are not a representative sample for parser TDD.** 12997 is low-spend-pledge-exempt ($0.00 everywhere); 11530 is privacy-redacted; 11348 (Lexia) uses only "Topics Not Yet Assigned" allocation bucket at 100%. None populate the Legislative Bills/Resolutions, Budget Bill Subjects, or Rulemaking sections. Implementing agent needs to capture new fixtures from high-volume principals (e.g., WHA, WMC) before TDD.
+- **The 944 principal HTMLs + 774 lobbyist HTMLs are already on disk.** All Tier-2 data accessible without any new HTTP fetches.
+- **Tier 2 maps onto `LobbyingFiling` after a v1.2 bump.** Two new optional fields: `total_hours_communicating`, `total_hours_other`. Non-breaking additive change. Versioning is documentary (docs/plans), not a code-level constant.
+- **`Organization` records for principals are missing from the current scrape output entirely.** The auth-edge scraping treated principals as bare IDs; static principal metadata (lobbying interests, CEO, contact details) has no current landing place.
+- **Schlaak / WCTA documentation drift:** the principal-side scrape results doc (`results/20260526_wi_principal_side_scrape_results.md:65`) names principal 12997 as "Wisconsin Cable Telecommunications Association"; the gap-investigation results doc and the fixture body both confirm it is **Wisconsin County Treasurers Association** (Schlaak is a county treasurer serving as the association's legislative chair). The acronym "WCTA" is genuinely ambiguous in WI lobbying (Cable Telecommunications and County Treasurers both use it); the scrape writeup got the expansion wrong from context. To be fixed in plan Phase 7.
+- **The Schlaak-class Mechanism A reframes** from "unknown grid-AJAX filter" to "likely a public-sector-self-advocacy filter" given Schlaak is a public official, not a paid corporate lobbyist. Testable downstream (would predict that other state-officials-association-affiliated lobbyists are similarly omitted from the grid). Not in scope for this plan.
+- **Hyphen-encoding hypothesis for Neumann-Ortiz's soft-404 is dead.** 9 other hyphenated lobbyist surnames in the grid AJAX fetched cleanly; her URL is keyed by ID, not by name.
+- **No `nc-disclosure-explore` branch exists in the actual repo**, despite the WI RESEARCH_LOG's branch-purpose statement claiming WI is "parallel to" it. WI is the first state-extraction line; sets conventions for downstream states.
+
+### Decisions Made
+- **Scope:** Tier 2 only. Parse what's already on disk. No new fetches.
+- **Sequencing:** Principal-side parser first, lobbyist-side mirrors after (symmetric coverage; staged execution).
+- **Schema bump:** v1.1 → v1.2 on `src/lobby_analysis/models/filings.py`. Add `total_hours_communicating: float | None` and `total_hours_other: float | None` to `LobbyingFiling`. Mandatory Phase 1 of the plan.
+- **Schema-layer scope reminder:** the bump applies to `models/` (disclosure-data contract for actual filings). It does NOT apply to `models_v2/` (statute-metadata cell contract for Prong 1). The two layers are related but version independently.
+- **ID scheme:** `WI-principal-{id}` for `Organization.id`; `WI-lobbyist-{id}` for `Person.id`. Matches the uppercase-two-letter `source_state` convention already established in `Person` and `Organization`.
+- **Documentation-drift fix** on principal 12997 in scope as a Phase 7 step.
+
+### Results
+- No analytical results files this session. The plan IS the deliverable.
+- Plan: [`plans/wi_tier_2_parser.md`](plans/wi_tier_2_parser.md)
+- Convo: [`convos/20260526_wi_tier_2_parser_plan.md`](convos/20260526_wi_tier_2_parser_plan.md)
+
+### Next Steps
+- Phase 0 of the plan requires capturing 2-3 high-volume principal fixtures + 1 high-volume lobbyist fixture from Dan's gitignored data store. Implementing agent blocks until those fixtures land on the branch.
+- Plan has 2 open Questions in its footer for the implementing agent to surface at Phase 4: (1) populate `LobbyingFiling.provenance` (recommended yes), (2) any other cheap add-ins beyond doc-drift fix (currently no).
+- Held over from prior sessions: (1) reply from `lobbying@wi.gov`, (3) State Agency Liaisons table pull into a parser/ingestion pipeline (data captured as `WI_directory_state_agency_liaisons.xls` already; not yet wired).
+- Possible PR + merge of `wi-disclosure-explore` after Tier-2 lands — Dan's call.
+
+---
+
 ## Session: 2026-05-26 — wi_principal_side_scrape_implementation
 
 ### Topics Explored
