@@ -1,0 +1,13 @@
+{
+  "state": "FL",
+  "vintage": 2025,
+  "actual_vintage_used": 2025,
+  "prompt_git_rev": "b375d70c3a85e235d92373a21646f0ebd74f2132",
+  "proposed_urls": [],
+  "pass1_chosen_titles": [],
+  "pass2_chosen_chapters": [],
+  "pass3_invoked_on": [],
+  "tree_depth": 0,
+  "playwright_errors": ["cloudflare_blocked_at_pass1_despite_hitl"],
+  "notes": "PROBE OUTCOME: CASE B — pass-1 still CF-blocked despite HITL with bumped 300s challenge_timeout_seconds. Saved HTML is the Cloudflare challenge interstitial (title='Just a moment...', size=31787 bytes, contains challenge-platform/turnstile markers). TSV is empty (0 lines / 0 statute links). Subprocess returned with no stdout/stderr captured by the parent shell — helper appears to have polled the full 5 minutes and then saved whatever was on the page. From the saved HTML alone we cannot determine whether the user actually clicked the Turnstile checkbox during this run; the captured state is indistinguishable from no-interaction. Possible explanations: (a) user did not see/click the challenge in time, (b) user clicked but Turnstile returned a failure / required a second-factor challenge that wasn't completed, (c) Justia/CF served a hard block (no solvable challenge present) for this IP at this time, or (d) the helper's polling logic captured the page at a moment when title was still 'Just a moment...' even though challenge later resolved. Pass-2/3 NOT executed per probe scope. Dispatcher should consult user on what they observed in the visible Chromium window before deciding on per-call HITL strategy for the 10+ fetches/state pattern."
+}
