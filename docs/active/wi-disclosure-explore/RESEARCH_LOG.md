@@ -6,6 +6,52 @@ Index for the `wi-disclosure-explore` branch. One entry per session, newest firs
 
 ---
 
+## Session: 2026-05-26 — wi_tier_2_phase_6_7_results
+
+### Topics Explored
+- Phase 6: full run of `tier_2_materialize_cli` against the real 944 + 773 corpus to the proper output path (`~/data/lobby_analysis/disclosures/WI/`); idempotent vs prior smoke (19.3 s vs 19.2 s, identical row counts)
+- Spot-check verification against plan anchors: Lexia 11348 ($65,225.58 YTD expected → $65,225.58 actual ✅), Dairy 11590 (canonical fully-populated → $88,568.50 YTD + 72 bill-effort rows), WCTA 12997 (low-spend-exempt → 1 H2 filing at $0/0/0)
+- Top-10 principals by YTD spend, bucket distribution across 7,345 bill-effort rows, lobbyist-hours distribution across 3,092 activity_report rows
+- Held-over Phase 3 item: address-quality eyeball on `WI_lobbyists.tsv.contact_details_json`
+- Phase 7: doc-drift fix on WCTA 12997 ("Wisconsin Cable Telecommunications" → "Wisconsin County Treasurers Association") + process note on entity-name verification
+- Side-check: parser's `_BUCKET_HEADERS` declares 6 buckets but only 4 appear in real data (`Minor Efforts` + `Other Matters` have 0 rows in 2025-2026)
+
+### Provisional Findings
+- **0 parse failures via the null-html branch, NOT the ParseError path.** Plan step 36 expected 1 row in `_tier_2_parse_failures.tsv` (the Neumann-Ortiz 12717 soft-404). Actual count is 0 because the fetcher's body-marker soft-404 detection from the prior auth-scrape session stored that checkpoint as `html=null`, and the iterator's null-html branch silently skips it. Handling is correct; observation channel differs. Worth folding into the materializer as synthetic ParseFailure rows for downstream visibility.
+- **WCTA 12997 emits 1 filing (H2 at $0/0/0), not 2.** Low-spend-exempt principals don't necessarily emit zero-row filings for every period; they file in whichever periods the portal records something for. Refinement of expectations, not a bug.
+- **Lexia 11348: $65,225.58 YTD verified exactly** ($32,537.58 H1 + $32,688.00 H2). Matches plan anchor cleanly.
+- **Headline aggregates:** $47,458,304.69 total principal-side spend across 944 principals; 888 (94.1%) emit ≥ 1 filing; 812 emit > $0 in any filing.
+- **Top-10 by spend:** DoorDash $2.18M, WIIN $1.01M, WMC $911k, WHA $818k, REALTORS $807k, Farm Bureau $608k, AFP $608k, Property Taxpayers $508k, Insurance Alliance $491k, Counties Assn $441k. DoorDash is a sharp outlier on the high end.
+- **Bucket distribution (7,345 rows):** Legislative Bills 54.9% / Topics-Not-Yet 31.7% / Budget Bill 11.7% / Admin Rule 1.7%. The 2 declared but unused buckets (`Minor Efforts`, `Other Matters`) have 0 rows in 2025-2026 — worth a re-check next session.
+- **Lobbyist-filing hours:** median 15 hrs communicating per non-zero filing (1,128 / 3,092 = 36.5% have any reported hours); max 651 communicating, max 3,356.5 other. Only 36.5% of always-4-emitted filing rows have any hours reported.
+- **Pettack outlier (lobbyist 11072, SAA):** 7,611 hrs total H1 + H2 ≈ 32 working hrs/day. Not physically possible for one individual; probable interpretation is org-wide hours aggregated under the single registered lobbyist. Portal data-entry pattern, not parser bug. Cross-state validation pending.
+- **`contact_details_json` address blob is structurally messy at source:** typed `address` entries contain the full 4-line block (firm + street + city-state-zip + phone-duplicated-from-dedicated-field); some rows have email mashed in instead of street. Parser preserves what the portal serves correctly; downstream geocoding/joins want a `_parse_address_blob` helper.
+
+### Decisions Made
+- **Phase 6 + Phase 7 of `plans/wi_tier_2_parser.md` shipped.** All 41 steps of the plan are complete.
+- **`contact_details_json` refactor deferred** to a follow-up branch — known limitation, not blocking, would require parser change + re-materialize + test/fixture updates. Documented as Finding §8 + Open Item in the results doc.
+- **Synthetic ParseFailure rows for null-html-skipped checkpoints deferred** — small materializer change, not blocking. Open Item in the results doc.
+
+### Results
+- Convo: [`convos/20260526_wi_tier_2_phase_6_7_results.md`](convos/20260526_wi_tier_2_phase_6_7_results.md)
+- Results doc: [`results/20260526_wi_tier_2_parser_results.md`](results/20260526_wi_tier_2_parser_results.md) — 8 findings, 5 open items
+- Doc-drift fix: in-place edit to [`results/20260526_wi_principal_side_scrape_results.md`](results/20260526_wi_principal_side_scrape_results.md) line 65 + 2026-05-26 correction-note block
+- Output TSVs (gitignored, idempotent): `~/data/lobby_analysis/disclosures/WI/{WI_principals,WI_lobbyists,WI_principal_filings,WI_lobbyist_filings,WI_principal_bill_efforts,_tier_2_parse_failures}.tsv`; row counts 944 / 773 / 1706 / 3092 / 7345 / 0
+- Test deltas: none this session (Phase 6 + 7 are run/analysis/doc work; no code changes). Full suite remains at 1537 pass + 3 pre-existing baseline failures + 3 skipped + 3 xfailed.
+
+### Next Steps
+- **PR + merge of `wi-disclosure-explore`** — natural milestone. **Dan's call.** All planned Tier-2 work (Phases 0-7) is complete. The branch has shipped: Tier-1 auth-edge scrape, principal-side scrape, edge unification with provenance, Tier-2 parser (principal + lobbyist) with v1.2 schema bump, materializer + CLI, run + spot-check + results writeup, all doc-drift fixes.
+- **Follow-up branch candidates** (each scope-creep on this branch but logical successors):
+  - `_parse_address_blob` refactor in the lobbyist parser (split 4-line address blob into typed sub-fields)
+  - Synthetic ParseFailure rows for null-html-skipped checkpoints (materializer change)
+  - Low-spend-exempt flag on `Organization` (v1.3 schema bump candidate alongside the planned `LobbyingEffortAllocation` lift)
+  - Classify the 56 zero-filing principals (new-registrant vs empty-expenditure-section vs other shapes)
+  - Re-check `_BUCKET_HEADERS` 6-vs-4 reality (are `Minor Efforts` + `Other Matters` portal-allowed but unused, or dead constants?)
+  - Cross-state validation of the "organization-aggregates-hours-under-one-lobbyist" pattern once a second state's Tier-2 lands (Pettack outlier)
+- **Held over from prior sessions (orthogonal):** lobbying@wi.gov reply (Dan handling), SAL parser/ingest, cross-session principal_id stability.
+
+---
+
 ## Session: 2026-05-26 — wi_tier_2_phase_4_materialize
 
 ### Topics Explored

@@ -62,12 +62,14 @@ This is a NEW Schlaak-class case the gap-investigation didn't catch. Different s
 
 ### Lobbyist 12694 — Michael Schlaak (re-confirmed)
 
-- **Organization:** Wisconsin Cable Telecommunications Association (via principal 12997)
+- **Organization:** Wisconsin County Treasurers Association (via principal 12997)
 - **License Issue Date:** 1/28/2025 (current, no surrender)
 - **Status in `WI_directory_lobbyists.xls`:** **ABSENT**
 - **Status in LobbyistList grid AJAX:** **ABSENT**
 
 The original Schlaak case. License current, authorization current (16+ months tenure pre-scrape), filtered out of **both** rosters for an unknown reason. License Type column doesn't apply (he's not in the .xls to read it from). His exclusion remains structurally unexplained.
+
+> **2026-05-26 correction note:** earlier revisions of this doc named principal 12997 as "Wisconsin Cable Telecommunications Association." The correct expansion is "Wisconsin County Treasurers Association," confirmed by the fixture body at `tests/fixtures/wi/principal_12997.html` and the gap-investigation results doc. The acronym "WCTA" is genuinely ambiguous in Wisconsin lobbying (both Cable Telecommunications and County Treasurers use it). Going forward: **verify entity names from the page body, not from acronym + context inference.**
 
 ### Lobbyist 12717 — Christine Neumann-Ortiz (soft-404 recovery)
 
