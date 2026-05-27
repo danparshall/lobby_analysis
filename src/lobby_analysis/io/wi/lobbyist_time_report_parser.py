@@ -195,42 +195,52 @@ def _extract_email(person_info: Tag) -> str | None:
 
 
 def _extract_address(person_info: Tag) -> str | None:
-    """Multi-line address: the loose text + ``<br/>`` nodes sitting
-    directly under ``.person-info`` (e.g., ``"1 S. Pinckney Street...\nMadison, WI 53703"``).
+    """Multi-line postal address: the loose text + ``<br/>`` nodes sitting
+    inside the address column of the lobbyist's person-info card (e.g.,
+    ``"1 S. Pinckney Street, Suite 318\\nMadison, WI 53703"``).
 
-    Skips: the name ``<div class="font-weight-bold">``, the firm-name
-    ``<div>``, phone/email anchor rows, and any nested ``<div class="row">``
-    sub-containers that wrap the contact icons.
+    The lobbyist-side person-info card lays out:
+
+    .. code-block:: html
+
+        <div class="person-info">
+          <div class="font-weight-bold">{name}</div>
+          <div>{firm name}</div>           <!-- not part of the address -->
+          <div class="row">
+            <div class="col-lg-6">          <!-- address column -->
+              {street}<br/>
+              {city, state, zip}<br/>
+            </div>
+            <div class="col-lg-6">          <!-- contact column -->
+              <i class="fa fa-phone"></i> {phone}<br/>
+              <a href="mailto:..."><i class="fa fa-envelope"></i> {email}</a><br/>
+              ...
+            </div>
+          </div>
+        </div>
+
+    The address column is the ``col-lg-6`` that contains no ``<i>`` icon
+    children. We target it directly rather than walking every descendant
+    of person-info (which would pull in the firm-name div and the icon-
+    sibling NavigableStrings that hold phone/email/website text).
     """
+    # Find the col-lg-6 div(s) that hold the address (no icon prefixes —
+    # those mark the contact column).
+    address_cols = [
+        div
+        for div in person_info.find_all("div", class_="col-lg-6")
+        if div.find("i") is None
+    ]
+    if not address_cols:
+        return None
     parts: list[str] = []
-
-    # Address sits inside a sub-div on the lobbyist side (col-lg-6). Walk
-    # all descendant NavigableStrings that are direct children of a div
-    # whose siblings include the phone/email column, accumulating text.
-    # Simpler heuristic: collect every loose text node under person-info
-    # that isn't inside an <a> or <i> or <strong>.
-    for node in person_info.descendants:
-        if not isinstance(node, NavigableString):
-            continue
-        text = str(node).strip()
-        if not text:
-            continue
-        # Skip text that's inside an excluded ancestor.
-        excluded = False
-        for parent in node.parents:
-            if parent is person_info:
-                break
-            if not isinstance(parent, Tag):
+    for col in address_cols:
+        for node in col.children:
+            if not isinstance(node, NavigableString):
                 continue
-            if parent.name in ("a", "i", "strong", "label", "input"):
-                excluded = True
-                break
-            if parent.name == "div" and "font-weight-bold" in (parent.get("class") or []):
-                excluded = True
-                break
-        if excluded:
-            continue
-        parts.append(text)
+            text = str(node).strip()
+            if text:
+                parts.append(text)
     if not parts:
         return None
     return "\n".join(parts)

@@ -138,24 +138,34 @@ Top-10 lobbyists by total hours (sum of communicating + other across all 4 perio
 | 9 | 11411 | 1,662.50 | Steve Lyons |
 | 10 | 11290 | 1,650.75 | Forbes McIntosh |
 
-### 8. `contact_details_json` quality eyeball (held-over Phase 3 finding)
+### 8. `contact_details_json` address bug — **diagnosed and fixed mid-session**
 
-The lobbyist-side `ContactDetail` extraction is structurally correct — the parser emits the portal's typed phone/email/website entries cleanly — but the `address` entry is **the entire address block** (firm name + street + city/state/zip + phone, separated by `\n`), and the phone is already duplicated in the dedicated `phone` field. Example, lobbyist 11040 (Tia Cannon):
+**Original framing in this doc was wrong** — I told you "the parser correctly preserves what the WI portal serves; the address blob is malformed at source." A code-reviewer pass before merge surfaced that the address pollution is **parser-side concatenation**, not portal-side serving. The WI portal serves the contact card with each field as a distinct visual element prefixed with an `<i class="fa-{phone,envelope,globe}">` icon; the value text follows the icon as a NavigableString *sibling*, not a descendant. Both parsers' `_extract_address` were treating those NavigableString siblings as part of the address.
 
-```
-{"type":"phone","value":"414-218-6063","note":""}
-{"type":"email","value":"Theancfirm@gmail.com","note":""}
-{"type":"address","value":"Self-Employed Lobbyist - No Firm or Org\n2619 N 51st\nMilwaukee , WI 53210\n414-218-6063","note":""}
-```
+Two distinct leaks were happening:
 
-Concrete quality issues observed in the eyeball sample:
+1. **Phone digits leaked into address on every row, both sides** — the icon-skip logic skipped the `<i>` tag but not the immediately-following NavigableString that holds the phone number.
+2. **Firm name leaked into address on the lobbyist side** — the lobbyist parser walked `person_info.descendants`, and the firm-name `<div>` (no class to filter on) passed through. So Brooks's address ended up as `"Paladin Consulting Group LLC\n1 S. Pinckney Street, Suite 318\nMadison, WI 53703\n(608) 467-7933"` instead of `"1 S. Pinckney Street, Suite 318\nMadison, WI 53703"`.
 
-1. **Phone is always duplicated** between the `phone` typed entry and the tail of the `address` blob.
-2. **Email is sometimes mashed into the address blob**, e.g., lobbyist 12794 (Lana Shklyar Nenide): `"WI Alliance for Infant Mental Health\nlnenide@wiaimh.org\nMiddleton, WI 53562\n608-563-9714"` — no street address; the email occupies the street-line position.
-3. **"Self-Employed Lobbyist - No Firm or Org" appears verbatim** as the firm-name line for sole-proprietor lobbyists (≥4 in the first 15 rows). This is the literal portal string, not parser-injected.
-4. **One observed duplication of state/zip:** lobbyist 11308 (Nels Rude): `"Madison, WI 53703, WI 53703"` — likely a portal data-entry issue, not a parser issue.
+**Fix:**
 
-**Assessment:** the parser is correctly preserving what the WI portal serves. The address blob is malformed at source; splitting it would require heuristic line-by-line classification (firm vs street vs city-state-zip vs duplicate-phone) and per-row exception handling. **A targeted refactor IS warranted** before downstream geocoding / joins, but it's scope creep for this session. Proposed follow-up: a small `_parse_address_blob` helper that splits on `\n` and tags each line by regex/heuristic (firm | street | city-state-zip | phone-dup | email-dup) and emits multiple typed ContactDetails. The current single-blob `address` would stay as a fallback for unparseable cases.
+- **`principal_meta_parser._extract_address`** — track whether the previous child during the sibling-walk was an `<i>` tag; if so, skip the next NavigableString (it's the icon's value text, handled in the typed extractors).
+- **`lobbyist_time_report_parser._extract_address`** — replaced the descendants-walk with a structural-target: find the `col-lg-6` div that has no `<i>` children (the address column, distinguished from the contact column by absence of icons), walk only its NavigableString children.
+
+**TDD coverage added** (4 new tests):
+
+- `test_dairy_address_is_only_street_and_city_state_zip` — Dairy 11590 (principal)
+- `test_lexia_address_is_only_street_and_city_state_zip` — Lexia 11348 (principal)
+- `test_brooks_address_is_only_street_and_city_state_zip` — Brooks 11052 (lobbyist)
+- `test_pfaff_address_is_only_street_and_city_state_zip` — Pfaff 11042 (lobbyist)
+
+Each test asserts exact-equality on the expected clean address. All 4 RED at first, all 4 GREEN after the fixes.
+
+**TSVs re-materialized** with the fixed parsers (18.9 s wall, identical row counts 944/773/1706/3092/7345/0). Spot-check on the 5 rows shown above (`11040`, `11041`, `11044`, `11308`, `11590`, `11052`) confirms clean addresses: no phone duplication, no firm-name pollution, no "Self-Employed Lobbyist - No Firm or Org" string.
+
+**One real portal-side data-entry artifact preserved** (genuinely portal, not parser): lobbyist 11308 (Nels Rude) still shows `"Madison, WI 53703, WI 53703"` — the duplicated state-zip is in the WI portal HTML itself, exactly as served. No parser action warranted.
+
+**Open follow-up** (deferred to a separate branch): split the typed `address` ContactDetail into structured sub-fields (street vs city-state-zip) for downstream geocoding. Currently the typed entry is correct at the postal-address granularity but not pre-split into typed lines. Lower priority than the bug fix, hence the separate branch.
 
 ---
 
@@ -169,7 +179,7 @@ The plan-Phase-7 WCTA doc drift (`results/20260526_wi_principal_side_scrape_resu
 
 - **Synthetic ParseFailure rows for null-html-skipped checkpoints** — small materializer change to make soft-404 cases observable in the warnings TSV. (Finding §1.)
 - **Low-spend-exempt flag on Organization** — v1.3 candidate. (Finding §2.)
-- **`_parse_address_blob` refactor** — split the 4-line address blob into typed sub-fields. (Finding §8.)
+- **Address sub-field split** — the address ContactDetail is correct at the postal-address granularity now (Finding §8 fix landed), but downstream geocoding may want it pre-split into street vs city-state-zip typed entries. Lower priority than the bug that motivated the rewrite.
 - **Cross-state validation of the "organization-aggregates-hours-under-one-lobbyist" pattern** — open until a second state's Tier-2 lands. (Finding §7, Pettack outlier.)
 - **Classify the 56 zero-filing principals** — distinguish new-registrant vs empty-expenditure-section vs other shapes. (Finding §5.)
-- **6 vs 4 bucket count** — the parser/plan reference "6 activity-allocation buckets" but only 4 ever appear in real data. Confirm by reading `_BUCKET_HEADERS` in `principal_meta_parser.py` and reconcile. (Finding §6.)
+- **6 vs 4 bucket count** — the parser/plan reference "6 activity-allocation buckets" but only 4 ever appear in real data. Confirmed by reading `_BUCKET_HEADERS` in `principal_meta_parser.py`: the parser declares all 6 (`Legislative Bills/Resolutions`, `Budget Bill Subjects`, `Administrative Rulemaking Proceedings`, `Topics Not Yet Assigned A Bill Or Rule Number`, `Minor Efforts`, `Other Matters`) but the last two have 0 rows in 2025-2026. Worth re-checking next session whether they're portal-allowed-but-unused or dead-code constants.

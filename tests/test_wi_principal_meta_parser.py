@@ -207,6 +207,27 @@ class TestOrganizationContactDetails:
         sites = [c.value for c in org.contact_details if c.type == "website"]
         assert "http://www.dairyforward.com" in sites
 
+    def test_dairy_address_is_only_street_and_city_state_zip(self):
+        """The address ContactDetail must contain ONLY the postal address
+        (street + city/state/zip), NOT the phone digits that follow the
+        ``<i class="fa-phone">`` icon as a NavigableString sibling. The phone
+        belongs in its own typed entry; duplicating it into the address blob
+        pollutes downstream geocoding + entity-linking."""
+        org, _, _, _ = parse_principal_meta(
+            _load("principal_11590_populated.html"), 11590
+        )
+        addresses = [c.value for c in org.contact_details if c.type == "address"]
+        assert addresses == ["2763 Manitowoc Rd\nGreen Bay, WI 54311"]
+
+    def test_lexia_address_is_only_street_and_city_state_zip(self):
+        """Lexia 11348: principal-info contact is Jon Hummell at the firm's
+        Massachusetts address. Same icon-sibling pattern as Dairy."""
+        org, _, _, _ = parse_principal_meta(
+            _load("principal_11348.html"), 11348
+        )
+        addresses = [c.value for c in org.contact_details if c.type == "address"]
+        assert addresses == ["300 Baker Ave, Suite 320\nConcord, MA 01742"]
+
 
 # ---------------------------------------------------------------------------
 # LobbyingFiling — Total Lobbying Effort table

@@ -232,10 +232,24 @@ def _extract_contact_details(soup: BeautifulSoup) -> list[ContactDetail]:
 
 def _extract_address(person_info: Tag) -> str | None:
     """Multi-line postal address; everything in person-info that isn't the
-    person name, phone, email, or website."""
+    person name, phone, email, or website.
+
+    Each contact field on the WI portal is rendered as
+    ``<i class="fa fa-{kind}"></i> {value}<br/>`` — the value text is a
+    NavigableString *sibling* of the icon tag, not a descendant. We skip
+    those icon-sibling strings here so they only show up in their typed
+    contact-detail extractors (``_extract_phone`` etc.). ``<a>`` anchors
+    wrap email + website rows; they too are handled separately."""
     parts: list[str] = []
+    prev_was_icon_tag = False
     for child in person_info.children:
         if isinstance(child, NavigableString):
+            if prev_was_icon_tag:
+                # This NavigableString is the value text for the icon-prefixed
+                # contact row above (phone / email / website). Skip it; the
+                # typed extractors pick it up.
+                prev_was_icon_tag = False
+                continue
             text = str(child).strip()
             if text:
                 parts.append(text)
@@ -244,17 +258,18 @@ def _extract_address(person_info: Tag) -> str | None:
             continue
         if child.name in ("strong", "br"):
             # The person name <strong> isn't part of the address; <br/> is a
-            # separator only.
+            # separator only. Neither is an icon prefix.
+            prev_was_icon_tag = False
             continue
         if child.name == "i":
-            # Phone is rendered as `<i class="fa fa-phone"></i> 608-...` —
-            # the text directly follows the <i> as a NavigableString, so we
-            # treat that NavigableString as phone (handled in
-            # _extract_phone) and skip the <i> here.
+            # Icon prefix for the contact row that follows.
+            prev_was_icon_tag = True
             continue
         if child.name == "a":
             # email / website anchors are handled separately
+            prev_was_icon_tag = False
             continue
+        prev_was_icon_tag = False
     if not parts:
         return None
     return "\n".join(parts)

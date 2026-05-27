@@ -103,6 +103,30 @@ class TestPersonContactDetails:
         emails = [c.value for c in person.contact_details if c.type == "email"]
         assert "shawn@pfaffpublicaffairs.com" in emails
 
+    def test_brooks_address_is_only_street_and_city_state_zip(self):
+        """The address ContactDetail must contain ONLY the postal address
+        (street + city/state/zip), NOT (a) the firm-name ``<div>`` that
+        precedes the address row, or (b) the phone digits that follow the
+        ``<i class="fa-phone">`` icon as a NavigableString sibling. Both
+        currently leak in on the Brooks fixture; both belong in their own
+        typed slots (the firm name has no slot at all on v1.1 ContactDetail
+        and should NOT be invented as part of the address)."""
+        person, _ = parse_lobbyist_time_reports(
+            _load("lobbyist_11052_populated.html"), 11052
+        )
+        addresses = [c.value for c in person.contact_details if c.type == "address"]
+        assert addresses == [
+            "1 S. Pinckney Street, Suite 318\nMadison, WI 53703"
+        ]
+
+    def test_pfaff_address_is_only_street_and_city_state_zip(self):
+        """Pfaff 11042: self-employed lobbyist. Address column carries the
+        street + city/state/zip; the 'Self-Employed Lobbyist - No Firm or
+        Org' string belongs to the firm-name slot, not the address."""
+        person, _ = parse_lobbyist_time_reports(_load("lobbyist_11042.html"), 11042)
+        addresses = [c.value for c in person.contact_details if c.type == "address"]
+        assert addresses == ["5843 Schumann Drive\nFitchburg, WI 53711"]
+
 
 # ---------------------------------------------------------------------------
 # LobbyingFiling — Time Report Summary table
