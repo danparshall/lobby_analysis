@@ -36,8 +36,8 @@ Index for the `wi-disclosure-explore` branch. One entry per session, newest firs
 - Updated results doc: `results/20260526_wi_tier_2_parser_results.md` §8 reflects the fix
 
 ### Next Steps
-- **Merge PR per user direction.**
-- **Follow-up branches** (each scoped to one SHOULD-FIX item from the code review):
+- **PR #29 was merged at `33b8793` this session, then user requested reversion** so a fresh dedicated agent can run `finishing-a-development-branch` cleanly. Reversion + clean re-run handed off to a follow-up agent — see [`convos/20260527_wi_parser_address_fix_and_pr.md`](convos/20260527_wi_parser_address_fix_and_pr.md) "Handoff to follow-up agent" section.
+- **Follow-up branches** (each scoped to one SHOULD-FIX item from the code review; NOT in scope for the re-merge):
   - `wi-data-root-env` — single shared data-root constant / `--data-root` flag across 5 WI CLIs
   - `wi-xlrd-swap` — replace pandas `read_excel` call with direct xlrd in `principal_id_discovery.py`
   - `wi-shared-table-helpers` — lift `_cell_value_text` + `_extract_optional_date` into a shared module

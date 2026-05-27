@@ -49,16 +49,40 @@ PR open + ready to merge per user direction.
 
 ## Results
 
-- **PR:** [#28](https://github.com/danparshall/lobby_analysis/pull/28) opened at session end (placeholder link; actual link in finish-convo output).
-- **Commits this session** (5):
+- **PR:** [#29](https://github.com/danparshall/lobby_analysis/pull/29) — opened, then merged at `33b8793` via `gh pr merge --merge` (merge-commit method, branch retained per research-branch convention).
+- **Merge reversion requested:** after the merge landed, user flagged that the `finishing-a-development-branch` flow should have been run by a *fresh* dedicated agent, not by the same agent that did the day's research work. Reversion + clean re-run of `finishing-a-development-branch` is being handled by a follow-up dedicated agent. See "Handoff" section below.
+- **Commits this session** (6):
   - `b293401` — lint: drop unused pytest + LobbyingFiling imports in two WI test files
   - `af2f739` — Merge remote-tracking branch 'origin/main' into wi-disclosure-explore (pulled in `docs/weekly_updates/2026-05-22.md`)
   - `fbd8a4c` — fix(wi): stop leaking phone + firm name into address ContactDetail (4 RED tests + 2 parser fixes + results-doc §8 rewrite)
   - `2cee7ea` — gitignore: cover the per-worktree `data` symlink
-  - (this finish-convo commit)
+  - `86ba9be` — convo: wi_parser_address_fix_and_pr — BLOCKER fix + PR open
+  - (this finish-convo update commit, capturing merge + reversion-handoff)
 - **Test deltas:** +4 GREEN tests (address-content assertions on Dairy + Lexia + Brooks + Pfaff). Full suite 1541 pass + 3 pre-existing baseline failures + 3 skipped + 3 xfailed.
 - **Code reviewer report:** captured inline in this convo's "Topics" + "Findings" sections; full diagnosis at agent id `a47f504a2634e5c64` (still alive for follow-up clarification if needed).
 - **Updated results doc:** `results/20260526_wi_tier_2_parser_results.md` §8 now reflects the diagnosis + fix instead of the prior portal-side-blame framing. Open Items section also updated.
+
+## Handoff to follow-up agent
+
+PR #29 (`wi-disclosure-explore` → `main`) was merged at commit `33b8793` by this session, then user requested the merge be reverted so a fresh agent can run `finishing-a-development-branch` cleanly. Branch state:
+
+- `main` (origin + local): currently at `33b8793` (the merge commit). Pre-merge HEAD was `94dc75d`.
+- `wi-disclosure-explore` (origin + worktree): at `86ba9be` (the convo commit; this finish-convo update will advance it by 1). All branch work is preserved.
+- PR #29 on GitHub: state `MERGED`. The PR itself can't be unmerged; a fresh PR will need to be created if/when the wi branch is re-merged.
+
+**Reversion options surfaced to the user but not acted on by this agent:**
+
+- **Force-push main back to `94dc75d`** — `git reset --hard 94dc75d` on the main worktree + `git push --force origin main`. Restores main to exact pre-merge state. Requires explicit user authorization per CLAUDE.md DENY list. Multi-committer risk: ~5-minute window where another Corda fellow could have pulled.
+- **Safe revert via `git revert -m 1 33b8793`** — adds a new commit to main that undoes the merge. Doesn't fully achieve the "fresh agent runs finish-a-branch cleanly" state because the wi branch would need to be either rebased or include a revert-the-revert.
+
+User indicated preference for the force-push path implicitly (by stating the goal as "fresh agent runs finish-a-branch") but explicit authorization for force-push to main is still required.
+
+**For the follow-up agent:**
+
+1. Confirm with user which reversion path they want (force-push to `94dc75d` is the cleanest path for their stated goal but requires explicit destructive-op approval).
+2. Execute the reversion.
+3. Run `finishing-a-development-branch` against `wi-disclosure-explore` (HEAD `86ba9be` plus this convo update). The branch is in a fully merge-ready state — full suite passes 1541, ruff check clean, address-parser fix landed, all docs updated, link graph consistent. The previous-agent's flow already did the test run + lint + code review + parser fix + re-materialize + re-write of results doc §8.
+4. The 4 SHOULD-FIX items from the code review are documented in this convo as follow-up branches (`wi-data-root-env`, `wi-xlrd-swap`, `wi-shared-table-helpers`, `wi-materializer-error-discipline`); they are NOT in scope for the re-merge.
 
 ## Open Questions / Follow-up branches
 
