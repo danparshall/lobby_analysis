@@ -8,6 +8,36 @@ Index for the `wi-disclosure-explore` branch. One entry per session, newest firs
 
 ---
 
+## Session: 2026-05-27 — wi_mvp_dataset_release (post-archive addendum)
+
+### Topics Explored
+- Identifying the canonical Tier-2 output set for sharing with collaborators (six TSVs from the materializer + the unified authorization TSV)
+- Verifying on-disk TSVs reflect the post-address-fix state (`fbd8a4c`) — Brooks 11052 row spot-checked clean
+- Where in the repo a published data snapshot should live (new `releases/` convention, distinct from gitignored `data/`)
+- README content for the release: schema, provenance, headline aggregates, the seven caveats already documented in `results/20260526_wi_tier_2_parser_results.md`
+
+### Provisional Findings
+- The six-TSV set hangs together cleanly as a normalized relational bundle — no structural redundancy within the set; `principal_id` / `lobbyist_id` join across all six files
+- ~2.9 MB total is a comfortable size for a text-only data commit in git; bill-efforts file at 1.2 MB is the largest single file but doesn't approach concern territory
+- `releases/wi/README.md` is the primary contract for downstream consumers (schema + provenance + caveats); `src/lobby_analysis/models/` is the secondary contract; `results/20260526_wi_tier_2_parser_results.md` is the tertiary depth-reference
+
+### Decisions Made
+- **`releases/wi/` is the path.** New convention: deliberately-published snapshots live under `releases/<state-or-collection>/`. Distinct from gitignored `data/`.
+- **Six TSVs included** (`WI_principals.tsv`, `WI_lobbyists.tsv`, `WI_lobbyist_principal_authorizations_unified.tsv`, `WI_principal_filings.tsv`, `WI_lobbyist_filings.tsv`, `WI_principal_bill_efforts.tsv`); excluded: the two side-only authorization TSVs (subsumed by the unified one), the XLS directory inputs (raw scrape inputs, not output), the smoke / sample / checkpoint subdirectories.
+- **README cites merge commit `5fcc6ac`** as the generating commit (includes the address fix `fbd8a4c`).
+- Worked directly on `main` with no branch per user choice (one-line packaging task, no risk surface) — documented as a deliberate exception to `CLAUDE.md`'s "no changes directly on main" rule.
+
+### Results
+- Convo: [`convos/20260527_wi_mvp_dataset_release.md`](convos/20260527_wi_mvp_dataset_release.md)
+- Release artifact: [`releases/wi/`](../../../releases/wi/) on `main` (commit `6dda3f1`) — 6 TSVs + README.md, ~2.9 MB total
+- No new files under `results/` (headline aggregates already live in `results/20260526_wi_tier_2_parser_results.md`, which the release README references)
+
+### Next Steps
+- (Optional) Note the new `releases/` convention to other fellows / Suhan in the next weekly Corda update so nobody starts dumping raw `data/` scrapes there
+- Subsequent state pulls (NC, etc.) presumably want parallel `releases/nc/` structure — pattern established here
+
+---
+
 ## Session: 2026-05-27 — wi_archive_sweep_and_remerge
 
 ### Topics Explored
