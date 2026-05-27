@@ -227,6 +227,14 @@ class LobbyingFiling(BaseModel):
     total_expenditure: float | None = Field(
         default=None, description="Aggregate expenditure (FOCAL 7.6)"
     )
+    total_hours_communicating: float | None = Field(
+        default=None,
+        description="Total hours spent communicating with officials (WI / FOCAL 7.x time-spent)",
+    )
+    total_hours_other: float | None = Field(
+        default=None,
+        description="Total non-communication lobbying hours (preparation, research, monitoring)",
+    )
     total_income: float | None = Field(
         default=None,
         description="For consultant lobbyists/firms (FOCAL 7.1)",
