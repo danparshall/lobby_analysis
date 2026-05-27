@@ -10,6 +10,64 @@
 
 ## Session log (newest first)
 
+### 2026-05-26 — NC + FL URL discovery (intended); 9/9 CF-blocked; Playwright fingerprint isolated as cause
+
+- **Convo:** [`convos/20260526_nc_fl_url_discovery.md`](convos/20260526_nc_fl_url_discovery.md)
+- **Handoff:** [`plans/_handoffs/20260526_nc_fl_url_discovery.md`](plans/_handoffs/20260526_nc_fl_url_discovery.md)
+- **Picked up from:** `291fb7d` (2026-05-19 post-finish-convo); main at `94dc75d` (post 20260524 Prong-1 pause weekly update)
+- **Commits this session:** `b250070` (wave 1 stubs + convo + handoff + NC archival rename) → `b368aa2` (wave 2 retry stubs) → `b375d70` (FL 2025 home-IP probe stub) → `8245459` (headless=False probe + HITL probe stubs + characterization writeup)
+- **Results:** [`results/20260526_cf_state_characterization.md`](results/20260526_cf_state_characterization.md)
+- **Machine:** Dans-MacBook-Air
+
+#### Topics Explored
+
+- 4-pair URL discovery scoping for NC/FL × 2015/2025 — the missing pairs from the 2026-05-19 12-state 2025 fan-out, plus the NC 2015 partial.
+- Mv-over-rm preservation of the existing partial NC 2015 bundle (archived to `NC_2015_20260519_pass3_cf_blocked/`) before fresh retry overwrites.
+- Wave 1 dispatch — 3 parallel general-purpose subagents per the established CF-safe concurrency ceiling.
+- IP-rotation as a CF mitigation — 3 distinct egress IPs across the session.
+- Playwright `headless=True` → `headless=False` as a fingerprint mitigation.
+- HITL CAPTCHA solving with extended `challenge_timeout_seconds` (30s → 300s).
+- Regular-Chrome ground-truth discriminator test (clean-Chrome vs. Playwright on the same machine).
+- Discipline: each diagnostic edit to `justia_client.py` reverted before commit; each failed bundle moved to a date-and-condition-suffixed archival path before next probe.
+
+#### Provisional Findings
+
+- **The block is Playwright's automation fingerprint, not IP and not account.** Regular Chrome on the same Mac at the same time as the failed Playwright HITL probe loaded `https://law.justia.com/codes/florida/2025/` cleanly. Single load-bearing finding.
+- **IP rotation is dead as a mitigation.** 3 distinct egress IPs all CF-blocked identically.
+- **Playwright headless flag is dead as a mitigation.** Both `headless=True` and `headless=False` blocked.
+- **HITL CAPTCHA-solving in plain Playwright is dead as a mitigation.** User observed Turnstile presenting "Verify you are a human" checkboxes REPEATEDLY across a single 5-min window — CF re-fails each manual click silently per its automation classifier.
+- **NC 2015 is 3-for-3 walled across 2 IPs over 8 days.** Strongest single-pair signal in the dataset.
+- **The 2026-05-19 12-state success now reads as incidental** session-state-aging, not a reproducible CF-clearance posture. `justia_client.PlaywrightClient` has been working on a knife-edge that we didn't know about.
+- **The fingerprint signal is below the layer the helper can fix.** `navigator.webdriver`, devtools-protocol traces, missing AudioContext/WebGL signatures — ~10–15 known automation tells that a basic `chromium.launch(headless=False)` does nothing to mask. Stealth-Playwright or equivalent is the structurally-right fix.
+
+#### Decisions Made
+
+- 9 CF-stub bundles preserved with descriptive archival names (date + condition suffix) so the chronology is reconstructable without reading the results writeup.
+- Wave 2b (FL 2025 in original parallel batch) cancelled after the wave-2 retry hit 6/6 CF blocks — would have been a 7th identical stub for no information.
+- `src/scoring/justia_client.py` reverted to canonical state at session end (`headless=True`, `challenge_timeout_seconds=30.0`). Diagnostic edits were probe-only; the productionizable fix (stealth-Playwright + per-call refactor) is a separate session.
+- WI 2025 + MI 2025 section-fetches deferred to a future session (user explicit at mid-session). Those are unblocked-in-principle but not known to survive the current CF posture either; re-probe needed before a section-fetch wave.
+- 4 iterative commits accepted (vs. one end-of-session squash) — each captured a real decision point and matched the user's "commit now" preference at each ask.
+
+#### Results
+
+- [`results/20260526_cf_state_characterization.md`](results/20260526_cf_state_characterization.md) — full 9-dispatch score sheet, falsified-hypotheses table, implications for the gather-first pivot.
+- 9 CF-stub canary bundles under `subagent_canaries/` (all with descriptive archival names per Decisions Made).
+
+#### Next Steps
+
+- **Stealth-Playwright spike** in a separate session — `rebrowser-playwright` first (drop-in replacement), `playwright-stealth` as fallback. Re-probe FL 2025 pass-1; if it clears, fan out the other 3 pairs and tackle the long-deferred WI 2025 + MI 2025 section fetches.
+- **Tarragon retry** as parallel/backup path — varies OS, Playwright build, AND IP simultaneously.
+- **WI 2025 + MI 2025 section-fetch CF re-probe** before any large section-fetch wave (section pages are a different URL family than TOC pages; may have different CF rules).
+- **Re-engage Justia outreach** (user drafted framing 2026-05-18). Durable cooperation > technical workarounds.
+
+#### What could have gone better
+
+- **Regular-Chrome discriminator proposed too late.** Came up only after 8 dispatches had burned. Had it run as the second test (after wave 1's 3/3 block), the IP-rotation wave and the headless-flag flip would have been skipped — saving ~5 subagent dispatches.
+- **Probe-first pattern arrived late.** First wave dispatched 3 parallel subagents; only after that 3/3 block did the posture shift to probe-one-then-fan-out. Probe-first is the right default for any retry against a known-flaky external service.
+- **The helper's fresh-context-per-call architecture likely makes CF-suspicion worse** against the current fingerprint posture — a normal user re-uses browser state. The 2026-05-14 design comment was defensible against a prior CF posture but is now counterproductive. Out of scope this session; flagged for the stealth-Playwright work.
+
+---
+
 ### 2026-05-19 — 2025 URL discovery fan-out: 12 priority states (Phase B complete)
 
 - **Convo:** [`convos/20260519_2025_url_discovery_fanout.md`](convos/20260519_2025_url_discovery_fanout.md)
