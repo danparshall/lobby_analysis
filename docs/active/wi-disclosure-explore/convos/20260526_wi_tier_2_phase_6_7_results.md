@@ -4,6 +4,7 @@
 **Branch:** `wi-disclosure-explore`
 **Plan:** [`plans/wi_tier_2_parser.md`](../plans/wi_tier_2_parser.md) (Phases 6 + 7)
 **Prior session:** [`convos/20260526_wi_tier_2_phase_4_materialize.md`](20260526_wi_tier_2_phase_4_materialize.md) (Phases 4 + 5 shipped; this session picks up at Phase 6)
+**Follow-up session:** [`convos/20260527_wi_parser_address_fix_and_pr.md`](20260527_wi_parser_address_fix_and_pr.md) — pre-merge code review surfaced an address-parser BLOCKER misdiagnosed in this session's results doc §8; fixed before PR.
 
 ## Summary
 

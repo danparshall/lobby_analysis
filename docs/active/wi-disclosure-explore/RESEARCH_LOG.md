@@ -6,6 +6,46 @@ Index for the `wi-disclosure-explore` branch. One entry per session, newest firs
 
 ---
 
+## Session: 2026-05-27 — wi_parser_address_fix_and_pr
+
+### Topics Explored
+- `finishing-a-development-branch` flow: full pytest suite, ruff check/format, CI check, main merge, self-review via `nori-code-reviewer`, PR creation
+- Code reviewer's BLOCKER finding: phone digits + firm name leak into the typed `address` ContactDetail across both Tier-2 parsers
+- TDD fix on both parsers (4 RED → 4 GREEN address-content tests on Dairy 11590 / Lexia 11348 / Brooks 11052 / Pfaff 11042 fixtures)
+- Re-materialize verification — row counts identical (idempotent), addresses now clean
+- Two F401 lint fixes (unused `pytest` + `LobbyingFiling` imports)
+- `.gitignore` gap on per-worktree `data` symlink (only `data/` was ignored, not bare `data`)
+
+### Provisional Findings
+- **The address-pollution issue from yesterday's results doc §8 was misdiagnosed.** I framed it as "the parser correctly preserves what the portal serves" — wrong. Direct fixture inspection: the WI portal renders each contact field as `<i class="fa-{phone,envelope,globe}"></i> {value}<br/>`, with value as a NavigableString *sibling* of the icon, not a descendant. Both parsers were over-collecting those sibling strings into the address. **Fixed in `fbd8a4c`** with results-doc §8 rewritten in-place.
+- **Two distinct bugs collapsed into one symptom.** Phone-leak applies to both parsers via the same NavigableString-sibling pattern; firm-leak is lobbyist-side only and required a separate fix (target the address column directly rather than walking all descendants).
+- **The repo has no CI configured.** No `.github/workflows/` on either the branch or `origin/main`. Local test suite is the only gate; `gh pr checks` is a no-op.
+- **Repo-wide ruff format drift** — both branch-introduced files (~9) and main-tracked files in `models/` (~5+) are unformatted. Reformatting just this branch's files would create main-vs-branch inconsistency. Deferred to a separate cleanup branch.
+- **`.gitignore` gap:** `data/` only matches the directory on `main`; per-worktree symlinks (set up via `using-git-worktrees`) need a bare `data` entry. Fixed in `2cee7ea`.
+
+### Decisions Made
+- **Fix BLOCKER before merge** (user via AskUserQuestion). 4 SHOULD-FIX items go to follow-up branches: `wi-data-root-env`, `wi-xlrd-swap`, `wi-shared-table-helpers`, `wi-materializer-error-discipline`. Each named in the convo doc.
+- **Address sub-field split deferred** — typed `address` ContactDetail is now correct at postal-address granularity; pre-splitting into street vs city-state-zip is downstream-geocoding work, not blocking.
+- **PR opened with merge intent** per user direction.
+
+### Results
+- Convo: [`convos/20260527_wi_parser_address_fix_and_pr.md`](convos/20260527_wi_parser_address_fix_and_pr.md)
+- PR: opened at session end (link captured in convo Results section)
+- Commits (5): `b293401` (lint), `af2f739` (merge main), `fbd8a4c` (parser fix + tests + results-doc §8 rewrite), `2cee7ea` (gitignore), plus this finish-convo commit
+- Test deltas: +4 GREEN tests; full suite **1541 passed** + 3 pre-existing baseline failures + 3 skipped + 3 xfailed
+- Updated results doc: `results/20260526_wi_tier_2_parser_results.md` §8 reflects the fix
+
+### Next Steps
+- **Merge PR per user direction.**
+- **Follow-up branches** (each scoped to one SHOULD-FIX item from the code review):
+  - `wi-data-root-env` — single shared data-root constant / `--data-root` flag across 5 WI CLIs
+  - `wi-xlrd-swap` — replace pandas `read_excel` call with direct xlrd in `principal_id_discovery.py`
+  - `wi-shared-table-helpers` — lift `_cell_value_text` + `_extract_optional_date` into a shared module
+  - `wi-materializer-error-discipline` — decide ParseFailure-vs-crash for `authorization_materialize` (currently inconsistent with `tier_2_materialize`)
+- **Held over from prior sessions** (orthogonal): lobbying@wi.gov reply (Dan handling), SAL parser/ingest, cross-session principal_id stability.
+
+---
+
 ## Session: 2026-05-26 — wi_tier_2_phase_6_7_results
 
 ### Topics Explored
