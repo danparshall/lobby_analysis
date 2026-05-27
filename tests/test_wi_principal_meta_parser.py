@@ -47,7 +47,7 @@ from lobby_analysis.io.wi.principal_meta_parser import (  # noqa: F401 — drive
     ParseError,
     parse_principal_meta,
 )
-from lobby_analysis.models import LobbyingFiling, Organization
+from lobby_analysis.models import Organization
 
 FIXTURES = Path(__file__).parent / "fixtures" / "wi"
 

@@ -22,7 +22,6 @@ import json
 from pathlib import Path
 from typing import Any
 
-import pytest
 import requests
 
 from lobby_analysis.io.wi.entity_fetcher import (
