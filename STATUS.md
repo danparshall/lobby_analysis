@@ -1,6 +1,6 @@
 # STATUS — lobby_analysis
 
-Last updated: 2026-05-27 (afternoon — `releases/wi/` MVP commit)
+Last updated: 2026-05-28 (`backend-prototype` v0 shipped)
 
 ---
 
@@ -84,6 +84,9 @@ Lines moved to `docs/historical/` — not currently active, but available for re
 | research-prior-art | Scoping phase 1 — prior-art survey, state infrastructure tiers, OCD schema analysis, scoring-rubric landscape (PRI + FOCAL + F Minus + GAO), PRI and FOCAL implementation plans. Decision: depend on Open States (don't fork); adopt Popolo via OCDEP 5; score all 50 states on both PRI rubrics in a follow-up branch. | 2026-04-12 | `docs/historical/research-prior-art/` |
 
 ## Recent Sessions
+
+- **2026-05-28** — [backend-prototype] **Backend v0 shipped end-to-end in one session.** Cut new worktree off `origin/main` (`9b189d2`) to start implementing Gowrav's `docs/active/ARCHITECTURE.md` (he stepped away from the project). Brainstormed simplifications: SQLite vs Postgres/Neon, plain REST vs GraphQL/Strawberry, local-only vs Fly.io, 4 endpoints, no MCP/work-queue/confidence-routing/entity-resolution. Plan: `plans/20260528_v0_implementation.md` (5 TDD phases). Shipped `src/lobby_analysis/backend/{storage,cli,api,__main__}.py` plus 3 test modules (15/15 green). End-to-end demo: hand-crafted OH-shaped fixture (4 bills, $20 Section II.D) ingested via `python -m lobby_analysis.backend ingest`, served via uvicorn on port 8765, curl-verified all 4 endpoints against the fixture. Diagnosed long-running editable-install corruption: macOS sets `UF_HIDDEN` on `.pth` files; Python 3.12+ silently skips hidden `.pth` files. Local-machine issue, not repo. Surgical workaround `PYTHONPATH=src .venv/bin/python -m ...` applies for all invocations on this branch. Results: `results/20260528_v0_demo.md`. Next: ingest a real LLM-extracted filing when `oh-portal-extraction` Phase 3 lands.
+
 
 (One-line session summaries, newest first)
 
