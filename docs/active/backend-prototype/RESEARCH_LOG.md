@@ -22,6 +22,15 @@ This branch is the **infrastructure counterpart** to Track B's per-state extract
 
 (Newest entries first.)
 
+### 2026-05-28 (pm) — WI release ingest
+
+- Shipped `src/lobby_analysis/backend/ingest_wi.py` to map Dan's `releases/wi/` TSVs into `LobbyingFiling` records. Five behavior tests under TDD, all green.
+- End-to-end ingest of the real release: **4,798 filings** persisted in **3.1 seconds** (944 organizations + 773 persons indexed; 1,706 principal filings + 3,092 lobbyist filings inserted).
+- Verified via uvicorn + curl on six queries: list-all, filter by state+filer_role, search by filer name, fetch by id, 404 on unknown id. DoorDash YTD totals through `/search` come to **$2,183,623.40** — matches Dan's `releases/wi/README.md` headline aggregate (`$2.18M`) exactly, independently confirming lossless ingest.
+- Surfaced four schema gaps for the next sync (not blockers for the prototype): (1) `total_hours_communicating` + `total_hours_other` have no home on `LobbyingFiling`; lobbyist filings now ingest as mostly-empty shells without these; (2) `WI_principal_bill_efforts.tsv` (7,345 bill positions) doesn't directly attach to filings — joining needs period-label parsing; (3) `WI_lobbyist_principal_authorizations_unified.tsv` (2,254 lobbyist↔principal authorizations) should land in `LobbyistRegistration` but the current shape doesn't fit cleanly; (4) `(agent, employer)` tuple gap latent on lobbyist filings (same gap as `oh-portal-extraction`).
+- 20/20 backend tests green (`storage 6 + cli 4 + api 5 + ingest_wi 5`).
+- Result: [`results/20260528_wi_ingest.md`](results/20260528_wi_ingest.md).
+
 ### 2026-05-28 — Branch kickoff + v0 shipped end-to-end
 
 - Cut `backend-prototype` worktree off `origin/main` (`9b189d2`).
@@ -45,6 +54,7 @@ This branch is the **infrastructure counterpart** to Track B's per-state extract
 ## Results
 
 - [`20260528_v0_demo.md`](results/20260528_v0_demo.md) — End-to-end demo: fixture filing ingested via CLI, served via uvicorn, curl-verified on all 4 endpoints.
+- [`20260528_wi_ingest.md`](results/20260528_wi_ingest.md) — Real WI release (4,798 filings) ingested in 3.1s and served via the v0 API; DoorDash YTD totals match Dan's release README exactly. Four schema gaps flagged.
 
 ## Open questions
 
