@@ -10,6 +10,47 @@
 
 ## Session log (newest first)
 
+### 2026-05-27 — 2025 cohort expansion (3→15 states), NC+FL added at 2015+2025, CO 2025 TOC-page bug found and fixed
+
+- **Convo:** [`convos/20260527_2025_cohort_expansion_and_co_fix.md`](convos/20260527_2025_cohort_expansion_and_co_fix.md)
+- **Picked up from:** `3afc77c` (5/26 finish-convo for the NC/FL CF wall on the Air)
+- **Results:** [`results/20260527_statute_inventory.md`](results/20260527_statute_inventory.md)
+- **Machine:** Dans-MacBook-Pro
+
+#### Topics Explored
+
+- Single-section CF probe + Method B fan-out of 2025 statutes against the 12 states whose URL bundles came from the 5/19 fan-out (MI/WI + AK/AR/CA/CO/IL/MA/PA/TX/WA/WV)
+- Method A URL-discovery dispatches for the 4 missing pairs: FL 2025, NC 2025, NC 2015 retry, FL 2015 from-scratch
+- Method B section fetch for all four NC/FL bundles
+- Audit of all 2025 bundles for the CO-style "directory-URL masquerading as section-URL" failure mode
+- CO 2025 fix via mechanical /2016/→/2024/ URL swap from CO 2015 bundle (Option A — deterministic, $0)
+- Tightening of the 2015 handoff Step 3 driver template to add a median-file-size <2 KB → STOP sanity check
+
+#### Provisional Findings
+
+- **CF posture flipped overnight or differs between machines.** 9/9 wall on Dans-MacBook-Air on 5/26 → 0/many blocks on Dans-MacBook-Pro on 5/27 across both Method A and Method B. Cannot disentangle machine-vs-time-aging vs URL-family with this dataset; the 5/26 stealth-Playwright recommendation is not moot — today's clear does not generalize.
+- **Original <500-byte CF-stub sanity check is too loose.** Justia TOC pages are ~1.5-2 KB and slip through. CO 2025 produced 3 such files; driver reported `[done]` cleanly. Median file size <2 KB is the better discriminator.
+- **Method A is not deterministic.** CO 2015 (11 section-leaf URLs) vs CO 2025 (3 article-directory URLs) — same regime, same workflow, divergent LLM judgment. The canary bundles are the reproducibility unit, not the driver scripts.
+- **FL has structural additions (4 sections, post-2018 constitutional amendment) and a URL slug convention change (dot→hyphen) between 2015 and 2025;** NC has 2 structural removals (120C-215, 120C-404) between 2015 and 2025.
+
+#### Decisions Made
+
+- **Probe-one-then-fan-out** for NC/FL Method A (5/26 retrospective lesson)
+- **Mechanical URL swap over Method A re-run** for the CO fix; preserved broken bundle as `subagent_canaries/CO_2025_20260519_article_dir_urls/`
+- **2015 handoff Step 3 template tightened** with median-size check + provenance comment pointing back to this convo
+- IL 2025's directory-URL pattern judged legit (TX-style inlined statute text), not a CO-style bug
+
+#### Results
+
+- [`results/20260527_statute_inventory.md`](results/20260527_statute_inventory.md) — full per-state per-vintage inventory; 15 states × paired 2015+2025; 13 states with triples; 361 files at 2025 (up from 73), 317 at 2015 (up from 271)
+
+#### Next Steps
+
+- Cross-machine sync of `~/data/lobby_analysis/statutes/` to Air/tarragon before downstream Phase C work
+- OH 2025 spot-check (52→30 vs 2015 — predates this branch, same audit logic should apply)
+- Still-deferred Method A: GA/VA/AZ at 2015 (5/18 CF blocks), WY/NY at 2015 (lossy 3), and 2025 versions if a clean window holds
+- Phase C downstream can now consume 15 states × 2-3 vintages of statute text — this branch's substrate is broadly in shape for the multi-rubric calibration
+
 ### 2026-05-26 — NC + FL URL discovery (intended); 9/9 CF-blocked; Playwright fingerprint isolated as cause
 
 - **Convo:** [`convos/20260526_nc_fl_url_discovery.md`](convos/20260526_nc_fl_url_discovery.md)

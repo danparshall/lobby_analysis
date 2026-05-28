@@ -1,0 +1,38 @@
+{
+  "state": "FL",
+  "vintage": 2015,
+  "actual_vintage_used": 2015,
+  "prompt_git_rev": "3afc77c9433850ed580638e57d9f6a3b0f653f21",
+  "proposed_urls": [
+    {"url": "https://law.justia.com/codes/florida/2015/title-iii/chapter-11/section-11.045/",  "role": "core_chapter", "rationale": "F.S. 11.045 - Lobbying before the Legislature; registration and reporting; exemptions; penalties - the core legislative-branch lobbying-disclosure statute."},
+    {"url": "https://law.justia.com/codes/florida/2015/title-iii/chapter-11/section-11.0451/", "role": "core_chapter", "rationale": "F.S. 11.0451 - Requirements for reinstitution of lobbyist registration after felony conviction - legislative-branch lobbyist registration provision."},
+    {"url": "https://law.justia.com/codes/florida/2015/title-iii/chapter-11/section-11.0455/", "role": "core_chapter", "rationale": "F.S. 11.0455 - Electronic filing of compensation reports and other information - legislative-branch lobbying compensation-report filing mechanism."},
+    {"url": "https://law.justia.com/codes/florida/2015/title-iii/chapter-11/section-11.047/",  "role": "core_chapter", "rationale": "F.S. 11.047 - Contingency fees; prohibitions; penalties - lobbying contingency-fee prohibition tied to the 11.045 registration regime."},
+    {"url": "https://law.justia.com/codes/florida/2015/title-iii/chapter-11/section-11.061/",  "role": "core_chapter", "rationale": "F.S. 11.061 - State, state university, and community college employee lobbyists; registration; recording attendance; penalty; exemptions - public-employee lobbyist registration."},
+    {"url": "https://law.justia.com/codes/florida/2015/title-iii/chapter-11/section-11.062/",  "role": "core_chapter", "rationale": "F.S. 11.062 - Use of state funds for lobbying prohibited; penalty - related lobbying-conduct restriction in the same Ch. 11 cluster."},
+    {"url": "https://law.justia.com/codes/florida/2015/title-x/chapter-112/part-iii/section-112.3215/",  "role": "core_chapter", "rationale": "F.S. 112.3215 - Lobbying before the executive branch or the Constitution Revision Commission; registration and reporting; investigation by commission - the core executive-branch lobbying-disclosure statute."},
+    {"url": "https://law.justia.com/codes/florida/2015/title-x/chapter-112/part-iii/section-112.32151/", "role": "core_chapter", "rationale": "F.S. 112.32151 - Requirements for reinstitution of lobbyist registration after felony conviction - executive-branch lobbyist registration provision."},
+    {"url": "https://law.justia.com/codes/florida/2015/title-x/chapter-112/part-iii/section-112.32155/", "role": "core_chapter", "rationale": "F.S. 112.32155 - Electronic filing of compensation reports and other information - executive-branch lobbying compensation-report filing mechanism."},
+    {"url": "https://law.justia.com/codes/florida/2015/title-x/chapter-112/part-iii/section-112.3217/",  "role": "core_chapter", "rationale": "F.S. 112.3217 - Contingency fees; prohibitions; penalties - executive-branch lobbying contingency-fee prohibition tied to 112.3215 registration regime."},
+    {"url": "https://law.justia.com/codes/florida/2015/title-x/chapter-112/part-iii/section-112.3261/",  "role": "core_chapter", "rationale": "F.S. 112.3261 - Lobbying before water management districts; registration and reporting - additional executive-branch-style lobbying registration/reporting regime."},
+    {"url": "https://law.justia.com/codes/florida/2015/title-x/chapter-112/part-iii/section-112.3148/",  "role": "support_chapter", "rationale": "F.S. 112.3148 - Reporting and prohibited receipt of gifts by individuals filing full or limited public disclosure of financial interests and by procurement employees - regulates gift reporting from lobbyists, cross-referenced from lobbying regime."},
+    {"url": "https://law.justia.com/codes/florida/2015/title-x/chapter-112/part-iii/section-112.312/",   "role": "support_chapter", "rationale": "F.S. 112.312 - Definitions - general Part III (Code of Ethics) definitions including 'lobbyist'; invoked by 112.3215 and related sections."},
+    {"url": "https://law.justia.com/codes/florida/2015/title-x/chapter-112/part-iii/section-112.317/",   "role": "support_chapter", "rationale": "F.S. 112.317 - Penalties - general Part III penalties provision invoked by Commission on Ethics enforcement of lobbying violations under 112.3215."}
+  ],
+  "pass1_chosen_titles": [
+    "https://law.justia.com/codes/florida/2015/title-iii/",
+    "https://law.justia.com/codes/florida/2015/title-x/"
+  ],
+  "pass2_chosen_chapters": [
+    "https://law.justia.com/codes/florida/2015/title-iii/chapter-11/",
+    "https://law.justia.com/codes/florida/2015/title-x/chapter-112/"
+  ],
+  "pass3_invoked_on": [
+    "https://law.justia.com/codes/florida/2015/title-iii/chapter-11/",
+    "https://law.justia.com/codes/florida/2015/title-x/chapter-112/",
+    "https://law.justia.com/codes/florida/2015/title-x/chapter-112/part-iii/"
+  ],
+  "tree_depth": 6,
+  "playwright_errors": [],
+  "notes": "FL 2015 vintage available on Justia; Method A passes 1/2/3 all cleared without Cloudflare interference on Dans-MacBook-Pro (previously lossy in 5/18 batch and CF-blocked in 5/26 attempt; this is the first full bundle for FL 2015). Same dual-regime structure as FL 2025: (a) legislative-branch lobbying in Title III Ch. 11 (six sections 11.045-11.062, identical to 2025), and (b) executive-branch lobbying in Title X Ch. 112 Part III - Code of Ethics, administered by the Commission on Ethics. The Title X path required pass-3 on chapter-112/ to reach Part III, then a second pass-3 on part-iii/ to reach section leaves. Tree depth = 6 segments (florida/2015/title-x/chapter-112/part-iii/section-112.XXX/). URL convention note: 2015 uses DOT-separated section slugs (section-11.045) while 2025 uses HYPHEN-separated (section-11-045) - matters for downstream URL construction. Executive-branch selections: 112.3215 core + 112.32151/112.32155 (registration/reporting) + 112.3217 (contingency fees) + 112.3261 (water management district lobbying). Support: 112.312 (general definitions), 112.317 (penalties), 112.3148 (gift reporting). Notable absence vs. FL 2025: 2015 does NOT contain 112.3121/112.3122/112.3123/112.3124 (post-office lobbying-prohibition enforcement pair + definitions) - those sections postdate 2015 (linked to the 2018 constitutional amendment on post-office lobbying). FL 2015 cluster = 14 URLs vs. FL 2025's 18 URLs, with the 4-section delta accounted for by the post-2015 additions. Excluded sections in Part III: 112.3144/112.31445/112.3145/112.31455 (financial disclosure only), 112.3187-112.31901 (whistleblower), 112.313/112.3135/112.3136 (standards of conduct), 112.3173 (retirement forfeiture), 112.3149 (honoraria-only), 112.31485 (political-committee gifts, not lobbying-specific), 112.320-112.3241 (Commission administration/jurisdiction). Title III Ch. 10 (Senate/House internal procedure) and Title X Ch. 110/111/113-122 (employment, retirement, notaries, public records, administrative procedure) excluded as out-of-regime."
+}

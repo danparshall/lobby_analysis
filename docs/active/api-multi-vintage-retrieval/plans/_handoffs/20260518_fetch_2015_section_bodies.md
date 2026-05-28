@@ -191,10 +191,12 @@ for state, intended_vintage, actual_vintage in FETCH_ORDER:
         year_delta=actual_vintage - intended_vintage,
         direction="exact" if actual_vintage == intended_vintage else ("post" if actual_vintage > intended_vintage else "pre"),
     )
-    # SANITY CHECK: scan for CF stubs (any file <500 bytes likely bogus)
+    # SANITY CHECK 1: scan for CF stubs (any file <500 bytes likely bogus)
     suspect = []
+    sizes = []
     for txt in (dest / "sections").iterdir():
         size = txt.stat().st_size
+        sizes.append(size)
         if size < 500:
             head = txt.read_text(errors="replace")[:200]
             if "Performing security verification" in head or "Just a moment" in head:
@@ -205,7 +207,19 @@ for state, intended_vintage, actual_vintage in FETCH_ORDER:
         print(f"[ALERT] {state} {intended_vintage} has {len(suspect)} suspect files: {suspect[:5]}", file=sys.stderr)
         print(f"[STOP] CF likely re-engaged. Surfacing to user.", file=sys.stderr)
         break
-    print(f"[done] {state} {intended_vintage}: {len(list((dest/'sections').iterdir()))} files written", flush=True)
+    # SANITY CHECK 2: median file size <2 KB suggests TOC pages, not statute bodies.
+    # Added 2026-05-28 after CO 2025 produced 3 article-directory URLs that fetched
+    # 1.5-2 KB TOC pages instead of statute text; the CF-stub check at <500 bytes
+    # didn't catch them. CO_2025/result.json was preserved at
+    # subagent_canaries/CO_2025_20260519_article_dir_urls/ as evidence.
+    sizes.sort()
+    n_files = len(sizes)
+    smed = sizes[n_files // 2] if n_files else 0
+    if smed < 2000:
+        print(f"[ALERT] {state} {intended_vintage} median file size {smed}B suggests TOC pages, not statute bodies", file=sys.stderr)
+        print(f"[STOP] Bundle URLs may be directory-leaves; rebuild canary with section-level URLs.", file=sys.stderr)
+        break
+    print(f"[done] {state} {intended_vintage}: {n_files} files written (median {smed}B)", flush=True)
 
 print("All states processed.")
 PY

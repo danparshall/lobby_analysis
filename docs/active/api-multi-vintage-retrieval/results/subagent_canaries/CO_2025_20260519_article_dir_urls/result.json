@@ -1,0 +1,35 @@
+{
+  "state": "CO",
+  "vintage": 2025,
+  "actual_vintage_used": 2024,
+  "prompt_git_rev": "bab81e07462d2ae159b8deca6f54d72dca02505d",
+  "proposed_urls": [
+    {
+      "url": "https://law.justia.com/codes/colorado/2024/title-24/administration/article-6/",
+      "role": "core_chapter",
+      "rationale": "Article 6 (Colorado Sunshine Law, §§ 24-6-101 — 24-6-502) includes Part 3 (Lobbyist Regulation, §§ 24-6-301 to 24-6-309) — the core lobbyist-registration and expenditure-reporting regime — plus Part 1 (Disclosure of Lobbying Practices)."
+    },
+    {
+      "url": "https://law.justia.com/codes/colorado/2024/title-24/administration/article-18-5/",
+      "role": "support_chapter",
+      "rationale": "Article 18.5 (Independent Ethics Commission, § 24-18.5-101) establishes the body that enforces lobbying-related gift and disclosure rules under Colo. Const. Amend. 41, cross-referenced by Article 6 Part 3."
+    },
+    {
+      "url": "https://law.justia.com/codes/colorado/2024/title-24/administration/article-18/",
+      "role": "support_chapter",
+      "rationale": "Article 18 (Standards of Conduct, §§ 24-18-101 — 24-18-309) houses the gift-ban and ethics provisions cross-referenced by the lobbying chapter; includes definitions and penalties applied to lobbyist disclosure violations."
+    }
+  ],
+  "pass1_chosen_titles": [
+    "https://law.justia.com/codes/colorado/2024/title-24/"
+  ],
+  "pass2_chosen_chapters": [
+    "https://law.justia.com/codes/colorado/2024/title-24/administration/"
+  ],
+  "pass3_invoked_on": [
+    "https://law.justia.com/codes/colorado/2024/title-24/administration/"
+  ],
+  "tree_depth": 5,
+  "playwright_errors": [],
+  "notes": "Justia returned a 404 'Page not found' for https://law.justia.com/codes/colorado/2025/; substituted vintage 2024 per handoff Step 1 triage (recorded in actual_vintage_used). CO lobbying-disclosure regime lives entirely within Title 24 (GOVERNMENT - STATE). CO has an extra directory level on Justia: Title 24 groups its 35 articles into named clusters ('administration', 'state-officers', 'principal-departments', etc.) — so the path is state/year/title/cluster/article rather than the TX-style state/code/title/subtitle/chapter. Both shapes are 5 segments deep. Pass-1 chose title-24/; pass-2 chose the 'administration/' cluster (which spans §§ 24-1-101 — 24-19.9-103, covering Articles 1-19.9); pass-3 reasoning on administration/ picked Article 6 (Colorado Sunshine Law — Part 3 is the lobbyist-registration regime at §§ 24-6-301 to 24-6-309), Article 18.5 (Independent Ethics Commission, enforcement body for Amendment 41 gift/disclosure rules), and Article 18 (Standards of Conduct, cross-referenced gift-ban and ethics definitions). Title 1 (ELECTIONS, campaign finance) and Title 2 (LEGISLATIVE, legislative procedure) intentionally excluded — out of scope per pass-1 Rule 4. The chosen Article URLs are directories of section leaves at depth 6; leaf resolution deferred to downstream Phase C section-fetch, consistent with TX_2015 where chapter-305/ was treated as a directory-leaf proposed URL."
+}

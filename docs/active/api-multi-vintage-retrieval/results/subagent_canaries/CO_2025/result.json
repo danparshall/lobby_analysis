@@ -2,34 +2,76 @@
   "state": "CO",
   "vintage": 2025,
   "actual_vintage_used": 2024,
-  "prompt_git_rev": "bab81e07462d2ae159b8deca6f54d72dca02505d",
+  "prompt_git_rev": "n/a-mechanical-swap-from-CO_2015",
   "proposed_urls": [
     {
-      "url": "https://law.justia.com/codes/colorado/2024/title-24/administration/article-6/",
+      "url": "https://law.justia.com/codes/colorado/2024/title-24/administration/article-6/part-3/section-24-6-301/",
       "role": "core_chapter",
-      "rationale": "Article 6 (Colorado Sunshine Law, §§ 24-6-101 — 24-6-502) includes Part 3 (Lobbyist Regulation, §§ 24-6-301 to 24-6-309) — the core lobbyist-registration and expenditure-reporting regime — plus Part 1 (Disclosure of Lobbying Practices)."
+      "rationale": "\u00a724-6-301 Definitions and legislative declaration for the lobbyist-regulation regime."
     },
     {
-      "url": "https://law.justia.com/codes/colorado/2024/title-24/administration/article-18-5/",
-      "role": "support_chapter",
-      "rationale": "Article 18.5 (Independent Ethics Commission, § 24-18.5-101) establishes the body that enforces lobbying-related gift and disclosure rules under Colo. Const. Amend. 41, cross-referenced by Article 6 Part 3."
+      "url": "https://law.justia.com/codes/colorado/2024/title-24/administration/article-6/part-3/section-24-6-302/",
+      "role": "core_chapter",
+      "rationale": "\u00a724-6-302 Required disclosure statements (the disclosure obligation itself)."
     },
     {
-      "url": "https://law.justia.com/codes/colorado/2024/title-24/administration/article-18/",
-      "role": "support_chapter",
-      "rationale": "Article 18 (Standards of Conduct, §§ 24-18-101 — 24-18-309) houses the gift-ban and ethics provisions cross-referenced by the lobbying chapter; includes definitions and penalties applied to lobbyist disclosure violations."
+      "url": "https://law.justia.com/codes/colorado/2024/title-24/administration/article-6/part-3/section-24-6-303/",
+      "role": "core_chapter",
+      "rationale": "\u00a724-6-303 Registration as professional lobbyist, filing of disclosure statements, certificate of registration."
+    },
+    {
+      "url": "https://law.justia.com/codes/colorado/2024/title-24/administration/article-6/part-3/section-24-6-303.5/",
+      "role": "core_chapter",
+      "rationale": "\u00a724-6-303.5 Lobbying by state officials and employees."
+    },
+    {
+      "url": "https://law.justia.com/codes/colorado/2024/title-24/administration/article-6/part-3/section-24-6-304/",
+      "role": "core_chapter",
+      "rationale": "\u00a724-6-304 Records preservation, public inspection, electronic access."
+    },
+    {
+      "url": "https://law.justia.com/codes/colorado/2024/title-24/administration/article-6/part-3/section-24-6-304.5/",
+      "role": "core_chapter",
+      "rationale": "\u00a724-6-304.5 Examination of books and records (audit authority over lobbyist filings)."
+    },
+    {
+      "url": "https://law.justia.com/codes/colorado/2024/title-24/administration/article-6/part-3/section-24-6-305/",
+      "role": "core_chapter",
+      "rationale": "\u00a724-6-305 Secretary-of-State powers over registration certificates and penalties."
+    },
+    {
+      "url": "https://law.justia.com/codes/colorado/2024/title-24/administration/article-6/part-3/section-24-6-306/",
+      "role": "core_chapter",
+      "rationale": "\u00a724-6-306 Employment of legislators/legislative employees/state employees - filing of statement."
+    },
+    {
+      "url": "https://law.justia.com/codes/colorado/2024/title-24/administration/article-6/part-3/section-24-6-307/",
+      "role": "core_chapter",
+      "rationale": "\u00a724-6-307 Employment of unregistered persons."
+    },
+    {
+      "url": "https://law.justia.com/codes/colorado/2024/title-24/administration/article-6/part-3/section-24-6-308/",
+      "role": "core_chapter",
+      "rationale": "\u00a724-6-308 Prohibited practices."
+    },
+    {
+      "url": "https://law.justia.com/codes/colorado/2024/title-24/administration/article-6/part-3/section-24-6-309/",
+      "role": "core_chapter",
+      "rationale": "\u00a724-6-309 Offenses, penalties, injunctions (enforcement)."
     }
   ],
   "pass1_chosen_titles": [
     "https://law.justia.com/codes/colorado/2024/title-24/"
   ],
   "pass2_chosen_chapters": [
-    "https://law.justia.com/codes/colorado/2024/title-24/administration/"
+    "https://law.justia.com/codes/colorado/2024/title-24/administration/article-6/part-3/",
+    "https://law.justia.com/codes/colorado/2024/title-24/administration/article-6/part-1/",
+    "https://law.justia.com/codes/colorado/2024/title-24/administration/article-18.5/"
   ],
   "pass3_invoked_on": [
-    "https://law.justia.com/codes/colorado/2024/title-24/administration/"
+    "https://law.justia.com/codes/colorado/2024/title-24/administration/article-6/part-3/"
   ],
-  "tree_depth": 5,
+  "tree_depth": 4,
   "playwright_errors": [],
-  "notes": "Justia returned a 404 'Page not found' for https://law.justia.com/codes/colorado/2025/; substituted vintage 2024 per handoff Step 1 triage (recorded in actual_vintage_used). CO lobbying-disclosure regime lives entirely within Title 24 (GOVERNMENT - STATE). CO has an extra directory level on Justia: Title 24 groups its 35 articles into named clusters ('administration', 'state-officers', 'principal-departments', etc.) — so the path is state/year/title/cluster/article rather than the TX-style state/code/title/subtitle/chapter. Both shapes are 5 segments deep. Pass-1 chose title-24/; pass-2 chose the 'administration/' cluster (which spans §§ 24-1-101 — 24-19.9-103, covering Articles 1-19.9); pass-3 reasoning on administration/ picked Article 6 (Colorado Sunshine Law — Part 3 is the lobbyist-registration regime at §§ 24-6-301 to 24-6-309), Article 18.5 (Independent Ethics Commission, enforcement body for Amendment 41 gift/disclosure rules), and Article 18 (Standards of Conduct, cross-referenced gift-ban and ethics definitions). Title 1 (ELECTIONS, campaign finance) and Title 2 (LEGISLATIVE, legislative procedure) intentionally excluded — out of scope per pass-1 Rule 4. The chosen Article URLs are directories of section leaves at depth 6; leaf resolution deferred to downstream Phase C section-fetch, consistent with TX_2015 where chapter-305/ was treated as a directory-leaf proposed URL."
+  "notes": "CO 2025 mechanical URL swap of CO_2015 bundle (which itself targeted 2016 via substitution). Built 2026-05-27T22:48:33+00:00 to replace the broken 5/19 article-directory-URL bundle preserved at subagent_canaries/CO_2025_20260519_article_dir_urls/. Same 11 section-leaf URLs as CO_2015 with /2016/ replaced by /2024/. CO substitutions: Justia does not host CO 2025; earliest hosted vintage rolls forward over time. Section numbering (24-6-301 through 24-6-309) has been stable for decades, so the URL swap should resolve to the same statutory sections at 2024."
 }
