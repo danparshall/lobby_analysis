@@ -29,6 +29,30 @@ With all three legs, the chain Suhan asked for — "company W spends X via lobby
 ## Results
 
 - [`results/20260530_phase_0_data_audit.md`](results/20260530_phase_0_data_audit.md) — Phase 0 audit. Four findings reshape the plan: lobbyist filings are semester (not quarterly) → IPF marginals align natively; percent-rounding is structural (only 41% of (principal, period) groups sum to 100%, max 100%) → Phase 3 attribution math needs a decision; active edges per semester ~1,912 (H1) / ~2,055 (H2), not the biennium-union 2,254; one giant 835-node CC dominates the H1 graph (only ~6.4% exactly-pinned cells).
+- [`results/20260530_phase_1_graph_structure.md`](results/20260530_phase_1_graph_structure.md) — Phase 1 graph + CC writeup. H1 / H2 both dominated by one giant CC (835 / 900 nodes); 122 / 140 exactly-pinned singletons; 70 / 71 free components for Phase 2 IPF. Pettack catchable only via per-day arithmetic (the plan's marginal-ratio heuristic alone is silent — her 6 SAA-family principals' combined 4,197 hr marginal "explains" her 4,007.5 hrs). 4 low-hours ratio-trips against zero-marginal principals — candidate for `min_hours_for_ratio_flag` suppression in Phase 2.
+
+---
+
+## Session: 2026-05-30 (evening) — phase_1_loaders_and_graph
+
+### Topics Explored
+- TDD cycle: RED tests for loaders (4 fns) + graph (4 fns + 5 dataclasses); confirmed RED via ModuleNotFoundError
+- Loader: 4 entry points, semester-string ("2025-H1") input form; active-edge filter `auth <= period_end AND (wd null OR wd >= period_start)`; null-`authorized_on` exclusion (4 edges)
+- Graph: NetworkX-backed CC decomp; BipartiteGraph/Component/ExactlyPinned/FreeComponent/OutlierFlag dataclasses
+- Outlier-flag heuristic adjustment mid-implementation: marginal-ratio check ALONE doesn't catch Pettack (the SAA-family 6 principals "explain" her hours at the marginal level); added per-semester absolute check (>2000 hr, ~16 hrs/day)
+
+### Provisional Findings
+- Orphan lobbyists (11513, 12717) in authorizations but not in roster — loader surfaces faithfully; graph layer falls back to principal marginal in singleton classify
+- Per-semester structure stable: H2 slightly larger than H1 across the board (more auths accumulate by mid-year); same "one giant CC" pattern
+- 93% of edges live in free components (need IPF); 6.5% are exactly-pinned singletons; outliers ~ 2-4 per semester
+
+### Results
+- [`results/20260530_phase_1_graph_structure.md`](results/20260530_phase_1_graph_structure.md)
+
+### Next Steps
+- Phase 2: IPF on free components (toy 3×3 + sparse + max-entropy verification + real giant CC); use `ipfn` package per plan
+- Phase 3 boundary will surface Q1 (OpenStates vs scrape) to Dan; Phase 4 boundary will surface Q4 (CFIS timebox)
+- Optional Phase 2 refinements: `min_hours_for_ratio_flag` to suppress the 4 low-hours false positives
 
 ---
 
