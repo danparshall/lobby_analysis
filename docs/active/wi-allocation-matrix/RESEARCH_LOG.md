@@ -28,7 +28,31 @@ With all three legs, the chain Suhan asked for — "company W spends X via lobby
 
 ## Results
 
-(none yet)
+- [`results/20260530_phase_0_data_audit.md`](results/20260530_phase_0_data_audit.md) — Phase 0 audit. Four findings reshape the plan: lobbyist filings are semester (not quarterly) → IPF marginals align natively; percent-rounding is structural (only 41% of (principal, period) groups sum to 100%, max 100%) → Phase 3 attribution math needs a decision; active edges per semester ~1,912 (H1) / ~2,055 (H2), not the biennium-union 2,254; one giant 835-node CC dominates the H1 graph (only ~6.4% exactly-pinned cells).
+
+---
+
+## Session: 2026-05-30 (afternoon) — phase_0_data_audit
+
+### Topics Explored
+- Walked all 6 TSVs of `releases/wi/` against plan Phase 0 steps 1–10
+- Confirmed `WI_principal_bill_efforts.tsv` has embedded newlines in `item_description` — pandas-correct, `wc -l` undercounts by 4
+- Audited percent-rounding distribution across all 1,428 (principal, period) groups
+- Verified Pettack 11072 outlier (7,611 hrs = 1,216.5 comm + 6,394.5 other; 2.84× next-highest lobbyist)
+- Computed H1 2025 connected-component decomposition (preview of Phase 1)
+- Diagnosed lobbyist-filings-are-semester (release README is wrong; source code at `tier_2_materialize.py:12` is correct)
+
+### Provisional Findings
+- See Results doc TL;DR: 4 findings reshape the plan. Key: percent-rounding is asymmetric (max 100%, median 95%, 5th-pctl 35.7%) → structural undercounting, not noise.
+- Confidence column in Phase 2 output will be ~6.4% `exact` / ~93.6% `ipf_fit` / small `outlier_flagged` tail — dominated by the giant CC.
+
+### Results
+- [`results/20260530_phase_0_data_audit.md`](results/20260530_phase_0_data_audit.md)
+
+### Next Steps
+- Phase 1 (graph construction + CC analysis) — TDD: write failing tests RED → loader + graph → GREEN → CC writeup
+- Q6 (percent-rounding interpretation) remains open until Phase 3 boundary
+- Release-README mislabel ("quarterly") flagged but not fixed on this branch — separate small commit on release-maintenance line
 
 ---
 
