@@ -21,6 +21,7 @@ With all three legs, the chain Suhan asked for — "company W spends X via lobby
 ## Convos
 
 - [`convos/20260530_wi_allocation_matrix_kickoff.md`](convos/20260530_wi_allocation_matrix_kickoff.md) — kickoff: 6-relation classification, IPF framing, 3-leg architecture, plan-only decision.
+- [`convos/20260530_phase_0_and_1_execution.md`](convos/20260530_phase_0_and_1_execution.md) — Phase 0 (audit, no code) + Phase 1 (TDD: loaders + bipartite graph + CC decomposition + outlier flagging); landed Phase 1 with 32 new tests + zero regressions.
 
 ## Plans
 
@@ -34,6 +35,8 @@ With all three legs, the chain Suhan asked for — "company W spends X via lobby
 ---
 
 ## Session: 2026-05-30 (evening) — phase_1_loaders_and_graph
+
+**Convo:** [`convos/20260530_phase_0_and_1_execution.md`](convos/20260530_phase_0_and_1_execution.md)
 
 ### Topics Explored
 - TDD cycle: RED tests for loaders (4 fns) + graph (4 fns + 5 dataclasses); confirmed RED via ModuleNotFoundError
@@ -57,6 +60,8 @@ With all three legs, the chain Suhan asked for — "company W spends X via lobby
 ---
 
 ## Session: 2026-05-30 (afternoon) — phase_0_data_audit
+
+**Convo:** [`convos/20260530_phase_0_and_1_execution.md`](convos/20260530_phase_0_and_1_execution.md)
 
 ### Topics Explored
 - Walked all 6 TSVs of `releases/wi/` against plan Phase 0 steps 1–10

@@ -1,3 +1,5 @@
+<!-- Generated during: convos/20260530_phase_0_and_1_execution.md -->
+
 # Phase 0 — WI Allocation Matrix Data Audit
 
 **Date:** 2026-05-30

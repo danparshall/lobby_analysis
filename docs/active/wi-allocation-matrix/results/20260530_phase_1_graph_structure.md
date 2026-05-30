@@ -1,3 +1,5 @@
+<!-- Generated during: convos/20260530_phase_0_and_1_execution.md -->
+
 # Phase 1 — WI Allocation Matrix Graph Structure
 
 **Date:** 2026-05-30
