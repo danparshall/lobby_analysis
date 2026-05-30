@@ -110,11 +110,14 @@ def test_load_lobbyist_totals_pettack_h1_2025():
 
 
 def test_load_lobbyist_totals_2026_h2_is_mostly_zero():
-    """The 2026-H2 semester is forward-looking zero-fill — only 9
-    lobbyists have >0 communicating hours."""
+    """The 2026-H2 semester is forward-looking zero-fill: only 5
+    lobbyists have >0 communicating hours and only 9 have >0 other
+    hours (out of 773 cells)."""
     totals = load_lobbyist_totals(RELEASE_DIR, "2026-H2")
     nonzero_comm = sum(1 for comm, _ in totals.values() if comm > 0)
-    assert nonzero_comm == 9
+    nonzero_other = sum(1 for _, other in totals.values() if other > 0)
+    assert nonzero_comm == 5
+    assert nonzero_other == 9
 
 
 # ---------------------------------------------------------------------------
@@ -239,12 +242,15 @@ def test_load_bill_effort_percents_h2_2025_distinct_from_h1():
 # ---------------------------------------------------------------------------
 
 
-def test_active_edges_lobbyist_ids_appear_in_lobbyist_totals():
-    """Every lobbyist that appears in an H1 active edge must also have
-    an H1 lobbyist totals entry (the WI portal zero-fills, so every
-    registered lobbyist has a cell)."""
+def test_orphan_lobbyists_appear_in_edges_but_not_totals():
+    """Some lobbyists appear in authorization edges but have no row in
+    the lobbyist roster (and therefore no marginal in lobbyist
+    totals). Documented orphans in this release: 11513 and 12717
+    (Neumann-Ortiz, soft-404 — release README caveat #4). The loader
+    must faithfully surface both — the graph layer downstream will
+    decide how to handle nodes without marginals."""
     edges = load_active_edges(RELEASE_DIR, "2025-H1")
     totals = load_lobbyist_totals(RELEASE_DIR, "2025-H1")
     edge_lobbyists = {l for (l, _) in edges}
-    missing = edge_lobbyists - set(totals.keys())
-    assert missing == set(), f"lobbyists in edges but not in totals: {missing}"
+    orphans = edge_lobbyists - set(totals.keys())
+    assert orphans == {11513, 12717}
