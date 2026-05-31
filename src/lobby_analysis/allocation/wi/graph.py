@@ -198,6 +198,7 @@ def flag_outliers(
     graph: BipartiteGraph,
     threshold_ratio: float = 2.0,
     max_hours_per_semester: float = 2000.0,
+    min_hours_for_ratio_flag: float = 0.0,
 ) -> list[OutlierFlag]:
     """Lobbyists whose marginal hours are implausible. Two checks:
 
@@ -205,14 +206,19 @@ def flag_outliers(
        × sum of their attributable principals' marginal hours. Catches
        cases where the lobbyist claims more than her principals
        collectively reported (would require attribution arithmetic to
-       go negative on at least one other lobbyist).
+       go negative on at least one other lobbyist). Gated by
+       ``min_hours_for_ratio_flag`` — lobbyists with absolute hours at
+       or below this floor are exempt from the ratio check (Phase 1
+       surfaced 4 tiny-hours false positives against zero-marginal
+       principals; recommended floor 10 hrs).
     2. **Per-semester absolute check**: lobbyist's hours >
        ``max_hours_per_semester``. Catches the Pettack-class
        organization-aggregates-under-one-lobbyist pattern, where the
        marginal-ratio check is silent because the org family registers
        enough principals to make the sum plausible — but the per-day
        arithmetic is non-human (2000 hrs/semester ≈ 16 hrs/day across
-       125 working days).
+       125 working days). NOT gated by ``min_hours_for_ratio_flag`` —
+       this is a separate axis.
 
     A lobbyist may be flagged for one or both reasons; only one
     OutlierFlag is emitted per lobbyist, listing every triggered check.
@@ -238,7 +244,10 @@ def flag_outliers(
         )
 
         reasons: list[str] = []
-        if l_total > threshold_ratio * max_attrib_total:
+        if (
+            l_total > min_hours_for_ratio_flag
+            and l_total > threshold_ratio * max_attrib_total
+        ):
             reasons.append(
                 f"hours {l_total:.1f} > {threshold_ratio}x max attributable "
                 f"{max_attrib_total:.1f}"

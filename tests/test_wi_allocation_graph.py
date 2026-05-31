@@ -305,3 +305,91 @@ def test_flag_outliers_skips_well_behaved_lobbyist():
     )
     outliers = flag_outliers(g)
     assert 1 not in {o.lobbyist_id for o in outliers}
+
+
+# ---------------------------------------------------------------------------
+# Outlier flagging — min_hours_for_ratio_flag parameter
+# ---------------------------------------------------------------------------
+#
+# Phase 1 surfaced 4 H1/H2 "false positive" ratio-flags: lobbyists with
+# very small hours (0.2-6.0) authorized for principals whose marginals
+# are 0 (low-spend-exempt). The ratio check trips trivially because the
+# denominator is 0. ``min_hours_for_ratio_flag`` is a Phase 2-added knob
+# that suppresses the ratio check below the threshold (default 0 = no
+# suppression, preserves Phase 1 behavior; recommended 10 hrs).
+
+
+def test_min_hours_default_zero_preserves_phase_1_behavior():
+    """Default ``min_hours_for_ratio_flag=0`` must reproduce the Phase 1
+    ratio-flag behavior exactly: lobbyist with 0.2 hrs against a
+    zero-marginal principal trips the ratio check."""
+    g = build_bipartite_graph(
+        edges={(1, 100)},
+        principal_totals={100: (0.0, 0.0)},
+        lobbyist_totals={1: (0.2, 0.0)},
+    )
+    outliers = flag_outliers(g)
+    assert 1 in {o.lobbyist_id for o in outliers}
+
+
+def test_min_hours_suppresses_low_hours_ratio_flag():
+    """Setting ``min_hours_for_ratio_flag=10`` suppresses the 0.2-hr
+    ratio-flag false positive — the per-day absolute check is still
+    in effect but doesn't trip on 0.2 hrs."""
+    g = build_bipartite_graph(
+        edges={(1, 100)},
+        principal_totals={100: (0.0, 0.0)},
+        lobbyist_totals={1: (0.2, 0.0)},
+    )
+    outliers = flag_outliers(g, min_hours_for_ratio_flag=10.0)
+    assert 1 not in {o.lobbyist_id for o in outliers}
+
+
+def test_min_hours_does_not_suppress_absolute_check():
+    """``min_hours_for_ratio_flag`` only gates the ratio check.
+    A lobbyist over the per-semester absolute ceiling is still flagged
+    regardless of where the threshold is set, because the absolute
+    check is a separate axis (per-day arithmetic)."""
+    g = build_bipartite_graph(
+        edges={(1, 100)},
+        principal_totals={100: (1500.0, 1500.0)},
+        lobbyist_totals={1: (1200.0, 1200.0)},  # 2400 > 2000 absolute ceiling
+    )
+    # min_hours_for_ratio_flag=10000 silences the ratio check entirely,
+    # but the absolute check still trips at 2400 > 2000.
+    outliers = flag_outliers(g, min_hours_for_ratio_flag=10000.0)
+    assert 1 in {o.lobbyist_id for o in outliers}
+
+
+def test_min_hours_does_not_suppress_above_threshold_ratio_trip():
+    """A lobbyist whose hours exceed ``min_hours_for_ratio_flag`` AND
+    trip the ratio check is still flagged. Toy: 50 hrs total against
+    zero attributable, threshold 10 → still flagged."""
+    g = build_bipartite_graph(
+        edges={(1, 100)},
+        principal_totals={100: (0.0, 0.0)},
+        lobbyist_totals={1: (50.0, 0.0)},
+    )
+    outliers = flag_outliers(g, min_hours_for_ratio_flag=10.0)
+    assert 1 in {o.lobbyist_id for o in outliers}
+
+
+def test_min_hours_h1_2025_suppresses_known_false_positives():
+    """Phase 1 results §"False-positive ratio flags": H1 ratio-trip on
+    lobbyist 11065 (0.2 hrs, max-attributable 0.0). Setting threshold
+    to 10 hrs must suppress 11065 without affecting Pettack 11072 (who
+    trips the per-semester absolute check at 4,007.5 hrs, independent
+    of the ratio threshold)."""
+    edges = load_active_edges(RELEASE_DIR, "2025-H1")
+    p_totals = load_principal_totals(RELEASE_DIR, "2025-H1")
+    l_totals = load_lobbyist_totals(RELEASE_DIR, "2025-H1")
+    g = build_bipartite_graph(
+        edges=edges, principal_totals=p_totals, lobbyist_totals=l_totals
+    )
+    flagged_default = {o.lobbyist_id for o in flag_outliers(g)}
+    flagged_threshold = {
+        o.lobbyist_id for o in flag_outliers(g, min_hours_for_ratio_flag=10.0)
+    }
+    assert 11065 in flagged_default
+    assert 11065 not in flagged_threshold
+    assert 11072 in flagged_threshold  # Pettack still caught via absolute
