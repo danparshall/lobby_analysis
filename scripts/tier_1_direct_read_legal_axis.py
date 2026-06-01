@@ -27,6 +27,7 @@ Single-file by design (YAGNI), consistent with Tier-0.
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import importlib.util
 import json
@@ -79,8 +80,6 @@ _RESOLVED_CHUNKS: tuple[str, ...] = (
     "enforcement_and_audits",
 )
 
-_STATE_ABBR = "OH"
-_VINTAGE_YEAR = 2025
 _N_RUNS = 3
 _MODELS: tuple[str, ...] = (tier0._ANTHROPIC_MODEL, tier0._OPENAI_MODEL)
 _ORIGINATING_CONVO = "convos/20260520_tier_0_direct_read_execution.md"
@@ -89,12 +88,55 @@ _ORIGINATING_CONVO = "convos/20260520_tier_0_direct_read_execution.md"
 # Tier-0's observed Claude rate (~335 tok/cell).
 _MAX_OUTPUT_TOKENS = 16384
 
-_STATUTE_BUNDLE_DIR = (
-    _WORKTREE_ROOT / "data" / "statutes" / _STATE_ABBR / str(_VINTAGE_YEAR) / "sections"
+# Results/checkpoint base. The per-run directory is keyed by <STATE>_<VINTAGE>
+# under this base (see resolve_results_dir) so no two state-vintages share a
+# checkpoint directory.
+_DEFAULT_RESULTS_BASE = (
+    _WORKTREE_ROOT / "docs" / "active" / "wi-tier1-direct-read" / "results" / "tier_1"
 )
-_RESULTS_DIR = (
-    _WORKTREE_ROOT / "docs" / "active" / "extraction-harness-brainstorm" / "results" / "tier_1"
-)
+
+
+def resolve_bundle_dir(state: str, vintage: int) -> Path:
+    """The statute bundle directory for one (state, vintage)."""
+    return _WORKTREE_ROOT / "data" / "statutes" / state / str(vintage) / "sections"
+
+
+def resolve_results_dir(
+    state: str, vintage: int, results_base: Path | None = None
+) -> Path:
+    """The state-keyed results/checkpoint directory for one (state, vintage).
+
+    Keying by ``<STATE>_<VINTAGE>`` is the correctness-critical fix: a run for
+    one state can never write into, or resume-skip against, another state's
+    result files. The previously un-keyed shared directory let a second
+    state's run skip every dispatch on the first state's checkpoints and emit
+    the wrong state's answers under the new label.
+    """
+    base = Path(results_base) if results_base is not None else _DEFAULT_RESULTS_BASE
+    return base / f"{state}_{vintage}"
+
+
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    """Parse --state/--vintage. Both required — no default OH re-run by accident."""
+    parser = argparse.ArgumentParser(
+        description=(
+            "Tier-1 direct-read legal-axis extraction for one (state, vintage). "
+            "Dispatches both models x 6 chunks x N runs with per-dispatch "
+            "checkpoint/resume into a state-keyed results directory."
+        )
+    )
+    parser.add_argument(
+        "--state",
+        required=True,
+        help="Two-letter state abbreviation, e.g. WI (matches data/statutes/<STATE>/).",
+    )
+    parser.add_argument(
+        "--vintage",
+        required=True,
+        type=int,
+        help="Statute vintage year, e.g. 2025 (matches data/statutes/<STATE>/<VINTAGE>/).",
+    )
+    return parser.parse_args(argv)
 
 # Per-call abort retained from Tier-0; session ceiling raised to $10 for 36
 # calls (~$2-4 expected). Both confirmed with the user 2026-05-20.
@@ -372,7 +414,7 @@ _DISPATCHERS: dict[str, tuple[str, Any]] = {
 # ---------------------------------------------------------------------------
 
 
-def _preflight() -> None:
+def _preflight(bundle_dir: Path) -> None:
     """Fail fast before any API spend if keys or the statute bundle are absent."""
     missing = [v for v in ("ANTHROPIC_API_KEY", "OPENAI_API_KEY") if not os.environ.get(v)]
     if missing:
@@ -383,9 +425,9 @@ def _preflight() -> None:
             file=sys.stderr,
         )
         sys.exit(2)
-    if not _STATUTE_BUNDLE_DIR.exists():
+    if not bundle_dir.exists():
         print(
-            f"ERROR: statute bundle directory not found: {_STATUTE_BUNDLE_DIR}. "
+            f"ERROR: statute bundle directory not found: {bundle_dir}. "
             "Stop and surface — do not substitute another vintage.",
             file=sys.stderr,
         )
@@ -458,7 +500,9 @@ def _parse_and_instantiate(
     return instantiated, unscoreable, errors
 
 
-def _compute_and_print_agreement(rosters: dict[str, tuple[Any, list[Any]]]) -> dict[str, Any]:
+def _compute_and_print_agreement(
+    rosters: dict[str, tuple[Any, list[Any]]], results_dir: Path
+) -> dict[str, Any]:
     """Read every saved dispatch, classify each cell's N runs, print sigma_noise."""
     print("\n=== inter-run agreement / sigma_noise (N=3) ===")
     report: dict[str, Any] = {}
@@ -467,7 +511,7 @@ def _compute_and_print_agreement(rosters: dict[str, tuple[Any, list[Any]]]) -> d
         for chunk_id, (_chunk, legal) in rosters.items():
             run_results = []
             for run_idx in range(1, _N_RUNS + 1):
-                path = dispatch_result_path(_RESULTS_DIR, model, chunk_id, run_idx)
+                path = dispatch_result_path(results_dir, model, chunk_id, run_idx)
                 if path.exists():
                     run_results.append(json.loads(path.read_text(encoding="utf-8")))
             if len(run_results) < _N_RUNS:
@@ -484,9 +528,15 @@ def _compute_and_print_agreement(rosters: dict[str, tuple[Any, list[Any]]]) -> d
     return report
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
     """Run the 36-dispatch Tier-1 legal-axis sweep end-to-end. Resumable."""
-    _preflight()
+    args = parse_args(argv)
+    state = args.state
+    vintage = args.vintage
+    bundle_dir = resolve_bundle_dir(state, vintage)
+    results_dir = resolve_results_dir(state, vintage)
+
+    _preflight(bundle_dir)
 
     from lobby_analysis.chunks_v2 import build_chunks
     from lobby_analysis.models_v2 import build_cell_spec_registry
@@ -494,10 +544,13 @@ def main() -> int:
     chunks = {c.chunk_id: c for c in build_chunks()}
     registry = build_cell_spec_registry()
 
-    statute_text, statute_filenames = tier0.load_statute_bundle(_STATUTE_BUNDLE_DIR)
+    statute_text, statute_filenames = tier0.load_statute_bundle(bundle_dir)
     system_prompt = _SYSTEM_PROMPT_TEMPLATE.format(statute_text=statute_text)
     prompt_sha256 = hashlib.sha256(system_prompt.encode("utf-8")).hexdigest()
-    _RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    results_dir.mkdir(parents=True, exist_ok=True)
+    print(f"State/vintage: {state} {vintage}")
+    print(f"Bundle dir: {bundle_dir}")
+    print(f"Results dir: {results_dir}")
 
     # Build the legal-only rosters once.
     rosters: dict[str, tuple[Any, list[Any]]] = {}
@@ -527,7 +580,7 @@ def main() -> int:
         for chunk_id, (chunk, legal) in rosters.items():
             user_message = render_legal_roster(chunk_id, chunk.topic, legal)
             for run_idx in range(1, _N_RUNS + 1):
-                if is_dispatch_done(_RESULTS_DIR, model, chunk_id, run_idx):
+                if is_dispatch_done(results_dir, model, chunk_id, run_idx):
                     n_skipped += 1
                     continue
                 print(f"\ndispatch {sdk}/{model} chunk={chunk_id} run={run_idx} ...")
@@ -565,12 +618,12 @@ def main() -> int:
                     "sdk": sdk,
                     "chunk_id": chunk_id,
                     "run_index": run_idx,
-                    "state_abbr": _STATE_ABBR,
-                    "vintage_year": _VINTAGE_YEAR,
+                    "state_abbr": state,
+                    "vintage_year": vintage,
                     "prompt_sha256": prompt_sha256,
                     "timestamp_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
                 }
-                path = dispatch_result_path(_RESULTS_DIR, model, chunk_id, run_idx)
+                path = dispatch_result_path(results_dir, model, chunk_id, run_idx)
                 tier0._save_json(
                     path,
                     {
@@ -596,7 +649,7 @@ def main() -> int:
         f"\ndispatched={n_dispatched}  skipped(resumed)={n_skipped}  "
         f"session_cost=${session_cost:.4f}"
     )
-    _compute_and_print_agreement(rosters)
+    _compute_and_print_agreement(rosters, results_dir)
     return 0
 
 
