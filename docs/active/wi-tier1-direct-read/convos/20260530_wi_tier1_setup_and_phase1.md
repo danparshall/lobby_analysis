@@ -49,6 +49,10 @@ This machine's volume sat at ~98–99% (8.5–9.7 GiB free, oscillating) and int
 
 `_ORIGINATING_CONVO` still points at the OH Tier-0 convo (`convos/20260520_tier_0_direct_read_execution.md`) — it documents the harness's method lineage and is stamped into every result's provenance alongside the correct `state_abbr`/`vintage_year`. Left as-is (out of scope); update post-hoc if a WI-specific provenance pointer is wanted.
 
+## Scope clarification (late-session)
+
+Dan flagged that OH appeared pervasively when the task was WI. Clarified: WI is the only target; OH appears solely as (1) the predecessor pilot the harness is generalized *from*, and (2) the contamination source Phase 1 isolates *against* (the un-state-keyed results dir). Phase 1 is OH-heavy by nature; Phase 2/3 are WI-centric. OH legitimately remains in exactly one forward place — the Phase 3 `sigma_noise` WI-vs-OH comparison (the multi-state-uniformity research point) — plus the cosmetic `_ORIGINATING_CONVO` provenance string.
+
 ## Next
 
 See `HANDOFF.md` for the exact Phase 2 run procedure on the target machine.
