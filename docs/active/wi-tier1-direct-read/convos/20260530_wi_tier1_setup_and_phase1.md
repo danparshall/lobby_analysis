@@ -37,9 +37,9 @@ Extend the Tier-1 direct-read legal-axis extraction harness from the OH 2025 pil
 - `ruff check` on changed files: clean.
 - Dry-run path/roster check (`--state WI --vintage 2025`): bundle exists (16 `.txt`), results dir `…/WI_2025`, all 6 chunks present = **84 legal cells**, both models, **36 planned dispatches**.
 
-## Pre-existing failures (NOT caused here — flagged for Dan)
+## Pre-existing failures (flagged, then FIXED on Dan's instruction)
 
-`tests/test_pipeline.py` (3 failures): `load_snapshot("CA")` wants `data/portal_snapshots/CA/2026-04-13/manifest.json`, but on-disk is `…/CA/2026-05-01/`. The test's `SNAPSHOT_DATE_DEFAULT` (`2026-04-13`) lags the local snapshot date. These are Prong-2 portal data, orthogonal to Tier-1 statute work, and present on `origin/main`. **Not fixed** — bumping a shared global default date is a multi-committer change that could break CI if CI provisions the 2026-04-13 snapshot. Dan to decide.
+`tests/test_pipeline.py` (3 failures): `load_snapshot("CA")` wanted `data/portal_snapshots/CA/2026-04-13/manifest.json`, but on-disk was `…/CA/2026-05-01/`. Initially left unfixed (caution about bumping a shared global default). Dan then clarified: the `2026-04-13` snapshots were lost in the laptop data-loss event and re-fetched as `2026-05-01`. Confirmed all 8 states (CA/CO/FL/IL/NY/TX/WA/WI) are uniformly at `2026-05-01`, so bumping `SNAPSHOT_DATE_DEFAULT` 04-13 → 05-01 is correct, not a CA-only patch. **Fixed** in commit `a3bc1af`; full suite now **1550 passed, 0 failures**.
 
 ## Disk / ENOSPC (why Phase 2 was deferred)
 

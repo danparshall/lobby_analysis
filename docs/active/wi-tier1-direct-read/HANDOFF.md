@@ -78,5 +78,5 @@ Expect 36 files, `corrupt: []`. If any are corrupt, remove ONLY those files and 
 
 ## Open / flagged items
 
-- **Pre-existing `tests/test_pipeline.py` failures** (3): `SNAPSHOT_DATE_DEFAULT=2026-04-13` vs on-disk `CA/2026-05-01`. Orthogonal to Tier-1; on `origin/main`; not fixed here (shared-state change). Decide separately.
+- **`tests/test_pipeline.py` failures (3) — FIXED** (commit `a3bc1af`). The `2026-04-13` portal snapshots were lost in the laptop data-loss event and re-fetched as `2026-05-01` across all 8 states; `SNAPSHOT_DATE_DEFAULT` lagged. Bumped to `2026-05-01`; full suite now 1550 passed, 0 failures.
 - `_ORIGINATING_CONVO` constant still points at the OH Tier-0 convo (method lineage); stamped into provenance alongside correct `state_abbr`/`vintage_year`. Update post-hoc if a WI-specific pointer is wanted.
