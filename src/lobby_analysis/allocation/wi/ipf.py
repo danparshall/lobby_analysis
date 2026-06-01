@@ -35,6 +35,8 @@ API:
 
 from __future__ import annotations
 
+import contextlib
+import io
 import warnings
 from dataclasses import dataclass, field
 from typing import Literal
@@ -134,7 +136,12 @@ def fit_component(
     # divides fit_sum / target). Suppress it: the zero-target rows/cols
     # are clamped to 0 by construction and don't contribute to the
     # convergence rate calc meaningfully.
-    with warnings.catch_warnings():
+    #
+    # ipfn also unconditionally prints "ipfn converged: ..." to stdout
+    # at the end of iteration() regardless of verbose level. Capture
+    # stdout to keep our CLI output clean — the convergence info is
+    # already exposed via the returned ``converged`` flag.
+    with warnings.catch_warnings(), contextlib.redirect_stdout(io.StringIO()):
         warnings.simplefilter("ignore", category=RuntimeWarning)
         fit_array, converged, conv_df = _ipfn_module.ipfn(
             seed,
