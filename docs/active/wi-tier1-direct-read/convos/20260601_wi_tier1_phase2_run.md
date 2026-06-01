@@ -28,12 +28,14 @@ Launched in background; ran 20 min wall. **36/36 dispatched, 0 skipped, 0 dispat
 
 | Metric | Claude Opus 4.7 | GPT-5.2 (2025-12-11) |
 |---|---|---|
-| σ_noise (pct_stable across 3 runs) | **85.71%** | **84.52%** |
+| σ_noise (pct_stable across 3 runs — **per-model**) | **85.71%** | **84.52%** |
 | n_stable | 72 | 71 |
 | n_value_unstable | 9 | 5 |
 | n_scoreability_unstable | 2 | 7 |
 | n_incomplete | 1 | 1 |
 | Per-vendor cost | $1.5263 | $1.0444 |
+
+**Cross-validation against `releases/wi/` portal data (added later in session, see `results/20260601_wi_statute_vs_portal_spending.md`)** surfaced a second, un-reported metric: **inter-model alignment**. Of 84 legal cells, 65 are jointly within-model stable (both models internally agree on their 3 runs); of those 65, only 47 (72.3%) agree across models, leaving **18 cells (27.7%) where Claude and GPT deterministically disagree at high confidence on the same legal question**. The σ_noise metric as designed is correct per-model but doesn't report this. On WI the disagreement is concentrated in the `lobbyist_spending_report` chunk (~13 of the 18), where Claude reads "is this info required to flow through the lobbyist?" → TRUE and GPT reads "does the lobbyist file a spending report?" → FALSE. **Portal data (`WI_lobbyist_filings.tsv` has only hours columns, zero expenditure columns) is independent ground truth that confirms GPT's structural reading.** **Open candidate (Dan 2026-06-01, not yet decided):** at 27.7% disagreement, the Citations API is *worth considering* as a way to recover each model's cited statute text for adjudication — to evaluate after Dan does a closer read of the 18 disagreeing cells.
 
 **Total session cost: $2.5708** (HANDOFF predicted ~$2–4; well under $10 session ceiling, all 36 calls also under $1 per-call ceiling — max single call was Claude / `lobbyist_spending_report` / run1 at $0.1988).
 
@@ -108,10 +110,15 @@ Cost is stamped per-call (`cost_usd_estimate` key in each result JSON) AND aggre
 
 ## Next
 
-- **Investigate Fix A regression.** Diff `extraction-harness-brainstorm` Tier-2 Step D fixtures vs the dict-shape path in `_parse_and_instantiate` / cell construction. If Fix A doesn't apply to roster-driven calls, that's load-bearing for every future state run.
-- **Capture `TimeThresholdCell.unit` enum gap** for v2.2 design. Days-per-reporting-period is a real unit; so are 6-month, semiannual, biennial variants WI may use elsewhere.
-- **σ_noise WI-vs-OH composition study.** GPT's `scoreability_unstable` jump (2 → 7) under WI is a different failure mode than value drift — worth segmenting metric to keep these visible.
-- **Decide whether to extend to a third state** (NC has a flat data layout already from the WI-disclosure-explore convention; would extend the multi-state-reliability claim).
+All items below have been folded into `HANDOFF_followups.md`. Summary:
+
+- **(Item 1)** Investigate Fix A regression (the `magnitude: int → Decimal` failure on the dict-shape value path; 6/6 runs fail on `lobbyist_registration_threshold_time_percent`).
+- **(Item 2)** Capture `TimeThresholdCell.unit` enum gap as v2.2 design input (`days_per_reporting_period` and related missing).
+- **(Item 3, candidate per Dan 2026-06-01 — to evaluate, not yet decided)** Closer look at the 18 inter-model disagreement cells from the WI cross-validation. If the disagreement is substantive (not annotation artifacts), the Anthropic Citations API is a candidate mechanism for adjudication — it would recover the actual statute text each model latched onto. Decision deferred until Dan reviews.
+- **(Item 4)** Bake portal cross-validation into the MI session: run Tier-1 *and* load `releases/mi/` in parallel, same comparison structure as `results/20260601_wi_statute_vs_portal_spending.md`.
+- **(Item 5)** Investigate principal-filings aggregation: is `WI_principal_filings.tsv`'s `total_expenditure` aggregate-by-portal-design or aggregate-by-scrape-loss? Answer determines whether the 4 WI principal-side transparency gaps are real or recoverable from re-parsing.
+- **(Item 6, separate track)** σ_noise WI-vs-OH composition study (GPT's `scoreability_unstable` 2 → 7 jump). Decomposable from the existing per-model artifacts; no API spend.
+- **Next-state target:** MI (was NC; swapped per Dan 2026-06-01).
 
 ## Captured Tasks
 

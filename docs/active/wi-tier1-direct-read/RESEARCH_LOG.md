@@ -9,6 +9,14 @@ Plan: `plans/20260530_wi_2025_tier1_direct_read.md`
 
 ## Session history (newest first)
 
+### 2026-06-01 (later still) — statute-required vs portal-exposed comparison; Citations API direction added to followups
+Doc: `results/20260601_wi_statute_vs_portal_spending.md`
+- Compared the 53 cells in lobbyist + principal spending-report chunks against `releases/wi/` portal columns. **Headline:** WI has no separate lobbyist-filed spending report — §13.68(4) routes lobbyist info to the principal, who files under §13.68(1). Portal data confirms: `WI_lobbyist_filings.tsv` has zero expenditure columns, only `total_hours_communicating`/`total_hours_other`.
+- **Newly visible metric:** inter-model alignment. 65 of 84 cells are jointly within-model stable; **18 (27.7%) deterministically disagree across models at high confidence**. Concentrated in lobbyist_spending_report: Claude reads "info flows through lobbyist" → TRUE; GPT reads "lobbyist files" → FALSE. **Portal data settles the disagreement: GPT wins 13/13 on these cells.** Per-model σ_noise was correct as designed but doesn't capture this.
+- **Initial framing error caught and corrected:** earlier draft said σ_noise "was masking" inter-model disagreement. Wrong — σ_noise was always per-model. Real claim: there's a *second* metric (inter-model alignment) that has no current report.
+- **Principal-side mapping** identified 4 concrete transparency gaps (compensation paid to lobbyists, gifts/entertainment, indirect costs, itemized format) — all reduce to "statute requires itemization, portal exposes single `total_expenditure` aggregate." Open question: portal-publication choice or scrape-loss in `wi-disclosure-explore`?
+- **Open candidate from Dan (2026-06-01, not yet decided):** the 27.7% inter-model disagreement *might* warrant Citations API for adjudication once Dan looks more closely at the 18 disagreeing cells. To evaluate, not committed. Captured as item 3 in `HANDOFF_followups.md`. Also added: item 4 (bake portal-cross-validation into MI), item 5 (investigate principal-filings aggregation source).
+
 ### 2026-06-01 (later) — followups handoff written; MI substitutes for NC
 Doc: `HANDOFF_followups.md`
 - Two concrete pre-MI investigations captured: (1) Fix A int→Decimal regression on dict-shape value path, (2) `TimeThresholdCell.unit` literal-enum gap for v2.2 design ledger.

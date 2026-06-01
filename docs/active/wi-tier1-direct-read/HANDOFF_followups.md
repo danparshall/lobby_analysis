@@ -113,18 +113,116 @@ This affects the followups in one way only: the next-state branch should be `mi-
 
 ---
 
-## Item 4 — already tracked
+## Item 3 — Citations API for inter-model adjudication (CANDIDATE, not yet decided)
 
-GH issue [#31](https://github.com/danparshall/lobby_analysis/issues/31) — parallelize the Tier-1 dispatch loop. Independent of items 1 + 2; no further capture needed here.
+**Source:** Dan, 2026-06-01 afternoon, while reviewing the statute-vs-portal cross-validation (`results/20260601_wi_statute_vs_portal_spending.md`).
+**Status:** OPEN CANDIDATE. Dan said: *"I'll look, but sounds like the disagreement is large enough to be worth using the Citations API."* The "I'll look" part is load-bearing — Dan wants to do a more detailed read of the 18 disagreeing cells before committing to the integration.
+
+### What we found that prompted this
+
+The WI cross-validation surfaced **18 of 65 jointly-stable cells (27.7%)** where Claude and GPT deterministically disagree at high confidence on the same legal question. The σ_noise metric (per-model) is correct as designed but doesn't capture this — there's no current report of inter-model alignment.
+
+Concentrated in the `lobbyist_spending_report` chunk (~13 of 18): Claude reads "is this info required to flow through the lobbyist?" → TRUE, citing §13.68(1)(*). GPT reads "is the *lobbyist* the filer?" → FALSE, citing the same §13.68(1) but characterizing it as principal-filed. Portal data (`WI_lobbyist_filings.tsv` has zero expenditure columns) settles 13/13 in GPT's favor.
+
+### What to evaluate
+
+Before integrating the Citations API:
+
+1. **Read the 18 disagreeing cells closely.** They're enumerated in `results/20260601_wi_statute_vs_portal_spending.md` (13 explicitly in the headline table; the other ~5 are in `lobbying_definitions` / `registration_*` / `enforcement_and_audits` chunks — re-run `/tmp/wi_within_model_sigma.py` to enumerate).
+2. **Categorize the disagreements.** Are they all the same shape (one model over-includes, one reads literally)? Or are there qualitatively different failure modes? The integration is more valuable if the disagreements span shapes.
+3. **Confirm Citations API is the right mechanism.** The `extraction-harness-brainstorm` archive already has a `retrieval_v2/` module that uses Citations API (per STATUS.md). Check if extending that to Tier-1 dispatch is a small lift or a rewrite. The two questions:
+   - (a) Does Citations API on the model's output expose the substring(s) of the source it was citing — i.e., can we recover "Claude was looking at §13.68(1) sentence A" vs "GPT was looking at §13.68(1) sentence B"?
+   - (b) If yes, what's the wrapper code to capture the citation spans alongside each `record_cell` tool call?
+
+### What this would actually buy us
+
+Adjudication. For each of the 18 cells:
+- If both models cited the **same span** → disagreement is about *interpretation* of the same statute text. That's the case where downstream reconciliation (a Tier-2 pass, or a v2.2 schema decision) makes the call.
+- If they cited **different spans** → at least one model was looking at the wrong text. That's a *retrieval / context-window* issue, solvable by extracting better statute slices.
+
+Without Citations API, we can't distinguish these. With it, the inter-model disagreement rate becomes a structured signal rather than a flat number.
+
+### Cost
+
+API spend dominated by the re-dispatch (probably ~$3 to re-run the lobbyist_spending_report chunk against both models if we just want to validate the integration on the disagreement cells). Plus engineering time to wire up the Citations API wrapper.
+
+### Decision gate
+
+This item should NOT be implemented until Dan has done the closer review of the 18 cells. If after review he says "yes, integrate" — then this item becomes a concrete code task. If he says "no, this isn't worth it" — drop the item and stop here.
+
+---
+
+## Item 4 — Bake portal cross-validation into the MI session
+
+**Source:** Generalized from this WI session.
+
+When MI Tier-1 runs, **don't separate the legal-axis extraction from the portal-comparison analysis.** Do them in the same session, using the same comparison structure as `results/20260601_wi_statute_vs_portal_spending.md`. The pattern that worked here:
+
+1. Run Tier-1 on MI 2025 statute bundle → 36 result JSONs.
+2. Load `releases/mi/` TSVs (assuming an MI scrape lands before the Tier-1 run; if not, that's an upstream dependency to flag).
+3. For each spending-report cell (chunks `lobbyist_spending_report` + `principal_spending_report`), build the cell-to-column mapping by hand. Catalog cell-vs-portal status as MATCH / CROSS-FILE MATCH / GAP / UNRESOLVED.
+4. Surface the inter-model disagreements separately; treat them as candidates for item 3 (Citations API) if that lands.
+
+Expected payoff: identifies MI-specific compendium-taxonomy gaps + cross-validates per-cell model disagreements + grows the cross-state portal-coverage matrix the README's "Required × {Legal, Practical}" framing has been waiting for.
+
+### Cost
+
+The legal-axis run is ~$2-4 per state. The portal-comparison analysis is ~30 min of focused work per state.
+
+---
+
+## Item 5 — Investigate principal-filings aggregation (portal design vs scrape loss?)
+
+**Source:** The 4 transparency gaps surfaced in this session's principal-side mapping.
+
+All 4 WI principal-side gaps reduce to: **statute requires itemized reporting (compensation paid to each lobbyist, gifts/entertainment as a separate category, indirect costs, itemized format generally), but `WI_principal_filings.tsv` exposes only a single `total_expenditure` scalar.** Two hypotheses:
+
+- **(A) Portal-publication choice.** The underlying expense statements are itemized in the source filings, but the WI Ethics Commission publishes only the top-line aggregate to the public-facing portal. The itemized data exists but is not surfaced.
+- **(B) Scrape loss.** The `wi-disclosure-explore` Tier-2 parser dropped the itemized fields during materialization. The data is in the source PDFs/portal pages but didn't make it into the TSVs.
+
+Investigation:
+
+1. Read the Tier-2 parser modules at `src/lobby_analysis/io/wi/` (per the archived `wi-disclosure-explore` summary in STATUS.md). Specifically look at whether `principal_meta` or `lobbyist_time_report` parsers see itemized fields and intentionally drop them, or whether they only encounter aggregates.
+2. If parsers see and drop itemized fields → it's a scrape loss; the fix is to re-run the scrape capturing those fields, no portal-side change needed.
+3. If parsers only encounter aggregates → it's a portal-design choice; the gap is real and either un-fixable (only aggregates published) or would require an XLS/PDF source separate from the live portal.
+
+Note for sequencing: this investigation is also an answer for **what the practical-side data layer can ever look like for WI**, so it's worth doing before MI commits to a parallel `releases/mi/` shape.
+
+### Cost
+
+Pure code reading + maybe a small re-scrape probe; no significant API spend.
+
+---
+
+## Item 6 — σ_noise WI-vs-OH composition study
+
+**Source:** Phase 3 writeup noted GPT's `n_scoreability_unstable` jump 2 → 7 between OH and WI.
+
+The aggregate σ_noise = pct_stable conflates "wrong value drift" with "wrong scoreability decision drift." These have different epistemic status (a model flipping a value is different from a model flipping between "yes it's required" and "the statute is silent on this"). For both OH and WI we have run-level data — decomposing pct_stable into its components and comparing across states is a metric-design exercise, no API spend.
+
+### Cost
+
+Pure analysis of existing artifacts. Could be done as a small results doc.
+
+---
+
+## Item 7 — already tracked
+
+GH issue [#31](https://github.com/danparshall/lobby_analysis/issues/31) — parallelize the Tier-1 dispatch loop. Independent of all other items here; no further capture needed.
 
 ---
 
 ## Suggested order of work
 
-1. **Item 1 first.** Until Fix A is understood, every state with a similar `magnitude: int` emission will hit the same error class — and we won't know whether it's a coercion bug or a model bug. Cheap investigation, no API spend.
-2. **Item 2 second.** Easy capture once item 1 has clarified the failure mode (so the v2.2 entry can correctly distinguish the coercion gap from the enum gap).
-3. **#31 anytime.** Pays back at MI scale and beyond. Could be done alongside MI extraction if a fellow has a free slot.
-4. **MI Tier-1 extension** after items 1 + 2.
+The branch is in a state where the next agent could pick up multiple of these in parallel. Suggested:
+
+1. **Item 1 (Fix A regression) first.** Until Fix A is understood, every state with a similar `magnitude: int` emission will hit the same error class — and we won't know whether it's a coercion bug or a model bug. Cheap investigation, no API spend.
+2. **Item 5 (principal-filings aggregation) in parallel with item 1.** Different code surfaces; doesn't conflict. Important to know before MI.
+3. **Item 2 (TimeThresholdCell enum gap) after item 1** so the v2.2 entry can correctly distinguish the coercion gap from the enum gap.
+4. **Item 3 (Citations API evaluation) — wait for Dan's review.** Don't start until Dan has read the 18 disagreement cells closely and made the call.
+5. **Item 6 (σ_noise decomposition) anytime** — cheap, orthogonal.
+6. **Item 4 (portal cross-validation) when MI Tier-1 runs** — that's the natural slot.
+7. **#31 (parallelization) anytime, but doesn't gate anything.**
 
 ---
 
