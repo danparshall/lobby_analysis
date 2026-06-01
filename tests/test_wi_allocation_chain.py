@@ -61,7 +61,7 @@ def test_doordash_chain_nonempty(chain_df: pd.DataFrame) -> None:
     assert len(dd) > 0
     row = dd.iloc[0]
     assert row["principal_name"] == "DoorDash, Inc."
-    assert isinstance(row["lobbyist_id"], (int, float))
+    assert pd.notna(row["lobbyist_id"]) and int(row["lobbyist_id"]) > 0
     assert isinstance(row["lobbyist_name"], str) and row["lobbyist_name"]
     assert row["bill_id"] in {"SB 256", "AB 269"}
     assert isinstance(row["bill_title"], str) and row["bill_title"]
