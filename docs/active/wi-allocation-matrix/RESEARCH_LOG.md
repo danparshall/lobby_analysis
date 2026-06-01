@@ -22,6 +22,7 @@ With all three legs, the chain Suhan asked for — "company W spends X via lobby
 
 - [`convos/20260530_wi_allocation_matrix_kickoff.md`](convos/20260530_wi_allocation_matrix_kickoff.md) — kickoff: 6-relation classification, IPF framing, 3-leg architecture, plan-only decision.
 - [`convos/20260530_phase_0_and_1_execution.md`](convos/20260530_phase_0_and_1_execution.md) — Phase 0 (audit, no code) + Phase 1 (TDD: loaders + bipartite graph + CC decomposition + outlier flagging); landed Phase 1 with 32 new tests + zero regressions.
+- [`convos/20260531_phase_2_ipf_design_and_execution.md`](convos/20260531_phase_2_ipf_design_and_execution.md) — Phase 2 design + execution (TDD: IPF fit + materialize + CLI); 27 new tests + zero regressions. Empirical ipfn probe at giant-CC scale; Pettack-not-in-giant discovery; confidence-label schema (`exact` / `ipf_fit` / `zero_filed` / `aggregation_flagged`); small-CC over-attribution pattern flagged as Phase 3+ candidate.
 
 ## Plans
 
@@ -31,6 +32,38 @@ With all three legs, the chain Suhan asked for — "company W spends X via lobby
 
 - [`results/20260530_phase_0_data_audit.md`](results/20260530_phase_0_data_audit.md) — Phase 0 audit. Four findings reshape the plan: lobbyist filings are semester (not quarterly) → IPF marginals align natively; percent-rounding is structural (only 41% of (principal, period) groups sum to 100%, max 100%) → Phase 3 attribution math needs a decision; active edges per semester ~1,912 (H1) / ~2,055 (H2), not the biennium-union 2,254; one giant 835-node CC dominates the H1 graph (only ~6.4% exactly-pinned cells).
 - [`results/20260530_phase_1_graph_structure.md`](results/20260530_phase_1_graph_structure.md) — Phase 1 graph + CC writeup. H1 / H2 both dominated by one giant CC (835 / 900 nodes); 122 / 140 exactly-pinned singletons; 70 / 71 free components for Phase 2 IPF. Pettack catchable only via per-day arithmetic (the plan's marginal-ratio heuristic alone is silent — her 6 SAA-family principals' combined 4,197 hr marginal "explains" her 4,007.5 hrs). 4 low-hours ratio-trips against zero-marginal principals — candidate for `min_hours_for_ratio_flag` suppression in Phase 2.
+- [`results/20260531_phase_2_ipf_fit.md`](results/20260531_phase_2_ipf_fit.md) — Phase 2 writeup. 27 new tests + 5 commits land IPF + materialize + CLI. Three findings revise the plan: (1) Pettack is in her own 6×6 CC with balanced marginals; no exclusion mechanism needed — labeling-only. (2) Bipartite support via seed=1 on edges / 0 elsewhere is the right primitive; ipfn preserves zeros at machine precision. (3) `zero_filed` cells preserved deliberately so consumers can spot filing gaps. Small-CC over-attribution pattern (8 H1 CCs with `agg_res` 4-42%) flagged as Phase 3+ refinement candidate.
+
+---
+
+## Session: 2026-05-31 — phase_2_ipf_design_and_execution
+
+**Convo:** [`convos/20260531_phase_2_ipf_design_and_execution.md`](convos/20260531_phase_2_ipf_design_and_execution.md)
+
+### Topics Explored
+- Empirical ipfn probe before tests: 3×3 toy, bipartite support via zero-seed, Pettack-style marginal exclusion via implied row marginal, scale on 312×523 / 1,441-edge giant CC
+- **Pettack-not-in-giant discovery:** she's in her own 6L × 6P × 11E CC where marginals balance natively (730.2 comm both sides; 3,454.5 vs 3,466.8 other). Plan/Phase 1 assumed exclusion from the giant CC; the actual data needs no marginal surgery at all
+- Pushback exchange with Dan on Pettack labeling: avoid "illegal" framing without WI §13.62 evidence; settle on descriptive `aggregation_flagged` label
+- Phase 2 test design: aggregate row residual < 5% per CC (not per-row); per-row distribution reported in writeup; small-CC over-attribution flagged but not asserted-against
+- 5-commit Phase 2 build: `min_hours_for_ratio_flag` param → IPF RED → IPF GREEN → materialize → CLI + stdout cleanup
+- Hand-spot-check 4 cells: exact round-trip, Pettack row total within 0.4%, zero_filed (0, 0), DoorDash col-sum EXACT match (83.90 == 83.9, 87.50 == 87.5)
+
+### Provisional Findings
+- IPF on per-CC basis converges sub-second total across all 70 free CCs; giant CC alone ~340 ms (comm) + ~80 ms (other)
+- Bipartite support pattern via zero seed is rigorous (max leak in non-support cells = 0.0 machine precision)
+- Giant CC aggregate row residual: 1.3% comm / 2.8% other; median per-row residual 0.78% comm / 2.33% other
+- Materialized output: 1,912 rows H1 / 2,055 rows H2; confidence dist (H1): 6.4% `exact` / 90.8% `ipf_fit` / 2.5% `zero_filed` / 0.3% `aggregation_flagged`
+- 8 small CCs (H1) have over-attribution pattern (principal-side > sum of authorized lobbyists' filed hours, with zero-marginal co-lobbyists in same CC); same mechanism as giant CC but more concentrated; currently invisible in `ipf_fit` label
+- `min_hours_for_ratio_flag=10` (live default in `fit_all`) suppresses the 4 H1/H2 ratio-flag false positives from Phase 1; only Pettack still flagged (via the per-semester absolute axis)
+
+### Results
+- [`results/20260531_phase_2_ipf_fit.md`](results/20260531_phase_2_ipf_fit.md)
+
+### Next Steps
+- Phase 3 (bill sponsorship scrape + chain composition) — pause immediately at plan step 32 to ask Dan Q1 (OpenStates vs direct WI Legislature scrape)
+- Phase 3 Q3 boundary will surface decisions on "Topics Not Yet Assigned" bucket emission and `zero_filed` / `aggregation_flagged` row propagation through the chain composition
+- Per-cell row-residual exposure (Phase 2-raised) is a deferred refinement candidate, not blocking
+- Pettack-legality WI §13.62 question is a compendium-side investigation that belongs on a different branch entirely
 
 ---
 
