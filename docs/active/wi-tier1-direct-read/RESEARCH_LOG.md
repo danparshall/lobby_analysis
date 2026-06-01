@@ -9,6 +9,12 @@ Plan: `plans/20260530_wi_2025_tier1_direct_read.md`
 
 ## Session history (newest first)
 
+### 2026-06-01 (later) — followups handoff written; MI substitutes for NC
+Doc: `HANDOFF_followups.md`
+- Two concrete pre-MI investigations captured: (1) Fix A int→Decimal regression on dict-shape value path, (2) `TimeThresholdCell.unit` literal-enum gap for v2.2 design ledger.
+- Decision: **next state is MI, not NC.** Carried into STATUS row + the followups doc.
+- Issue #31 (dispatch loop parallelization) noted as independent, can be done in parallel with 1/2 or with MI extraction.
+
 ### 2026-06-01 — Phase 2 (paid run) DONE on Air; Phase 3 written up
 Convo: `convos/20260601_wi_tier1_phase2_run.md`
 - Pre-flight: recreated `.env.local` from `.env.corporate` (lost in laptop data-loss); symlink chain wi-tier1 → compendium-source-extracts → main resolves. Tests 34/34, dry-run probe matches HANDOFF reference (6 chunks / 84 cells / 36 dispatches).
