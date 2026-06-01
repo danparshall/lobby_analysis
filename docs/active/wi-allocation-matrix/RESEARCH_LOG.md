@@ -23,6 +23,7 @@ With all three legs, the chain Suhan asked for — "company W spends X via lobby
 - [`convos/20260530_wi_allocation_matrix_kickoff.md`](convos/20260530_wi_allocation_matrix_kickoff.md) — kickoff: 6-relation classification, IPF framing, 3-leg architecture, plan-only decision.
 - [`convos/20260530_phase_0_and_1_execution.md`](convos/20260530_phase_0_and_1_execution.md) — Phase 0 (audit, no code) + Phase 1 (TDD: loaders + bipartite graph + CC decomposition + outlier flagging); landed Phase 1 with 32 new tests + zero regressions.
 - [`convos/20260531_phase_2_ipf_design_and_execution.md`](convos/20260531_phase_2_ipf_design_and_execution.md) — Phase 2 design + execution (TDD: IPF fit + materialize + CLI); 27 new tests + zero regressions. Empirical ipfn probe at giant-CC scale; Pettack-not-in-giant discovery; confidence-label schema (`exact` / `ipf_fit` / `zero_filed` / `aggregation_flagged`); small-CC over-attribution pattern flagged as Phase 3+ candidate.
+- [`convos/20260601_phase_3_kickoff_and_bulk_data_pivot.md`](convos/20260601_phase_3_kickoff_and_bulk_data_pivot.md) — Phase 3 (TDD: legislature loader + chain composer + materialize). Pivot from `pyopenstates` / OpenStates API to Plural Policy bulk CSV after probing surfaced rate-limit constraints (10/min + 500/day) and structural advantages (CSV has `person_id` on sponsorships, JSON only has names). 20 new tests + 5 commits + zero regressions; 115,229-row chain TSV materialized.
 
 ## Plans
 
@@ -33,6 +34,39 @@ With all three legs, the chain Suhan asked for — "company W spends X via lobby
 - [`results/20260530_phase_0_data_audit.md`](results/20260530_phase_0_data_audit.md) — Phase 0 audit. Four findings reshape the plan: lobbyist filings are semester (not quarterly) → IPF marginals align natively; percent-rounding is structural (only 41% of (principal, period) groups sum to 100%, max 100%) → Phase 3 attribution math needs a decision; active edges per semester ~1,912 (H1) / ~2,055 (H2), not the biennium-union 2,254; one giant 835-node CC dominates the H1 graph (only ~6.4% exactly-pinned cells).
 - [`results/20260530_phase_1_graph_structure.md`](results/20260530_phase_1_graph_structure.md) — Phase 1 graph + CC writeup. H1 / H2 both dominated by one giant CC (835 / 900 nodes); 122 / 140 exactly-pinned singletons; 70 / 71 free components for Phase 2 IPF. Pettack catchable only via per-day arithmetic (the plan's marginal-ratio heuristic alone is silent — her 6 SAA-family principals' combined 4,197 hr marginal "explains" her 4,007.5 hrs). 4 low-hours ratio-trips against zero-marginal principals — candidate for `min_hours_for_ratio_flag` suppression in Phase 2.
 - [`results/20260531_phase_2_ipf_fit.md`](results/20260531_phase_2_ipf_fit.md) — Phase 2 writeup. 27 new tests + 5 commits land IPF + materialize + CLI. Three findings revise the plan: (1) Pettack is in her own 6×6 CC with balanced marginals; no exclusion mechanism needed — labeling-only. (2) Bipartite support via seed=1 on edges / 0 elsewhere is the right primitive; ipfn preserves zeros at machine precision. (3) `zero_filed` cells preserved deliberately so consumers can spot filing gaps. Small-CC over-attribution pattern (8 H1 CCs with `agg_res` 4-42%) flagged as Phase 3+ refinement candidate.
+- [`results/20260601_phase_3_chain.md`](results/20260601_phase_3_chain.md) — Phase 3 chain composer writeup. 115,229 chain rows in `data/allocations/WI/WI_chain_2025.tsv`; 97.9% legislative effort-row coverage (plan §217 bar ≥80%); DoorDash worked example end-to-end (78 rows, arithmetic spot-checked). Bulk CSV pivot from `pyopenstates` rationalized; 4 Phase 3+ refinement candidates flagged (TNYB bucket inclusion, cosponsor parsing, per-cell row-residual exposure, per-bill-normalized top-sponsor metric). Pettack-not-in-chain finding: `aggregation_flagged` lives on lobbyist axis, legislative attribution lives on principal axis; the two are decoupled by design.
+
+---
+
+## Session: 2026-06-01 — phase_3_kickoff_and_bulk_data_pivot
+
+**Convo:** [`convos/20260601_phase_3_kickoff_and_bulk_data_pivot.md`](convos/20260601_phase_3_kickoff_and_bulk_data_pivot.md)
+
+### Topics Explored
+- Plan step 32 Q1 boundary: OpenStates vs direct scrape (Dan: c, OpenStates first w/ fallback)
+- OpenStates API probing: key required server-side, 10 req/min + 500 records/day rate limit, `pyopenstates` library swallows HTTP status + headers
+- Pivot to Plural Policy bulk CSV: 15 normalized tables + separate legislator-csv (`wi.csv`), `person_id` (`ocd-person/...`) on 99.8% of sponsorship rows
+- Structural finding: cosponsors are NOT in any structured data (JSON or CSV) — only in `bill_actions.description` text; primary-only scope locked for v1
+- Sponsor `lawmaker_id` resolution: bulk CSV's `person_id` field enables real-ID joins instead of the original name-string-as-ID Option A
+- 60 collective-entity sponsors (Joint Legislative Council × 26, Law Revision Committee × 34) flagged via `is_collective=True`
+- Committee assignment: structural via `bill_actions.organization_id` only identifies chamber, not specific committee → committee name parsed from `description` text regex
+- TDD: legislature loader (13 tests) + chain composer (7 tests); 20 total; 5 commits
+
+### Provisional Findings
+- Bulk CSV path is strictly better than the OpenStates API path for this workload — same data (Plural Policy = OpenStates), structured `person_id` join key, no rate limit, no auth, free
+- 100% bill-identifier coverage from bulk: all 1,000 unique legislative effort `Senate Bill X` / `Assembly Bill X` strings resolve to OpenStates short form `SB X` / `AB X`
+- 97.9% chain coverage of unique legislative effort rows (3,947 of 4,030); clears plan §217 ≥80% bar by wide margin
+- DoorDash worked example: 78 chain rows (3 lobbyists × 4+9 sponsors × 2 semesters); arithmetic verified
+- Pettack (lobbyist 11072): 0 chain rows. Her 6 SAA-family principals don't file legislative-bucket bill efforts. `aggregation_flagged` lives on lobbyist axis, legislative attribution on principal axis — decoupled by design.
+- Top 10 sponsors are all Assembly (lower chamber) — likely confound from per-bill primary sponsor counts on Assembly-originated bills, not a clean "most-lobbied" signal
+
+### Results
+- [`results/20260601_phase_3_chain.md`](results/20260601_phase_3_chain.md)
+
+### Next Steps
+- **Pause for Dan review** — Phase 3 v1 delivered; 4 Phase 3+ refinement candidates flagged (TNYB bucket, cosponsor parsing, per-cell row-residual, per-bill-normalized top-sponsor)
+- Phase 4 (CFIS scoping): write-only investigation, no scrape; characterize WI Ethics Commission schema, determine join keys
+- Phase 5 (PR): only when Dan says ready
 
 ---
 
