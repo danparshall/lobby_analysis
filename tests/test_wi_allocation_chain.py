@@ -158,3 +158,123 @@ def test_chain_only_emits_legislative_bucket_bills(chain_df: pd.DataFrame) -> No
     # Every bill_id is in the OpenStates short form (SB/AB/etc.)
     bill_id_prefixes = {b.split()[0] for b in dd["bill_id"].unique()}
     assert bill_id_prefixes <= {"SB", "AB", "SJR", "AJR", "SR", "AR"}
+
+
+# ---------------------------------------------------------------------------
+# Phase 3+ refinement — per-sponsor normalization
+#
+# The Phase 3 v1 chain replicates `modeled_hours` to every primary-sponsor row
+# of a bill, so `SUM(modeled_hours) GROUP BY sponsor` over-counts a lobbyist's
+# bill-allocated time once per primary sponsor. This becomes a systematic bias
+# toward Assembly sponsors (Assembly bills typically have many primary
+# co-authors, Senate bills fewer). The two new columns expose the uniform-share
+# normalization so consumers can aggregate honestly per sponsor while keeping
+# the original per-bill metric.
+# ---------------------------------------------------------------------------
+
+
+def test_chain_has_num_sponsors_on_bill_column(chain_df: pd.DataFrame) -> None:
+    """num_sponsors_on_bill column exists with positive integer values on every row."""
+    assert "num_sponsors_on_bill" in chain_df.columns
+    assert not chain_df["num_sponsors_on_bill"].isna().any()
+    assert (chain_df["num_sponsors_on_bill"] >= 1).all()
+    # Must be integer-typed (real count, not float share)
+    assert pd.api.types.is_integer_dtype(chain_df["num_sponsors_on_bill"])
+
+
+def test_chain_has_modeled_hours_per_sponsor_column(chain_df: pd.DataFrame) -> None:
+    """modeled_hours_per_sponsor column exists with non-negative float values."""
+    assert "modeled_hours_per_sponsor" in chain_df.columns
+    assert not chain_df["modeled_hours_per_sponsor"].isna().any()
+    assert (chain_df["modeled_hours_per_sponsor"] >= 0).all()
+
+
+def test_doordash_sb256_ab269_sponsor_normalization(chain_df: pd.DataFrame) -> None:
+    """DoorDash spot-check: SB 256 has 4 sponsors, AB 269 has 9; per-sponsor share is modeled_hours / N.
+
+    Kaericher × SB 256 × H1 baseline: modeled_hours = 9.873.
+      - num_sponsors_on_bill must be 4 → modeled_hours_per_sponsor ≈ 2.468.
+    Kaericher × AB 269 × H1: same modeled_hours = 9.873 (same allocation cell × same 21%).
+      - num_sponsors_on_bill must be 9 → modeled_hours_per_sponsor ≈ 1.097.
+    """
+    sb256_rows = chain_df[
+        (chain_df["principal_id"] == 11091)
+        & (chain_df["lobbyist_id"] == 11077)
+        & (chain_df["bill_id"] == "SB 256")
+        & (chain_df["semester"] == "2025-H1")
+    ]
+    assert len(sb256_rows) == 4  # one row per primary sponsor
+    for _, row in sb256_rows.iterrows():
+        assert int(row["num_sponsors_on_bill"]) == 4
+        assert row["modeled_hours_per_sponsor"] == pytest.approx(row["modeled_hours"] / 4, abs=1e-6)
+
+    ab269_rows = chain_df[
+        (chain_df["principal_id"] == 11091)
+        & (chain_df["lobbyist_id"] == 11077)
+        & (chain_df["bill_id"] == "AB 269")
+        & (chain_df["semester"] == "2025-H1")
+    ]
+    assert len(ab269_rows) == 9
+    for _, row in ab269_rows.iterrows():
+        assert int(row["num_sponsors_on_bill"]) == 9
+        assert row["modeled_hours_per_sponsor"] == pytest.approx(row["modeled_hours"] / 9, abs=1e-6)
+
+
+def test_per_sponsor_sum_conserves_modeled_hours(chain_df: pd.DataFrame) -> None:
+    """For any (semester, principal, lobbyist, item_id) group — i.e. one bill_efforts
+    source row's emit cycle — the per-sponsor shares sum to the original modeled_hours.
+
+    Group key uses `item_id` rather than `bill_id` because WI bill numbers collide
+    within a biennium (multiple distinct `item_id`s with different titles can share
+    canonical `bill_id` like "AB 1"). `item_id` is the unique source-row identifier;
+    bill_id is its OpenStates-normalized projection. See
+    `test_chain_item_id_disambiguates_bill_id_collisions` for the data shape.
+
+    This is the conservation invariant that makes the normalization defensible:
+    `SUM(modeled_hours_per_sponsor) GROUP BY sponsor` no longer inflates by
+    sponsor count, while still preserving total bill-allocated lobbyist effort.
+    """
+    grp_keys = ["semester", "principal_id", "lobbyist_id", "item_id"]
+    grouped = chain_df.groupby(grp_keys, as_index=False).agg(
+        per_sponsor_sum=("modeled_hours_per_sponsor", "sum"),
+        modeled_hours_first=("modeled_hours", "first"),
+        modeled_hours_nunique=("modeled_hours", "nunique"),
+    )
+    # Each emit cycle's rows share a single modeled_hours value (precondition)
+    assert (grouped["modeled_hours_nunique"] == 1).all()
+    # And the per-sponsor sum reconstructs it
+    assert ((grouped["per_sponsor_sum"] - grouped["modeled_hours_first"]).abs() < 1e-6).all()
+
+
+def test_chain_has_item_id_column(chain_df: pd.DataFrame) -> None:
+    """item_id column exists with positive integer values on every row.
+
+    item_id is the source `WI_principal_bill_efforts.tsv` row identifier — the
+    only stable handle for disambiguating WI's biennium-internal bill-number
+    collisions (multiple distinct bills sharing canonical `bill_id="AB 1"`).
+    """
+    assert "item_id" in chain_df.columns
+    assert not chain_df["item_id"].isna().any()
+    assert (chain_df["item_id"] >= 1).all()
+    assert pd.api.types.is_integer_dtype(chain_df["item_id"])
+
+
+def test_chain_item_id_disambiguates_bill_id_collisions(chain_df: pd.DataFrame) -> None:
+    """At least one (semester, principal_id, lobbyist_id, bill_id) group has
+    multiple distinct item_ids — proving the collision is real and item_id
+    resolves it.
+
+    Empirically: principal 11473 filed effort on multiple distinct "Assembly Bill 1"
+    items in 2025-H2 (e.g., item_ids 24507 voter-ID + 24521 education-assessment).
+    """
+    collisions = (
+        chain_df.groupby(["semester", "principal_id", "lobbyist_id", "bill_id"])
+        .agg(n_item_ids=("item_id", "nunique"))
+        .reset_index()
+    )
+    multi = collisions[collisions["n_item_ids"] > 1]
+    assert len(multi) > 0, (
+        "expected at least one bill_id collision case; if WI portal cleaned up "
+        "the duplicate-numbering issue this finding is stale and the test "
+        "can be retired"
+    )

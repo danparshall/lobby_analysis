@@ -75,12 +75,8 @@ def compose_chain(
     ].rename(columns={"name": "lobbyist_name"})
     efforts = pd.read_csv(release_dir / "WI_principal_bill_efforts.tsv", sep="\t")
 
-    alloc_h1 = pd.read_csv(
-        allocation_dir / "WI_lobbyist_principal_hours_h1_2025.tsv", sep="\t"
-    )
-    alloc_h2 = pd.read_csv(
-        allocation_dir / "WI_lobbyist_principal_hours_h2_2025.tsv", sep="\t"
-    )
+    alloc_h1 = pd.read_csv(allocation_dir / "WI_lobbyist_principal_hours_h1_2025.tsv", sep="\t")
+    alloc_h2 = pd.read_csv(allocation_dir / "WI_lobbyist_principal_hours_h2_2025.tsv", sep="\t")
     alloc_by_semester: dict[str, pd.DataFrame] = {
         "2025-H1": alloc_h1,
         "2025-H2": alloc_h2,
@@ -112,9 +108,11 @@ def compose_chain(
         if len(alloc_for_principal) == 0:
             continue
 
+        num_sponsors = len(bm.primary_sponsors)
         for alloc_row in alloc_for_principal.itertuples(index=False):
             total_hours = float(alloc_row.hours_comm) + float(alloc_row.hours_other)
             modeled = total_hours * pct
+            per_sponsor = modeled / num_sponsors
             for sp in bm.primary_sponsors:
                 sponsor_lawmaker_id = sp.person_id if sp.person_id else sp.name
                 rows.append(
@@ -122,9 +120,12 @@ def compose_chain(
                         "semester": semester,
                         "principal_id": eff.principal_id,
                         "lobbyist_id": alloc_row.lobbyist_id,
+                        "item_id": int(eff.item_id),
                         "bill_id": canonical,
                         "bill_title": bm.title,
                         "modeled_hours": modeled,
+                        "num_sponsors_on_bill": num_sponsors,
+                        "modeled_hours_per_sponsor": per_sponsor,
                         "principal_filed_percent": pct,
                         "sponsor_lawmaker_id": sponsor_lawmaker_id,
                         "sponsor_lawmaker_name": sp.name,
@@ -136,16 +137,22 @@ def compose_chain(
     chain = chain.merge(principals, on="principal_id", how="left")
     chain = chain.merge(lobbyists, on="lobbyist_id", how="left")
 
-    # Column order: keep schema readable + match plan literal order
+    # Column order: keep schema readable + match plan literal order.
+    # num_sponsors_on_bill + modeled_hours_per_sponsor sit next to modeled_hours
+    # so the relationship modeled_hours == per_sponsor * num_sponsors is visible
+    # to anyone scanning the schema.
     column_order = [
         "semester",
         "principal_id",
         "principal_name",
         "lobbyist_id",
         "lobbyist_name",
+        "item_id",
         "bill_id",
         "bill_title",
         "modeled_hours",
+        "num_sponsors_on_bill",
+        "modeled_hours_per_sponsor",
         "principal_filed_percent",
         "sponsor_lawmaker_id",
         "sponsor_lawmaker_name",
