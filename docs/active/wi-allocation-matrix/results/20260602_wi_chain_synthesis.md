@@ -166,14 +166,16 @@ This is the chain's cleanest example of a single-bill industry-coalition signal 
 
 ### 2. The "Assembly is more lobbied than Senate" finding was a metric artifact
 
-Pre-Phase-3.1, the top 10 most-lobbied sponsors were **10 of 10 Assembly**. Lower:upper chamber hours were 3.44× imbalanced. With per-sponsor normalization:
+Pre-Phase-3.1, the top 10 most-lobbied sponsors were **10 of 10 Assembly**. Lower:upper chamber hours were 3.44× imbalanced. With per-sponsor normalization (and using the ID-based chamber join — see numbers note below):
 
 | Metric | OLD | NEW |
 |---|---:|---:|
-| Assembly total (modeled hrs) | 426,388 | 25,892 |
-| Senate total (modeled hrs) | 123,790 | 21,610 |
-| Lower:upper ratio | **3.44×** | **1.20×** |
+| Assembly total (modeled hrs) | 426,388 | 26,543 |
+| Senate total (modeled hrs) | 123,790 | 21,657 |
+| Lower:upper ratio | **3.44×** | **1.23×** |
 | Top-10 sponsors that are Assembly | 10 | 2 |
+
+> *Numbers note:* the Phase 3.1 writeup originally reported 25,892 / 21,610 / 1.20× by joining surname → roster `family_name`, which mis-bucketed three disambiguated-prefix legislators (B. Jacobson, L. Johnson, J. Jacobson — together 698 hrs) into an inflated "unknown" bucket. The ID-based join above is correct. See [`20260602_unknown_chamber_audit.md`](20260602_unknown_chamber_audit.md). Substantive finding is unchanged.
 
 Lobbying effort is roughly balanced between the chambers. The original imbalance was the proportional-attribution artifact described in Stage 3 above (Assembly bills carry more co-authors → effort gets multiplied by more co-author count → Assembly sponsors look more lobbied).
 
@@ -223,7 +225,7 @@ Multiple distinct bills (different `item_id`, different `item_description`, diff
 - **"Did lobbyist L meet with lawmaker A?"** — structurally absent in WI; no contact-log disclosure mandate. CFIS provides a partial proxy via lobbyist personal donations.
 - **"How much lobbying effort was directed at bills *cosponsored* (but not primarily sponsored) by lawmaker X?"** — primaries-only currently. The Plural Policy bulk dump does not contain cosponsors in any structured field; cosponsors live in `bill_actions.description` text and would require regex parsing. Refinement #2.
 - **"How much effort did principals direct at issue areas without specific bill numbers?"** — currently skipped. WI principal filings have three additional effort buckets ("Topics Not Yet Assigned A Bill Or Rule Number" — 2,327 rows; "Budget Bill Subjects" — 856 rows; "Administrative Rulemaking Proceedings" — 127 rows) that the chain v1 does not include because they don't have a bill ID to join. Refinement #3.
-- **"What's the chamber rollup *complete* (no unknown bucket)?"** — 1,288 hr (2.6% of 48,789) currently lands in an `unknown` chamber bucket where `sponsor_lawmaker_name` doesn't match any row in the Plural Policy legislator CSV. The leading hypothesis is the 60 collective-entity sponsors (Joint Legislative Council × 26, Law Revision Committee × 34) plus a few name-normalization gaps. ~30 minutes of diagnostic to resolve.
+- **"What's the chamber rollup *complete* (no unknown bucket)?"** — *resolved 2026-06-02.* The corrected (ID-based) unknown bucket is 590 hr (1.2% of 48,789), and it is entirely **Joint Legislative Council** (170 rows, 22 bills) — a collective entity for which no chamber assignment is meaningful by design. Coverage of the legislator roster is otherwise complete (zero individual-legislator IDs unresolved). Treat JLC as its own "collective entities" bucket if a fully-attributed chamber view is needed. Full audit: [`20260602_unknown_chamber_audit.md`](20260602_unknown_chamber_audit.md).
 
 ### What modeling assumptions consumers are trusting
 
