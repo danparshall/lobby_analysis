@@ -1,9 +1,12 @@
+<!-- Generated during: convos/20260602_synthesis_audits_and_merge_decision.md -->
+
 # WI 2025-2026 lobbying chain — synthesis
 
 **Date:** 2026-06-02
 **Branch:** `wi-allocation-matrix`
+**Originating convo:** [`convos/20260602_synthesis_audits_and_merge_decision.md`](../convos/20260602_synthesis_audits_and_merge_decision.md)
 **Audience:** project lead (Suhan) and anyone reviewing what the WI chain currently does and doesn't show.
-**Materialized output:** `data/allocations/WI/WI_chain_2025.tsv` (115,229 rows, 15 columns, ~38 MB)
+**Materialized output:** `data/allocations/WI/WI_chain_2025.tsv` (115,229 rows, 15 columns, ~38 MB) — also published at `releases/wi/chain/WI_chain_2025.tsv` for cross-fellow consumption.
 
 This document is a standalone synthesis of the `wi-allocation-matrix` branch through Phase 3.1 (2026-05-30 → 2026-06-02). It pulls together what the five phase-specific writeups produce piecewise and is written to be read on its own — no prior branch context assumed. Phase docs referenced inline are linked from the [RESEARCH_LOG](../RESEARCH_LOG.md) if you want to step deeper into any one finding.
 
