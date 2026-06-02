@@ -24,6 +24,7 @@ With all three legs, the chain Suhan asked for — "company W spends X via lobby
 - [`convos/20260530_phase_0_and_1_execution.md`](convos/20260530_phase_0_and_1_execution.md) — Phase 0 (audit, no code) + Phase 1 (TDD: loaders + bipartite graph + CC decomposition + outlier flagging); landed Phase 1 with 32 new tests + zero regressions.
 - [`convos/20260531_phase_2_ipf_design_and_execution.md`](convos/20260531_phase_2_ipf_design_and_execution.md) — Phase 2 design + execution (TDD: IPF fit + materialize + CLI); 27 new tests + zero regressions. Empirical ipfn probe at giant-CC scale; Pettack-not-in-giant discovery; confidence-label schema (`exact` / `ipf_fit` / `zero_filed` / `aggregation_flagged`); small-CC over-attribution pattern flagged as Phase 3+ candidate.
 - [`convos/20260601_phase_3_kickoff_and_bulk_data_pivot.md`](convos/20260601_phase_3_kickoff_and_bulk_data_pivot.md) — Phase 3 (TDD: legislature loader + chain composer + materialize). Pivot from `pyopenstates` / OpenStates API to Plural Policy bulk CSV after probing surfaced rate-limit constraints (10/min + 500/day) and structural advantages (CSV has `person_id` on sponsorships, JSON only has names). 20 new tests + 5 commits + zero regressions; 115,229-row chain TSV materialized.
+- [`convos/20260602_phase_3_per_sponsor_normalization.md`](convos/20260602_phase_3_per_sponsor_normalization.md) — Phase 3.1 refinement (TDD: 6 new tests). Two new columns (`num_sponsors_on_bill`, `modeled_hours_per_sponsor`) implement uniform-share normalization so `SUM GROUP BY sponsor` stops inflating by sponsor count. Mid-session: WI bill-id collisions discovered (e.g. principal 11473 filed effort on multiple distinct "AB 1"s); `item_id` added to chain TSV to disambiguate. Headline finding: chamber-bias artifact in top-sponsor table reverses (10/10 Assembly → 8/10 Senate); lower:upper ratio 3.4× → 1.2×.
 
 ## Plans
 
@@ -35,6 +36,38 @@ With all three legs, the chain Suhan asked for — "company W spends X via lobby
 - [`results/20260530_phase_1_graph_structure.md`](results/20260530_phase_1_graph_structure.md) — Phase 1 graph + CC writeup. H1 / H2 both dominated by one giant CC (835 / 900 nodes); 122 / 140 exactly-pinned singletons; 70 / 71 free components for Phase 2 IPF. Pettack catchable only via per-day arithmetic (the plan's marginal-ratio heuristic alone is silent — her 6 SAA-family principals' combined 4,197 hr marginal "explains" her 4,007.5 hrs). 4 low-hours ratio-trips against zero-marginal principals — candidate for `min_hours_for_ratio_flag` suppression in Phase 2.
 - [`results/20260531_phase_2_ipf_fit.md`](results/20260531_phase_2_ipf_fit.md) — Phase 2 writeup. 27 new tests + 5 commits land IPF + materialize + CLI. Three findings revise the plan: (1) Pettack is in her own 6×6 CC with balanced marginals; no exclusion mechanism needed — labeling-only. (2) Bipartite support via seed=1 on edges / 0 elsewhere is the right primitive; ipfn preserves zeros at machine precision. (3) `zero_filed` cells preserved deliberately so consumers can spot filing gaps. Small-CC over-attribution pattern (8 H1 CCs with `agg_res` 4-42%) flagged as Phase 3+ refinement candidate.
 - [`results/20260601_phase_3_chain.md`](results/20260601_phase_3_chain.md) — Phase 3 chain composer writeup. 115,229 chain rows in `data/allocations/WI/WI_chain_2025.tsv`; 97.9% legislative effort-row coverage (plan §217 bar ≥80%); DoorDash worked example end-to-end (78 rows, arithmetic spot-checked). Bulk CSV pivot from `pyopenstates` rationalized; 4 Phase 3+ refinement candidates flagged (TNYB bucket inclusion, cosponsor parsing, per-cell row-residual exposure, per-bill-normalized top-sponsor metric). Pettack-not-in-chain finding: `aggregation_flagged` lives on lobbyist axis, legislative attribution lives on principal axis; the two are decoupled by design.
+- [`results/20260602_phase_3_1_per_sponsor_normalization.md`](results/20260602_phase_3_1_per_sponsor_normalization.md) — Phase 3.1 writeup. Adds `num_sponsors_on_bill` + `modeled_hours_per_sponsor` + `item_id` to the chain TSV (additive, non-breaking). Old top-10 (10/10 Assembly) → new top-20 (8/10 Senate); LeMahieu at #8 on only 4 bills surfaces as structurally interesting outlier. Chamber lower:upper ratio drops 3.4× → 1.2×. Bill-id-collision finding: 3 cases of distinct WI bills sharing canonical `bill_id` (principal 11473's "AB 1" voter-ID vs education-assessment, etc.); `item_id` resolves. 1,288 hr (2.6%) of "unknown" chamber bucket flagged for future name-match audit.
+
+---
+
+## Session: 2026-06-02 — phase_3_per_sponsor_normalization
+
+**Convo:** [`convos/20260602_phase_3_per_sponsor_normalization.md`](convos/20260602_phase_3_per_sponsor_normalization.md)
+
+### Topics Explored
+- Phase 3 v1 chain inspection (DoorDash slice, arithmetic verification, edge-confidence ladder)
+- 4 initial RED tests for `num_sponsors_on_bill` + `modeled_hours_per_sponsor` + conservation invariant
+- Discovery mid-implementation: 3 of 10,290 conservation groups failed → WI bill-id collisions (multiple distinct `item_id`s share canonical `bill_id` like "AB 1")
+- Decision: add `item_id` to chain TSV (Dan's pick); 2 additional RED tests; conservation test rewritten to group by `item_id` (the unique source-row identifier)
+- Recomputed top-sponsor + chamber rollup tables old-metric-vs-new-metric
+
+### Provisional Findings
+- Per-sponsor normalization conserves total bill-allocated effort: 48,789 hr (vs 561k inflated by sponsor count)
+- Chamber bias in top-sponsor table reverses: old 10/10 Assembly → new 8/10 Senate; lower:upper ratio 3.4× → 1.2×
+- Two distinct lobbying-target profiles emerge: concentrated Senate primaries (65-123 bills, high per-sponsor weight) vs broad-named Assembly co-authors (198-234 bills, low per-sponsor weight)
+- LeMahieu (Senate Majority Leader) at #8 on only 4 bills — high concentration per bill, structurally interesting signal that was buried in the old metric
+- WI bill-id collisions are a real biennium-internal phenomenon (3 cases in this snapshot, all under principal 11473); `item_id` in the chain TSV is the disambiguator going forward
+- 1,288 hr (2.6%) of `modeled_hours_per_sponsor` lands in an "unknown" chamber bucket — likely 60 collective entities (Joint Legislative Council / Law Revision Committee) plus possible name-normalization gaps
+
+### Results
+- [`results/20260602_phase_3_1_per_sponsor_normalization.md`](results/20260602_phase_3_1_per_sponsor_normalization.md)
+
+### Next Steps
+- Pause for Dan review of the new top-sponsor profile
+- Phase 4 (CFIS scoping) — write-only investigation; per-sponsor honesty sharpens the join target
+- Cosponsor parsing (refinement #2) — next natural in-chain refinement
+- "Unknown" chamber name-match audit (~30 min diagnostic)
+- Position-weighted sponsor attribution as a possible v1.2 if uniform-share turns out to be too crude
 
 ---
 
