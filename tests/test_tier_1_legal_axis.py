@@ -328,6 +328,54 @@ def test_coerce_scalar_value_leaves_bool_uncoerced():
     assert tier0._coerce_scalar_value(DecimalCell, True) is True
 
 
+# --- Fix A (dict-shape extension): inner-Decimal-field coercion -----------
+# Regression evidence: WI 2025 §13.62(11) emitted
+#   {"magnitude": 5, "unit": "..."}
+# all 6/6 runs and failed instantiation with "Input should be an instance of
+# Decimal" on the `magnitude` field. Fix A originally covered the outer scalar
+# `DecimalCell.value` path; the dict-shape branch in `_instantiate_cell`
+# (TimeThresholdCell / TimeSpentCell / EnumSetWithAmountsCell / CountWithFTECell)
+# unpacks `raw_value` directly into the constructor and never runs any per-field
+# coercion, so a bare int `magnitude` reaches Pydantic strict mode unchanged and
+# fails. Plan: docs/active/wi-tier1-direct-read/plans/
+#   20260601_post_phase3_followups.md, Item 1.
+#
+# Tests use unit="days_per_year" (a valid TimeUnitLiteral) to isolate the
+# magnitude coercion from item 2's enum-gap on "days_per_reporting_period".
+
+
+def test_coerce_int_magnitude_to_decimal_for_timethresholdcell():
+    """A bare JSON int magnitude (5) inside a TimeThresholdCell dict-shape
+    value coerces to Decimal — same Fix A semantics that already cover scalar
+    DecimalCell, now extended to inner Decimal fields on dict-shape cells."""
+    spec = _spec("lobbyist_registration_threshold_time_percent", "legal")
+    assert spec.expected_cell_class.__name__ == "TimeThresholdCell"
+    args = _record_cell_args({"magnitude": 5, "unit": "days_per_year"})
+    result = tier0._instantiate_cell(spec, args)
+    # model_dump(mode="json") serializes Decimal to a string.
+    assert result["cell"]["magnitude"] == "5"
+    assert result["cell"]["unit"] == "days_per_year"
+
+
+def test_coerce_float_magnitude_to_decimal_for_timethresholdcell():
+    """A bare JSON float magnitude (5.5) coerces to an exact Decimal (via str(),
+    so no binary-float artifact: Decimal(0.1) is wrong, Decimal('0.1') is right)
+    on a TimeThresholdCell."""
+    spec = _spec("lobbyist_registration_threshold_time_percent", "legal")
+    args = _record_cell_args({"magnitude": 5.5, "unit": "days_per_year"})
+    result = tier0._instantiate_cell(spec, args)
+    assert result["cell"]["magnitude"] == "5.5"
+
+
+def test_bool_magnitude_not_coerced_to_decimal_for_timethresholdcell():
+    """bool is an int subclass but never a valid magnitude — strict-mode must
+    reject it loudly (parallel to the scalar bool-uncoerced test)."""
+    spec = _spec("lobbyist_registration_threshold_time_percent", "legal")
+    args = _record_cell_args({"magnitude": True, "unit": "days_per_year"})
+    with pytest.raises((ValueError, TypeError)):
+        tier0._instantiate_cell(spec, args)
+
+
 # --- Fix B: dict-shape value prompt hint ----------------------------------
 
 

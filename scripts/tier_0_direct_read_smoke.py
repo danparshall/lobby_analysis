@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import decimal
 import json
+import typing
 from dataclasses import dataclass
 from typing import Any, Literal
 
@@ -484,6 +485,43 @@ def _coerce_scalar_value(cls: type, raw_value: Any) -> Any:
     return raw_value
 
 
+def _coerce_dict_shape_inner_decimals(
+    cls: type, kwargs: dict[str, Any]
+) -> dict[str, Any]:
+    """For each ``Decimal``-typed field on ``cls`` whose ``kwargs`` value is a
+    bare ``int`` or ``float``, coerce to ``Decimal`` in place.
+
+    Parallel to ``_coerce_scalar_value``'s ``DecimalCell`` branch, but for
+    dict-shape cells (``TimeThresholdCell``, ``TimeSpentCell``, …) whose inner
+    ``Decimal`` fields would otherwise reach Pydantic strict mode unchanged.
+    Regression evidence: WI 2025 §13.62(11) emitted ``{"magnitude": 5, …}`` and
+    failed instantiation on the ``magnitude`` field; the original Fix A only
+    covered the scalar ``DecimalCell.value`` path.
+
+    A ``bool`` is never coerced (it is an ``int`` subclass but never a valid
+    magnitude); strict-mode validation rejects it loudly downstream. A ``str``
+    is left alone too — if a model emits a magnitude as a quoted JSON string,
+    that is a separate failure mode to surface, not silently coerce here.
+    """
+    for field_name, field_info in cls.model_fields.items():
+        if field_name not in kwargs:
+            continue
+        raw = kwargs[field_name]
+        if raw is None or isinstance(raw, (str, bool)):
+            continue
+        if not isinstance(raw, (int, float)):
+            continue
+        ann = field_info.annotation
+        ann_types = (ann, *typing.get_args(ann))
+        if decimal.Decimal not in ann_types:
+            continue
+        if isinstance(raw, int):
+            kwargs[field_name] = decimal.Decimal(raw)
+        else:
+            kwargs[field_name] = decimal.Decimal(str(raw))
+    return kwargs
+
+
 def _instantiate_cell(spec: Any, arguments: dict[str, Any]) -> dict[str, Any]:
     """Build a typed CompendiumCell + wrap with cited_section + justification.
 
@@ -558,6 +596,10 @@ def _instantiate_cell(spec: Any, arguments: dict[str, Any]) -> dict[str, Any]:
         kwargs = dict(raw_value)
         if cls is EnumSetWithAmountsCell and isinstance(kwargs.get("value"), list):
             kwargs["value"] = frozenset(kwargs["value"])
+        # Coerce bare int/float magnitudes (or any Decimal-typed inner field)
+        # to Decimal — strict-mode Pydantic rejects int/float for a Decimal
+        # field. Parallel to Fix A's scalar DecimalCell branch.
+        kwargs = _coerce_dict_shape_inner_decimals(cls, kwargs)
         cell = cls(**kwargs, **common)
     else:
         raise TypeError(f"Unsupported cell class: {cls.__name__}")

@@ -13,6 +13,8 @@ This file lists the concrete investigations to run **before** extending the Tier
 
 ## Item 1 — Fix A regression investigation (`magnitude: int → Decimal` on dict-shape value path)
 
+> **Status: DONE 2026-06-01** ([`../convos/20260601_phase3_followups_execution.md`](../convos/20260601_phase3_followups_execution.md)). Hypothesis (b) confirmed; new `_coerce_dict_shape_inner_decimals` helper added to `scripts/tier_0_direct_read_smoke.py`; 3 RED→GREEN tests in `tests/test_tier_1_legal_axis.py`; full suite **1553 pass / 3 skip / 3 xfail**.
+
 ### What we saw
 
 All 6 runs (Claude × 3, GPT × 3) on the `registration_thresholds` chunk failed instantiation of `lobbyist_registration_threshold_time_percent` with **identical** error class:
@@ -70,6 +72,8 @@ Zero API spend. Pure code investigation against existing JSON artifacts.
 ---
 
 ## Item 2 — `TimeThresholdCell.unit` literal-enum gap (v2.2 design input)
+
+> **Status: DONE 2026-06-01** ([`../convos/20260601_phase3_followups_execution.md`](../convos/20260601_phase3_followups_execution.md), bonus capture). v2.2 design ledger opened at [`../results/v2_2_schema_inputs.md`](../results/v2_2_schema_inputs.md); first entry is this enum gap. The plan's "open or create the v2.2 design ledger" step landed at the suggested path.
 
 ### What we saw
 
@@ -176,6 +180,8 @@ The legal-axis run is ~$2-4 per state. The portal-comparison analysis is ~30 min
 
 ## Item 5 — Investigate principal-filings aggregation (portal design vs scrape loss?)
 
+> **Status: DONE 2026-06-01** ([`../convos/20260601_phase3_followups_execution.md`](../convos/20260601_phase3_followups_execution.md)). Verdict: neither (A) nor (B) cleanly — it's a deliberate Tier-2/Tier-3 scope decision tracked at [GH #28](https://github.com/danparshall/lobby_analysis/issues/28). Writeup: [`../results/20260601_principal_filings_aggregation_source.md`](../results/20260601_principal_filings_aggregation_source.md). Open: nobody has yet inspected a Tier-3 SLAE page; 1-page reconnaissance recommended as Phase-1 of #28.
+
 **Source:** The 4 transparency gaps surfaced in this session's principal-side mapping.
 
 All 4 WI principal-side gaps reduce to: **statute requires itemized reporting (compensation paid to each lobbyist, gifts/entertainment as a separate category, indirect costs, itemized format generally), but `WI_principal_filings.tsv` exposes only a single `total_expenditure` scalar.** Two hypotheses:
@@ -198,6 +204,8 @@ Pure code reading + maybe a small re-scrape probe; no significant API spend.
 ---
 
 ## Item 6 — σ_noise WI-vs-OH composition study
+
+> **Status: DONE 2026-06-01** ([`../convos/20260601_phase3_followups_execution.md`](../convos/20260601_phase3_followups_execution.md)). Writeup + reproducibility script: [`../results/20260601_sigma_noise_composition_oh_wi.md`](../results/20260601_sigma_noise_composition_oh_wi.md) + [`../results/sigma_noise_composition/`](../results/sigma_noise_composition/). Surfaced that the Phase 2 convo's cross-state Δ uses a stale OH baseline; the within-state cross-model finding is the load-bearing one (Claude val_un-dominated, GPT scor_un-dominated on WI). Phase 2 convo left as-is per Dan's call.
 
 **Source:** Phase 3 writeup noted GPT's `n_scoreability_unstable` jump 2 → 7 between OH and WI.
 

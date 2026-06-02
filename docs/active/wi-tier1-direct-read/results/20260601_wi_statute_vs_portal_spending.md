@@ -114,6 +114,8 @@ These are the cells where both models (mostly) agree on what WI statute requires
 
 All four gaps reduce to one underlying transparency problem: **WI principal expense statements *do* itemize by category in the underlying filings, but the public-facing TSV exposes only top-line aggregates.** Whether this is a portal-publication choice or a scrape-loss is the next question (the `wi-disclosure-explore` archive should know).
 
+> **Update 2026-06-01 (later, this branch):** answered in [`20260601_principal_filings_aggregation_source.md`](20260601_principal_filings_aggregation_source.md). Neither cleanly — it's a Tier-2/Tier-3 scope decision. The current scrape only fetches per-principal summary pages (which expose 3-row aggregates and nothing more); per-principal **SLAE itemization** pages exist on the WI portal but were deliberately deferred from Tier-2 in `wi-disclosure-explore`, with the work tracked at [GH #28](https://github.com/danparshall/lobby_analysis/issues/28). The 4 gaps will likely close once #28 lands — but no one has inspected a tier-3 SLAE page yet, so confirmation requires a 1-page reconnaissance fetch.
+
 ---
 
 ## Lobbyist-side "spending" report — what the portal *does* expose
