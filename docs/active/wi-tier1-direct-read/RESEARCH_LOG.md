@@ -15,10 +15,10 @@ Doc: `results/20260601_wi_statute_vs_portal_spending.md`
 - **Newly visible metric:** inter-model alignment. 65 of 84 cells are jointly within-model stable; **18 (27.7%) deterministically disagree across models at high confidence**. Concentrated in lobbyist_spending_report: Claude reads "info flows through lobbyist" → TRUE; GPT reads "lobbyist files" → FALSE. **Portal data settles the disagreement: GPT wins 13/13 on these cells.** Per-model σ_noise was correct as designed but doesn't capture this.
 - **Initial framing error caught and corrected:** earlier draft said σ_noise "was masking" inter-model disagreement. Wrong — σ_noise was always per-model. Real claim: there's a *second* metric (inter-model alignment) that has no current report.
 - **Principal-side mapping** identified 4 concrete transparency gaps (compensation paid to lobbyists, gifts/entertainment, indirect costs, itemized format) — all reduce to "statute requires itemization, portal exposes single `total_expenditure` aggregate." Open question: portal-publication choice or scrape-loss in `wi-disclosure-explore`?
-- **Open candidate from Dan (2026-06-01, not yet decided):** the 27.7% inter-model disagreement *might* warrant Citations API for adjudication once Dan looks more closely at the 18 disagreeing cells. To evaluate, not committed. Captured as item 3 in `HANDOFF_followups.md`. Also added: item 4 (bake portal-cross-validation into MI), item 5 (investigate principal-filings aggregation source).
+- **Open candidate from Dan (2026-06-01, not yet decided):** the 27.7% inter-model disagreement *might* warrant Citations API for adjudication once Dan looks more closely at the 18 disagreeing cells. To evaluate, not committed. Captured as item 3 in `plans/20260601_post_phase3_followups.md`. Also added: item 4 (bake portal-cross-validation into MI), item 5 (investigate principal-filings aggregation source).
 
 ### 2026-06-01 (later) — followups handoff written; MI substitutes for NC
-Doc: `HANDOFF_followups.md`
+Doc: `plans/20260601_post_phase3_followups.md` (originally written as `HANDOFF_followups.md`; promoted to `plans/` per protocol later in the same session)
 - Two concrete pre-MI investigations captured: (1) Fix A int→Decimal regression on dict-shape value path, (2) `TimeThresholdCell.unit` literal-enum gap for v2.2 design ledger.
 - Decision: **next state is MI, not NC.** Carried into STATUS row + the followups doc.
 - Issue #31 (dispatch loop parallelization) noted as independent, can be done in parallel with 1/2 or with MI extraction.

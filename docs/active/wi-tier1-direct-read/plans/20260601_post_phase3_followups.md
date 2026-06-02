@@ -1,10 +1,13 @@
-# HANDOFF — wi-tier1-direct-read followups (post-Phase 3)
+# Plan — wi-tier1-direct-read post-Phase-3 followups
 
-**For:** the next agent/session, picking up after the 2026-06-01 Phase 2 + 3 close.
-**Predecessor:** `HANDOFF.md` (the Phase 2 runbook — phase done, kept as historical record).
-**Convo that produced these followups:** `convos/20260601_wi_tier1_phase2_run.md` (especially the Phase 3 + Next sections).
+**Created:** 2026-06-01
+**For:** the next agent/session, picking up after the 2026-06-01 Phase 2 + 3 + statute-vs-portal cross-validation close.
+**Predecessor doc on this branch:** [`../HANDOFF.md`](../HANDOFF.md) — Phase 2 runbook, phase done, kept as historical record.
+**Originating convo:** [`../convos/20260601_wi_tier1_phase2_run.md`](../convos/20260601_wi_tier1_phase2_run.md) (Phase 3 + Next sections, plus the later cross-validation findings).
+**Companion results doc:** [`../results/20260601_wi_statute_vs_portal_spending.md`](../results/20260601_wi_statute_vs_portal_spending.md) — surfaces items 3 + 4 + 5 specifically.
+**Naming-convention note:** originally written as `HANDOFF_followups.md` at branch-root, promoted to a date-stamped plan doc per the doc-system protocol (`plans/` files are date-stamped + must point back to their originating convo). Promotion happened in the same 2026-06-01 session that produced this doc; no content change beyond this header. The original `HANDOFF.md` (Phase 2 runbook) was deliberately left in place under its non-date-stamped name as a historical artifact, following the precedent set when *it* was written.
 
-This file lists the two concrete investigations to run **before** extending the Tier-1 harness to a third state. (NC is no longer the planned third state — see "Decision: MI substitutes for NC" below.) Issue [#31](https://github.com/danparshall/lobby_analysis/issues/31) — dispatch loop parallelization — is also pending but is independent: it can be done in parallel with these followups or saved for the next-state run.
+This file lists the concrete investigations to run **before** extending the Tier-1 harness to MI 2025 (the next-state target — was NC, swapped per Dan 2026-06-01). Issue [#31](https://github.com/danparshall/lobby_analysis/issues/31) — dispatch loop parallelization — is also pending but is independent: it can be done in parallel with these followups or saved for the next-state run.
 
 ---
 

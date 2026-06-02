@@ -110,7 +110,7 @@ Cost is stamped per-call (`cost_usd_estimate` key in each result JSON) AND aggre
 
 ## Next
 
-All items below have been folded into `HANDOFF_followups.md`. Summary:
+All items below have been folded into [`plans/20260601_post_phase3_followups.md`](../plans/20260601_post_phase3_followups.md) (originally written as `HANDOFF_followups.md` then promoted to `plans/` per doc-protocol). Summary:
 
 - **(Item 1)** Investigate Fix A regression (the `magnitude: int → Decimal` failure on the dict-shape value path; 6/6 runs fail on `lobbyist_registration_threshold_time_percent`).
 - **(Item 2)** Capture `TimeThresholdCell.unit` enum gap as v2.2 design input (`days_per_reporting_period` and related missing).

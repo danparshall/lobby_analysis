@@ -1,3 +1,5 @@
+<!-- Generated during: convos/20260601_wi_tier1_phase2_run.md -->
+
 # WI 2025 — Statute-required vs portal-exposed (spending reports)
 
 **Session:** 2026-06-01
@@ -55,7 +57,7 @@ The practical data is **independent ground truth** on which model was right abou
 
 ### Implications
 
-1. **A second, un-reported metric: inter-model alignment.** σ_noise as designed is per-model and behaves correctly. What's missing is the inter-model number. On WI: **65 of 84 cells are jointly within-model stable (both models internally agree on the 3 runs); of those 65, only 47 (72.3%) agree across models. 18 cells (27.7%) have a deterministic Claude-says-X-vs-GPT-says-Y framing disagreement.** That 27.7% is much larger than either model's individual ~14-15% run-to-run variance, and it's *signal* (deterministic), not *noise*. The two numbers should be reported alongside each other in v2.2. **Open candidate direction (Dan flagged 2026-06-01, not yet decided):** if the disagreement holds up on closer look, routing the next pipeline iteration through the Anthropic Citations API would let us recover each model's *cited statute text* for adjudication. To evaluate after a more detailed read of the 18 disagreeing cells. Captured for evaluation in `HANDOFF_followups.md` item 3.
+1. **A second, un-reported metric: inter-model alignment.** σ_noise as designed is per-model and behaves correctly. What's missing is the inter-model number. On WI: **65 of 84 cells are jointly within-model stable (both models internally agree on the 3 runs); of those 65, only 47 (72.3%) agree across models. 18 cells (27.7%) have a deterministic Claude-says-X-vs-GPT-says-Y framing disagreement.** That 27.7% is much larger than either model's individual ~14-15% run-to-run variance, and it's *signal* (deterministic), not *noise*. The two numbers should be reported alongside each other in v2.2. **Open candidate direction (Dan flagged 2026-06-01, not yet decided):** if the disagreement holds up on closer look, routing the next pipeline iteration through the Anthropic Citations API would let us recover each model's *cited statute text* for adjudication. To evaluate after a more detailed read of the 18 disagreeing cells. Captured for evaluation in `../plans/20260601_post_phase3_followups.md` item 3.
 
 2. **Compendium row taxonomy gap.** The `lobbyist_spending_report_*` rows assume a structure where the lobbyist files a spending report. WI doesn't have that — the lobbyist files an activity report, and the spending data is the principal's responsibility. Either: (a) the compendium needs a `lobbyist_activity_report_*` row family that distinguishes from spending, or (b) the existing row family needs a precondition cell (`lobbyist_files_spending_report_at_all`) and downstream cells become conditional on it.
 
