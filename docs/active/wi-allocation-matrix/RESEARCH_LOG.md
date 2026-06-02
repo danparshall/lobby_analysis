@@ -25,6 +25,7 @@ With all three legs, the chain Suhan asked for — "company W spends X via lobby
 - [`convos/20260531_phase_2_ipf_design_and_execution.md`](convos/20260531_phase_2_ipf_design_and_execution.md) — Phase 2 design + execution (TDD: IPF fit + materialize + CLI); 27 new tests + zero regressions. Empirical ipfn probe at giant-CC scale; Pettack-not-in-giant discovery; confidence-label schema (`exact` / `ipf_fit` / `zero_filed` / `aggregation_flagged`); small-CC over-attribution pattern flagged as Phase 3+ candidate.
 - [`convos/20260601_phase_3_kickoff_and_bulk_data_pivot.md`](convos/20260601_phase_3_kickoff_and_bulk_data_pivot.md) — Phase 3 (TDD: legislature loader + chain composer + materialize). Pivot from `pyopenstates` / OpenStates API to Plural Policy bulk CSV after probing surfaced rate-limit constraints (10/min + 500/day) and structural advantages (CSV has `person_id` on sponsorships, JSON only has names). 20 new tests + 5 commits + zero regressions; 115,229-row chain TSV materialized.
 - [`convos/20260602_phase_3_per_sponsor_normalization.md`](convos/20260602_phase_3_per_sponsor_normalization.md) — Phase 3.1 refinement (TDD: 6 new tests). Two new columns (`num_sponsors_on_bill`, `modeled_hours_per_sponsor`) implement uniform-share normalization so `SUM GROUP BY sponsor` stops inflating by sponsor count. Mid-session: WI bill-id collisions discovered (e.g. principal 11473 filed effort on multiple distinct "AB 1"s); `item_id` added to chain TSV to disambiguate. Headline finding: chamber-bias artifact in top-sponsor table reverses (10/10 Assembly → 8/10 Senate); lower:upper ratio 3.4× → 1.2×.
+- [`convos/20260602_synthesis_audits_and_merge_decision.md`](convos/20260602_synthesis_audits_and_merge_decision.md) — Afternoon discussion + 3 docs + merge decision. Drafted Suhan-facing standalone synthesis. LeMahieu bill inspection forced retraction of leadership-vehicle hypothesis (#8 ranking is 98.8% one bill: SB 28 electric-transmission ROFR, sole primary, 29-principal electric-utility coalition). Unknown-chamber audit corrected Phase 3.1's name-based join: true unknown bucket is 590 hr (all Joint Legislative Council), not 1,288 hr. Three-branch merge discussion landed on option B (slice merge wi-allocation-matrix now; CFIS scoping + cosponsor parsing → new branches). Chain TSV published at `releases/wi/chain/`.
 
 ## Plans
 
@@ -64,16 +65,49 @@ With all three legs, the chain Suhan asked for — "company W spends X via lobby
 
 ### Results
 - [`results/20260602_phase_3_1_per_sponsor_normalization.md`](results/20260602_phase_3_1_per_sponsor_normalization.md)
-- [`results/20260602_wi_chain_synthesis.md`](results/20260602_wi_chain_synthesis.md) — added later same day, mid-discussion: Suhan-facing standalone synthesis of Phases 0 → 3.1, written so a project-lead audience can read the chain's findings and limitations without walking the per-phase docs (revised post-LeMahieu-inspection — see next line)
-- [`results/20260602_lemahieu_bill_inspection.md`](results/20260602_lemahieu_bill_inspection.md) — bill-level inspection prerequisite the synthesis flagged. LeMahieu's #8 ranking is 98.8% one bill (SB 28, electric transmission ROFR, sole primary). Forced revision of the synthesis's leadership-vehicle hypothesis. Surfaces position-direction gap (no support/oppose field) as a project-wide finding worth flagging on the compendium side.
-- [`results/20260602_unknown_chamber_audit.md`](results/20260602_unknown_chamber_audit.md) — unknown-chamber audit; corrected bucket is 590 hr / 1.2% (all Joint Legislative Council). Phase 3.1 chamber-rollup numbers corrected (Assembly 26,543, Senate 21,657, ratio 1.23×). Method finding: surname-based legislator joins are fragile when disambiguation prefixes are present — use `ocd-person/...` IDs.
 
 ### Next Steps
 - Pause for Dan review of the new top-sponsor profile
-- Phase 4 (CFIS scoping) — write-only investigation; per-sponsor honesty sharpens the join target
-- Cosponsor parsing (refinement #2) — next natural in-chain refinement
-- "Unknown" chamber name-match audit (~30 min diagnostic)
-- Position-weighted sponsor attribution as a possible v1.2 if uniform-share turns out to be too crude
+- (Follow-on afternoon session executed: synthesis + LeMahieu inspection + chamber audit; merge decision landed — see [`20260602_synthesis_audits_and_merge_decision`](#session-2026-06-02-afternoon--synthesis_audits_and_merge_decision) entry above.)
+
+---
+
+## Session: 2026-06-02 (afternoon) — synthesis_audits_and_merge_decision
+
+**Convo:** [`convos/20260602_synthesis_audits_and_merge_decision.md`](convos/20260602_synthesis_audits_and_merge_decision.md)
+
+### Topics Explored
+- Suhan-facing synthesis of Phases 0 → 3.1 — structure, audience, what to lead with, what to caveat. Landed on standalone document.
+- LeMahieu bill-level breakdown — distribution of his 4 bills, SB 28 ROFR identification, electric-utility-coalition profile
+- AFP outlier on SB 28 → "coalition activity vs coalition composition" as project-wide finding
+- Unknown-chamber audit (cheap diagnostic) → fragile-surname-join finding; corrected chamber rollup
+- Three-branch merge discussion (wi-disclosure-explore / wi-tier1-direct-read / wi-allocation-matrix) — orthogonality of wi-tier1 workstream, the snapshot-date interaction, slice-vs-cohesive merge trade-offs
+- Chain TSV publishing path → `releases/wi/chain/` with its own README
+
+### Provisional Findings
+- **LeMahieu's #8 ranking is one bill, not four** (SB 28 ROFR, 98.8% of his total). Single-bill industry-coalition signal; ATC Management at 331 hrs leads 29 electric-utility principals.
+- **AFP-on-SB-28 surfaces a project-wide gap:** chain detects coalition *activity*, not coalition *composition* (no support/oppose field in WI lobbying disclosure). Worth a compendium-side investigation.
+- **Per-sponsor metrics can compress single-bill signals into apparent broad patterns** — method-level lesson: per-bill inspection before sponsor-level external claim.
+- **Surname-based legislator joins are fragile** when disambiguation prefixes are present (B./L./J. Jacobson/Johnson). Use `ocd-person/...` IDs. Production code is unaffected (only writes the name column, doesn't join on it).
+- **Unknown chamber bucket is 590 hr / 1.2% all Joint Legislative Council** (collective entity, no chamber meaningful by design). Law Revision Committee has zero chain rows in 2025.
+- **Synthesis chamber-rollup numbers corrected:** Assembly 25,892 → 26,543; Senate 21,610 → 21,657; ratio 1.20× → 1.23×. Substantive headline (chamber-bias reversal after per-sponsor normalization) unchanged.
+
+### Decisions Made
+- **Merge wi-allocation-matrix now** via `finishing-a-research-branch` (option B / slice)
+- **Phase 4 CFIS scoping → new branch off post-merge main** (write-only investigation; nori-web-search-researcher or equivalent for access-surface characterization)
+- **Cosponsor parsing → new branch off post-merge main** (needs design decisions: schema shape, num_sponsors_on_bill interaction, regex test corpus — plan before code)
+- **Chain TSV published at `releases/wi/chain/`** with README documenting Plural Policy dependency. Extends releases/ convention from `5fcc6ac`. Commit `6c595b5`.
+
+### Results
+- [`results/20260602_wi_chain_synthesis.md`](results/20260602_wi_chain_synthesis.md) — Suhan-facing standalone synthesis (revised same day after LeMahieu inspection; chamber numbers corrected after audit)
+- [`results/20260602_lemahieu_bill_inspection.md`](results/20260602_lemahieu_bill_inspection.md) — bill-level inspection; SB 28 ROFR finding; position-direction gap as project-wide finding
+- [`results/20260602_unknown_chamber_audit.md`](results/20260602_unknown_chamber_audit.md) — chamber-rollup correction; JLC-only unknown bucket
+- `releases/wi/chain/WI_chain_2025.tsv` + `releases/wi/chain/README.md` — published chain deliverable (commit `6c595b5`)
+
+### Next Steps
+- Finishing-a-research-branch workflow: audit-docs → archive → PR → merge
+- Post-merge: CFIS scoping branch + cosponsor parsing branch (separate, independent)
+- Position-direction gap → flag on compendium side (separate investigation)
 
 ---
 
