@@ -15,6 +15,20 @@ This is the data-acquisition counterpart to Dan's Track A work (`statute-retriev
 
 (Newest entries first.)
 
+### 2026-06-03 — HANDOFF prepared; Dan taking branch over from Amina
+
+- **Ownership change:** Dan is taking this branch over from Amina (decided 2026-06-03 while
+  scoping the MI/NC/OH state pulls). Coordinate with Amina on the in-flight LLM run.
+- **Resume here:** [`convos/20260603_oh_resume_handoff.md`](convos/20260603_oh_resume_handoff.md)
+  — a zero-context handoff for finishing the (A') round-trip.
+- **State unchanged since 2026-05-22:** (A') code shipped + round-trip validated against saved
+  HTML; only the LLM extraction run + validation-table fill remain. The API quota cap that
+  blocked the run **reset 2026-06-01**.
+- **Practical first blocker:** the raw HTML (report_id `1427844`, Aichele/ARC Gaming) is **not
+  on this machine** — it was browser-saved on Amina's VPN'd machine and never synced. Get it
+  from Amina, re-fetch from a US network, or browser-save again. See the handoff.
+- No code or data changed this session — handoff documentation only.
+
 ### 2026-05-22 — VPN workaround landed + handoff for LLM run
 
 - VPN reachability to OLAC has been the long-running blocker on (A') execution. Workaround landed this session: browser-saved the AER HTML at `data/oh_portal/html_test/`, then mirrored into the canonical layout at `data/oh_portal/raw/1427844/2026-05-21T18-52-26+00-00/raw.html` with a real `meta.json` (sha256, `fetch_method="browser-save-via-vpn-then-local-copy"`). Downstream tooling sees the same shape as a live fetch.
