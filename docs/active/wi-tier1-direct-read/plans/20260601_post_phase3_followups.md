@@ -122,8 +122,10 @@ This affects the followups in one way only: the next-state branch should be `mi-
 
 ## Item 3 — Citations API for inter-model adjudication (CANDIDATE, not yet decided)
 
+> **Status: CLOSED 2026-06-03** ([`../convos/20260603_statute_disagreement_prior_art_review.md`](../convos/20260603_statute_disagreement_prior_art_review.md)). Prior-art audit of the 18 disagreement cells ([`../results/20260603_prior_art_adjudication_of_18_disagreements.md`](../results/20260603_prior_art_adjudication_of_18_disagreements.md)) showed that 17 of 18 disagreements are row-meaning problems, not statute-reading problems — both models cite overlapping §13.68 sections in Pattern A, and Citations API span-level granularity wouldn't change the verdict. The downstream finding: the dispatch prompt currently sends only row IDs (no question text) to the model; the right fix is a `prompt_text` column on the compendium TSV populated from source-rubric quotes. Successor work tracked at v2.2 ledger Entry 3.
+
 **Source:** Dan, 2026-06-01 afternoon, while reviewing the statute-vs-portal cross-validation (`results/20260601_wi_statute_vs_portal_spending.md`).
-**Status:** OPEN CANDIDATE. Dan said: *"I'll look, but sounds like the disagreement is large enough to be worth using the Citations API."* The "I'll look" part is load-bearing — Dan wants to do a more detailed read of the 18 disagreeing cells before committing to the integration.
+**Status (historical):** OPEN CANDIDATE. Dan said: *"I'll look, but sounds like the disagreement is large enough to be worth using the Citations API."* The "I'll look" part is load-bearing — Dan wants to do a more detailed read of the 18 disagreeing cells before committing to the integration.
 
 ### What we found that prompted this
 

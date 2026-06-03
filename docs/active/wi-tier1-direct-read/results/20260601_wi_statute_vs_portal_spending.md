@@ -1,5 +1,7 @@
 <!-- Generated during: convos/20260601_wi_tier1_phase2_run.md -->
 
+> **Update 2026-06-03:** the 18 inter-model disagreements catalogued in "Implications" §1 were adjudicated against the source rubrics in [`20260603_prior_art_adjudication_of_18_disagreements.md`](20260603_prior_art_adjudication_of_18_disagreements.md). Verdict: 17 of 18 favor GPT's reading (Patterns A + B — Claude over-projected onto ambiguous row labels); 1 is a v2.2 axis-mis-registration issue (Pattern C). The "Open candidate: Citations API" direction is **closed** — disambiguation lives in the prior-art layer, not the statute layer. The downstream finding is structural: `render_legal_roster` sends only row IDs (no question text), and the source-rubric quote text is one TSV column away from being available to the model. See the 2026-06-03 writeup for full reasoning.
+
 # WI 2025 — Statute-required vs portal-exposed (spending reports)
 
 **Session:** 2026-06-01
