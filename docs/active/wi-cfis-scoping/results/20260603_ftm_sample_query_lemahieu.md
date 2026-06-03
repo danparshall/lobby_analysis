@@ -247,9 +247,9 @@ The error response wording — "The Institute will be in contact within the next
 
 1. Quota exceeded → account flagged → wait.
 2. **When the Institute's review email arrives** (per the documented 2-business-day SLA), reply with:
-   - Affiliation: Canary Institute 501(c)(3), Corda Democracy Fellowship at Analogy Group.
-   - Project framing: non-commercial open-source state-level lobbying-disclosure data infrastructure; repo `github.com/danparshall/lobby_analysis`.
-   - Planned use: WI 2024-2026 cycle contributions to ~165 sitting state legislators (~few hundred K transactions estimated) to link to existing lobbying-disclosure registrations.
+   - Affiliation: Fellow with the Corda Democracy Fellowship at Analogy Group.
+   - Project framing: `lobby_analysis` = open-source "LobbyView for 50 states" — non-commercial state-level lobbying-disclosure data infrastructure filling the state-side gap MIT's LobbyView (federal-LDA only) and OpenSecrets's own 31-state summary scorecard leave open. Repo `github.com/danparshall/lobby_analysis`.
+   - Planned use: priority-state (5-8 states, including WI 2024 + 2025-2026) cycle contributions to sitting state legislators (~165 entities per state order-of-magnitude) to link to existing lobbying-disclosure registrations. Expected duration: next few weeks.
    - Compliance commitment: outputs non-commercial, non-electoral, attributed to "National Institute on Money in State Politics" per CC BY-NC-SA 3.0 US.
    - Optional: link to `releases/wi/chain/WI_chain_2025.tsv` + `docs/active/wi-cfis-scoping/results/20260603_phase_4_cfis_scoping.md` as evidence of the upstream research context.
 3. **Only proactively email `info@opensecrets.org` if no contact arrives by ~end of business day 3-5.** Phrase as a status check on the existing review, not a new application.
