@@ -44,10 +44,15 @@ schema reference, **not** as a 2025 source. 2025 lives only in MiTN, which has n
    / travel-lodging / food-beverage benefitting public officials, over statutory thresholds.
    Cadence = **semi-annual** (Jan 31 + Aug 31). Exact on-screen field list needs browser.
 6. **2025 availability — YES.** MiTN is the live 2025 system.
-7. **robots/politeness — PARTIAL.** `mi-boe.entellitrak.com/robots.txt` → **404** (no
+7. **robots/politeness/TOS — PARTIAL.** `mi-boe.entellitrak.com/robots.txt` → **404** (no
    robots file = no declared crawl restrictions). Still use a conservative delay (≥1.0 s,
    WI convention) and a real UA. Check entellitrak for session/CSRF tokens during the browser
-   pass.
+   pass. **⚠️ MUST verify MiTN/SoS Terms of Use for a scripted-search prohibition BEFORE
+   scraping** — robots.txt absence ≠ permission. Precedent: **North Carolina** explicitly
+   forbids it ("Automated or scripted searches … are not permitted. For bulk access … use our
+   Data Subscription Services"), which is why the NC activity data is not freely obtainable.
+   If MiTN carries equivalent language, the scrape path is blocked and we'd be limited to
+   manual/per-filing export or a paid/again-FOIA route — same wall NC hit.
 8. **Volume estimate — UNKNOWN (needs browser).** Historical scale reference: the legacy NIC
    dump held 8,261 lobbyist↔principal records over 1982–2023 (cumulative, not per-year).
 
