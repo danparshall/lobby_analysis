@@ -17,4 +17,6 @@ These models are the shared vocabulary between research scoring and future data 
 
 Dot-paths in `FieldRequirement.field_path` intentionally point into `LobbyingFiling` or registration-related structures, so scoring outputs can be projected into concrete schema expectations. Literal types encode controlled vocabularies for statuses, roles, domains, availability tiers, and framework IDs. The models preserve framework references and provenance directly on the data objects so downstream exports can explain where each requirement or value came from.
 
+As of v1.2, `LobbyingFiling` carries hours-on-lobbying totals: `total_hours_communicating` (time spent communicating with officials) and `total_hours_other` (preparation, research, monitoring). Both are optional `float | None`, defaulting to `None` so existing call sites need no changes; `0.0` is a real value distinct from `None` because zero-activity reporting periods file with zeros rather than absent fields. The fields back the Wisconsin portal's per-(principal, semester) "Total Lobbying Effort" two-row table and FOCAL 7.x time-spent indicators. This v1.2 bump applies only to the disclosure-data layer in this folder; @/src/lobby_analysis/models_v2/cells.py (the statute-metadata cell contract for Prong 1) versions independently.
+
 Created and maintained by Nori.
