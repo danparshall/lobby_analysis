@@ -6,6 +6,35 @@ Newest entries first.
 
 ---
 
+## Session: 2026-06-03 — access-posture consolidation (cross-branch, from MI planning)
+
+**Result doc:** [`results/20260603_nc_access_posture.md`](results/20260603_nc_access_posture.md)
+
+Written while planning the Michigan pull (`mi-disclosure-explore`). Two things:
+
+1. **Re-verified the NC TOS live (2026-06-03)** and consolidated current best understanding
+   of NC access into one place. Status correction worth stating plainly: NC is **not
+   "impossible."** We **have** the registration graph (free bulk — the `NC_*.xlsx` files in
+   `data/disclosures/NC/`). What's blocked is **activity/expenditure** data, which NC offers
+   only via JS-only per-record search (scripted search **prohibited** by TOS) or **paid** Data
+   Subscription Services. The data is public by statute (Chapter 120C).
+
+2. **Access-posture principle (shared across state branches; parallel copy on
+   `mi-disclosure-explore`).** Per Dan: a website TOS is a contract of adhesion and **does not
+   override a statutory public-records obligation.** An access barrier is a
+   **practical-availability finding for the N×50×2 matrix, not a stop.** The statute-honoring
+   lever is a **public-records request** that puts bulk provision back on the agency; a refusal
+   or paywall on statutorily-public data is itself the finding. Distinction kept: the statute
+   guarantees *access* (often per-record inspection / fee-based copies), not specifically *bulk
+   machine-readable* provision — so request/demand is the instrument; scraping (legally
+   defensible post-*hiQ*, but with practical + optics risk) stays in reserve.
+
+**Open, statute-honoring next move (not yet taken):** public-records request to NC SoS for the
+bulk electronic activity file, and record the Data Subscription Service price/terms/refusal as
+the NC practical-availability datapoint.
+
+---
+
 ## Session: 2026-05-25 — [20260525_nc_disclosure_initial_look](convos/20260525_nc_disclosure_initial_look.md)
 
 ### Topics Explored
