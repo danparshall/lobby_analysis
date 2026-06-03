@@ -116,8 +116,31 @@ dataset; it will not be a bill-attribution dataset.
 4. Should we cross-check against The Accountability Project's MI lobbying dataset
    (publicaccountability.org, ~2023, stale) as a historical sanity check?
 
+## Session outcome (after Dan's answers + Phase 0 desk recon)
+
+**Dan locked the open questions:**
+- a1 — entity + expenditure is the accepted MI MVP ("we take what we can get"). No chain.
+- a2 — **2025 vintage only** (no multi-year).
+- a3 — proceed to Phase 0 recon now.
+
+**Phase 0 desk recon ran this session** (full writeup:
+[`../results/20260603_mi_portal_recon.md`](../results/20260603_mi_portal_recon.md)).
+Conclusion: **no reliable public bulk download for 2025 MI lobby data.** Acquisition
+primitive = **scrape/drive the MiTN entellitrak app**. Two systems exist — MiTN
+(entellitrak, 2024+, holds 2025, JS/AJAX, per-result export only) and the legacy NIC system
+(`miboecfr.ni{c,ct}usa.com`, bulk `mi_lobby.sh` dump but only 1982–2023 and on a decaying
+host with an expired TLS cert). The legacy bulk dump is the wrong vintage for our 2025
+target — historical cross-check only.
+
+**Still open (needs a live browser):** capture the entellitrak AJAX endpoint and decide
+between (A) search-and-export vs. (B) WI-style enumerate-and-fetch. This is the next step.
+
 ## Artifacts produced this session
 
 - This convo.
 - `docs/active/mi-disclosure-explore/RESEARCH_LOG.md`
-- `docs/active/mi-disclosure-explore/plans/mi_data_acquisition.md` (chunked plan)
+- `docs/active/mi-disclosure-explore/plans/mi_data_acquisition.md` (chunked plan, 2025-only)
+- `docs/active/mi-disclosure-explore/results/20260603_mi_portal_recon.md` (Phase 0 recon)
+
+All committed + pushed to `mi-disclosure-explore` (commits `5c3edb0`, `3d787ee`).
+STATUS.md intentionally untouched (shared-file merge hygiene on a feature branch).
