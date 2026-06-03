@@ -60,15 +60,26 @@ No separate filing. §13.625 imposes narrow temporal windows (between nomination
 | Lobbyist | Name canonicalization + occupation/employer disambiguation | `WI_lobbyists.tsv.name` | `ContributorName` + `Occupation` + `EmployerName` | 773 lobbyists |
 | Lawmaker | `ETHCFID` → committee name → `ocd-person/...` crosswalk (try OpenStates `Person.identifiers` first, fallback manual ~165-row table) | `sponsor_lawmaker_id` | `ETHCFID` + `ReceivingCommitteeName` + `Branch` | 132 unique sponsors (in chain) — but design for ~165 sitting legislators in case cosponsor parsing lands |
 
-### Sample query — not run end-to-end
+### Sample query — RUN END-TO-END (updated mid-session)
 
-- Sunshine UI is not curl-reachable (SPA, CSP-locked, no discoverable API without browser DevTools).
-- FTM endpoint live-confirmed without a key, but actual sign-up + query belongs in the implementation branch's Phase 1 — not in scoping.
-- IRW's 8.39M-record working pipeline is a stronger feasibility proof than a one-off manual export would be.
+Dan opened an FTM account and pasted his API URL into chat mid-session, so the punted-to-implementation sample query became resolvable here. Full writeup: [`../results/20260603_ftm_sample_query_lemahieu.md`](../results/20260603_ftm_sample_query_lemahieu.md). Key results:
 
-### Recommendation
+- LeMahieu's FTM identity: `c-t-id=325785` (2022 cycle) / `c-t-eid=3073941` (career). 2022 cycle = 2,803 transactions / $609,272 / 1,822 contributors.
+- 15-field transactional schema decoded; FTM ALREADY does donor-entity canonicalization (`Original_Name` raw → `Contributor`/`d-eid` canonical) and 3-level industry classification.
+- Chain cross-validation: Xcel Energy at #21 in top-25 donors matches Xcel's chain #7 SB 28 position (39.9 hrs); WEC Energy Group PAC in transaction page 0 ($2K, 2019-05-04) matches WEC's chain #2 SB 28 position (134.4 hrs).
+- `d-llink` "Lobbying Entity?" flag covers only ~5% of LeMahieu's 2022 contributions — concentrated on corporate PACs, doesn't catch individual lobbyist contributions. Useful soft signal, not a shortcut.
+- **Basic-tier quota exhausted after ~15 queries.** Account flagged for Institute review with 2-business-day approval window. Expanded-access request to `info@opensecrets.org` now a Phase 1 hard prerequisite.
+- Sunshine UI sample export NOT run — moot given FTM-first path; would be a coverage-gap-only fallback now.
 
-**Yes, cut a separate `wi-campaign-finance` implementation branch.** Phase 1 = 2-3-day FTM viability test against LeMahieu's SB 28 / 29-principal coalition. Phase 2 conditional on FTM GO = full ingest + chain join (3-5 days). Phase 3 conditional on FTM NO-GO = Selenium-Sunshine port reusing IRW's model (5-7 days). Full Phase 4 writeup at `results/20260603_phase_4_cfis_scoping.md`.
+### Recommendation (revised post-sample-query)
+
+**Yes, cut a separate `wi-campaign-finance` implementation branch.** Now with concrete shape:
+
+- **Phase 0** (calendar wait): submit expanded-access request to `info@opensecrets.org`. Wait ~2 business days for Institute approval.
+- **Phase 1** (3-5 days post-approval): full FTM ingest of WI 2024 + 2025-2026 cycle contributions for all ~165 sitting WI legislators; principal-side / lawmaker-side / lobbyist-side crosswalks; materialize `releases/wi/campaign_finance/WI_contributions_*.tsv` and `WI_chain_v2_2025.tsv`.
+- **Phase 2** (conditional, 5-7 days): Selenium-Sunshine port to fill specific gaps Phase 1 surfaces. NOT a full duplicate ingest.
+
+Full Phase 4 writeup at `results/20260603_phase_4_cfis_scoping.md`; sample-query artifact at `results/20260603_ftm_sample_query_lemahieu.md`; FTM TOS + attribution requirements at scoping doc §7.
 
 ## Next steps
 
