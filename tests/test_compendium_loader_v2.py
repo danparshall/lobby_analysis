@@ -14,6 +14,11 @@ from lobby_analysis.compendium_loader import load_v2_compendium
 
 
 # Expected v2 columns per `compendium/README.md` row-shape contract.
+# `prompt_text` was added 2026-06-03 per convo
+# `20260603_statute_disagreement_prior_art_review` (v2.2 ledger Entry 3) —
+# verbatim source-rubric question text reaches the model on dispatch lines.
+# Populated for the 17 confirmed WI inter-model disagreement rows in this
+# fix; empty for the other 164 rows pending the wide 181-row pass.
 EXPECTED_V2_COLUMNS = {
     "compendium_row_id",
     "cell_type",
@@ -23,6 +28,7 @@ EXPECTED_V2_COLUMNS = {
     "first_introduced_by",
     "status",
     "notes",
+    "prompt_text",
 }
 
 # Per `compendium/_deprecated/v1/README.md` and the 2026-05-13 row-freeze decisions log,

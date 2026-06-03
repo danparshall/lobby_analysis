@@ -9,26 +9,26 @@
     "state_abbr": "WI",
     "vintage_year": 2025,
     "prompt_sha256": "cf5e534eb79e06bd8862cb6a71fa3ba6db44eb86d8d1b12b85431ef394b042c8",
-    "timestamp_utc": "2026-06-01T16:56:22+00:00"
+    "timestamp_utc": "2026-06-03T22:29:31+00:00"
   },
-  "wall_clock_seconds": 69.84685283401632,
+  "wall_clock_seconds": 56.15794183401158,
   "usage": {
     "cache_creation": {
       "ephemeral_1h_input_tokens": 0,
-      "ephemeral_5m_input_tokens": 0
+      "ephemeral_5m_input_tokens": 29445
     },
-    "cache_creation_input_tokens": 0,
-    "cache_read_input_tokens": 29445,
+    "cache_creation_input_tokens": 29445,
+    "cache_read_input_tokens": 0,
     "inference_geo": "global",
-    "input_tokens": 2010,
-    "output_tokens": 7552,
+    "input_tokens": 5716,
+    "output_tokens": 6698,
     "server_tool_use": null,
     "service_tier": "standard",
     "output_tokens_details": {
       "thinking_tokens": 0
     }
   },
-  "cost_usd_estimate": 0.19885,
+  "cost_usd_estimate": 0.19602999999999998,
   "legal_roster": [
     [
       "lobbyist_spending_report_cadence_includes_annual",
@@ -162,27 +162,11 @@
         "condition_text": null,
         "confidence": "high",
         "provenance": [],
-        "value": true
+        "value": false
       },
       "cell_class": "BinaryCell",
       "cited_section": "§13.68(1)",
-      "justification": "Section 13.68(1) requires every registered principal to file an expense statement covering the preceding reporting period, and §13.68(4) requires lobbyists to provide expenditure information to the principal that is filed with the commission."
-    },
-    {
-      "cell": {
-        "cell_id": [
-          "lobbyist_spending_report_filing_cadence",
-          "legal"
-        ],
-        "conditional": false,
-        "condition_text": null,
-        "confidence": "high",
-        "provenance": [],
-        "value": "semiannual"
-      },
-      "cell_class": "EnumCell",
-      "cited_section": "§13.68(1); §13.62(12r)",
-      "justification": "Section 13.68(1) requires filing on or before July 31 and January 31, covering the preceding reporting period, which §13.62(12r) defines as any 6-month period — i.e., semiannual."
+      "justification": "Wisconsin's statute requires \"Every principal which is registered under s. 13.64\" to file the expense statement; the lobbyist is not the named filer of a separate spending report."
     },
     {
       "cell": {
@@ -198,7 +182,7 @@
       },
       "cell_class": "BinaryCell",
       "cited_section": "§13.68(1)",
-      "justification": "Section 13.68(1) requires biannual filings (July 31 and January 31), not annual."
+      "justification": "No separate lobbyist spending report exists; the principal files the expense statement per §13.68(1)."
     },
     {
       "cell": {
@@ -214,7 +198,7 @@
       },
       "cell_class": "BinaryCell",
       "cited_section": "§13.68(1)",
-      "justification": "Section 13.68(1) requires only two filings per year (July 31 and January 31), not monthly."
+      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
     },
     {
       "cell": {
@@ -230,7 +214,7 @@
       },
       "cell_class": "BinaryCell",
       "cited_section": "§13.68(1)",
-      "justification": "Section 13.68(1) specifies only the two semiannual filing deadlines; no other cadence is established."
+      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
     },
     {
       "cell": {
@@ -246,7 +230,7 @@
       },
       "cell_class": "BinaryCell",
       "cited_section": "§13.68(1)",
-      "justification": "Section 13.68(1) sets twice-yearly deadlines (July 31 and January 31), not quarterly."
+      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
     },
     {
       "cell": {
@@ -258,11 +242,11 @@
         "condition_text": null,
         "confidence": "high",
         "provenance": [],
-        "value": true
+        "value": false
       },
       "cell_class": "BinaryCell",
-      "cited_section": "§13.68(1); §13.62(12r)",
-      "justification": "Section 13.68(1) sets filing deadlines of July 31 and January 31 covering the 6-month reporting periods defined in §13.62(12r), which is semiannual."
+      "cited_section": "§13.68(1)",
+      "justification": "Although the principal files semi-annually (by July 31 and January 31), the lobbyist is not the named filer of a separate spending report."
     },
     {
       "cell": {
@@ -278,7 +262,23 @@
       },
       "cell_class": "BinaryCell",
       "cited_section": "§13.68(1)",
-      "justification": "Section 13.68(1) requires two filings per year, not three."
+      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_filing_cadence",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "none"
+      },
+      "cell_class": "EnumCell",
+      "cited_section": "§13.68(1)",
+      "justification": "No separate lobbyist spending report is mandated; §13.68(1) requires the principal (not the lobbyist) to file the expense statement."
     },
     {
       "cell": {
@@ -288,13 +288,13 @@
         ],
         "conditional": false,
         "condition_text": null,
-        "confidence": "medium",
+        "confidence": "high",
         "provenance": [],
-        "value": true
+        "value": false
       },
       "cell_class": "BinaryCell",
-      "cited_section": "§13.68(1)(a), (b), (e)",
-      "justification": "Section 13.68(1) separately requires reporting of aggregate lobbying expenditures (para (a)), office overhead for in-house lobbyists (para (b)), and personal travel and living expenses (para (e)), thereby categorizing expenses by type."
+      "cited_section": "§13.68(1)",
+      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
     },
     {
       "cell": {
@@ -306,11 +306,11 @@
         "condition_text": null,
         "confidence": "high",
         "provenance": [],
-        "value": true
+        "value": false
       },
       "cell_class": "BinaryCell",
-      "cited_section": "§13.68(1)(bn); §13.67(1)",
-      "justification": "Section 13.68(1)(bn) requires reporting each legislative proposal, proposed administrative rule, budget bill subject or other topic accounting for 10%+ of lobbying time, and §13.67(1) requires reporting each legislative proposal/rule number lobbied on."
+      "cited_section": "§13.68(1)",
+      "justification": "No separate lobbyist spending report exists; the principal is the filer of the expense statement per §13.68(1)."
     },
     {
       "cell": {
@@ -320,13 +320,13 @@
         ],
         "conditional": false,
         "condition_text": null,
-        "confidence": "medium",
+        "confidence": "high",
         "provenance": [],
         "value": false
       },
       "cell_class": "BinaryCell",
-      "cited_section": "§13.68(1)(a)6.",
-      "justification": "The statement is filed by each principal, and §13.68(1)(a)6 requires itemizing amounts paid to each lobbyist exceeding $200—but the report is per-principal, not broken down by payer to a lobbyist."
+      "cited_section": "§13.68(1)",
+      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
     },
     {
       "cell": {
@@ -336,13 +336,13 @@
         ],
         "conditional": false,
         "condition_text": null,
-        "confidence": "medium",
+        "confidence": "high",
         "provenance": [],
         "value": false
       },
       "cell_class": "BinaryCell",
-      "cited_section": "§13.68(1)(c)1.",
-      "justification": "Section 13.68(1)(c)1 requires reporting time spent meeting with officials but does not require identifying the specific officials contacted (except for reimbursements under §13.68(1)(d))."
+      "cited_section": "§13.68(1)",
+      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
     },
     {
       "cell": {
@@ -352,13 +352,13 @@
         ],
         "conditional": false,
         "condition_text": null,
-        "confidence": "medium",
+        "confidence": "high",
         "provenance": [],
         "value": false
       },
       "cell_class": "BinaryCell",
-      "cited_section": "§13.68(1)(bn)",
-      "justification": "Section 13.68(1)(bn) requires reporting the proportion of TIME (not expenditures) spent per topic accounting for 10%+ of lobbying; no per-issue expenditure breakdown is required."
+      "cited_section": "§13.68(1)",
+      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
     },
     {
       "cell": {
@@ -370,11 +370,11 @@
         "condition_text": null,
         "confidence": "high",
         "provenance": [],
-        "value": true
+        "value": false
       },
       "cell_class": "BinaryCell",
-      "cited_section": "§13.68(1)(bn); §13.67(1)",
-      "justification": "Section 13.68(1)(bn) requires reporting topics accounting for 10%+ of lobbying time, and §13.67(1) requires identifying topics of lobbying communications with reasonable specificity."
+      "cited_section": "§13.68(1)",
+      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
     },
     {
       "cell": {
@@ -386,11 +386,11 @@
         "condition_text": null,
         "confidence": "high",
         "provenance": [],
-        "value": true
+        "value": false
       },
       "cell_class": "BinaryCell",
-      "cited_section": "§13.68(1)(bn); §13.67(1)",
-      "justification": "Section 13.68(1)(bn) ties the expense statement to legislative proposals, administrative rules, budget bill subjects, or other topics — the general subject matter of lobbying."
+      "cited_section": "§13.68(1)",
+      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
     },
     {
       "cell": {
@@ -400,13 +400,13 @@
         ],
         "conditional": false,
         "condition_text": null,
-        "confidence": "medium",
+        "confidence": "high",
         "provenance": [],
-        "value": true
+        "value": false
       },
       "cell_class": "BinaryCell",
-      "cited_section": "§13.68(1)(d), (e)",
-      "justification": "Section 13.68(1)(d) requires reporting reimbursements (transportation, lodging) authorized under §13.621(7)(a) with names of officials, dates and amounts, and §13.68(1)(e) requires reporting personal travel and living expenses."
+      "cited_section": "§13.68(1)",
+      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
     },
     {
       "cell": {
@@ -418,11 +418,11 @@
         "condition_text": null,
         "confidence": "high",
         "provenance": [],
-        "value": true
+        "value": false
       },
       "cell_class": "BinaryCell",
-      "cited_section": "§13.68(1)(b)",
-      "justification": "Section 13.68(1)(b) requires reporting office space, utilities, supplies and compensation of employees used in preparing for lobbying communications — i.e., indirect/overhead costs."
+      "cited_section": "§13.68(1)",
+      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
     },
     {
       "cell": {
@@ -432,13 +432,13 @@
         ],
         "conditional": false,
         "condition_text": null,
-        "confidence": "medium",
+        "confidence": "high",
         "provenance": [],
         "value": false
       },
       "cell_class": "BinaryCell",
-      "cited_section": "§13.68(1)(a)",
-      "justification": "Section 13.68(1)(a) requires reporting aggregate totals; itemization is required only for payments to lobbyists exceeding $200 (§13.68(1)(a)6) and reimbursements to officials (§13.68(1)(d)), not for general expenses."
+      "cited_section": "§13.68(1)",
+      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
     },
     {
       "cell": {
@@ -448,13 +448,13 @@
         ],
         "conditional": false,
         "condition_text": null,
-        "confidence": "medium",
+        "confidence": "high",
         "provenance": [],
-        "value": true
+        "value": false
       },
       "cell_class": "BinaryCell",
-      "cited_section": "§13.68(1)(a)6.",
-      "justification": "Section 13.68(1)(a)6 requires that the name and address of any lobbyist paid more than $200 in the reporting period be listed."
+      "cited_section": "§13.68(1)",
+      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1), even though lobbyist name/address may be listed in the principal's report."
     },
     {
       "cell": {
@@ -470,7 +470,7 @@
       },
       "cell_class": "BinaryCell",
       "cited_section": "§13.68(1)",
-      "justification": "Section 13.68(1) does not require disclosing the principal's position (support/oppose) on any legislative proposal."
+      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
     },
     {
       "cell": {
@@ -480,13 +480,13 @@
         ],
         "conditional": false,
         "condition_text": null,
-        "confidence": "medium",
+        "confidence": "high",
         "provenance": [],
         "value": false
       },
       "cell_class": "BinaryCell",
-      "cited_section": "§13.68(1); §13.64(1)",
-      "justification": "Principal's business nature is required on the registration under §13.64(1), not on the periodic expense statement under §13.68(1)."
+      "cited_section": "§13.68(1)",
+      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
     },
     {
       "cell": {
@@ -496,13 +496,13 @@
         ],
         "conditional": false,
         "condition_text": null,
-        "confidence": "medium",
+        "confidence": "high",
         "provenance": [],
         "value": false
       },
       "cell_class": "BinaryCell",
       "cited_section": "§13.68(1)",
-      "justification": "Section 13.68(1) does not enumerate principal contact-info elements as part of the periodic expense statement (that information is collected at registration under §13.64)."
+      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
     },
     {
       "cell": {
@@ -514,11 +514,11 @@
         "condition_text": null,
         "confidence": "high",
         "provenance": [],
-        "value": true
+        "value": false
       },
       "cell_class": "BinaryCell",
       "cited_section": "§13.68(1)",
-      "justification": "Section 13.68(1) requires every registered principal to file its own expense statement, signed by an authorized representative, inherently identifying the principal by name."
+      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
     },
     {
       "cell": {
@@ -530,11 +530,11 @@
         "condition_text": null,
         "confidence": "high",
         "provenance": [],
-        "value": true
+        "value": false
       },
       "cell_class": "BinaryCell",
-      "cited_section": "§13.68(1)(bn); §13.67(1)",
-      "justification": "Section 13.67(1) requires reporting each legislative proposal and proposed administrative rule number, and §13.68(1)(bn) ties expense reporting to those proposals."
+      "cited_section": "§13.68(1)",
+      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
     },
     {
       "cell": {
@@ -546,11 +546,11 @@
         "condition_text": null,
         "confidence": "high",
         "provenance": [],
-        "value": true
+        "value": false
       },
       "cell_class": "BinaryCell",
-      "cited_section": "§13.68(1)(a), (a)1.",
-      "justification": "Section 13.68(1)(a)1 expressly includes compensation to lobbyists for lobbying in the aggregate total of lobbying expenditures that must be reported."
+      "cited_section": "§13.68(1)",
+      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1), though compensation paid to lobbyists is reported within the principal's aggregate."
     },
     {
       "cell": {
@@ -562,11 +562,11 @@
         "condition_text": null,
         "confidence": "high",
         "provenance": [],
-        "value": true
+        "value": false
       },
       "cell_class": "BinaryCell",
-      "cited_section": "§13.68(1)(a)",
-      "justification": "Section 13.68(1)(a) expressly requires reporting \"the aggregate total amount of lobbying expenditures made and obligations incurred for lobbying.\""
+      "cited_section": "§13.68(1)",
+      "justification": "No separate lobbyist spending report exists; §13.68(1) requires the principal to file the aggregate expense statement."
     },
     {
       "cell": {
@@ -576,13 +576,13 @@
         ],
         "conditional": false,
         "condition_text": null,
-        "confidence": "medium",
+        "confidence": "high",
         "provenance": [],
-        "value": true
+        "value": false
       },
       "cell_class": "BinaryCell",
-      "cited_section": "§13.68(1); §13.64(2)",
-      "justification": "Section 13.68(1) requires every registered principal to file an expense statement each period without exception for no activity; under §13.64(2) the registration only terminates after the principal files a cessation statement and final expense statements."
+      "cited_section": "§13.68(1)",
+      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
     },
     {
       "cell": {
@@ -597,8 +597,8 @@
         "value": false
       },
       "cell_class": "BinaryCell",
-      "cited_section": "§13.68(1); §13.625(4m)(d)",
-      "justification": "Section 13.68(1) does not require disclosure regarding household members of officials, and §13.625(4m)(d) exempts things furnished to relatives or household members from the chapter's restrictions."
+      "cited_section": "§13.68(1)",
+      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
     },
     {
       "cell": {
@@ -608,13 +608,13 @@
         ],
         "conditional": false,
         "condition_text": null,
-        "confidence": "medium",
+        "confidence": "high",
         "provenance": [],
         "value": false
       },
       "cell_class": "BinaryCell",
-      "cited_section": "§13.68(1)(a)",
-      "justification": "Section 13.68(1)(a) requires aggregate totals rather than full itemization; only specific items (payments to lobbyists over $200 and reimbursements to officials) require itemized listing."
+      "cited_section": "§13.68(1)",
+      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
     }
   ],
   "unscoreable_emissions": [
@@ -624,54 +624,38 @@
       "value": null,
       "confidence": "high",
       "cited_section": "§13.68(1)",
-      "justification": "No \"other\" cadence applies; the statute only specifies semiannual filings on July 31 and January 31.",
+      "justification": "No separate lobbyist spending report is required; the principal files the expense statement per §13.68(1), so there is no \"other\" lobbyist cadence to specify.",
       "reason": "conditional cell not applicable (value null)"
     }
   ],
   "errors": [],
   "response": {
-    "id": "msg_01QrPE7y2CtrfbzPb7Zp8YtX",
+    "id": "msg_01FXF55PUcDtpUhuncLnrMed",
     "container": null,
     "content": [
       {
         "citations": null,
-        "text": "I'll analyze the statute text, focusing on §13.68 (Principal's expense statement) which is the spending report in Wisconsin's scheme. Note: Wisconsin requires the PRINCIPAL to file the expense statement, not the lobbyist directly, though lobbyists provide info to the principal under §13.68(4). The statute requires this report regardless of whether one calls it a \"lobbyist\" or \"principal\" report—it covers lobbying spending.",
+        "text": "Looking at the Wisconsin statute, §13.68 mandates that the PRINCIPAL (not the lobbyist) files the expense statement. The lobbyist only provides information to the principal under §13.68(4) and signs that information, but the principal is the named filer of the spending report. Per the rubric instructions, this means most lobbyist-spending-report cells should be FALSE.",
         "type": "text"
       },
       {
-        "id": "toolu_012KpLwakN7JjrrbRtUVN4oJ",
+        "id": "toolu_01TeY7WCdYkU5EF895DukTBH",
         "caller": {
           "type": "direct"
         },
         "input": {
           "row_id": "lobbyist_spending_report_required",
           "axis": "legal",
-          "value": true,
+          "value": false,
           "confidence": "high",
           "cited_section": "§13.68(1)",
-          "justification": "Section 13.68(1) requires every registered principal to file an expense statement covering the preceding reporting period, and §13.68(4) requires lobbyists to provide expenditure information to the principal that is filed with the commission."
+          "justification": "Wisconsin's statute requires \"Every principal which is registered under s. 13.64\" to file the expense statement; the lobbyist is not the named filer of a separate spending report."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01YNyGDLCHoLdSjiWnmQ4q2Y",
-        "caller": {
-          "type": "direct"
-        },
-        "input": {
-          "row_id": "lobbyist_spending_report_filing_cadence",
-          "axis": "legal",
-          "value": "semiannual",
-          "confidence": "high",
-          "cited_section": "§13.68(1); §13.62(12r)",
-          "justification": "Section 13.68(1) requires filing on or before July 31 and January 31, covering the preceding reporting period, which §13.62(12r) defines as any 6-month period — i.e., semiannual."
-        },
-        "name": "record_cell",
-        "type": "tool_use"
-      },
-      {
-        "id": "toolu_01A4nUwV2g9W9kvTyvcStdKL",
+        "id": "toolu_01BZhVaccBHT9Q7KryyWFLq4",
         "caller": {
           "type": "direct"
         },
@@ -681,13 +665,13 @@
           "value": false,
           "confidence": "high",
           "cited_section": "§13.68(1)",
-          "justification": "Section 13.68(1) requires biannual filings (July 31 and January 31), not annual."
+          "justification": "No separate lobbyist spending report exists; the principal files the expense statement per §13.68(1)."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_012ptnFFNZfUfc7FpjrAV1b3",
+        "id": "toolu_015GrAJ6jkgeAF4y88w6oAaJ",
         "caller": {
           "type": "direct"
         },
@@ -697,13 +681,13 @@
           "value": false,
           "confidence": "high",
           "cited_section": "§13.68(1)",
-          "justification": "Section 13.68(1) requires only two filings per year (July 31 and January 31), not monthly."
+          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01Au1c97UQrcUDCvHJDq8oCE",
+        "id": "toolu_01Y5gyq4oQ8aGRd3prwEUayN",
         "caller": {
           "type": "direct"
         },
@@ -713,13 +697,13 @@
           "value": false,
           "confidence": "high",
           "cited_section": "§13.68(1)",
-          "justification": "Section 13.68(1) specifies only the two semiannual filing deadlines; no other cadence is established."
+          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01FJ1WVYN4B2GKGQ19UH7UMk",
+        "id": "toolu_01MwQuLvFwUkeTa6QbTkoC7p",
         "caller": {
           "type": "direct"
         },
@@ -729,29 +713,29 @@
           "value": false,
           "confidence": "high",
           "cited_section": "§13.68(1)",
-          "justification": "Section 13.68(1) sets twice-yearly deadlines (July 31 and January 31), not quarterly."
+          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_0195TRs1kTGmEruKXbojYM8P",
+        "id": "toolu_015gGk3n6DocEBYhK8gywhgz",
         "caller": {
           "type": "direct"
         },
         "input": {
           "row_id": "lobbyist_spending_report_cadence_includes_semiannual",
           "axis": "legal",
-          "value": true,
+          "value": false,
           "confidence": "high",
-          "cited_section": "§13.68(1); §13.62(12r)",
-          "justification": "Section 13.68(1) sets filing deadlines of July 31 and January 31 covering the 6-month reporting periods defined in §13.62(12r), which is semiannual."
+          "cited_section": "§13.68(1)",
+          "justification": "Although the principal files semi-annually (by July 31 and January 31), the lobbyist is not the named filer of a separate spending report."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01NYdvCqk4WCBYLaLR1JhPYu",
+        "id": "toolu_015dENJV7ZygnYB69qfMw9QN",
         "caller": {
           "type": "direct"
         },
@@ -761,13 +745,13 @@
           "value": false,
           "confidence": "high",
           "cited_section": "§13.68(1)",
-          "justification": "Section 13.68(1) requires two filings per year, not three."
+          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_017FQPWuNfQioMNrwMjGKbMm",
+        "id": "toolu_01NwmyVZRzpNqx7BUEEBXxMx",
         "caller": {
           "type": "direct"
         },
@@ -777,45 +761,61 @@
           "value": null,
           "confidence": "high",
           "cited_section": "§13.68(1)",
-          "justification": "No \"other\" cadence applies; the statute only specifies semiannual filings on July 31 and January 31."
+          "justification": "No separate lobbyist spending report is required; the principal files the expense statement per §13.68(1), so there is no \"other\" lobbyist cadence to specify."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_019BraZafpJquQzuubMzCXc4",
+        "id": "toolu_01J1v7xDwxtyFHdJDyLeum81",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "lobbyist_spending_report_filing_cadence",
+          "axis": "legal",
+          "value": "none",
+          "confidence": "high",
+          "cited_section": "§13.68(1)",
+          "justification": "No separate lobbyist spending report is mandated; §13.68(1) requires the principal (not the lobbyist) to file the expense statement."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01MtA2y7wKkk5LBCQdCarBNz",
         "caller": {
           "type": "direct"
         },
         "input": {
           "row_id": "lobbyist_spending_report_categorizes_expenses_by_type",
           "axis": "legal",
-          "value": true,
-          "confidence": "medium",
-          "cited_section": "§13.68(1)(a), (b), (e)",
-          "justification": "Section 13.68(1) separately requires reporting of aggregate lobbying expenditures (para (a)), office overhead for in-house lobbyists (para (b)), and personal travel and living expenses (para (e)), thereby categorizing expenses by type."
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§13.68(1)",
+          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01Nna14aW2cgyZeXHr1t1MXX",
+        "id": "toolu_01VXhxRxcKct1sDsW1ybzVEw",
         "caller": {
           "type": "direct"
         },
         "input": {
           "row_id": "lobbyist_spending_report_includes_bill_or_action_identifier",
           "axis": "legal",
-          "value": true,
+          "value": false,
           "confidence": "high",
-          "cited_section": "§13.68(1)(bn); §13.67(1)",
-          "justification": "Section 13.68(1)(bn) requires reporting each legislative proposal, proposed administrative rule, budget bill subject or other topic accounting for 10%+ of lobbying time, and §13.67(1) requires reporting each legislative proposal/rule number lobbied on."
+          "cited_section": "§13.68(1)",
+          "justification": "No separate lobbyist spending report exists; the principal is the filer of the expense statement per §13.68(1)."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01FNcQtHKr2KjfyxuKUNdAoC",
+        "id": "toolu_01Kr2fChgFer4z6aJRMptE2e",
         "caller": {
           "type": "direct"
         },
@@ -823,15 +823,15 @@
           "row_id": "lobbyist_spending_report_includes_compensation_broken_down_by_payer",
           "axis": "legal",
           "value": false,
-          "confidence": "medium",
-          "cited_section": "§13.68(1)(a)6.",
-          "justification": "The statement is filed by each principal, and §13.68(1)(a)6 requires itemizing amounts paid to each lobbyist exceeding $200—but the report is per-principal, not broken down by payer to a lobbyist."
+          "confidence": "high",
+          "cited_section": "§13.68(1)",
+          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_016gAxfRW3ZfDSZUozd4AC6V",
+        "id": "toolu_01Vnx9b4QtRCUPBnVwbNucF1",
         "caller": {
           "type": "direct"
         },
@@ -839,15 +839,15 @@
           "row_id": "lobbyist_spending_report_includes_contacts_made",
           "axis": "legal",
           "value": false,
-          "confidence": "medium",
-          "cited_section": "§13.68(1)(c)1.",
-          "justification": "Section 13.68(1)(c)1 requires reporting time spent meeting with officials but does not require identifying the specific officials contacted (except for reimbursements under §13.68(1)(d))."
+          "confidence": "high",
+          "cited_section": "§13.68(1)",
+          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01EdCJSbRWGXCCMqZ2SvRfBt",
+        "id": "toolu_01JxnVACpr8rY1TUdorLF7kw",
         "caller": {
           "type": "direct"
         },
@@ -855,79 +855,79 @@
           "row_id": "lobbyist_spending_report_includes_expenditure_per_issue",
           "axis": "legal",
           "value": false,
-          "confidence": "medium",
-          "cited_section": "§13.68(1)(bn)",
-          "justification": "Section 13.68(1)(bn) requires reporting the proportion of TIME (not expenditures) spent per topic accounting for 10%+ of lobbying; no per-issue expenditure breakdown is required."
+          "confidence": "high",
+          "cited_section": "§13.68(1)",
+          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_018yMJSWJ5Qf2UgTZA2Rdem4",
+        "id": "toolu_01BxQd16AdTuML3goXmCjQBj",
         "caller": {
           "type": "direct"
         },
         "input": {
           "row_id": "lobbyist_spending_report_includes_general_issues",
           "axis": "legal",
-          "value": true,
+          "value": false,
           "confidence": "high",
-          "cited_section": "§13.68(1)(bn); §13.67(1)",
-          "justification": "Section 13.68(1)(bn) requires reporting topics accounting for 10%+ of lobbying time, and §13.67(1) requires identifying topics of lobbying communications with reasonable specificity."
+          "cited_section": "§13.68(1)",
+          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01Si5mweupjskgSpDugs5Xmy",
+        "id": "toolu_014eDc6NDWfJ9u5phtZJsmr3",
         "caller": {
           "type": "direct"
         },
         "input": {
           "row_id": "lobbyist_spending_report_includes_general_subject_matter",
           "axis": "legal",
-          "value": true,
+          "value": false,
           "confidence": "high",
-          "cited_section": "§13.68(1)(bn); §13.67(1)",
-          "justification": "Section 13.68(1)(bn) ties the expense statement to legislative proposals, administrative rules, budget bill subjects, or other topics — the general subject matter of lobbying."
+          "cited_section": "§13.68(1)",
+          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01YVmWN7J4z8AEtnq5F3KQYv",
+        "id": "toolu_01MD78mZVRnPyocuQcxsg7QZ",
         "caller": {
           "type": "direct"
         },
         "input": {
           "row_id": "lobbyist_spending_report_includes_gifts_entertainment_transport_lodging",
           "axis": "legal",
-          "value": true,
-          "confidence": "medium",
-          "cited_section": "§13.68(1)(d), (e)",
-          "justification": "Section 13.68(1)(d) requires reporting reimbursements (transportation, lodging) authorized under §13.621(7)(a) with names of officials, dates and amounts, and §13.68(1)(e) requires reporting personal travel and living expenses."
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§13.68(1)",
+          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01VV9hpdKt6o1MKLsnF33rcm",
+        "id": "toolu_01QWkeeGKfk5TuaEQ83duxED",
         "caller": {
           "type": "direct"
         },
         "input": {
           "row_id": "lobbyist_spending_report_includes_indirect_costs",
           "axis": "legal",
-          "value": true,
+          "value": false,
           "confidence": "high",
-          "cited_section": "§13.68(1)(b)",
-          "justification": "Section 13.68(1)(b) requires reporting office space, utilities, supplies and compensation of employees used in preparing for lobbying communications — i.e., indirect/overhead costs."
+          "cited_section": "§13.68(1)",
+          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01Wh7nudXWQZNQoKAMieYku3",
+        "id": "toolu_01L4r6W5GST2FKcAJfR4L9W5",
         "caller": {
           "type": "direct"
         },
@@ -935,31 +935,31 @@
           "row_id": "lobbyist_spending_report_includes_itemized_expenses",
           "axis": "legal",
           "value": false,
-          "confidence": "medium",
-          "cited_section": "§13.68(1)(a)",
-          "justification": "Section 13.68(1)(a) requires reporting aggregate totals; itemization is required only for payments to lobbyists exceeding $200 (§13.68(1)(a)6) and reimbursements to officials (§13.68(1)(d)), not for general expenses."
+          "confidence": "high",
+          "cited_section": "§13.68(1)",
+          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01GRVD4HtTiFycdh3DAUHspf",
+        "id": "toolu_01CardFeg38b6XUvk3HcGwKW",
         "caller": {
           "type": "direct"
         },
         "input": {
           "row_id": "lobbyist_spending_report_includes_lobbyist_contact_info",
           "axis": "legal",
-          "value": true,
-          "confidence": "medium",
-          "cited_section": "§13.68(1)(a)6.",
-          "justification": "Section 13.68(1)(a)6 requires that the name and address of any lobbyist paid more than $200 in the reporting period be listed."
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§13.68(1)",
+          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1), even though lobbyist name/address may be listed in the principal's report."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01E7xBxZn2Q5LxzxcUsbFwo8",
+        "id": "toolu_015NqhL33E1B2i33ZoYw8EMZ",
         "caller": {
           "type": "direct"
         },
@@ -969,13 +969,13 @@
           "value": false,
           "confidence": "high",
           "cited_section": "§13.68(1)",
-          "justification": "Section 13.68(1) does not require disclosing the principal's position (support/oppose) on any legislative proposal."
+          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01RvRNFMG6xX9tsUuJ2ya8ij",
+        "id": "toolu_01MBSgWpqKXySM5sMyLw5S8M",
         "caller": {
           "type": "direct"
         },
@@ -983,15 +983,15 @@
           "row_id": "lobbyist_spending_report_includes_principal_business_nature",
           "axis": "legal",
           "value": false,
-          "confidence": "medium",
-          "cited_section": "§13.68(1); §13.64(1)",
-          "justification": "Principal's business nature is required on the registration under §13.64(1), not on the periodic expense statement under §13.68(1)."
+          "confidence": "high",
+          "cited_section": "§13.68(1)",
+          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01K7U2bQ4zPFLvtYPu7JEo2R",
+        "id": "toolu_01Vr3Lt3tsDSrbLtsXdMf8nH",
         "caller": {
           "type": "direct"
         },
@@ -999,95 +999,95 @@
           "row_id": "lobbyist_spending_report_includes_principal_contact_info",
           "axis": "legal",
           "value": false,
-          "confidence": "medium",
+          "confidence": "high",
           "cited_section": "§13.68(1)",
-          "justification": "Section 13.68(1) does not enumerate principal contact-info elements as part of the periodic expense statement (that information is collected at registration under §13.64)."
+          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01LQzCxmyVUVvzz8sYPvPZqz",
+        "id": "toolu_01ASBy9FsGRGRAD8qd6UN42Y",
         "caller": {
           "type": "direct"
         },
         "input": {
           "row_id": "lobbyist_spending_report_includes_principal_names",
           "axis": "legal",
-          "value": true,
+          "value": false,
           "confidence": "high",
           "cited_section": "§13.68(1)",
-          "justification": "Section 13.68(1) requires every registered principal to file its own expense statement, signed by an authorized representative, inherently identifying the principal by name."
+          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01PkZiEA6Xd1qaNpyNDVSKXN",
+        "id": "toolu_016zAinthhHY9u8DM94eTT2s",
         "caller": {
           "type": "direct"
         },
         "input": {
           "row_id": "lobbyist_spending_report_includes_specific_bill_number",
           "axis": "legal",
-          "value": true,
+          "value": false,
           "confidence": "high",
-          "cited_section": "§13.68(1)(bn); §13.67(1)",
-          "justification": "Section 13.67(1) requires reporting each legislative proposal and proposed administrative rule number, and §13.68(1)(bn) ties expense reporting to those proposals."
+          "cited_section": "§13.68(1)",
+          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01BJqW3AimFQ1qMnxNTrwmhx",
+        "id": "toolu_01G7CykczzoY42ay3CB8Vkqa",
         "caller": {
           "type": "direct"
         },
         "input": {
           "row_id": "lobbyist_spending_report_includes_total_compensation",
           "axis": "legal",
-          "value": true,
+          "value": false,
           "confidence": "high",
-          "cited_section": "§13.68(1)(a), (a)1.",
-          "justification": "Section 13.68(1)(a)1 expressly includes compensation to lobbyists for lobbying in the aggregate total of lobbying expenditures that must be reported."
+          "cited_section": "§13.68(1)",
+          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1), though compensation paid to lobbyists is reported within the principal's aggregate."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01N1oigvtZeK6DSaaVKtK3s1",
+        "id": "toolu_01Vk7jE8SfwYqwavhwPgy4Gv",
         "caller": {
           "type": "direct"
         },
         "input": {
           "row_id": "lobbyist_spending_report_includes_total_expenditures",
           "axis": "legal",
-          "value": true,
+          "value": false,
           "confidence": "high",
-          "cited_section": "§13.68(1)(a)",
-          "justification": "Section 13.68(1)(a) expressly requires reporting \"the aggregate total amount of lobbying expenditures made and obligations incurred for lobbying.\""
+          "cited_section": "§13.68(1)",
+          "justification": "No separate lobbyist spending report exists; §13.68(1) requires the principal to file the aggregate expense statement."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_015f883E9NFTxjr8shxiYpHy",
+        "id": "toolu_01BqGr6sGUczdV8nJe3e91d4",
         "caller": {
           "type": "direct"
         },
         "input": {
           "row_id": "lobbyist_spending_report_required_when_no_activity",
           "axis": "legal",
-          "value": true,
-          "confidence": "medium",
-          "cited_section": "§13.68(1); §13.64(2)",
-          "justification": "Section 13.68(1) requires every registered principal to file an expense statement each period without exception for no activity; under §13.64(2) the registration only terminates after the principal files a cessation statement and final expense statements."
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§13.68(1)",
+          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01JgkyuwniyLa5zCEcK71CD1",
+        "id": "toolu_0194hJeLm158LuM8ihJi5FPa",
         "caller": {
           "type": "direct"
         },
@@ -1096,14 +1096,14 @@
           "axis": "legal",
           "value": false,
           "confidence": "high",
-          "cited_section": "§13.68(1); §13.625(4m)(d)",
-          "justification": "Section 13.68(1) does not require disclosure regarding household members of officials, and §13.625(4m)(d) exempts things furnished to relatives or household members from the chapter's restrictions."
+          "cited_section": "§13.68(1)",
+          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01M826AcpQ5uxTQzZv9KSFV1",
+        "id": "toolu_011M2pK8Q3SRyhEKcsbTsEnb",
         "caller": {
           "type": "direct"
         },
@@ -1111,9 +1111,9 @@
           "row_id": "lobbyist_spending_report_uses_itemized_format",
           "axis": "legal",
           "value": false,
-          "confidence": "medium",
-          "cited_section": "§13.68(1)(a)",
-          "justification": "Section 13.68(1)(a) requires aggregate totals rather than full itemization; only specific items (payments to lobbyists over $200 and reimbursements to officials) require itemized listing."
+          "confidence": "high",
+          "cited_section": "§13.68(1)",
+          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
         },
         "name": "record_cell",
         "type": "tool_use"
@@ -1128,13 +1128,13 @@
     "usage": {
       "cache_creation": {
         "ephemeral_1h_input_tokens": 0,
-        "ephemeral_5m_input_tokens": 0
+        "ephemeral_5m_input_tokens": 29445
       },
-      "cache_creation_input_tokens": 0,
-      "cache_read_input_tokens": 29445,
+      "cache_creation_input_tokens": 29445,
+      "cache_read_input_tokens": 0,
       "inference_geo": "global",
-      "input_tokens": 2010,
-      "output_tokens": 7552,
+      "input_tokens": 5716,
+      "output_tokens": 6698,
       "server_tool_use": null,
       "service_tier": "standard",
       "output_tokens_details": {

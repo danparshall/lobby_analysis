@@ -138,6 +138,8 @@ Session: [`../convos/20260603_statute_disagreement_prior_art_review.md`](../conv
 
 ## Entry 3 — `prompt_text` column gap on the compendium TSV
 
+**Status update 2026-06-03 (evening): NARROW 17-row pass LANDED + VALIDATED.** See [`20260603_prompt_text_fix_iterations.md`](20260603_prompt_text_fix_iterations.md). `prompt_text` column added to TSV, populated for the 17 confirmed WI disagreement rows, plumbed through `CompendiumCellSpec` and `render_legal_roster`. Validation: Claude collapsed onto GPT's reading on all 17 rows (Pattern A 14/14 after iter-2 clarifier; Pattern B 3/3 after iter-1). Wide 181-row pass and column-rename-history tracking (Entry 4) still open.
+
 ### Row / context
 
 Affects every row in `compendium/disclosure_side_compendium_items_v2.tsv` (currently 181 rows). This is a **schema-level** gap, not a per-row gap.

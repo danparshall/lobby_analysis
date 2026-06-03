@@ -203,7 +203,18 @@ def _value_shape_hint(cls: Any) -> str:
 
 
 def render_legal_roster(chunk_id: str, topic: str, legal_specs: list[Any]) -> str:
-    """Render a legal-only roster as the per-chunk user message."""
+    """Render a legal-only roster as the per-chunk user message.
+
+    Each line carries the row_id + axis + expected cell class. If the spec
+    carries a `prompt_text` (verbatim source-rubric question text from the
+    `prompt_text` TSV column), it is emitted on a continuation line beneath
+    the row metadata. This addresses the convo
+    `20260603_statute_disagreement_prior_art_review` finding that row IDs
+    alone are a lossy compression of the source-author intent — populating
+    `prompt_text` for the 17 confirmed WI inter-model disagreement rows
+    tests whether the disambiguation resolves Claude/GPT divergence on
+    those rows.
+    """
     lines = [
         f"Answer all {len(legal_specs)} DE JURE (legal-axis) cells for chunk "
         f"`{chunk_id}` ({topic}):"
@@ -214,6 +225,9 @@ def render_legal_roster(chunk_id: str, topic: str, legal_specs: list[Any]) -> st
             f"- row_id={cs.row_id!r}, axis='legal', "
             f"expected_cell_class={cls.__name__}{_value_shape_hint(cls)}"
         )
+        prompt_text = getattr(cs, "prompt_text", None)
+        if prompt_text:
+            lines.append(f"  source-rubric question: {prompt_text}")
     lines.append("")
     lines.append(
         "Emit one `record_cell` call per (row_id, axis) you can answer from the "

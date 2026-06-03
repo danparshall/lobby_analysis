@@ -9,13 +9,13 @@
     "state_abbr": "WI",
     "vintage_year": 2025,
     "prompt_sha256": "cf5e534eb79e06bd8862cb6a71fa3ba6db44eb86d8d1b12b85431ef394b042c8",
-    "timestamp_utc": "2026-06-01T17:02:56+00:00"
+    "timestamp_utc": "2026-06-03T20:39:37+00:00"
   },
-  "wall_clock_seconds": 12.772396875021514,
+  "wall_clock_seconds": 11.313872750033624,
   "usage": {
-    "completion_tokens": 567,
-    "prompt_tokens": 19124,
-    "total_tokens": 19691,
+    "completion_tokens": 743,
+    "prompt_tokens": 19307,
+    "total_tokens": 20050,
     "completion_tokens_details": {
       "accepted_prediction_tokens": 0,
       "audio_tokens": 0,
@@ -24,10 +24,10 @@
     },
     "prompt_tokens_details": {
       "audio_tokens": 0,
-      "cached_tokens": 18944
+      "cached_tokens": 19200
     }
   },
-  "cost_usd_estimate": 0.041405,
+  "cost_usd_estimate": 0.044189250000000006,
   "legal_roster": [
     [
       "lobbyist_registration_threshold_compensation_dollars",
@@ -58,40 +58,51 @@
     {
       "cell": {
         "cell_id": [
+          "lobbyist_registration_threshold_compensation_dollars",
+          "legal"
+        ],
+        "conditional": true,
+        "condition_text": "Wisconsin statutes shown define 'lobbyist' by employment/contract for economic consideration (other than reimbursement for actual expenses) and a 5-days-per-reporting-period communication test when duties are not exclusively lobbying; no dollar-amount compensation threshold is specified.",
+        "confidence": "high",
+        "provenance": [],
+        "value": null
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "Wis. Stat. § 13.62(11)",
+      "justification": "Section 13.62(11) defines who is a 'lobbyist' without setting any minimum compensation dollar figure, instead using receipt of economic consideration and (in mixed-duty cases) a 5-day lobbying-communications threshold."
+    },
+    {
+      "cell": {
+        "cell_id": [
           "lobbyist_filing_itemization_de_minimis_threshold_dollars",
           "legal"
         ],
-        "conditional": false,
-        "condition_text": null,
+        "conditional": true,
+        "condition_text": "Applies to principal expense statements: if payments/obligations to any one lobbyist exceed $200 in a reporting period, the principal must list the lobbyist’s name/address and total amount paid/owed.",
         "confidence": "high",
         "provenance": [],
         "value": "200"
       },
       "cell_class": "DecimalCell",
       "cited_section": "Wis. Stat. § 13.68(1)(a)6.",
-      "justification": "The principal's expense statement must itemize (list name/address and total) payments to any lobbyist only if the total lobbying expenditures/obligations to that lobbyist exceed $200 during the reporting period."
+      "justification": "Section 13.68(1)(a)6 requires itemization (name/address and total) only when lobbying expenditures/obligations to a specific lobbyist exceed $200 during the reporting period."
     }
   ],
   "unscoreable_emissions": [
     {
-      "row_id": "lobbyist_registration_threshold_compensation_dollars",
-      "axis": "legal",
-      "reason": "The bundled text defines who is a 'lobbyist' (including a 5-days-per-reporting-period test) but does not set any compensation dollar threshold that triggers lobbyist licensing/registration."
-    },
-    {
       "row_id": "lobbyist_registration_threshold_expenditure_dollars",
       "axis": "legal",
-      "reason": "The statute sets a $500 expenditure/obligation threshold for principal registration (s. 13.64(1)) and for verified-statement exemption (s. 13.621(5)), but no dollar expenditure threshold is provided for when an individual must be licensed as a lobbyist."
+      "reason": "The bundled text contains no lobbyist-definition or licensure threshold based on a lobbyist’s own lobbying expenditures; only principal registration and principal expense-reporting thresholds are provided (e.g., §§ 13.64, 13.68)."
     },
     {
       "row_id": "lobbyist_filing_de_minimis_threshold_dollars",
       "axis": "legal",
-      "reason": "Lobbying reporting duties in the provided text are imposed on principals (s. 13.68) and agencies (s. 13.695), not on lobbyists via an independent de minimis dollar filing threshold."
+      "reason": "The bundled text imposes expense-statement filing duties on registered principals (Wis. Stat. § 13.68) and provides a principal-side $500 verified-statement exemption (Wis. Stat. § 13.621(5)), but it does not contain a lobbyist-side de minimis dollar threshold exempting lobbyists from disclosure filing."
     },
     {
       "row_id": "lobbyist_filing_de_minimis_threshold_time_percent",
       "axis": "legal",
-      "reason": "No lobbyist-specific filing requirement with a time-percent de minimis threshold appears in the bundled provisions; time thresholds shown relate to who is a lobbyist (5 days) and to excluding certain non-lobbyist employees (10 hours) from principal reporting (s. 13.68(1))."
+      "reason": "No statute in the bundle creates a lobbyist’s own time-percentage exemption from filing disclosures; the only quantified time carveouts shown are principal-reporting exclusions for certain employees (e.g., non-lobbyist employees devoting ≤10 hours per reporting period) in Wis. Stat. § 13.68(1)."
     }
   ],
   "errors": [
@@ -101,22 +112,20 @@
         "lobbyist_registration_threshold_time_percent",
         "legal"
       ],
-      "error": "2 validation errors for TimeThresholdCell\nmagnitude\n  Input should be an instance of Decimal [type=is_instance_of, input_value=5, input_type=int]\n    For further information visit https://errors.pydantic.dev/2.13/v/is_instance_of\nunit\n  Input should be 'hours_per_quarter', 'hours_per_year', 'days_per_year' or 'percent_of_work_time' [type=literal_error, input_value='days_per_reporting_period', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.13/v/literal_error",
+      "error": "TypeError('TimeThresholdCell expects dict-shaped `value`, got NoneType')",
       "arguments": {
         "row_id": "lobbyist_registration_threshold_time_percent",
         "axis": "legal",
-        "value": {
-          "magnitude": 5,
-          "unit": "days_per_reporting_period"
-        },
+        "value": null,
+        "condition_text": "Wisconsin defines 'lobbyist' using a 5-days-with-lobbying-communications test (when duties are not exclusively lobbying), not a percentage-of-time threshold.",
         "confidence": "high",
         "cited_section": "Wis. Stat. § 13.62(11)",
-        "justification": "An individual whose duties for a principal are not exclusively lobbying is a 'lobbyist' only if he or she makes lobbying communications on each of at least 5 days within a reporting period."
+        "justification": "Section 13.62(11) uses a '5 days within a reporting period' standard for mixed-duty individuals and does not provide any percent-of-time trigger for being a lobbyist."
       }
     }
   ],
   "response": {
-    "id": "chatcmpl-Dm0KCoTGTWcHVaGj2KQQknob7CRDW",
+    "id": "chatcmpl-Dmmf1teIIn6CcwlwQGMndL4NMVV3t",
     "choices": [
       {
         "finish_reason": "tool_calls",
@@ -131,49 +140,49 @@
           "function_call": null,
           "tool_calls": [
             {
-              "id": "call_Y2PJwUHTaKXhwH1n8Ejq5VeU",
+              "id": "call_mpPuYAEo1xzAvah7cJaTsjph",
               "function": {
-                "arguments": "{\"row_id\": \"lobbyist_registration_threshold_compensation_dollars\", \"axis\": \"legal\", \"reason\": \"The bundled text defines who is a 'lobbyist' (including a 5-days-per-reporting-period test) but does not set any compensation dollar threshold that triggers lobbyist licensing/registration.\"}",
-                "name": "record_unscoreable_cell"
-              },
-              "type": "function"
-            },
-            {
-              "id": "call_zbbWwOF2pymXvvz3W21gAz7s",
-              "function": {
-                "arguments": "{\"row_id\": \"lobbyist_registration_threshold_expenditure_dollars\", \"axis\": \"legal\", \"reason\": \"The statute sets a $500 expenditure/obligation threshold for principal registration (s. 13.64(1)) and for verified-statement exemption (s. 13.621(5)), but no dollar expenditure threshold is provided for when an individual must be licensed as a lobbyist.\"}",
-                "name": "record_unscoreable_cell"
-              },
-              "type": "function"
-            },
-            {
-              "id": "call_31HD9tu8wqvujSNDSycVDLH3",
-              "function": {
-                "arguments": "{\"row_id\": \"lobbyist_registration_threshold_time_percent\", \"axis\": \"legal\", \"value\": {\"magnitude\": 5, \"unit\": \"days_per_reporting_period\"}, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.62(11)\", \"justification\": \"An individual whose duties for a principal are not exclusively lobbying is a 'lobbyist' only if he or she makes lobbying communications on each of at least 5 days within a reporting period.\"}",
+                "arguments": "{\"row_id\": \"lobbyist_registration_threshold_compensation_dollars\", \"axis\": \"legal\", \"value\": null, \"condition_text\": \"Wisconsin statutes shown define 'lobbyist' by employment/contract for economic consideration (other than reimbursement for actual expenses) and a 5-days-per-reporting-period communication test when duties are not exclusively lobbying; no dollar-amount compensation threshold is specified.\", \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.62(11)\", \"justification\": \"Section 13.62(11) defines who is a 'lobbyist' without setting any minimum compensation dollar figure, instead using receipt of economic consideration and (in mixed-duty cases) a 5-day lobbying-communications threshold.\"}",
                 "name": "record_cell"
               },
               "type": "function"
             },
             {
-              "id": "call_pv5bvDJSdXjkgOgvXYbRdFpB",
+              "id": "call_RFK4ox1me0JEYB3LaWV34RJI",
               "function": {
-                "arguments": "{\"row_id\": \"lobbyist_filing_itemization_de_minimis_threshold_dollars\", \"axis\": \"legal\", \"value\": 200, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.68(1)(a)6.\", \"justification\": \"The principal's expense statement must itemize (list name/address and total) payments to any lobbyist only if the total lobbying expenditures/obligations to that lobbyist exceed $200 during the reporting period.\"}",
-                "name": "record_cell"
-              },
-              "type": "function"
-            },
-            {
-              "id": "call_UGQSJmGDw8sQpmf0rNzME4Dl",
-              "function": {
-                "arguments": "{\"row_id\": \"lobbyist_filing_de_minimis_threshold_dollars\", \"axis\": \"legal\", \"reason\": \"Lobbying reporting duties in the provided text are imposed on principals (s. 13.68) and agencies (s. 13.695), not on lobbyists via an independent de minimis dollar filing threshold.\"}",
+                "arguments": "{\"row_id\": \"lobbyist_registration_threshold_expenditure_dollars\", \"axis\": \"legal\", \"reason\": \"The bundled text contains no lobbyist-definition or licensure threshold based on a lobbyist’s own lobbying expenditures; only principal registration and principal expense-reporting thresholds are provided (e.g., §§ 13.64, 13.68).\"}",
                 "name": "record_unscoreable_cell"
               },
               "type": "function"
             },
             {
-              "id": "call_tpsgXRE2fFCLB9PF1AeYfq1g",
+              "id": "call_w3OhyLGO2HEilHTxegBJnGkR",
               "function": {
-                "arguments": "{\"row_id\": \"lobbyist_filing_de_minimis_threshold_time_percent\", \"axis\": \"legal\", \"reason\": \"No lobbyist-specific filing requirement with a time-percent de minimis threshold appears in the bundled provisions; time thresholds shown relate to who is a lobbyist (5 days) and to excluding certain non-lobbyist employees (10 hours) from principal reporting (s. 13.68(1)).\"}",
+                "arguments": "{\"row_id\": \"lobbyist_registration_threshold_time_percent\", \"axis\": \"legal\", \"value\": null, \"condition_text\": \"Wisconsin defines 'lobbyist' using a 5-days-with-lobbying-communications test (when duties are not exclusively lobbying), not a percentage-of-time threshold.\", \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.62(11)\", \"justification\": \"Section 13.62(11) uses a '5 days within a reporting period' standard for mixed-duty individuals and does not provide any percent-of-time trigger for being a lobbyist.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_qC7TOLsY5MODQ6inNY3Nf2Hb",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_filing_itemization_de_minimis_threshold_dollars\", \"axis\": \"legal\", \"value\": 200, \"condition_text\": \"Applies to principal expense statements: if payments/obligations to any one lobbyist exceed $200 in a reporting period, the principal must list the lobbyist’s name/address and total amount paid/owed.\", \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.68(1)(a)6.\", \"justification\": \"Section 13.68(1)(a)6 requires itemization (name/address and total) only when lobbying expenditures/obligations to a specific lobbyist exceed $200 during the reporting period.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_0i4L0QrzMZWw7IiaJJPGfd3I",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_filing_de_minimis_threshold_dollars\", \"axis\": \"legal\", \"reason\": \"The bundled text imposes expense-statement filing duties on registered principals (Wis. Stat. § 13.68) and provides a principal-side $500 verified-statement exemption (Wis. Stat. § 13.621(5)), but it does not contain a lobbyist-side de minimis dollar threshold exempting lobbyists from disclosure filing.\"}",
+                "name": "record_unscoreable_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_nYeVJneZZht7EFWtwO75ZqxE",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_filing_de_minimis_threshold_time_percent\", \"axis\": \"legal\", \"reason\": \"No statute in the bundle creates a lobbyist’s own time-percentage exemption from filing disclosures; the only quantified time carveouts shown are principal-reporting exclusions for certain employees (e.g., non-lobbyist employees devoting ≤10 hours per reporting period) in Wis. Stat. § 13.68(1).\"}",
                 "name": "record_unscoreable_cell"
               },
               "type": "function"
@@ -182,15 +191,15 @@
         }
       }
     ],
-    "created": 1780333364,
+    "created": 1780519167,
     "model": "gpt-5.2-2025-12-11",
     "object": "chat.completion",
     "service_tier": "default",
     "system_fingerprint": null,
     "usage": {
-      "completion_tokens": 567,
-      "prompt_tokens": 19124,
-      "total_tokens": 19691,
+      "completion_tokens": 743,
+      "prompt_tokens": 19307,
+      "total_tokens": 20050,
       "completion_tokens_details": {
         "accepted_prediction_tokens": 0,
         "audio_tokens": 0,
@@ -199,7 +208,7 @@
       },
       "prompt_tokens_details": {
         "audio_tokens": 0,
-        "cached_tokens": 18944
+        "cached_tokens": 19200
       }
     }
   }

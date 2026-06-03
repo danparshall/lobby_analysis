@@ -34,11 +34,20 @@ AxisLiteral = Literal["legal", "practical"]
 
 @dataclass(frozen=True)
 class CompendiumCellSpec:
-    """Pin a (row_id, axis) tuple to the expected CompendiumCell subclass."""
+    """Pin a (row_id, axis) tuple to the expected CompendiumCell subclass.
+
+    `prompt_text` carries the verbatim source-rubric question text (when
+    available) so the dispatch prompt can include it alongside the row_id.
+    Empty strings in the TSV become `None`. The narrow WI fix populates
+    `prompt_text` for the 17 confirmed inter-model disagreement rows
+    identified in convo `20260603_statute_disagreement_prior_art_review`;
+    the wide 181-row pass is a separate session.
+    """
 
     row_id: str
     axis: AxisLiteral
     expected_cell_class: type[CompendiumCell]
+    prompt_text: str | None = None
 
 
 # ---------------------------------------------------------------------------
@@ -162,24 +171,40 @@ def build_cell_spec_registry() -> dict[tuple[str, AxisLiteral], CompendiumCellSp
         row_id = row["compendium_row_id"]
         cell_type = row["cell_type"]
         axis = row["axis"]
+        # Tolerate absence of the prompt_text column (older TSV vintages).
+        # Empty cell -> None so callers can branch on truthiness uniformly.
+        prompt_text_raw = (row.get("prompt_text") or "").strip()
+        prompt_text = prompt_text_raw or None
 
         if axis == "legal":
             cls = _resolve_cell_class(_strip_axis_suffix(cell_type))
             registry[(row_id, "legal")] = CompendiumCellSpec(
-                row_id=row_id, axis="legal", expected_cell_class=cls
+                row_id=row_id,
+                axis="legal",
+                expected_cell_class=cls,
+                prompt_text=prompt_text,
             )
         elif axis == "practical":
             cls = _resolve_cell_class(_strip_axis_suffix(cell_type))
             registry[(row_id, "practical")] = CompendiumCellSpec(
-                row_id=row_id, axis="practical", expected_cell_class=cls
+                row_id=row_id,
+                axis="practical",
+                expected_cell_class=cls,
+                prompt_text=prompt_text,
             )
         elif axis == "legal+practical":
             legal_cls, practical_cls = _parse_combined_cell_type(cell_type)
             registry[(row_id, "legal")] = CompendiumCellSpec(
-                row_id=row_id, axis="legal", expected_cell_class=legal_cls
+                row_id=row_id,
+                axis="legal",
+                expected_cell_class=legal_cls,
+                prompt_text=prompt_text,
             )
             registry[(row_id, "practical")] = CompendiumCellSpec(
-                row_id=row_id, axis="practical", expected_cell_class=practical_cls
+                row_id=row_id,
+                axis="practical",
+                expected_cell_class=practical_cls,
+                prompt_text=prompt_text,
             )
         else:
             raise ValueError(
