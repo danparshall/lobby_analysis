@@ -15,6 +15,34 @@ This is the data-acquisition counterpart to Dan's Track A work (`statute-retriev
 
 (Newest entries first.)
 
+### 2026-06-03 (later) — (A') first real run GRADUATED + (B') batch runner built
+
+- **Branch:** `oh-portal-aprime-batch`, forked off `oh-portal-extraction` (run-and-PR per Dan).
+- **First real extracted data.** The (A') LLM call fired for the first time (quota reset 2026-06-01).
+  Report 1427844 (Aichele/ARC Gaming), run `bd540187`, `claude-opus-4-7`, 8.06s →
+  **29/31 rows CORRECT (93.5%), 0 WRONG → graduated to (B').** Validation table filled in
+  [`results/20260507_oh_a_prime_validation.md`](results/20260507_oh_a_prime_validation.md).
+- **The OLAC blocker was outside-US connectivity, not a portal defense.** From a US network the
+  live `requests.get` fetch worked first try — no VPN/browser-save needed. Browser-save is only
+  required when running from abroad. (B') from a US machine/CI is directly scrapable.
+- **Two schema gaps confirmed at extraction (both pre-flagged, neither a model error):**
+  (1) **employer dropped** — `filer_organization=null`, ARC Gaming preserved nowhere; the
+  (agent, employer) tuple has no slot. **Systematic** — HART + LKQ batch filings dropped their
+  employers too. Leading v1.4 candidate. (2) `is_itemized=null` (true `false`) — one-sentence
+  brief fix. No new gaps surfaced.
+- **(B') batch runner, built test-first:** new `pipeline.py` (`extract_one_filing`, factored out
+  of `__main__` which now delegates to it) + `batch.py` (`find_existing_extraction` resume guard,
+  `run_batch` skip+failure-isolation, `cli_main`) + `tests/test_oh_portal_batch.py` (4 tests, real
+  fs + injected worker, no network/LLM mocks). Ran the batch over the 3 seeds:
+  1427844 **skipped** (resume), 1459616/HART + 1405684/LKQ **extracted**, 0 failed. 3 OH filings
+  now extracted total. All 3 seeds turned out to be the same agent (Aichele), different employers.
+- **Gating open item for (B'):** **filing-ID enumeration** — the runner consumes a supplied URL
+  list; we have no way yet to discover the OLAC `report_id` universe. Flagged, not built.
+- **Tests:** oh_portal+batch 15/15; full suite 358 pass / 3 fail. The 3 fails are pre-existing
+  data-only (Track A `test_pipeline.py` wants CA snapshot `2026-04-13`; only `2026-05-01` synced
+  here; gitignored data). Inherited from branch point, not this session's code. ruff clean.
+- Convo: [`convos/20260603_oh_aprime_run_and_batch.md`](convos/20260603_oh_aprime_run_and_batch.md).
+
 ### 2026-06-03 — HANDOFF prepared; Dan taking branch over from Amina
 
 - **Ownership change:** Dan is taking this branch over from Amina (decided 2026-06-03 while
