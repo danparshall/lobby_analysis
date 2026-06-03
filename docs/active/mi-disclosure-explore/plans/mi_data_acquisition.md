@@ -16,6 +16,10 @@ have **no Michigan analog** and are out of scope. Analysis is deferred until dat
 probed yet — Phase 0 is a hard gate). High on *data model* (MI collects no bill-level
 lobbying data — this is well-established about Michigan's Lobby Registration Act).
 
+**Locked decisions (Dan, 2026-06-03):** (a1) entity + expenditure is the accepted MI MVP —
+no chain. (a2) **Single 2025 vintage only** — drop the multi-vintage optionality below.
+(a3) Proceed to Phase 0 recon immediately.
+
 **Architecture:** Reuse the WI pattern — polite fetcher + immutable full-HTML/JSON
 checkpoints + pure parsers + deterministic TSV materializers + committed HTML fixtures for
 TDD — under a new `src/lobby_analysis/io/mi/` package. **But the acquisition primitive
@@ -68,8 +72,9 @@ output TSVs at the top level).
 5. **Filing structure** — locate a real Financial Report Summary + its Itemized Expenditure
    schedule; record the fields actually present (total expenditure, period, itemized rows
    {date, purpose, recipient, amount, category}).
-6. **Vintage depth** — how far back did E-Lobby → MiTN migration carry? What's the earliest
-   retrievable filing year? (Informs whether we do multi-vintage like WI did.)
+6. **2025 availability** — confirm the full 2025 filing year (both semi-annual periods,
+   Jan 31 + Aug 31 deadlines) is present and retrievable in MiTN. (Vintage locked to 2025
+   only per a2 — no multi-year retrieval.)
 7. **Politeness / robots** — check `robots.txt`, rate limits, terms; set a conservative
    delay (WI used 1.0 s). Note any session/CSRF tokens entellitrak requires.
 8. **Volume estimate** — rough count of registrants and filings → wall-time estimate.
@@ -217,8 +222,7 @@ totals match the portal exactly; itemized-row counts match for ≥2 registrants.
 2. Configure the harness with the section URL list; run the retriever.
 3. Output: `data/statutes/mi/2025/manifest.json` (URLs, sha256, retrieved_at, role labels)
    + `data/statutes/mi/2025/sections/*.txt`.
-4. **Optional multi-vintage** (only if Dan wants it — WI did 2010/2015/2025): retrieve
-   2010 and 2015 vintages if Justia exposes them, to support cross-vintage stability checks.
+4. ~~Optional multi-vintage~~ — **dropped per a2. 2025 vintage only.**
 
 **Test:** manifest validates (every section has url + sha256 + non-empty local file);
 section count matches the configured list; no hallucinated/empty sections. (This mirrors the

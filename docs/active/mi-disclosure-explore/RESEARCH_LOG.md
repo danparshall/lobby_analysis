@@ -8,6 +8,30 @@ Newest entries first.
 
 ---
 
+## 2026-06-03 (later) — Phase 0 desk recon: no bulk download → scrape MiTN
+
+**Session type:** recon (desk).
+**Result doc:** [`results/20260603_mi_portal_recon.md`](results/20260603_mi_portal_recon.md)
+**Decisions locked by Dan:** (a1) entity+expenditure MVP, no chain; (a2) **2025 vintage only**;
+(a3) proceed with recon.
+
+**Findings:**
+- **No reliable public bulk download for 2025 MI lobby data.** Acquisition primitive =
+  **scrape/drive the MiTN entellitrak app** (`mi-boe.entellitrak.com/etk-mi-boe-prod/`).
+- Michigan has two lobby systems: **MiTN** (2024+, holds 2025, JS/AJAX, per-result export
+  only) and **legacy NIC** (`miboecfr.ni{c,ct}usa.com`, relationship data 1982–2023, bulk
+  `mi_lobby.sh` dump, but host is **decaying** — expired TLS cert, timeouts). The legacy bulk
+  dump is the **wrong vintage** for our 2025 target; useful only as a historical cross-check.
+- Confirmed facets incl. **"Employed By"** (the WI authorization-graph analog) and the
+  **Itemized Expenditure Form (LR-4)** + semi-annual Financial Report Summary.
+- `robots.txt` = 404 (no declared restrictions); still use ≥1.0 s delay.
+
+**Next:** short **live-browser recon** (Playwright / webapp-testing) to capture the
+entellitrak AJAX endpoint + decide between (A) search-and-export vs. (B) WI-style
+enumerate-and-fetch. Then start Phase 1.
+
+---
+
 ## 2026-06-03 — kickoff: WI reconstruction, MI recon, chunked acquisition plan
 
 **Session type:** planning / reconnaissance (no code).
