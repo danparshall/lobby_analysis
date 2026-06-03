@@ -239,33 +239,20 @@ After ~15 queries in this session (six covering LeMahieu, the rest exploratory),
 
 This is much more restrictive than the TOS's documented "1,000 records/year" cap would suggest — the quota appears to count something closer to "API calls" than "records returned," OR record-rollup queries count their aggregated underlying records.
 
-**Practical implication:** the basic tier is for ONE-OFF schema exploration, not for any production-shape work. The implementation branch MUST start with the expanded-access request:
+**Practical implication:** the basic tier is for ONE-OFF schema exploration, not for any production-shape work. The implementation branch's Phase 0 is a **calendar wait for the Institute's automatic review**, not a proactive email application.
 
-```
-To:      info@opensecrets.org
-Subject: Expanded API access for WI lobbying-data research (Canary Institute / Corda Democracy Fellowship)
+The error response wording — "The Institute will be in contact within the next two business days" — combined with the TOS's "The Institute reviews all users that exceed usage limits and will grant expanded access to users that meet the Institute's non-commercial, non-electoral criteria" — reads as **review-on-exceed, initiated by the Institute, not by the user**. No documented application form exists; an earlier search hit suggesting "academic users may apply for expanded access" turned out to refer to this same automatic review, not a separate application process.
 
-I'm requesting expanded FollowTheMoney API access for a non-commercial research
-project building open-source state-level lobbying-disclosure data infrastructure.
+**Workflow:**
 
-Affiliation: Canary Institute (501(c)(3) — AI Policy / democracy research)
-Project: lobby_analysis (open-source; part of the Corda Democracy Fellowship
-         led by Analogy Group). Repo: github.com/danparshall/lobby_analysis
-
-Specific use: pull Wisconsin 2024-2026 cycle contribution data for ~165 sitting
-state legislators (~500K records estimated) to link to existing lobbying-
-disclosure registrations. All outputs will be non-commercial, non-electoral,
-attributed to "National Institute on Money in State Politics" per the TOS, and
-published openly under a research-use license consistent with FTM's CC BY-NC-SA.
-
-(Optional: link to the chain TSV at releases/wi/chain/ + the scoping writeup
-at docs/active/wi-cfis-scoping/results/20260603_phase_4_cfis_scoping.md
-as evidence of the upstream research context.)
-
-Account email: <Dan's account>
-```
-
-Per TOS the Institute reviews within "the next two business days." Assume Phase 1 of the implementation branch starts only after this approval lands.
+1. Quota exceeded → account flagged → wait.
+2. **When the Institute's review email arrives** (per the documented 2-business-day SLA), reply with:
+   - Affiliation: Canary Institute 501(c)(3), Corda Democracy Fellowship at Analogy Group.
+   - Project framing: non-commercial open-source state-level lobbying-disclosure data infrastructure; repo `github.com/danparshall/lobby_analysis`.
+   - Planned use: WI 2024-2026 cycle contributions to ~165 sitting state legislators (~few hundred K transactions estimated) to link to existing lobbying-disclosure registrations.
+   - Compliance commitment: outputs non-commercial, non-electoral, attributed to "National Institute on Money in State Politics" per CC BY-NC-SA 3.0 US.
+   - Optional: link to `releases/wi/chain/WI_chain_2025.tsv` + `docs/active/wi-cfis-scoping/results/20260603_phase_4_cfis_scoping.md` as evidence of the upstream research context.
+3. **Only proactively email `info@opensecrets.org` if no contact arrives by ~end of business day 3-5.** Phrase as a status check on the existing review, not a new application.
 
 ---
 

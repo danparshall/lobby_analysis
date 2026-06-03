@@ -75,7 +75,7 @@ Dan opened an FTM account and pasted his API URL into chat mid-session, so the p
 
 **Yes, cut a separate `wi-campaign-finance` implementation branch.** Now with concrete shape:
 
-- **Phase 0** (calendar wait): submit expanded-access request to `info@opensecrets.org`. Wait ~2 business days for Institute approval.
+- **Phase 0** (calendar wait): wait for the Institute's automatic review email (~2 business days per the quota-exceed response SLA); reply with affiliation + project context when it arrives. Proactive email to `info@opensecrets.org` only if no contact by ~end of business day 3-5.
 - **Phase 1** (3-5 days post-approval): full FTM ingest of WI 2024 + 2025-2026 cycle contributions for all ~165 sitting WI legislators; principal-side / lawmaker-side / lobbyist-side crosswalks; materialize `releases/wi/campaign_finance/WI_contributions_*.tsv` and `WI_chain_v2_2025.tsv`.
 - **Phase 2** (conditional, 5-7 days): Selenium-Sunshine port to fill specific gaps Phase 1 surfaces. NOT a full duplicate ingest.
 

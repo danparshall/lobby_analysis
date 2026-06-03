@@ -17,7 +17,7 @@
 
 WI campaign-finance data **is publicly accessible** and **can close the chain's missing $-flow leg**. The cheapest credible path is **FollowTheMoney.org** (National Institute on Money in State Politics, under OpenSecrets) — schema confirmed end-to-end via a live sample query in this session (LeMahieu `c-t-eid=3073941`; 2,803 transactions / $609K / 1,822 contributors for the 2022 cycle). **FTM has already done the donor-entity canonicalization and industry classification** we'd otherwise have to build, and **the chain's SB 28 / ROFR coalition cross-validates** — Xcel Energy appears at #21 in LeMahieu's top-25 donors; WEC Energy Group's PAC shows up in transaction-level page 0; both match their chain positions as top SB 28 lobbying filers.
 
-The catch: **basic-tier API quota is much tighter than the TOS's "1,000 records/year" reads.** Dan's account exhausted basic-tier quota after ~15 queries in this scoping session and is now flagged for Institute review with a 2-business-day approval window. **Phase 1 of the implementation branch MUST start with the expanded-access request to `info@opensecrets.org`** — Canary Institute's 501(c)(3) status qualifies per the FTM TOS — then resume work after the gate clears.
+The catch: **basic-tier API quota is much tighter than the TOS's "1,000 records/year" reads.** Dan's account exhausted basic-tier quota after ~15 queries in this scoping session and is now flagged for Institute review with a 2-business-day Institute-initiated SLA per the response message. **Phase 0 of the implementation branch is a calendar wait, not a proactive application** — the Institute contacts the account holder; the user replies with affiliation context. Canary Institute's 501(c)(3) status qualifies for expanded access per the FTM TOS, so this is gating rather than a real risk.
 
 The fallback if FTM coverage turns out to be insufficient for specific gaps is **Selenium-driving Sunshine** (the ex-CFIS portal, now a Civera Next.js SPA at `wi.sunshine.civera.com`, no documented API, 65K-row UI-export cap). The Investigative Reporting Workshop's open-source `accountability_datacleaning` repo proved this approach at 8.39M-record scale against the old CFIS. With FTM-first, Sunshine becomes a coverage-gap supplement, not a duplicate ingest.
 
@@ -202,10 +202,12 @@ The CFIS leg is structurally separable from the lobbying-chain ingest (different
 
 (Phase 1's viability test was substantially executed in this scoping session — see [`20260603_ftm_sample_query_lemahieu.md`](20260603_ftm_sample_query_lemahieu.md). What remains for Phase 1 below is the expanded-access gate + a structured re-run once the gate clears.)
 
-**Phase 0 — expanded-access request (calendar wait, ~2 business days).**
+**Phase 0 — wait for Institute review (calendar wait, ~2 business days).**
 
-1. From the Canary Institute account, email `info@opensecrets.org` with the expanded-access request. Template in §6.6 of the sample-query writeup.
-2. Wait for Institute approval. **Do not run further API queries before approval lands** — additional traffic against the throttled account risks deprioritization.
+1. The basic-tier quota-exceed response **explicitly says the Institute will contact the account holder within 2 business days** for review (per the sample-query writeup §6). No proactive application is required by the documented TOS — review is automatic on quota exceed.
+2. **Do not run further API queries** in the meantime — additional traffic against the throttled account risks deprioritization.
+3. **When the Institute's review email arrives**, reply with affiliation context: Canary Institute 501(c)(3), Corda Democracy Fellowship at Analogy Group, non-commercial open-source research, planned use = WI 2024-2026 cycle contributions to ~165 sitting state legislators (~few hundred K transactions), attribution per CC BY-NC-SA 3.0 US.
+4. **Only proactively email `info@opensecrets.org` if no Institute contact arrives by ~end of business day 3-5.** Phrase as "checking on the status of the quota review" rather than as a fresh application.
 
 **Phase 1 — full FTM ingest + chain join (3-5 days, starts after Phase 0 approval).**
 
