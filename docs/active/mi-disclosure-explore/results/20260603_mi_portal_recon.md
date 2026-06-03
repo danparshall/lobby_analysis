@@ -47,12 +47,11 @@ schema reference, **not** as a 2025 source. 2025 lives only in MiTN, which has n
 7. **robots/politeness/TOS — PARTIAL.** `mi-boe.entellitrak.com/robots.txt` → **404** (no
    robots file = no declared crawl restrictions). Still use a conservative delay (≥1.0 s,
    WI convention) and a real UA. Check entellitrak for session/CSRF tokens during the browser
-   pass. **⚠️ MUST verify MiTN/SoS Terms of Use for a scripted-search prohibition BEFORE
-   scraping** — robots.txt absence ≠ permission. Precedent: **North Carolina** explicitly
-   forbids it ("Automated or scripted searches … are not permitted. For bulk access … use our
-   Data Subscription Services"), which is why the NC activity data is not freely obtainable.
-   If MiTN carries equivalent language, the scrape path is blocked and we'd be limited to
-   manual/per-filing export or a paid/again-FOIA route — same wall NC hit.
+   pass. **Read MiTN/SoS Terms of Use for a scripted-search prohibition** — not as a go/no-go
+   gate, but to know which world we're in: "just download/export" vs. "ask/demand it." If MiTN
+   carries NC-style language ("automated or scripted searches not permitted"), that does **not
+   stop us** — it becomes a practical-availability finding and triggers a records request.
+   See "Access posture & strategy" below.
 8. **Volume estimate — UNKNOWN (needs browser).** Historical scale reference: the legacy NIC
    dump held 8,261 lobbyist↔principal records over 1982–2023 (cumulative, not per-year).
 
@@ -72,6 +71,36 @@ The JS/AJAX nature of MiTN means these can't be resolved by static fetch:
   broad search (→ cheap "search-all + export" path) or only a single filing (→ full scrape).
 - Capture a registrant detail-page URL template + a real "Employed By" edge + a real
   Financial Report Summary / LR-4 itemized schedule, to seed parser fixtures.
+
+## Access posture & strategy (TOS vs. statutory public-records obligation)
+
+**Principle (applies to every state; see the parallel note on the `nc-disclosure-explore`
+branch).** A state's online-search **Terms of Use is a click-through contract of adhesion and
+does not override a statutory public-records obligation.** Where a lobbying-disclosure statute
+requires records to be public, the duty to make them *available* is on the state. So for this
+project an access barrier — a scripted-search prohibition, a JS-only per-record search, a
+paywalled bulk option — is **a practical-availability finding to record on the N×50×2 matrix,
+not a stop.**
+
+- **The lever that honors the statute is to put it back on the agency:** a public-records
+  request (or a direct ask) for the bulk electronic file in usable form. A refusal or paywall
+  on statutorily-public data is itself a documentable finding. (This is the same move the WI
+  work flagged — emailing `lobbying@wi.gov` to ask Ethics to run the authorization CSV.)
+- **Keep one distinction clean:** the statute typically guarantees *access* (often satisfiable
+  by per-record inspection or fee-based copies), not specifically *bulk machine-readable
+  provision*. So the request/demand is the right instrument. Scraping publicly-accessible data
+  is legally defensible post-*hiQ v. LinkedIn* (not a CFAA violation), and a **state actor's**
+  TOS purporting to restrict access to its own statutorily-public records is on weak ground —
+  but it carries practical risk (IP blocking regardless of legality) and an optics cost for a
+  democracy-fellowship project. **Hold scraping in reserve; lead with the records request.**
+
+**MI access posture (current best understanding):** lobby disclosure is **public by statute**
+(Michigan Lobby Registration Act, Act 472 of 1978, MCL 4.411–4.430). The 2025 data lives in
+MiTN, which offers a JS/AJAX search + per-result/per-filing export but **no free bulk
+download**. MiTN's full TOS has **not yet been read** — that's a recon item, but per the
+principle above it's not a gate. If MiTN allows broad search-and-export, that's the cheapest
+path; if it prohibits automation, we request the bulk file from the SoS/Bureau of Elections.
+Either way the data is public and the ask is on them.
 
 ## Recommendation (acquisition primitive)
 
