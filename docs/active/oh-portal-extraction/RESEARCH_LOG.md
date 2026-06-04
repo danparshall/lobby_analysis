@@ -15,6 +15,31 @@ This is the data-acquisition counterpart to Dan's Track A work (`statute-retriev
 
 (Newest entries first.)
 
+### 2026-06-04 — schema retargeted to current main + (B') discovery built; full pipeline reproducible
+
+- **Schema scare resolved (no v1.4 needed).** Investigated the belief that Amina's `LobbyingFiling`
+  was "ancient v1." Git says otherwise: her branch base (2026-05-18) postdates Compendium 2.0/v2,
+  and the only delta on main since was **two optional fields** (`total_hours_communicating`,
+  `total_hours_other`). Pulled them in surgically; the parser now targets current `LobbyingFiling`.
+  The v1→v2 transition was the **SMR/compendium** (Prong 1), a different schema from the
+  disclosure-record `LobbyingFiling` (Prong 2) the OH parser targets. Dropped the v1.4/Gowrav
+  ceremony. Re-extraction confirmed the employer can live in `filer_organization` (stochastic
+  run-to-run) — no schema gap, brief-consistency only.
+- **(B') filing-ID enumeration solved (the gating item).** Probed OLAC read-only and mapped the
+  agent-axis chain: `Agents/List` (CSV roster, 1,502 agents) → `FormsFiledSearch?LastName=` (agent
+  IDs) → `Agents/{id}/FormsFiled` (every form, with Year/Employer/Type/Period columns) → filter
+  `Type==AER` & recent years. Verified against ground truth (agent 5272 = Nathan Aichele; all 3
+  seeds present with correct employers). Built `discover.py` (TDD parsers/filter + live-validated
+  fetch, raw-artifact caching). Live: 139 recent AERs of 2,213 forms for Aichele.
+- **The index carries the employer per filing** — captures the (agent, employer) tuple structurally,
+  independent of the (stochastic) detail-page extraction.
+- **Full pipeline now reproducible end-to-end, no wrappers.** `discover --out x.tsv` → `batch --file
+  x.tsv` (batch reads the TSV's `aer_url` column directly); `env_local.load_env_local()` self-loads
+  the API key from `.env.local`. Proven: `batch --file <tsv>` with no key in the shell extracted 2
+  new filings end-to-end. Runbook: [`results/20260604_pipeline_runbook.md`](results/20260604_pipeline_runbook.md).
+- **Not run:** the full `discover --all` crawl (thousands of AERs → thousands of LLM calls) — pending
+  Dan's go + a robots.txt/ToS check. discover+batch tests 17 pass; full suite 365 / 3 pre-existing.
+
 ### 2026-06-03 (later) — (A') first real run GRADUATED + (B') batch runner built
 
 - **Branch:** `oh-portal-aprime-batch`, forked off `oh-portal-extraction` (run-and-PR per Dan).
