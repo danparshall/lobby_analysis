@@ -16,6 +16,7 @@ not on "the worker was called" as an end in itself.
 from pathlib import Path
 
 from lobby_analysis.oh_portal.batch import (
+    _read_urls,
     find_existing_extraction,
     run_batch,
 )
@@ -82,3 +83,34 @@ def test_run_batch_isolates_a_failing_filing(tmp_path: Path) -> None:
     assert "boom" in by_id["1405684"].error
     # A failure earlier in the list must not abort filings later in the list.
     assert by_id["1459616"].status == "extracted"
+
+
+def test_read_urls_extracts_aer_urls_from_discover_tsv(tmp_path: Path) -> None:
+    # The discover step emits a rich TSV; batch --file must consume it directly
+    # (pull the aer_url column, skip the header) so the two stages pipeline.
+    tsv = tmp_path / "recent.tsv"
+    tsv.write_text(
+        "report_id\tagent\tagent_id\temployer\tyear\treporting_period\tform_type\taer_url\n"
+        "1427844\tNathan Aichele\t5272\tARC Gaming\t2025\tMay-Aug25\tAER\t"
+        "https://www2.jlec-olig.state.oh.us/olac/AERs/1427844/View\n"
+        "1459616\tNathan Aichele\t5272\tHART\t2025\tSep-Dec25\tAER\t"
+        "https://www2.jlec-olig.state.oh.us/olac/AERs/1459616/View\n"
+    )
+    assert _read_urls(["--file", str(tsv)]) == [
+        "https://www2.jlec-olig.state.oh.us/olac/AERs/1427844/View",
+        "https://www2.jlec-olig.state.oh.us/olac/AERs/1459616/View",
+    ]
+
+
+def test_read_urls_still_accepts_plain_url_list(tmp_path: Path) -> None:
+    f = tmp_path / "urls.txt"
+    f.write_text(
+        "https://www2.jlec-olig.state.oh.us/olac/AERs/1427844/View\n"
+        "# a comment line\n"
+        "\n"
+        "https://www2.jlec-olig.state.oh.us/olac/AERs/1459616/View\n"
+    )
+    assert _read_urls(["--file", str(f)]) == [
+        "https://www2.jlec-olig.state.oh.us/olac/AERs/1427844/View",
+        "https://www2.jlec-olig.state.oh.us/olac/AERs/1459616/View",
+    ]

@@ -15,11 +15,14 @@ unsolved problem — this runner consumes a caller-supplied URL list.
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Literal, Optional, Sequence
 
 from lobby_analysis.oh_portal.fetch import parse_report_id
+
+_AER_URL_RE = re.compile(r"https?://\S*?/olac/AERs/\d+/View")
 
 BatchStatus = Literal["extracted", "skipped", "failed"]
 
@@ -84,11 +87,22 @@ def run_batch(
 
 
 def _read_urls(args: Sequence[str]) -> list[str]:
-    """URLs come either as positional args, or via `--file <path>` (one per
-    line, blank lines and `#` comments skipped)."""
+    """URLs come either as positional args, or via `--file <path>`.
+
+    A `--file` may be a plain one-URL-per-line list OR the discover step's rich
+    TSV — each non-comment line is scanned for an `/olac/AERs/{id}/View` URL and
+    that token is taken (so the header and any extra columns are ignored). This
+    is what lets `discover --out x.tsv` pipe straight into `batch --file x.tsv`."""
     if len(args) >= 2 and args[0] == "--file":
-        lines = Path(args[1]).read_text().splitlines()
-        return [ln.strip() for ln in lines if ln.strip() and not ln.startswith("#")]
+        urls: list[str] = []
+        for ln in Path(args[1]).read_text().splitlines():
+            ln = ln.strip()
+            if not ln or ln.startswith("#"):
+                continue
+            m = _AER_URL_RE.search(ln)
+            if m:
+                urls.append(m.group(0))
+        return urls
     return list(args)
 
 
@@ -96,9 +110,11 @@ def cli_main() -> int:
     """`python -m lobby_analysis.oh_portal.batch <url>... | --file <path>`."""
     import sys
 
+    from lobby_analysis.oh_portal.env_local import load_env_local
     from lobby_analysis.oh_portal.fetch import DATA_DIR
     from lobby_analysis.oh_portal.pipeline import extract_one_filing
 
+    load_env_local()
     urls = _read_urls(sys.argv[1:])
     if not urls:
         print(

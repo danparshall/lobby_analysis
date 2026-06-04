@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import sys
 
+from lobby_analysis.oh_portal.env_local import load_env_local
 from lobby_analysis.oh_portal.pipeline import extract_one_filing
 
 
@@ -18,6 +19,7 @@ def main() -> int:
         print(f"usage: {sys.argv[0]} <OLAC_AER_URL>", file=sys.stderr)
         return 2
 
+    load_env_local()
     url = sys.argv[1]
     filing_path = extract_one_filing(url, log=lambda msg: print(msg, file=sys.stderr))
     print(filing_path)
