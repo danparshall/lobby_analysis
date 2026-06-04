@@ -81,12 +81,27 @@ Dan opened an FTM account and pasted his API URL into chat mid-session, so the p
 
 Full Phase 4 writeup at `results/20260603_phase_4_cfis_scoping.md`; sample-query artifact at `results/20260603_ftm_sample_query_lemahieu.md`; FTM TOS + attribution requirements at scoping doc §7.
 
+## Late-session corrections + handoff prep (afternoon / overnight)
+
+After the FTM sample-query writeup landed, four iterative corrections + a handoff artifact:
+
+1. **Phase 0 framing corrected (proactive-email → wait-and-see → both).** Initial recommendation said "Phase 0 = email `info@opensecrets.org` requesting expanded access." Dan pushed back: the quota-exceed response *itself* says the Institute will be in contact within 2 business days, and the TOS says "the Institute reviews all users that exceed usage limits" — both read as Institute-initiated automatic review, not a user application. Earlier search-result snippet about "academic users may apply" turned out to refer to the same automatic process. Corrected to: default = wait for the Institute's review email; escalation = proactive `info@opensecrets.org` only if no contact by ~end of business day 3-5. Dan then opted to email proactively anyway since he had the address and time-to-Phase-1 matters.
+2. **Affiliation claims corrected.** Initial doc + email draft asserted "Canary Institute 501(c)(3)" as the qualifying argument. Dan corrected: Canary is not yet a 501(c)(3); the qualifying framing is **Fellow with the Corda Democracy Fellowship at Analogy Group** + open-source non-commercial research + the concrete published deliverable (the 115K-row chain TSV on main). Project also corrected from "WI-only investigation" to **"LobbyView for all 50 states" / 5-8 priority states / next few weeks** to match the actual project framing in README. Removed 5 Canary-501c3 claims across scoping doc, sample-query writeup, and STATUS row; kept the verbatim TOS quote (which references 501(c)(3) as FTM's published criteria).
+3. **Proactive email drafted.** Dan opted to email `info@opensecrets.org` proactively rather than wait. Final draft uses Corda Fellowship affiliation + 50-state project framing + next-few-weeks duration + the chain TSV as concrete evidence of upstream work. Compatible with both the wait-and-see and proactive paths.
+4. **Suhan-facing summary prepared.** Dan asked for a shareable summary for Suhan (project lead). The two writeups on `origin/wi-cfis-scoping` are the share artifacts; also drafted a tighter ~300-word Slack/email summary in chat for Dan to send directly. No third Suhan-targeted committed doc — the existing two writeups are already lead-friendly.
+
+### Plan doc committed for handoff
+
+Dan opted (in finish-convo step 2) to commit a plan for the `wi-campaign-finance` branch on this scoping branch, so the implementing agent has a self-contained brief.
+
+Plan doc: [`../plans/wi_campaign_finance.md`](../plans/wi_campaign_finance.md) — three-phase plan (Phase 0 calendar wait → Phase 1 FTM ingest + 3 crosswalks + materialize → conditional Phase 2 Selenium-Sunshine gap-fill). References this convo + both results docs as upstream context; assumes the implementing agent has zero codebase context.
+
 ## Next steps
 
-This branch's deliverable is the scoping doc; no further sessions planned here. Successor work belongs on a fresh `wi-campaign-finance` branch:
+This branch's deliverable is the scoping doc + sample-query writeup + handoff plan. No further sessions planned here. Successor work picks up on a fresh `wi-campaign-finance` branch (to be cut off post-merge main once this scoping branch merges):
 
-1. **Sign up for a free academic/nonprofit FollowTheMoney.org API key** (Canary Institute affiliation qualifies).
-2. **Cut `wi-campaign-finance` worktree** off post-merge main (after this `wi-cfis-scoping` branch merges, so the scoping doc is on main for reference).
-3. **Phase 1: FTM viability test.** Query for contributions received by Devin LeMahieu's candidate committee, 2024–2026 cycles. Spot-check against the 29 SB 28 principals (`docs/historical/wi-allocation-matrix/results/20260602_lemahieu_bill_inspection.md`) — does FTM see ATC Management, WEC Energy Group, WI Industrial Energy Group, etc.? Determine GO/NO-GO on FTM as primary source.
-4. **Hold over for the implementation branch:** the parent plan's Refinement #2 (cosponsor parsing) and whether to do it before or after the CFIS implementation work. The scoping doc recommends sizing the lawmaker-side crosswalk to all ~165 sitting legislators regardless of when cosponsors land, so the order is no longer load-bearing.
+1. **Watch the FTM account inbox** for the Institute's review email (~2 business days SLA per the quota-exceed response). Dan sent a proactive note in parallel so timing may be faster.
+2. **Cut the `wi-campaign-finance` worktree** off post-merge main.
+3. **Execute the plan** at `docs/historical/wi-cfis-scoping/plans/wi_campaign_finance.md` (or `docs/active/...` if the branch is cut before scoping merges). Phase 0 = wait. Phase 1 = ingest + crosswalks + materialize. Phase 2 = conditional Sunshine gap-fill.
+4. **Hold over:** the parent plan's Refinement #2 (cosponsor parsing) is independent. The plan sizes the lawmaker-side crosswalk for all ~165 sitting WI legislators (not just the chain's 132 primary sponsors), so cosponsor parsing later does not trigger crosswalk rework here.
 
