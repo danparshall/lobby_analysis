@@ -24,6 +24,10 @@ from lobby_analysis.oh_portal.fetch import DATA_DIR, fetch_olac_aer, parse_repor
 from lobby_analysis.oh_portal.provenance import build_provenance
 
 EXTRACTOR_IDENTITY = "oh-portal-extraction/v0.1"
+# This brief is OH legislative-regime-specific, so regime is a constant property
+# of the run (caller-stamped), not something the model extracts. Recorded in run
+# metadata; a first-class regime axis is deferred to the v2.2 schema pivot.
+REGIME = "legislative"
 
 
 def _noop(_msg: str) -> None:
@@ -74,6 +78,7 @@ def extract_one_filing(
         "report_id": report_id,
         "source_url": url,
         "raw_html_path": str(html_path),
+        "regime": REGIME,
         "model_id": MODEL_ID,
         "tool_name": TOOL_NAME,
         "prompt_version": prompt_version,

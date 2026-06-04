@@ -35,3 +35,38 @@ def test_brief_instructs_no_guessing() -> None:
         "brief must explicitly instruct the model to leave fields null "
         "rather than guess values"
     )
+
+
+def test_brief_routes_employer_to_employer_field_not_filer() -> None:
+    """Root-cause fix for the employer-misfiling divergence: the OH 'Employer'
+    is the principal, not the filer. The brief must direct it to the `employer`
+    field and explicitly address the filer_organization mis-file so the model
+    does not stuff the employer into the filer slot."""
+    brief = build_oh_legislative_brief()
+    assert "employer" in brief
+    assert "filer_organization" in brief, (
+        "brief must explicitly address the filer_organization mis-file"
+    )
+
+
+def test_brief_has_extraction_warnings_channel() -> None:
+    """The brief must instruct the model to record un-representable source
+    content in extraction_warnings rather than dropping it or forcing it into
+    an ill-fitting field — the visible-signal-over-silent-loss rule."""
+    brief = build_oh_legislative_brief()
+    assert "extraction_warnings" in brief
+
+
+def test_brief_has_no_phantom_regime_instruction() -> None:
+    """`regime` is not a field on LobbyingFiling; instructing the model to set
+    it is a dead instruction (regime is caller-stamped in run metadata). The
+    populate-a-phantom-field directive must not appear in the brief."""
+    brief = build_oh_legislative_brief()
+    assert "regime=" not in brief
+
+
+def test_brief_has_no_internal_scope_jargon() -> None:
+    """Process vocabulary like the (A') scope tier is meaningless to the model.
+    The brief is for the model, not a record of our internal process."""
+    brief = build_oh_legislative_brief()
+    assert "(A')" not in brief

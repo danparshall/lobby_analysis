@@ -1,6 +1,6 @@
 """Run one LLM extraction call against a fetched OLAC AER.
 
-Calls claude-opus-4-7 via the Anthropic SDK with tool-use enforcing the
+Calls the Anthropic SDK (model set by MODEL_ID) with tool-use enforcing the
 LobbyingFiling Pydantic schema. Fail-loud at every layer: HTTP error,
 missing tool call, Pydantic validation failure all raise.
 """
@@ -16,7 +16,7 @@ from bs4 import BeautifulSoup
 from lobby_analysis.models.filings import LobbyingFiling
 from lobby_analysis.models.provenance import Provenance
 
-MODEL_ID = "claude-opus-4-7"
+MODEL_ID = "claude-sonnet-4-6"
 TOOL_NAME = "emit_lobbying_filing"
 MAX_TOKENS = 8192
 

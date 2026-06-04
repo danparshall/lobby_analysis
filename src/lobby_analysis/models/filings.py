@@ -196,6 +196,15 @@ class LobbyingFiling(BaseModel):
         default=None, description="Set if the filer is an organization"
     )
     filer_role: Literal["lobbyist", "client", "firm"]
+    employer: Organization | None = Field(
+        default=None,
+        description=(
+            "The principal/employer the filing is filed on behalf of. NOT the "
+            "filer: for a person-agent filing (e.g., an OH legislative AER) the "
+            "filer is filer_person and the employer is a distinct organization. "
+            "Mirrors LobbyistRegistration.employer."
+        ),
+    )
 
     # Reporting period
     reporting_period_start: date | None = None
@@ -260,4 +269,12 @@ class LobbyingFiling(BaseModel):
     provenance: Provenance | None = None
     raw_text: str | None = Field(
         default=None, description="Full text of the filing for auditability"
+    )
+    extraction_warnings: list[str] = Field(
+        default_factory=list,
+        description=(
+            "Free-text notes from the extractor for source content that has no "
+            "schema slot. Records (rather than silently drops or mis-files) "
+            "un-representable information for human review / schema-gap triage."
+        ),
     )

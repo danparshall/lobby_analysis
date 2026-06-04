@@ -1,7 +1,7 @@
 """Builds the LLM extraction brief for OH legislative-agent A&E reports.
 
-The brief is the prompt content passed to claude-opus-4-7 alongside the
-fetched OLAC AER text. Keep it narrow to OH legislative regime — other
+The brief is the prompt content passed to the model (see MODEL_ID) alongside
+the fetched OLAC AER text. Keep it narrow to OH legislative regime — other
 regimes (executive-agency, retirement-system) and other states get their
 own briefs when (B') broadens.
 """
@@ -11,7 +11,7 @@ You are extracting one Ohio legislative-agent Activity & Expenditure Report (AER
 into a LobbyingFiling JSON record.
 
 Source: Ohio Lobbying Activity Center (OLAC), public AER view.
-Regime: legislative (governed by ORC §§101.70-101.79). Use regime="legislative".
+Regime: legislative (governed by ORC §§101.70-101.79).
 Form type: Legislative Agent Activity & Expenditure Report — quarterly-tri-annual
 filing covering one (agent, employer) engagement during one reporting window
 (May 31 / Sep 30 / Jan 31 deadlines).
@@ -44,12 +44,22 @@ Extraction rules:
 4. If a section is empty or shows "No expenditures", emit no expenditure rows
    for that section.
 
-5. Leave fields null when not stated in the source. Do NOT guess. Hallucinated
-   values pollute the validation log and break the (A') round-trip's signal.
+5. Leave fields null when not stated in the source. Do NOT guess or hallucinate.
 
-6. Populate filing-level fields from the report header: agent name, employer
-   name, reporting period dates, date filed, confirmation number (use as the
-   external filing_id).
+6. Populate filing-level fields from the report header. The agent name is the
+   filer — set filer_person. Also set the reporting period dates, date filed,
+   and confirmation number (use the confirmation number as the external
+   filing_id). The "Employer" on the OH form is the principal the agent lobbies
+   for — it is NOT the filer. Put it in the `employer` field. Do NOT put it in
+   filer_organization (that field is only for when the filer itself is an
+   organization; here the filer is the agent, a person).
+
+7. If the source contains information that does not fit any schema field, do NOT
+   silently drop it and do NOT force it into an ill-fitting field. Add a short,
+   specific note to extraction_warnings describing what you saw and why it did
+   not fit (e.g., "Section II.D splits into Meals/Speaking/National Conference
+   sub-amounts; schema has one entertainment row, sub-breakdown lost"). This is
+   how you flag schema gaps for human review.
 """
 
 
