@@ -9,6 +9,19 @@ Plan: `plans/20260530_wi_2025_tier1_direct_read.md`
 
 ## Session history (newest first)
 
+### 2026-06-04 — wide prompt_text pass scoped + planned (YAML sidecar design)
+Convo: [`convos/20260604_wide_pass_yaml_sidecar_design.md`](convos/20260604_wide_pass_yaml_sidecar_design.md) · Plan: [`plans/20260604_wide_prompt_text_pass.md`](plans/20260604_wide_prompt_text_pass.md)
+- **Picked up the 2026-06-03 handoff; Dan chose option (a)** — wide 181-row `prompt_text` pass over options (b) MI dispatch and (c) Pattern C axis split. Pure design session — no code, no API spend.
+- **Architectural shift settled:** prompts move out of TSV into a sidecar YAML at `compendium/source_quotes.yaml`. Per-row YAML structure is two flat fields: `source_quotes` (dict keyed by rubric+section ref, immutable reference material) + `prompt` (flat string, what the model sees, mutable — Ralph-loop target). Citations dropped from the model-facing prompt; provenance lives in YAML keys. Closes v2.2 ledger Entry 4 implicitly via the multi-rubric `source_quotes` dict (no separate rename-history file needed).
+- **Opaque-handle renderer rewrite:** `render_legal_roster` will send per-chunk handles (`row_001`, `row_002`, …) + prompt only; result parser maps handles → row_ids on receipt. Row IDs stay internal. Dan's framing: "the row name shouldn't be something they need to worry about, or probably even see." Forcing-function for prompt quality — prompts can't lean on row-name semantic leakage.
+- **Source-of-truth shift:** runtime reads YAML directly; TSV's `prompt_text` column gets dropped. TSV remains the compendium-row contract; YAML is the prompt SSOT. Two different change cycles (TSV bumps compendium version; YAML doesn't).
+- **Rubric distribution counted** across the 181 rows: PRI 2010 = 81 (45%), FOCAL 2024 = 35 (19%), HG 2007 = 29 (16%), CPI 2015 = 18 (10%), Sunlight 2015 = 10 (6%), Newmark 2017 = 6 (3%), LobbyView schema = 1, OpenSecrets-tabled = 1. Both outlier rows have usable source material — handled inline, no special policy.
+- **Rename-cleanup commit demoted to optional/stylistic.** Initial proposal was a substantive rename pass; Dan pulled back — once opaque handles ship, the row-name-as-prompt bug is fixed at the source, and the renames become a much smaller human-readability question.
+- **Re-dispatch sequencing:** after wide-pass YAML lands, re-dispatch WI as a cheap sanity check (~$2.50, ~20 min) then move to MI.
+- **Plan written** with 4-commit sequence: (1) renderer rewrite + YAML scaffolding, (2) YAML population, (3) WI re-dispatch + audit, (4) optional stylistic-rename commit (deferred).
+- **Session meta-pattern flagged:** I proposed structurally elaborate solutions four times across the brainstorm (clarifier slot, quote+clarifier derivation rule, rename mapping file, substantive rename commit); Dan pulled back to the flat-and-simple form each time. The corrections were load-bearing — each simplification eliminated a real future-friction point. Captured in the convo for future-session reference.
+- **No API spend** (cumulative WI Tier-1 ledger unchanged at $4.7504).
+
 ### 2026-06-03 (evening) — prompt_text fix landed + validated in 2 iterations
 Convo: [`convos/20260603_prompt_text_fix_iterations_1_and_2.md`](convos/20260603_prompt_text_fix_iterations_1_and_2.md)
 - **Narrow 17-row fix from the morning handoff landed.** Added `prompt_text` column to `compendium/disclosure_side_compendium_items_v2.tsv` (181 rows; 17 populated, 164 left empty pending wide pass). Added optional `prompt_text` field to `CompendiumCellSpec`; registry builder loads it tolerantly (None if absent or empty). `render_legal_roster` emits `  source-rubric question: <verbatim>` as a continuation line below the row metadata when present. Test-first: 6 RED tests for the column + plumbing, GREEN after the 3 coordinated code edits + TSV population. Full suite **1559 pass / 3 skip / 3 xfail** (baseline 1553 + 6 new).
