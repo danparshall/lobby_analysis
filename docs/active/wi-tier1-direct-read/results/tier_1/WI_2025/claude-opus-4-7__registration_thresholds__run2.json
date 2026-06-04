@@ -1,0 +1,294 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "registration_thresholds",
+    "run_index": 2,
+    "state_abbr": "WI",
+    "vintage_year": 2025,
+    "prompt_sha256": "cf5e534eb79e06bd8862cb6a71fa3ba6db44eb86d8d1b12b85431ef394b042c8",
+    "timestamp_utc": "2026-06-04T16:51:06+00:00"
+  },
+  "wall_clock_seconds": 26.81870045902906,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 1284
+    },
+    "cache_creation_input_tokens": 1284,
+    "cache_read_input_tokens": 29466,
+    "inference_geo": "global",
+    "input_tokens": 6,
+    "output_tokens": 2329,
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.058255,
+  "legal_roster": [
+    [
+      "lobbyist_registration_threshold_compensation_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_threshold_expenditure_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_threshold_time_percent",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_itemization_de_minimis_threshold_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_de_minimis_threshold_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_de_minimis_threshold_time_percent",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_threshold_compensation_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "0"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "§ 13.62(11)",
+      "justification": "Section 13.62(11) defines a lobbyist as any individual employed by, contracting for, or receiving economic consideration (beyond actual-expense reimbursement) from a principal whose duties include lobbying — no minimum dollar amount is set, so any paid person qualifies (YES/Tier 0)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_threshold_expenditure_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "0"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "§ 13.62(11)",
+      "justification": "The lobbyist definition in § 13.62(11) contains no expenditure threshold for the lobbyist's own spending that triggers registration; lobbyist status is based on receiving compensation for lobbying, not on dollars spent."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_filing_de_minimis_threshold_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "500"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "§ 13.621(5) and § 13.64(1)",
+      "justification": "Section 13.64(1) requires registration only when a principal's lobbying expenditures/obligations exceed $500 in a calendar year, and § 13.621(5) allows a principal anticipating no more than $500 in such expenditures to file a verified statement exempting it from licensing, registration, and expense-reporting requirements."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_filing_de_minimis_threshold_time_percent",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": 0.0
+      },
+      "cell_class": "FloatCell",
+      "cited_section": "§ 13.62(11) and § 13.68(1)(a)",
+      "justification": "Neither the lobbyist definition in § 13.62(11) nor the reporting provisions of § 13.68(1)(a) establish a percentage-of-compensated-time exemption from lobbyist filing duties; the only time-related carve-out is a flat 10-hours-per-reporting-period rule for non-lobbyist employees in expense aggregation, not a percentage-based filing exemption for the lobbyist."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [
+    {
+      "reason": "instantiation_failed",
+      "key": [
+        "lobbyist_registration_threshold_time_percent",
+        "legal"
+      ],
+      "error": "1 validation error for TimeThresholdCell\nunit\n  Input should be 'hours_per_quarter', 'hours_per_year', 'days_per_year' or 'percent_of_work_time' [type=literal_error, input_value='days_per_reporting_period', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.13/v/literal_error",
+      "arguments": {
+        "handle": "row_003",
+        "axis": "legal",
+        "value": {
+          "magnitude": 5,
+          "unit": "days_per_reporting_period"
+        },
+        "confidence": "high",
+        "cited_section": "§ 13.62(11)",
+        "justification": "Section 13.62(11) provides that when an individual's duties are not exclusively lobbying, the individual is a lobbyist \"only if he or she makes lobbying communications on each of at least 5 days within a reporting period,\" establishing a time/day-count threshold in the lobbyist definition."
+      }
+    },
+    {
+      "reason": "instantiation_failed",
+      "key": [
+        "lobbyist_filing_itemization_de_minimis_threshold_dollars",
+        "legal"
+      ],
+      "error": "1 validation error for DecimalCell\nvalue\n  Value error, DecimalCell.value must be non-negative [type=value_error, input_value=Decimal('-1'), input_type=Decimal]\n    For further information visit https://errors.pydantic.dev/2.13/v/value_error",
+      "arguments": {
+        "handle": "row_004",
+        "axis": "legal",
+        "value": "-1",
+        "confidence": "high",
+        "cited_section": "§ 13.68(1)(a)5. and § 13.68(1)(a)6.",
+        "justification": "Section 13.68(1)(a)5 requires reporting paid-advertising/grassroots lobbying expenditures only \"if the total ... exceeds $500 during the reporting period,\" and § 13.68(1)(a)6 requires itemizing payments to a lobbyist only if they exceed $200 — both de minimis thresholds exempt lobbying expenditures below those amounts from individualized disclosure."
+      }
+    }
+  ],
+  "response": {
+    "id": "msg_011hL7sD2gpkf9KjJ2hA4oqG",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "I'll analyze each cell against the Wisconsin statute text.\n\n**row_001**: Lobbyist definition — § 13.62(11) defines lobbyist as one who \"contracts for or receives economic consideration, other than reimbursement for actual expenses, from a principal.\" No dollar threshold on the lobbyist side; any paid person is a lobbyist (subject to the 5-day rule if duties aren't exclusively lobbying).\n\n**row_002**: No expenditure threshold on the lobbyist's own spending triggers lobbyist status. The $500 threshold in § 13.64(1) applies to the principal's registration, not lobbyist definition.\n\n**row_003**: § 13.62(11) — \"the individual is a lobbyist only if he or she makes lobbying communications on each of at least 5 days within a reporting period\" (only when duties aren't exclusively lobbying). This is a day-count threshold.\n\n**row_004**: § 13.68(1)(a)5 — paid advertising etc. lobbying expenditures included only \"if the total amount of all such lobbying expenditures made and obligations incurred exceeds $500 during the reporting period.\" § 13.68(1)(a)6 itemizes lobbyist payments only if exceeds $200. So not all expenditures must be itemized — there are de minimis thresholds.\n\n**row_005**: § 13.621(5) and § 13.64(1) — principal exempted from full registration/reporting if expenditures don't exceed $500/calendar year (verified statement option).\n\n**row_006**: § 13.68(1)(a) excludes from aggregate reporting \"any employee of the principal who is not a lobbyist and who devotes not more than 10 hours to lobbying during a reporting period.\" This is an hours threshold, not a percentage of compensated time. No percentage-based threshold exists in the statute.",
+        "type": "text"
+      },
+      {
+        "id": "toolu_01L8VkFW6ToWRwbYte8NNdw2",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_001",
+          "axis": "legal",
+          "value": "0",
+          "confidence": "high",
+          "cited_section": "§ 13.62(11)",
+          "justification": "Section 13.62(11) defines a lobbyist as any individual employed by, contracting for, or receiving economic consideration (beyond actual-expense reimbursement) from a principal whose duties include lobbying — no minimum dollar amount is set, so any paid person qualifies (YES/Tier 0)."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_019JbYQk4Y5KQRQrXfwHn7wb",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_002",
+          "axis": "legal",
+          "value": "0",
+          "confidence": "high",
+          "cited_section": "§ 13.62(11)",
+          "justification": "The lobbyist definition in § 13.62(11) contains no expenditure threshold for the lobbyist's own spending that triggers registration; lobbyist status is based on receiving compensation for lobbying, not on dollars spent."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01BKZhituxRpYcEiiTfeHtj8",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_003",
+          "axis": "legal",
+          "value": {
+            "magnitude": 5,
+            "unit": "days_per_reporting_period"
+          },
+          "confidence": "high",
+          "cited_section": "§ 13.62(11)",
+          "justification": "Section 13.62(11) provides that when an individual's duties are not exclusively lobbying, the individual is a lobbyist \"only if he or she makes lobbying communications on each of at least 5 days within a reporting period,\" establishing a time/day-count threshold in the lobbyist definition."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01RXHSrx8qvtR4yV1PJDyeSB",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_004",
+          "axis": "legal",
+          "value": "-1",
+          "confidence": "high",
+          "cited_section": "§ 13.68(1)(a)5. and § 13.68(1)(a)6.",
+          "justification": "Section 13.68(1)(a)5 requires reporting paid-advertising/grassroots lobbying expenditures only \"if the total ... exceeds $500 during the reporting period,\" and § 13.68(1)(a)6 requires itemizing payments to a lobbyist only if they exceed $200 — both de minimis thresholds exempt lobbying expenditures below those amounts from individualized disclosure."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_018jQHYZH6BUR6FZJ1Ba8HNE",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_005",
+          "axis": "legal",
+          "value": "500",
+          "confidence": "high",
+          "cited_section": "§ 13.621(5) and § 13.64(1)",
+          "justification": "Section 13.64(1) requires registration only when a principal's lobbying expenditures/obligations exceed $500 in a calendar year, and § 13.621(5) allows a principal anticipating no more than $500 in such expenditures to file a verified statement exempting it from licensing, registration, and expense-reporting requirements."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_017vjyLxRSycrPGzs6jxrvuw",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_006",
+          "axis": "legal",
+          "value": "0",
+          "confidence": "high",
+          "cited_section": "§ 13.62(11) and § 13.68(1)(a)",
+          "justification": "Neither the lobbyist definition in § 13.62(11) nor the reporting provisions of § 13.68(1)(a) establish a percentage-of-compensated-time exemption from lobbyist filing duties; the only time-related carve-out is a flat 10-hours-per-reporting-period rule for non-lobbyist employees in expense aggregation, not a percentage-based filing exemption for the lobbyist."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 1284
+      },
+      "cache_creation_input_tokens": 1284,
+      "cache_read_input_tokens": 29466,
+      "inference_geo": "global",
+      "input_tokens": 6,
+      "output_tokens": 2329,
+      "server_tool_use": null,
+      "service_tier": "standard",
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      }
+    }
+  }
+}

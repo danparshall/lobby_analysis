@@ -1,0 +1,635 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "lobbying_definitions",
+    "run_index": 3,
+    "state_abbr": "WI",
+    "vintage_year": 2025,
+    "prompt_sha256": "cf5e534eb79e06bd8862cb6a71fa3ba6db44eb86d8d1b12b85431ef394b042c8",
+    "timestamp_utc": "2026-06-04T16:50:15+00:00"
+  },
+  "wall_clock_seconds": 37.82198566698935,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 1771
+    },
+    "cache_creation_input_tokens": 1771,
+    "cache_read_input_tokens": 29466,
+    "inference_geo": "global",
+    "input_tokens": 6,
+    "output_tokens": 3835,
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.095905,
+  "legal_roster": [
+    [
+      "def_lobbying_activity_types",
+      "legal"
+    ],
+    [
+      "def_lobbyist_actor_types",
+      "legal"
+    ],
+    [
+      "law_defines_public_entity",
+      "legal"
+    ],
+    [
+      "law_includes_materiality_test",
+      "legal"
+    ],
+    [
+      "def_target_executive_agency",
+      "legal"
+    ],
+    [
+      "def_target_executive_staff",
+      "legal"
+    ],
+    [
+      "def_target_governors_office",
+      "legal"
+    ],
+    [
+      "def_target_independent_agency",
+      "legal"
+    ],
+    [
+      "def_target_legislative_branch",
+      "legal"
+    ],
+    [
+      "def_target_legislative_staff",
+      "legal"
+    ],
+    [
+      "def_actor_class_elected_officials",
+      "legal"
+    ],
+    [
+      "def_actor_class_public_employees",
+      "legal"
+    ],
+    [
+      "public_entity_def_relies_on_charter",
+      "legal"
+    ],
+    [
+      "public_entity_def_relies_on_ownership",
+      "legal"
+    ],
+    [
+      "public_entity_def_relies_on_revenue_structure",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "def_lobbying_activity_types",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": [
+          "preparation time",
+          "appearances at public hearings",
+          "service on a committee",
+          "oral communication",
+          "appearances at meetings",
+          "written communication"
+        ]
+      },
+      "cell_class": "EnumSetCell",
+      "cited_section": "§13.62(10)",
+      "justification": "Section 13.62(10) defines lobbying as attempting to influence legislative or administrative action by oral or written communication, including preparation time and appearances at public hearings or meetings or service on a committee."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_lobbyist_actor_types",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": [
+          "in-house organisation lobbyists",
+          "in-house company lobbyists",
+          "public entities/government agencies (via separate agency statements)",
+          "professional lobbyists/consultants"
+        ]
+      },
+      "cell_class": "EnumSetCell",
+      "cited_section": "§13.62(11), §13.62(12), §13.695(1)",
+      "justification": "Section 13.62(11) defines lobbyist as an individual employed by or contracting with a principal (covering professional consultants and in-house lobbyists); §13.62(12) defines principals broadly (associations, corporations, etc.); and §13.695(1) requires state agencies to file statements identifying employees who lobby."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "law_defines_public_entity",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.62",
+      "justification": "The definitions section §13.62 does not include a definition of \"public entity\"; it defines \"agency\" instead, and no separate \"public entity\" term is defined."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "law_includes_materiality_test",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.621(5), §13.64(1)",
+      "justification": "Section 13.621(5) provides an exemption from licensing/registration/reporting for principals who anticipate aggregate lobbying expenditures not exceeding $500 in a calendar year, and §13.64(1) sets a $500 threshold for principal registration — both materiality-based thresholds."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_executive_agency",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.62(10), §13.62(6), §13.62(8)",
+      "justification": "Section 13.62(10) defines lobbying as communications with elective state officials, agency officials, or legislative employees; §13.62(6) defines elective state official to include those holding elective state office (which per §13.62(11p) includes the governor); and §13.62(8) includes the governor's approval/veto as legislative action."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_executive_staff",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.62(10), §13.62(3), §13.62(8m)",
+      "justification": "Section 13.62(10) covers communications with elective state officials, agency officials, and legislative employees; §13.62(3) defines agency officials to include members/officers/employees/consultants participating in administrative action; §13.62(8m) defines legislative employees broadly — covering legislative and executive branches and staff."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_governors_office",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.62(10), §13.62(11p)",
+      "justification": "Section 13.62(10) includes communications with elective state officials and agency officials; §13.62(11p) lists governor among partisan elective state offices — so lobbying definition covers both legislators and executive officials including the governor."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_independent_agency",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.62(10), §13.62(11p)",
+      "justification": "Section 13.62(10) defines lobbying to include communications with elective state officials and agency officials, and §13.62(11p) confirms the governor is an elective state official."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_legislative_branch",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.62(10), §13.62(11p)",
+      "justification": "Section 13.62(10) defines lobbying as communications with elective state officials, agency officials, or legislative employees, which per §13.62(11p) includes the governor."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_legislative_staff",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.62(10), §13.62(3), §13.62(8m), §13.62(11p)",
+      "justification": "Lobbying targets defined in §13.62(10) include elective state officials (legislators, governor — §13.62(11p)), agency officials (executive branch members/officers/employees — §13.62(3)), and legislative employees (§13.62(8m))."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_actor_class_elected_officials",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.621(3)",
+      "justification": "Section 13.621(3) exempts elective state officials, local officials, tribal officials, and legislative employees from the registration/licensing/reporting requirements when acting in an official capacity, so they are not required to register as lobbyists."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_actor_class_public_employees",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.62(11), §13.68(1)(a)",
+      "justification": "Section 13.62(11) sets compensation (\"economic consideration, other than reimbursement for actual expenses\") and time/frequency (\"lobbying communications on each of at least 5 days within a reporting period\") standards for who qualifies as a lobbyist; §13.68(1)(a) sets a 10-hour threshold for employee lobbying disclosures."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "public_entity_def_relies_on_charter",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.62",
+      "justification": "The lobbyist/principal definitions in §13.62 rely on the employment/compensation relationship and lobbying activity, not on any public charter or special government protection status."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "public_entity_def_relies_on_ownership",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.62",
+      "justification": "The definitions in §13.62 of lobbyist and principal are based on employment/contracting relationships and lobbying activity, not on ownership criteria."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "public_entity_def_relies_on_revenue_structure",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.62",
+      "justification": "The definitions in §13.62 do not rely on the structure or composition of revenue; they rely on the employment/compensation relationship and lobbying activity thresholds."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "msg_017x7m3H51jNydkacpuTJmjA",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "I'll analyze each row against the Wisconsin statute text and record my answers.",
+        "type": "text"
+      },
+      {
+        "id": "toolu_01SQpsaBKJbxeyta9fhsh893",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_001",
+          "axis": "legal",
+          "value": [
+            "oral communication",
+            "written communication",
+            "preparation time",
+            "appearances at public hearings",
+            "appearances at meetings",
+            "service on a committee"
+          ],
+          "confidence": "high",
+          "cited_section": "§13.62(10)",
+          "justification": "Section 13.62(10) defines lobbying as attempting to influence legislative or administrative action by oral or written communication, including preparation time and appearances at public hearings or meetings or service on a committee."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_019awS6pXrrj9oa8BxRv89hE",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_002",
+          "axis": "legal",
+          "value": [
+            "professional lobbyists/consultants",
+            "in-house company lobbyists",
+            "in-house organisation lobbyists",
+            "public entities/government agencies (via separate agency statements)"
+          ],
+          "confidence": "medium",
+          "cited_section": "§13.62(11), §13.62(12), §13.695(1)",
+          "justification": "Section 13.62(11) defines lobbyist as an individual employed by or contracting with a principal (covering professional consultants and in-house lobbyists); §13.62(12) defines principals broadly (associations, corporations, etc.); and §13.695(1) requires state agencies to file statements identifying employees who lobby."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_016txqYQo1zVxRseTPXdAAap",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_003",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§13.62",
+          "justification": "The definitions section §13.62 does not include a definition of \"public entity\"; it defines \"agency\" instead, and no separate \"public entity\" term is defined."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01XQrpJe14ZH4MQA6TQQh9vU",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_004",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.621(5), §13.64(1)",
+          "justification": "Section 13.621(5) provides an exemption from licensing/registration/reporting for principals who anticipate aggregate lobbying expenditures not exceeding $500 in a calendar year, and §13.64(1) sets a $500 threshold for principal registration — both materiality-based thresholds."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01Mv1w61GwFuub1dhyqcLnVM",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_005",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.62(10), §13.62(6), §13.62(8)",
+          "justification": "Section 13.62(10) defines lobbying as communications with elective state officials, agency officials, or legislative employees; §13.62(6) defines elective state official to include those holding elective state office (which per §13.62(11p) includes the governor); and §13.62(8) includes the governor's approval/veto as legislative action."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_013ZZ85H6tLqyoiCoB8HBmwn",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_006",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.62(10), §13.62(3), §13.62(8m)",
+          "justification": "Section 13.62(10) covers communications with elective state officials, agency officials, and legislative employees; §13.62(3) defines agency officials to include members/officers/employees/consultants participating in administrative action; §13.62(8m) defines legislative employees broadly — covering legislative and executive branches and staff."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_015UDhy8cKHcxdczdFB6xEyL",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_007",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.62(10), §13.62(11p)",
+          "justification": "Section 13.62(10) includes communications with elective state officials and agency officials; §13.62(11p) lists governor among partisan elective state offices — so lobbying definition covers both legislators and executive officials including the governor."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01NHn19ybqcuqQ5R3HAqsKvq",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_008",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.62(10), §13.62(11p)",
+          "justification": "Section 13.62(10) defines lobbying to include communications with elective state officials and agency officials, and §13.62(11p) confirms the governor is an elective state official."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01KQGcyfPCJkLvq5gaikwFdQ",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_009",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.62(10), §13.62(11p)",
+          "justification": "Section 13.62(10) defines lobbying as communications with elective state officials, agency officials, or legislative employees, which per §13.62(11p) includes the governor."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01KiHM3LqyBcqPBRMZigu998",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_010",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.62(10), §13.62(3), §13.62(8m), §13.62(11p)",
+          "justification": "Lobbying targets defined in §13.62(10) include elective state officials (legislators, governor — §13.62(11p)), agency officials (executive branch members/officers/employees — §13.62(3)), and legislative employees (§13.62(8m))."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_015aJ4yS8crQq59wBu5gYJ6t",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_011",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§13.621(3)",
+          "justification": "Section 13.621(3) exempts elective state officials, local officials, tribal officials, and legislative employees from the registration/licensing/reporting requirements when acting in an official capacity, so they are not required to register as lobbyists."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_017C2QuKdeGqLwcFkrxwpVSa",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_012",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.62(11), §13.68(1)(a)",
+          "justification": "Section 13.62(11) sets compensation (\"economic consideration, other than reimbursement for actual expenses\") and time/frequency (\"lobbying communications on each of at least 5 days within a reporting period\") standards for who qualifies as a lobbyist; §13.68(1)(a) sets a 10-hour threshold for employee lobbying disclosures."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01YbHpN6h2EpsRKXzUbGPGVr",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_013",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§13.62",
+          "justification": "The lobbyist/principal definitions in §13.62 rely on the employment/compensation relationship and lobbying activity, not on any public charter or special government protection status."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01BBPLrmbua7ihdzwGseW72g",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_014",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§13.62",
+          "justification": "The definitions in §13.62 of lobbyist and principal are based on employment/contracting relationships and lobbying activity, not on ownership criteria."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01Puj7JFFrdbfua4MQG9wBSr",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_015",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§13.62",
+          "justification": "The definitions in §13.62 do not rely on the structure or composition of revenue; they rely on the employment/compensation relationship and lobbying activity thresholds."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 1771
+      },
+      "cache_creation_input_tokens": 1771,
+      "cache_read_input_tokens": 29466,
+      "inference_geo": "global",
+      "input_tokens": 6,
+      "output_tokens": 3835,
+      "server_tool_use": null,
+      "service_tier": "standard",
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      }
+    }
+  }
+}

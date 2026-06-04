@@ -1,0 +1,29 @@
+Total unique (chunk, row_id) cells: 84
+Jointly within-model stable: 66
+  Inter-model agree: 65
+  Inter-model DISAGREE: 1
+
+## Disagreements per chunk
+  lobbying_definitions: 0
+  registration_thresholds: 0
+  registration_mechanics_and_exemptions: 0
+  lobbyist_spending_report: 0
+  principal_spending_report: 0
+  enforcement_and_audits: 1
+
+
+=== enforcement_and_audits (1 disagreement cells) ===
+
+### `lobbying_violation_penalties_imposed_in_practice`
+
+**Claude** (scored):
+  - value: `true`
+  - confidence: high
+  - cited: §13.69
+  - justification: Section 13.69 authorizes monetary forfeitures (up to $5,000 for principals, $1,000 for lobbyists), criminal fines/imprisonment for false statements, Class H felony liability, and license revocation for violations of the lobbying provisions, establishing statutory penalties for lobbying violations.
+
+**GPT-5.2** (unscoreable):
+  - reason: The bundled statute text describes available penalties and enforcement mechanisms (e.g., forfeitures, fines, imprisonment), but does not state whether penalties are imposed 'in practice,' which is an empirical/practical question not answered de jure by the statute.
+  - confidence: None
+  - cited: None
+
