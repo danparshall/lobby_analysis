@@ -8,17 +8,25 @@ rather than overwrite.
 
 import json
 import re
+import time
 from datetime import datetime, timezone
 from hashlib import sha256
 from pathlib import Path
 
 import requests
 
-CHROME_UA = (
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
-    "AppleWebKit/537.36 (KHTML, like Gecko) "
-    "Chrome/138.0.0.0 Safari/537.36"
-)
+USER_AGENT = "lobby_analysis-research/1.0 (+https://canaryinstitute.ai)"
+
+# Spacing between *live* network requests to OLAC. Cache hits don't fetch, so
+# they aren't throttled — only real server requests are. The runbook's full
+# --all crawl is thousands of GETs against a state ethics server; this keeps the
+# request rate polite. Tunable.
+REQUEST_DELAY_SECONDS = 0.5
+
+
+def throttle() -> None:
+    """Sleep one polite interval before a live network request."""
+    time.sleep(REQUEST_DELAY_SECONDS)
 
 DATA_DIR = Path(__file__).resolve().parents[3] / "data" / "oh_portal"
 
@@ -49,7 +57,8 @@ def fetch_olac_aer(url: str) -> Path:
     out_dir = DATA_DIR / "raw" / report_id / fetched_at_iso
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    resp = requests.get(url, headers={"User-Agent": CHROME_UA}, timeout=30)
+    throttle()
+    resp = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=30)
     if resp.status_code != 200:
         raise RuntimeError(
             f"OLAC fetch failed: {resp.status_code} for {url} "

@@ -53,8 +53,14 @@ practical-axis cells / a queryable store is future work (see RESEARCH_ARC Prong 
   A full `--all` recent crawl is **thousands** of AERs → thousands of LLM calls.
   Discover first (cheap), review the TSV, then decide how much to extract.
 - `discover --all` is ~3,000 lightweight GETs (roster + per-surname search +
-  per-agent FormsFiled). Polite spacing is built in. **Check `robots.txt` / ToS
-  before a full run.**
+  per-agent FormsFiled). Each *live* request is throttled by
+  `fetch.REQUEST_DELAY_SECONDS` (0.5 s; cache hits are not throttled), so a cold
+  full crawl runs ~25 min. The crawler identifies honestly via
+  `fetch.USER_AGENT` (`lobby_analysis-research/...`) — no browser spoofing.
+- **robots.txt / ToS (checked 2026-06-04):** `https://www2.jlec-olig.state.oh.us/robots.txt`
+  returns 404 (no crawl policy published); OLAC exposes no Terms of Use (landing
+  page carries only a `©` notice). The data is Ohio statutory public record
+  (ORC §§101.70+) published for public access. Re-check before any future bulk run.
 - Everything under `data/` is gitignored (raw HTML, extracted JSON, discover
   cache). The pipeline regenerates it; git carries only code + docs.
 ```

@@ -29,7 +29,7 @@ from typing import Callable, Iterable
 
 import requests
 
-from lobby_analysis.oh_portal.fetch import CHROME_UA, DATA_DIR
+from lobby_analysis.oh_portal.fetch import DATA_DIR, USER_AGENT, throttle
 
 BASE = "https://www2.jlec-olig.state.oh.us"
 
@@ -144,6 +144,7 @@ def _discover_dir(data_dir: Path) -> Path:
 
 
 def _get(session: requests.Session, path: str) -> str:
+    throttle()
     r = session.get(BASE + path, timeout=60)
     r.raise_for_status()
     return r.text
@@ -207,7 +208,7 @@ def discover_for_agent_ids(
     own = session is None
     session = session or requests.Session()
     if own:
-        session.headers.update({"User-Agent": CHROME_UA})
+        session.headers.update({"User-Agent": USER_AGENT})
     rows: list[dict] = []
     for aid in agent_ids:
         name, forms = fetch_agent_forms(session, aid, data_dir)
@@ -238,7 +239,7 @@ def discover_all(
 ) -> list[dict]:
     """Full agent-axis crawl: roster -> surname search -> per-agent FormsFiled."""
     session = requests.Session()
-    session.headers.update({"User-Agent": CHROME_UA})
+    session.headers.update({"User-Agent": USER_AGENT})
     roster = fetch_roster(session, data_dir)
     surnames = sorted({a.last_name for a in roster})
     log(f"[discover] roster: {len(roster)} agents, {len(surnames)} unique surnames")
