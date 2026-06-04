@@ -14,7 +14,8 @@ Newest first.
 
 | Date | Convo | Status |
 |---|---|---|
-| 2026-06-03 | [`convos/20260603_wi_cfis_access_surface_scoping.md`](convos/20260603_wi_cfis_access_surface_scoping.md) | In progress — Phase 4 CFIS scoping investigation |
+| 2026-06-04 | [`convos/20260604_branch_finalization.md`](convos/20260604_branch_finalization.md) | Branch-finalization wrap; archived to `docs/historical/wi-cfis-scoping/` |
+| 2026-06-03 | [`convos/20260603_wi_cfis_access_surface_scoping.md`](convos/20260603_wi_cfis_access_surface_scoping.md) | Phase 4 CFIS scoping investigation — completed |
 
 ## Results
 
@@ -28,6 +29,32 @@ Newest first.
 | Date | Plan | Originating convo | Targets branch |
 |---|---|---|---|
 | 2026-06-03 | [`plans/wi_campaign_finance.md`](plans/wi_campaign_finance.md) — three-phase plan for the successor `wi-campaign-finance` branch (Phase 0 calendar wait for FTM expanded-access review → Phase 1 FTM ingest + lawmaker / principal / lobbyist crosswalks + materialize `releases/wi/campaign_finance/` → conditional Phase 2 Selenium-Sunshine gap-fill). Assumes the implementing agent has zero codebase context. | [`2026-06-03`](convos/20260603_wi_cfis_access_surface_scoping.md) | `wi-campaign-finance` (not yet cut) |
+
+---
+
+## Session: 2026-06-04 — branch_finalization
+
+### Topics Explored
+
+- Test-suite baseline verification on this zero-code branch (matches `wi-allocation-matrix` merge baseline: 3 failed / 1636 passed / 3 skipped / 3 xfailed).
+- Branch / merge-status verification: confirmed unmerged, no PR open, ready for `finishing-a-research-branch`.
+- Worktree-ordering decision: merge `wi-cfis-scoping` → main first (matches plan §17 verbatim), then cut `wi-campaign-finance` off updated main.
+
+### Provisional Findings
+
+- Test suite is baseline-clean. No regressions possible on a write-only scoping branch.
+- All scoping deliverables (1 convo + 2 results + 1 handoff plan) shipped 2026-06-03; nothing on this branch is in-flight.
+
+### Decisions Made
+
+- Archive `wi-cfis-scoping` → `docs/historical/` via `finishing-a-research-branch`; merge to main; then cut successor `wi-campaign-finance` worktree.
+
+### Next Steps
+
+Successor work picks up on `wi-campaign-finance`:
+
+- Phase 0 = FTM Institute expanded-access calendar wait. Dan emailed `info@opensecrets.org` proactively on 2026-06-03 to accelerate the review.
+- Phase 1 starts once a probe query confirms expanded access is live.
 
 ---
 
