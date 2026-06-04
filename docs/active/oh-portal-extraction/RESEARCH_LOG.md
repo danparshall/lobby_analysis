@@ -39,6 +39,7 @@ This is the data-acquisition counterpart to Dan's Track A work (`statute-retriev
   new filings end-to-end. Runbook: [`results/20260604_pipeline_runbook.md`](results/20260604_pipeline_runbook.md).
 - **Not run:** the full `discover --all` crawl (thousands of AERs → thousands of LLM calls) — pending
   Dan's go + a robots.txt/ToS check. discover+batch tests 17 pass; full suite 365 / 3 pre-existing.
+- Convo: [`convos/20260604_oh_schema_retarget_discovery_pipeline.md`](convos/20260604_oh_schema_retarget_discovery_pipeline.md).
 
 ### 2026-06-03 (later) — (A') first real run GRADUATED + (B') batch runner built
 
