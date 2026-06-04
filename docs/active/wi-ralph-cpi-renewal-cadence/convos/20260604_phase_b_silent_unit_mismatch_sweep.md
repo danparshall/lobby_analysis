@@ -99,6 +99,24 @@ The iter 5 prompt's parenthetical example ("e.g., the statute defines a lobbyist
   - (iii) Chunk-mate spillover investigation — how does prompt edit on one row propagate? Mechanism matters for Phase A design.
   - (iv) Phase A pre-flight YAML audit at scale (candidate (c)) — now well-defined: 3 cell-type templates + chunk-mate spillover as known design constraint + 5 known target rows + 16 sweep-cleared rows.
 
+## Post-session refinement (Dan 2026-06-04, after finish-convo) — Pattern C row split is the next-session shape
+
+After the finish-convo commit landed, Dan asked the sharpening question on candidate (i): *"I wonder if we have grabbed the wrong row here? Seems strange that '_in_practice' would exist without '_in_law'..."*
+
+This lands directly on the projection mapping doc's deferred item. CPI 2015 projection mapping for IND_209 (`docs/historical/compendium-source-extracts/results/projections/cpi_2015_c11_projection_mapping.md` §IND_209) explicitly says: *"`lobbying_violation_penalties_imposed_in_practice` — practical-availability axis on a de-jure row that asks 'are penalties statutorily defined for reporting violations' (cf. HG Q41/Q42 enforcement battery — currently consensus singletons; **the de-jure pair belongs in compendium even though it's enforcement-adjacent because CPI's practical read needs it**)."*
+
+The 2026-05-13 v2 row-freeze collapsed this: it kept the `_imposed_in_practice`-named row (which is intrinsically practical-axis-semantic by name) but bolted a `binary (legal)` cell onto it. The legal-axis cell is asking nothing coherent — "in law, are penalties imposed in practice?" is a category error. **The right fix is option (α) compendium split** — add the missing `lobbying_violation_penalties_defined_in_law` legal-axis BinaryCell row that the projection doc said should exist; strip the legal-axis cell from `_imposed_in_practice` (which becomes practical-axis-only, matching its name and CPI IND_209's actual read).
+
+**Next-session shape (one session, three pieces, all small):**
+
+1. **Pattern C audit** (15-30 min, no API cost) — grep for analogous mis-axed rows. Candidates: any row whose name contains `_in_practice` / `_in_law` AND has both axes registered. The inverse case `lobbying_disclosure_audit_required_in_law` (legal-axis-named, carries a practical-axis cell on IND_208) is also a candidate for scrutiny but less egregious (legal axis at least matches the name; only the practical-axis cell is mis-keyed by naming).
+2. **Compendium fix** — add `lobbying_violation_penalties_defined_in_law` (binary, legal axis, rubrics_reading `cpi_2015;hg_2007` per projection doc's HG Q41/Q42 reference); strip legal axis from `_imposed_in_practice`; populate YAML prompt for new row with additive BinaryCell pattern. Whether this is v2 (additive — backward-compatible) or v2.1 (schema bump) is a small scoping decision worth flagging to wi-tier1-direct-read consumers.
+3. **BinaryCell additive pattern test** — dispatch `enforcement_and_audits` chunk (~$0.30) on WI 2025 with the new row in place; audit. Closes the 4-cell-type matrix.
+
+**Then Phase A at scale (candidate (c)) is well-positioned for the session after.** 4-cell-type matrix closed + Pattern C structural fix landed + 5 known target rows + 16 sweep-cleared rows + 3 cell-type templates + chunk-mate spillover as known design constraint.
+
+**Handoff sentence for next-session agent:** *"Pick up branch `wi-ralph-cpi-renewal-cadence`. Read `convos/20260604_phase_b_silent_unit_mismatch_sweep.md` end-to-end including the §'Post-session refinement' section. Next-session plan: (1) grep the v2 TSV for Pattern C row-axis-bug candidates (~15 min); (2) add `lobbying_violation_penalties_defined_in_law` binary legal row + strip legal axis from `_imposed_in_practice` row + populate YAML; (3) dispatch enforcement_and_audits chunk (~$0.30) to test BinaryCell additive pattern. Cumulative wi-ralph $2.3573; budget $0.64-$2.64 remaining."*
+
 ## Results
 
 - **Sweep script:** [`../../../scripts/silent_unit_mismatch_sweep.py`](../../../../scripts/silent_unit_mismatch_sweep.py) (~470 lines, ruff clean)
