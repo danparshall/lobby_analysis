@@ -15,6 +15,34 @@ This is the data-acquisition counterpart to Dan's Track A work (`statute-retriev
 
 (Newest entries first.)
 
+### 2026-06-04 (later) — sonnet validated → employer/warnings schema fix → statute-extraction archived
+
+- **Sonnet validation.** `claude-sonnet-4-7` doesn't exist (404); sonnet is on `4-6`,
+  opus on `4-7`. Validated sonnet-4-6 vs the opus baseline on AER 1427844 (same cached
+  HTML, 3 runs). Sonnet **consistent** and on row-accuracy ≥ opus (fixes `is_itemized`),
+  but it put the employer into `filer_organization` where opus dropped it. Traced to the
+  **brief**, not the model: rule 6 said "populate employer name" with no schema slot →
+  contradictory spec → models cope differently, both silently.
+- **Fix (TDD):** added `LobbyingFiling.employer: Organization|None` +
+  `extraction_warnings: list[str]` (additive, backward-compat); rewrote the brief
+  (employer→`employer`, not `filer_organization`; new warnings rule; deleted the phantom
+  `regime=` instruction; cut `(A')` jargon); stamped `regime="legislative"` in run
+  metadata. 6 new tests; full suite **371 pass / 3 pre-existing** data-fixture fails;
+  ruff clean. **Both opus and sonnet now converge** (employer routed correctly,
+  `filer_organization` null, warnings flag the II.D gap). Switched `MODEL_ID` → sonnet-4-6
+  for bulk. Commit `e5d2da3`.
+- **regime decision:** not added to `LobbyingFiling`. The statute-side `regime` axis is a
+  v2.2 design gap (the branch/level axis was re-encoded as v2 `actor_*`/`def_target_*`
+  row IDs, but regime-as-multiplier was dropped in the v2 rebuild; see untracked
+  `state_regime_splitting.md`). Deferred to the gather-first v2.2 schema pass; meanwhile
+  it's caller-stamped in `extraction_run.json`.
+- **Archived `statute-extraction`** on main (`20ee37a`): harness superseded by
+  compendium-2.0; marked DO-NOT-USE; stranded-schema findings recorded. Not merged, not
+  deleted.
+- **Not run:** the bulk OH discover→batch grab (still gated on go + robots.txt/ToS).
+- Convo: [`convos/20260604_sonnet_validation_employer_warnings_schema.md`](convos/20260604_sonnet_validation_employer_warnings_schema.md).
+  Result: [`results/20260604_sonnet_opus_validation.md`](results/20260604_sonnet_opus_validation.md).
+
 ### 2026-06-04 — schema retargeted to current main + (B') discovery built; full pipeline reproducible
 
 - **Schema scare resolved (no v1.4 needed).** Investigated the belief that Amina's `LobbyingFiling`
