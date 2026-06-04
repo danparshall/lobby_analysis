@@ -136,7 +136,41 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         type=int,
         help="Statute vintage year, e.g. 2025 (matches data/statutes/<STATE>/<VINTAGE>/).",
     )
+    parser.add_argument(
+        "--chunks",
+        nargs="+",
+        default=None,
+        help=(
+            "Optional subset of chunk_ids to dispatch (one or more). When "
+            "omitted, all 6 chunks dispatch (current behavior). Use for "
+            "Phase B Ralph per-iteration single-chunk dispatches. Valid "
+            f"chunk_ids: {', '.join(_RESOLVED_CHUNKS)}."
+        ),
+    )
     return parser.parse_args(argv)
+
+
+def resolve_active_chunks(chunks_arg: list[str] | None) -> tuple[str, ...]:
+    """Resolve the --chunks argument to a tuple of chunk_ids to dispatch.
+
+    If ``chunks_arg`` is ``None`` (flag omitted), returns all 6 chunks —
+    backward-compatible with the pre-Phase-B behavior. If ``chunks_arg`` is
+    provided, validates each entry against ``_RESOLVED_CHUNKS`` and returns
+    only those, preserving caller-specified order. An unknown chunk_id
+    raises ``SystemExit`` with a message naming the bad chunk AND the full
+    valid list — silent fall-through to "all chunks" is the regression to
+    prevent.
+    """
+    if not chunks_arg:
+        return _RESOLVED_CHUNKS
+    valid = set(_RESOLVED_CHUNKS)
+    unknown = [c for c in chunks_arg if c not in valid]
+    if unknown:
+        raise SystemExit(
+            f"ERROR: unknown chunk_id(s): {', '.join(unknown)}. "
+            f"Valid chunk_ids: {', '.join(_RESOLVED_CHUNKS)}."
+        )
+    return tuple(chunks_arg)
 
 # Per-call abort retained from Tier-0; session ceiling raised to $10 for 36
 # calls (~$2-4 expected). Both confirmed with the user 2026-05-20.
@@ -760,9 +794,13 @@ def main(argv: list[str] | None = None) -> int:
     print(f"Bundle dir: {bundle_dir}")
     print(f"Results dir: {results_dir}")
 
+    active_chunks = resolve_active_chunks(args.chunks)
+    if active_chunks != _RESOLVED_CHUNKS:
+        print(f"Filtered to {len(active_chunks)} of {len(_RESOLVED_CHUNKS)} chunks: {', '.join(active_chunks)}")
+
     # Build the legal-only rosters once.
     rosters: dict[str, tuple[Any, list[Any]]] = {}
-    for chunk_id in _RESOLVED_CHUNKS:
+    for chunk_id in active_chunks:
         if chunk_id not in chunks:
             print(f"ERROR: chunk {chunk_id!r} not in CHUNKS_V2 manifest.", file=sys.stderr)
             return 2
