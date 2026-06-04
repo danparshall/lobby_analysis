@@ -381,13 +381,18 @@ def test_bool_magnitude_not_coerced_to_decimal_for_timethresholdcell():
 
 def test_legal_roster_names_dict_keys_for_dict_shape_cell():
     """A TimeThresholdCell roster line names its JSON-object keys (magnitude,
-    unit) so the model emits a dict, not a bare scalar (error class B)."""
+    unit) so the model emits a dict, not a bare scalar (error class B).
+
+    Renderer return is ``(message, handle_to_row_id_map)`` per the wide-pass
+    refactor; the message string is the first element of the tuple."""
     spec = _spec("lobbyist_registration_threshold_time_percent", "legal")
     assert spec.expected_cell_class.__name__ == "TimeThresholdCell"
-    roster = tier1.render_legal_roster("registration_thresholds", "thresholds", [spec])
-    assert "magnitude" in roster
-    assert "unit" in roster
-    assert "JSON object" in roster
+    message, _handles = tier1.render_legal_roster(
+        "registration_thresholds", "thresholds", [spec]
+    )
+    assert "magnitude" in message
+    assert "unit" in message
+    assert "JSON object" in message
 
 
 def test_legal_roster_adds_no_shape_hint_for_scalar_cell():
@@ -395,16 +400,20 @@ def test_legal_roster_adds_no_shape_hint_for_scalar_cell():
     push a scalar cell toward fabricating an object."""
     spec = _spec("actor_executive_agency_registration_required", "legal")
     assert spec.expected_cell_class.__name__ == "BinaryCell"
-    roster = tier1.render_legal_roster("registration", "reg", [spec])
-    assert "JSON object" not in roster
-    assert "magnitude" not in roster
+    message, _handles = tier1.render_legal_roster("registration", "reg", [spec])
+    assert "JSON object" not in message
+    assert "magnitude" not in message
 
 
 # --- Fix C: null-valued FreeTextCell routed to abstention -----------------
 
 
-def _record_cell_response(row_id: str, axis: str, value):
-    """An Anthropic-shaped response dict carrying one record_cell tool call.
+def _record_cell_response(handle: str, axis: str, value, *, tool_name: str = "record_cell"):
+    """An Anthropic-shaped response dict carrying one tool call.
+
+    Wire-format slot is ``handle`` (renamed from ``row_id`` in the wide-pass
+    refactor — tier-1 owns its own tool schemas with opaque handles instead
+    of leaking compendium row_ids to the model).
 
     parse_anthropic_response reads dicts via _attr_or_key, so a plain dict in
     the wire shape exercises _parse_and_instantiate with no SDK object and no
@@ -413,9 +422,9 @@ def _record_cell_response(row_id: str, axis: str, value):
         "content": [
             {
                 "type": "tool_use",
-                "name": "record_cell",
+                "name": tool_name,
                 "input": {
-                    "row_id": row_id,
+                    "handle": handle,
                     "axis": axis,
                     "value": value,
                     "condition_text": None,
@@ -428,24 +437,44 @@ def _record_cell_response(row_id: str, axis: str, value):
     }
 
 
+def _record_unscoreable_response(handle: str, axis: str, reason: str):
+    """Anthropic-shaped response dict carrying one record_unscoreable_cell."""
+    return {
+        "content": [
+            {
+                "type": "tool_use",
+                "name": "record_unscoreable_cell",
+                "input": {
+                    "handle": handle,
+                    "axis": axis,
+                    "reason": reason,
+                },
+            }
+        ]
+    }
+
+
 def test_null_freetext_record_cell_routed_to_abstention():
     """A record_cell with value:null for a FreeTextCell row is routed to the
     unscoreable list as an abstention — not the errors list. The conditional
-    *_other_specification rows correctly emit null; the schema cannot hold it."""
+    *_other_specification rows correctly emit null; the schema cannot hold it.
+
+    Parser signature now accepts a handle→row_id map; the test fixture maps
+    one synthetic handle to the target row_id."""
     from lobby_analysis.models_v2 import build_cell_spec_registry
 
     registry = build_cell_spec_registry()
-    response = _record_cell_response(
-        "lobbyist_spending_report_cadence_other_specification", "legal", None
-    )
+    target_row_id = "lobbyist_spending_report_cadence_other_specification"
+    handle_map = {"row_001": target_row_id}
+    response = _record_cell_response("row_001", "legal", None)
     instantiated, unscoreable, errors = tier1._parse_and_instantiate(
-        response, "anthropic", registry
+        response, "anthropic", registry, handle_map
     )
     assert errors == []
     assert instantiated == []
     assert len(unscoreable) == 1
     abstained = unscoreable[0]
-    assert abstained["row_id"] == "lobbyist_spending_report_cadence_other_specification"
+    assert abstained["row_id"] == target_row_id
     assert abstained["axis"] == "legal"
     assert "reason" in abstained
 
@@ -456,11 +485,11 @@ def test_nonnull_freetext_record_cell_still_instantiates():
     from lobby_analysis.models_v2 import build_cell_spec_registry
 
     registry = build_cell_spec_registry()
-    response = _record_cell_response(
-        "lobbyist_spending_report_cadence_other_specification", "legal", "biennial"
-    )
+    target_row_id = "lobbyist_spending_report_cadence_other_specification"
+    handle_map = {"row_001": target_row_id}
+    response = _record_cell_response("row_001", "legal", "biennial")
     instantiated, unscoreable, errors = tier1._parse_and_instantiate(
-        response, "anthropic", registry
+        response, "anthropic", registry, handle_map
     )
     assert errors == []
     assert unscoreable == []
@@ -473,12 +502,264 @@ def test_null_decimalcell_record_cell_not_routed_to_abstention():
     from lobby_analysis.models_v2 import build_cell_spec_registry
 
     registry = build_cell_spec_registry()
-    response = _record_cell_response(
-        "lobbyist_registration_threshold_compensation_dollars", "legal", None
-    )
+    target_row_id = "lobbyist_registration_threshold_compensation_dollars"
+    handle_map = {"row_001": target_row_id}
+    response = _record_cell_response("row_001", "legal", None)
     instantiated, unscoreable, errors = tier1._parse_and_instantiate(
-        response, "anthropic", registry
+        response, "anthropic", registry, handle_map
     )
     assert errors == []
     assert unscoreable == []
     assert len(instantiated) == 1
+
+
+# ---------------------------------------------------------------------------
+# Group 6 — Wide-pass renderer: opaque handles instead of row_ids
+# (plan: docs/active/wi-tier1-direct-read/plans/
+#         20260604_wide_prompt_text_pass.md, Commit 1)
+# ---------------------------------------------------------------------------
+
+
+def _narrow_pass_anchor_spec():
+    """Pattern A anchor row — has a populated ``prompt`` after Commit 1's
+    YAML migration. Used by renderer tests that need a spec with a prompt."""
+    return _spec("lobbyist_spending_report_required", "legal")
+
+
+def test_render_legal_roster_returns_tuple_of_message_and_handle_map():
+    """``render_legal_roster`` returns ``(message, handle_to_row_id_map)`` —
+    the dispatch handler consumes both halves: the message goes to the model,
+    the map decodes the model's handle-keyed responses back to row_ids."""
+    spec = _narrow_pass_anchor_spec()
+    result = tier1.render_legal_roster("lobbyist_spending_report", "topic", [spec])
+    assert isinstance(result, tuple)
+    assert len(result) == 2
+    message, handle_map = result
+    assert isinstance(message, str)
+    assert isinstance(handle_map, dict)
+
+
+def test_render_legal_roster_uses_opaque_handles_not_row_ids():
+    """LOAD-BEARING: the rendered string sends opaque handles (``row_001``,
+    ``row_002``, …) and does NOT contain the row's ``compendium_row_id``.
+    The row name is the Pattern A bug surface; suppressing it from the
+    model's view is the wide-pass forcing function for prompt quality."""
+    rows = [
+        "lobbyist_spending_report_required",
+        "lobbyist_spending_report_includes_total_compensation",
+        "lobbyist_spending_report_includes_principal_names",
+    ]
+    specs = [_spec(rid, "legal") for rid in rows]
+    message, _handle_map = tier1.render_legal_roster(
+        "lobbyist_spending_report", "topic", specs
+    )
+    # Handles present
+    assert "row_001" in message
+    assert "row_002" in message
+    assert "row_003" in message
+    # Compendium row_ids absent — this is the forcing-function assertion.
+    for row_id in rows:
+        assert row_id not in message, (
+            f"row_id {row_id!r} leaked into rendered message — opaque-handle "
+            f"contract violated.\nmessage=\n{message}"
+        )
+
+
+def test_render_legal_roster_emits_substantive_prompt_per_row():
+    """Each row in the chunk gets its YAML-sourced ``prompt`` emitted in the
+    rendered message. Asserted on the Pattern A anchor (populated in
+    Commit 1)."""
+    spec = _narrow_pass_anchor_spec()
+    assert spec.prompt, "test precondition: anchor spec must carry a prompt"
+    message, _ = tier1.render_legal_roster(
+        "lobbyist_spending_report", "topic", [spec]
+    )
+    # A distinctive verbatim phrase from the anchor's source quote.
+    assert "itemized spending reports" in message, (
+        f"renderer did not emit substantive prompt content for "
+        f"{spec.row_id!r}; message=\n{message}"
+    )
+
+
+def test_render_legal_roster_handles_are_zero_padded_three_digits():
+    """Handles use ``row_NNN`` with three-digit zero padding so lexical sort
+    matches numeric sort and the format scales to 999 rows per chunk
+    (current max chunk ≈ 24)."""
+    specs = [_narrow_pass_anchor_spec() for _ in range(3)]
+    _msg, handle_map = tier1.render_legal_roster("topic_id", "topic", specs)
+    handles = sorted(handle_map.keys())
+    assert handles == ["row_001", "row_002", "row_003"], (
+        f"handles not zero-padded three-digit: {handles}"
+    )
+
+
+def test_handle_to_row_id_map_is_deterministic_per_chunk():
+    """Two independent renders of the same chunk produce the same handle map.
+    Necessary so resume-skip + replay produce consistent decoding."""
+    rows = [
+        "lobbyist_spending_report_required",
+        "lobbyist_spending_report_includes_total_compensation",
+        "lobbyist_spending_report_includes_principal_names",
+    ]
+    specs = [_spec(rid, "legal") for rid in rows]
+    _, map1 = tier1.render_legal_roster("topic", "topic", specs)
+    _, map2 = tier1.render_legal_roster("topic", "topic", specs)
+    assert map1 == map2
+
+
+def test_handle_to_row_id_map_covers_every_spec_in_chunk():
+    """Every spec in the input list has exactly one handle entry in the
+    returned map, and the values are the specs' row_ids in order."""
+    rows = [
+        "lobbyist_spending_report_required",
+        "lobbyist_spending_report_includes_total_compensation",
+        "lobbyist_spending_report_includes_principal_names",
+    ]
+    specs = [_spec(rid, "legal") for rid in rows]
+    _msg, handle_map = tier1.render_legal_roster("topic", "topic", specs)
+    assert list(handle_map.values()) == rows
+
+
+# ---------------------------------------------------------------------------
+# Group 7 — Wide-pass parser: handle decoding + handle/row_id validation
+# ---------------------------------------------------------------------------
+
+
+def test_result_parser_maps_handle_to_row_id_via_handle_map():
+    """A record_cell emission keyed by ``handle="row_001"`` produces an
+    instantiated cell whose ``cell_id`` first element is the original
+    ``compendium_row_id`` (decoded via the handle map)."""
+    from lobby_analysis.models_v2 import build_cell_spec_registry
+
+    registry = build_cell_spec_registry()
+    target_row_id = "actor_executive_agency_registration_required"
+    handle_map = {"row_001": target_row_id}
+    response = _record_cell_response("row_001", "legal", True)
+    instantiated, unscoreable, errors = tier1._parse_and_instantiate(
+        response, "anthropic", registry, handle_map
+    )
+    assert errors == []
+    assert unscoreable == []
+    assert len(instantiated) == 1
+    wrapped = instantiated[0]
+    cell_id = list(wrapped["cell"]["cell_id"])
+    assert cell_id[0] == target_row_id
+
+
+def test_result_parser_rejects_handle_not_in_map():
+    """An unknown handle (``row_999`` not in the chunk's handle set) is a
+    parser-level error — not a silent drop. Catches the case where the model
+    emits something we did not render."""
+    from lobby_analysis.models_v2 import build_cell_spec_registry
+
+    registry = build_cell_spec_registry()
+    handle_map = {"row_001": "actor_executive_agency_registration_required"}
+    response = _record_cell_response("row_999", "legal", True)
+    instantiated, unscoreable, errors = tier1._parse_and_instantiate(
+        response, "anthropic", registry, handle_map
+    )
+    assert instantiated == []
+    assert unscoreable == []
+    assert len(errors) == 1
+    assert "unknown_handle" in errors[0].get("reason", "")
+
+
+def test_result_parser_rejects_row_id_emission_by_model():
+    """If the model emits the actual compendium row_id as the ``handle``
+    value (a regression where row-IDs leak back at us), the parser errors —
+    the contract is opaque handles only."""
+    from lobby_analysis.models_v2 import build_cell_spec_registry
+
+    registry = build_cell_spec_registry()
+    # Map has a handle, but the model emits the real row_id instead.
+    target_row_id = "actor_executive_agency_registration_required"
+    handle_map = {"row_001": target_row_id}
+    response = _record_cell_response(target_row_id, "legal", True)
+    instantiated, unscoreable, errors = tier1._parse_and_instantiate(
+        response, "anthropic", registry, handle_map
+    )
+    assert instantiated == []
+    assert unscoreable == []
+    assert len(errors) == 1
+    # The error must identify the failure as a row-id-leakage / unknown-handle
+    # event — not a successful instantiation under the legacy contract.
+    assert "unknown_handle" in errors[0].get("reason", "")
+
+
+def test_result_parser_decodes_unscoreable_emission_via_handle_map():
+    """A record_unscoreable_cell emission keyed by handle decodes to the
+    original row_id in the abstention record so downstream agreement metrics
+    keep working unchanged."""
+    from lobby_analysis.models_v2 import build_cell_spec_registry
+
+    registry = build_cell_spec_registry()
+    target_row_id = "actor_executive_agency_registration_required"
+    handle_map = {"row_001": target_row_id}
+    response = _record_unscoreable_response(
+        "row_001", "legal", "statute references out-of-bundle chapter"
+    )
+    instantiated, unscoreable, errors = tier1._parse_and_instantiate(
+        response, "anthropic", registry, handle_map
+    )
+    assert errors == []
+    assert instantiated == []
+    assert len(unscoreable) == 1
+    abstained = unscoreable[0]
+    assert abstained.get("row_id") == target_row_id
+
+
+def test_render_then_parse_roundtrip_preserves_row_ids():
+    """Integration: render a chunk → mock a response that uses the rendered
+    handles → parse → recover the original row_ids. No row-IDs visible in the
+    rendered message; all row-IDs recoverable from the parsed results."""
+    from lobby_analysis.models_v2 import build_cell_spec_registry
+
+    registry = build_cell_spec_registry()
+    rows = [
+        # Two narrow-pass rows (have prompts) plus one scalar BinaryCell that
+        # the test fixture can emit a true/false answer for. The narrow-pass
+        # anchor rows are BinaryCells so the value=True emission instantiates.
+        "lobbyist_spending_report_required",
+        "lobbyist_spending_report_includes_principal_names",
+        "actor_executive_agency_registration_required",
+    ]
+    specs = [_spec(rid, "legal") for rid in rows]
+    message, handle_map = tier1.render_legal_roster(
+        "lobbyist_spending_report", "topic", specs
+    )
+
+    # Sanity: no row_ids in message; every spec has an entry in the handle map.
+    for rid in rows:
+        assert rid not in message
+    assert set(handle_map.values()) == set(rows)
+
+    # Construct three record_cell emissions, one per rendered handle.
+    response_calls = []
+    for handle in sorted(handle_map):
+        response_calls.append(
+            {
+                "type": "tool_use",
+                "name": "record_cell",
+                "input": {
+                    "handle": handle,
+                    "axis": "legal",
+                    "value": True,
+                    "condition_text": None,
+                    "confidence": "high",
+                    "cited_section": "§101.70",
+                    "justification": "test fixture justification.",
+                },
+            }
+        )
+    response = {"content": response_calls}
+
+    instantiated, unscoreable, errors = tier1._parse_and_instantiate(
+        response, "anthropic", registry, handle_map
+    )
+    assert errors == []
+    assert unscoreable == []
+    assert len(instantiated) == 3
+    recovered_row_ids = sorted(
+        list(wrapped["cell"]["cell_id"])[0] for wrapped in instantiated
+    )
+    assert recovered_row_ids == sorted(rows)
