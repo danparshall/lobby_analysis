@@ -9,26 +9,26 @@
     "state_abbr": "WI",
     "vintage_year": 2025,
     "prompt_sha256": "cf5e534eb79e06bd8862cb6a71fa3ba6db44eb86d8d1b12b85431ef394b042c8",
-    "timestamp_utc": "2026-06-01T17:01:30+00:00"
+    "timestamp_utc": "2026-06-04T16:59:57+00:00"
   },
-  "wall_clock_seconds": 7.0332047500123736,
+  "wall_clock_seconds": 11.898807333025616,
   "usage": {
     "cache_creation": {
       "ephemeral_1h_input_tokens": 0,
-      "ephemeral_5m_input_tokens": 654
+      "ephemeral_5m_input_tokens": 824
     },
-    "cache_creation_input_tokens": 654,
-    "cache_read_input_tokens": 29445,
+    "cache_creation_input_tokens": 824,
+    "cache_read_input_tokens": 29466,
     "inference_geo": "global",
     "input_tokens": 6,
-    "output_tokens": 582,
+    "output_tokens": 868,
     "server_tool_use": null,
     "service_tier": "standard",
     "output_tokens_details": {
       "thinking_tokens": 0
     }
   },
-  "cost_usd_estimate": 0.014580000000000001,
+  "cost_usd_estimate": 0.02173,
   "legal_roster": [
     [
       "lobbying_violation_penalties_imposed_in_practice",
@@ -43,70 +43,76 @@
     {
       "cell": {
         "cell_id": [
-          "lobbying_violation_penalties_imposed_in_practice",
-          "legal"
-        ],
-        "conditional": false,
-        "condition_text": null,
-        "confidence": "high",
-        "provenance": [],
-        "value": true
-      },
-      "cell_class": "BinaryCell",
-      "cited_section": "Wis. Stat. § 13.69",
-      "justification": "Section 13.69 establishes statutory penalties (forfeitures up to $5,000 for principals, $1,000 for lobbyists, Class H felony for false statements, and license revocation) for violations of the lobbying provisions, so penalties are authorized in law."
-    },
-    {
-      "cell": {
-        "cell_id": [
           "lobbying_disclosure_audit_required_in_law",
           "legal"
         ],
         "conditional": false,
         "condition_text": null,
-        "confidence": "high",
+        "confidence": "medium",
         "provenance": [],
-        "value": "mandatory"
+        "value": "MODERATE"
       },
       "cell_class": "EnumCell",
-      "cited_section": "Wis. Stat. § 13.74(1); § 13.685(3)",
-      "justification": "Section 13.74(1) provides that the commission \"shall cause to have made an examination of all statements\" filed under the subchapter, and § 13.685(3) likewise requires the commission to \"examine each statement filed under s. 13.68,\" making auditing/examination mandatory."
+      "cited_section": "§13.74(1); §13.685(3)",
+      "justification": "Section 13.74(1) requires the Ethics Commission to examine all filed statements and §13.685(3) requires examination of each statement filed under §13.68, constituting a mandatory compliance review by the regulator, though not by an independent third-party auditor."
     }
   ],
   "unscoreable_emissions": [],
-  "errors": [],
+  "errors": [
+    {
+      "reason": "instantiation_failed",
+      "key": [
+        "lobbying_violation_penalties_imposed_in_practice",
+        "legal"
+      ],
+      "error": "ValueError(\"BinaryCell: cannot coerce '50' to bool\")",
+      "arguments": {
+        "handle": "row_001",
+        "axis": "legal",
+        "value": "50",
+        "confidence": "medium",
+        "cited_section": "§13.69(1), (2), (3), (6m); §13.68(6)",
+        "justification": "The statute authorizes forfeitures up to $5,000 for principals, $1,000 for lobbyists, Class H felony for false filings, and suspension of lobbying privileges for failure to file expense statements, but uses discretionary \"may be required to forfeit\" language rather than mandating sanctions for every violation."
+      }
+    }
+  ],
   "response": {
-    "id": "msg_01Y86NnYE1zqozwC1exuhwgT",
+    "id": "msg_01C3BqGce4GXVnUJPGctDMhF",
     "container": null,
     "content": [
       {
-        "id": "toolu_01CkVvD3UA8nNLjHdtuy1LKm",
+        "citations": null,
+        "text": "I'll analyze each cell against the Wisconsin statute text.\n\n**Row 001 (sanctions for reporting violations):** Section 13.69 establishes mandatory-sounding forfeitures for principals ($5,000), lobbyists ($1,000), and felony charges for false statements. Section 13.68(6) provides for suspension of lobbying privileges for failure to file expense statements. The statute uses \"may be required to forfeit\" language — sanctions are authorized but discretionary, not automatic. However, the regime clearly has teeth with multiple enforcement mechanisms.\n\n**Row 002 (independent auditing requirement):** Section 13.74 requires the Ethics Commission to examine ALL statements filed and gives subpoena/investigation power. Section 13.685(3) also requires examination of each statement. This is a compliance review requirement, though performed by the Ethics Commission (the regulator itself, not a separate third party).",
+        "type": "text"
+      },
+      {
+        "id": "toolu_01JjMHaWgNqbwdiHVAqUdy5T",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbying_violation_penalties_imposed_in_practice",
+          "handle": "row_001",
           "axis": "legal",
-          "value": true,
-          "confidence": "high",
-          "cited_section": "Wis. Stat. § 13.69",
-          "justification": "Section 13.69 establishes statutory penalties (forfeitures up to $5,000 for principals, $1,000 for lobbyists, Class H felony for false statements, and license revocation) for violations of the lobbying provisions, so penalties are authorized in law."
+          "value": "50",
+          "confidence": "medium",
+          "cited_section": "§13.69(1), (2), (3), (6m); §13.68(6)",
+          "justification": "The statute authorizes forfeitures up to $5,000 for principals, $1,000 for lobbyists, Class H felony for false filings, and suspension of lobbying privileges for failure to file expense statements, but uses discretionary \"may be required to forfeit\" language rather than mandating sanctions for every violation."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_014SA1ktr5eu89UtN96fvAdQ",
+        "id": "toolu_01XrvnCrW5YY7zV9qT5ZLEog",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbying_disclosure_audit_required_in_law",
+          "handle": "row_002",
           "axis": "legal",
-          "value": "mandatory",
-          "confidence": "high",
-          "cited_section": "Wis. Stat. § 13.74(1); § 13.685(3)",
-          "justification": "Section 13.74(1) provides that the commission \"shall cause to have made an examination of all statements\" filed under the subchapter, and § 13.685(3) likewise requires the commission to \"examine each statement filed under s. 13.68,\" making auditing/examination mandatory."
+          "value": "MODERATE",
+          "confidence": "medium",
+          "cited_section": "§13.74(1); §13.685(3)",
+          "justification": "Section 13.74(1) requires the Ethics Commission to examine all filed statements and §13.685(3) requires examination of each statement filed under §13.68, constituting a mandatory compliance review by the regulator, though not by an independent third-party auditor."
         },
         "name": "record_cell",
         "type": "tool_use"
@@ -121,13 +127,13 @@
     "usage": {
       "cache_creation": {
         "ephemeral_1h_input_tokens": 0,
-        "ephemeral_5m_input_tokens": 654
+        "ephemeral_5m_input_tokens": 824
       },
-      "cache_creation_input_tokens": 654,
-      "cache_read_input_tokens": 29445,
+      "cache_creation_input_tokens": 824,
+      "cache_read_input_tokens": 29466,
       "inference_geo": "global",
       "input_tokens": 6,
-      "output_tokens": 582,
+      "output_tokens": 868,
       "server_tool_use": null,
       "service_tier": "standard",
       "output_tokens_details": {

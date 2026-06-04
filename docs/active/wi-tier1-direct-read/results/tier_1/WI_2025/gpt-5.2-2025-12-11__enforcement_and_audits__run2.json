@@ -9,13 +9,13 @@
     "state_abbr": "WI",
     "vintage_year": 2025,
     "prompt_sha256": "cf5e534eb79e06bd8862cb6a71fa3ba6db44eb86d8d1b12b85431ef394b042c8",
-    "timestamp_utc": "2026-06-01T17:06:36+00:00"
+    "timestamp_utc": "2026-06-04T17:05:00+00:00"
   },
-  "wall_clock_seconds": 3.8096917499788105,
+  "wall_clock_seconds": 3.9579362500226125,
   "usage": {
-    "completion_tokens": 184,
-    "prompt_tokens": 19010,
-    "total_tokens": 19194,
+    "completion_tokens": 212,
+    "prompt_tokens": 19129,
+    "total_tokens": 19341,
     "completion_tokens_details": {
       "accepted_prediction_tokens": 0,
       "audio_tokens": 0,
@@ -24,10 +24,10 @@
     },
     "prompt_tokens_details": {
       "audio_tokens": 0,
-      "cached_tokens": 18944
+      "cached_tokens": 19072
     }
   },
-  "cost_usd_estimate": 0.0358435,
+  "cost_usd_estimate": 0.03644375,
   "legal_roster": [
     [
       "lobbying_violation_penalties_imposed_in_practice",
@@ -49,23 +49,24 @@
         "condition_text": null,
         "confidence": "high",
         "provenance": [],
-        "value": "yes"
+        "value": "MODERATE"
       },
       "cell_class": "EnumCell",
-      "cited_section": "Wis. Stat. § 13.74(1) (2025)",
-      "justification": "Section 13.74(1) requires the ethics commission to examine all statements required to be filed under the subchapter, establishing a legally mandated auditing/examination function."
+      "cited_section": "Wis. Stat. § 13.74(1)-(2) (2025)",
+      "justification": "The commission is required to examine all required statements and may inspect underlying documents and use investigatory subpoenas, indicating a compliance review/audit function rather than a legally required regular independent third-party audit."
     }
   ],
   "unscoreable_emissions": [
     {
-      "row_id": "lobbying_violation_penalties_imposed_in_practice",
+      "handle": "row_001",
       "axis": "legal",
-      "reason": "The bundled statute text specifies available penalties for violations (e.g., forfeitures, fines, imprisonment) but does not address whether penalties are imposed 'in practice'."
+      "reason": "The statute text provides maximum penalties for violations (Wis. Stat. § 13.69) but does not mandate that sanctions are always imposed upon discovery of reporting violations; enforcement is framed as violators 'may be required' to forfeit, so the always/generally/rarely sanctioning standard cannot be determined de jure from this bundle.",
+      "row_id": "lobbying_violation_penalties_imposed_in_practice"
     }
   ],
   "errors": [],
   "response": {
-    "id": "chatcmpl-Dm0Ntsq2r2tXjZarNkqDJFH5iTBpB",
+    "id": "chatcmpl-Dn5mzycQfIKiKrlkJIw2EuxDA9jLi",
     "choices": [
       {
         "finish_reason": "tool_calls",
@@ -80,17 +81,17 @@
           "function_call": null,
           "tool_calls": [
             {
-              "id": "call_EK82kkeWaKPrMPlFhAacvFLW",
+              "id": "call_FG9Xu9axxz9prjhu7RpnlYmg",
               "function": {
-                "arguments": "{\"row_id\": \"lobbying_violation_penalties_imposed_in_practice\", \"axis\": \"legal\", \"reason\": \"The bundled statute text specifies available penalties for violations (e.g., forfeitures, fines, imprisonment) but does not address whether penalties are imposed 'in practice'.\"}",
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"reason\": \"The statute text provides maximum penalties for violations (Wis. Stat. § 13.69) but does not mandate that sanctions are always imposed upon discovery of reporting violations; enforcement is framed as violators 'may be required' to forfeit, so the always/generally/rarely sanctioning standard cannot be determined de jure from this bundle.\"}",
                 "name": "record_unscoreable_cell"
               },
               "type": "function"
             },
             {
-              "id": "call_Jb9T3ifsCDXJ4XHAK1DqN60j",
+              "id": "call_q87uvqqCfzNh3peNXUQRMd1v",
               "function": {
-                "arguments": "{\"row_id\": \"lobbying_disclosure_audit_required_in_law\", \"axis\": \"legal\", \"value\": \"yes\", \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.74(1) (2025)\", \"justification\": \"Section 13.74(1) requires the ethics commission to examine all statements required to be filed under the subchapter, establishing a legally mandated auditing/examination function.\"}",
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": \"MODERATE\", \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.74(1)-(2) (2025)\", \"justification\": \"The commission is required to examine all required statements and may inspect underlying documents and use investigatory subpoenas, indicating a compliance review/audit function rather than a legally required regular independent third-party audit.\"}",
                 "name": "record_cell"
               },
               "type": "function"
@@ -99,15 +100,15 @@
         }
       }
     ],
-    "created": 1780333593,
+    "created": 1780592697,
     "model": "gpt-5.2-2025-12-11",
     "object": "chat.completion",
     "service_tier": "default",
     "system_fingerprint": null,
     "usage": {
-      "completion_tokens": 184,
-      "prompt_tokens": 19010,
-      "total_tokens": 19194,
+      "completion_tokens": 212,
+      "prompt_tokens": 19129,
+      "total_tokens": 19341,
       "completion_tokens_details": {
         "accepted_prediction_tokens": 0,
         "audio_tokens": 0,
@@ -116,7 +117,7 @@
       },
       "prompt_tokens_details": {
         "audio_tokens": 0,
-        "cached_tokens": 18944
+        "cached_tokens": 19072
       }
     }
   }

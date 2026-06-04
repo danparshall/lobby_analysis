@@ -9,26 +9,26 @@
     "state_abbr": "WI",
     "vintage_year": 2025,
     "prompt_sha256": "cf5e534eb79e06bd8862cb6a71fa3ba6db44eb86d8d1b12b85431ef394b042c8",
-    "timestamp_utc": "2026-06-03T20:35:39+00:00"
+    "timestamp_utc": "2026-06-04T16:52:36+00:00"
   },
-  "wall_clock_seconds": 19.373677416006103,
+  "wall_clock_seconds": 22.55055749998428,
   "usage": {
     "cache_creation": {
       "ephemeral_1h_input_tokens": 0,
-      "ephemeral_5m_input_tokens": 1116
+      "ephemeral_5m_input_tokens": 1307
     },
-    "cache_creation_input_tokens": 1116,
-    "cache_read_input_tokens": 29445,
+    "cache_creation_input_tokens": 1307,
+    "cache_read_input_tokens": 29466,
     "inference_geo": "global",
     "input_tokens": 6,
-    "output_tokens": 1962,
+    "output_tokens": 2111,
     "server_tool_use": null,
     "service_tier": "standard",
     "output_tokens_details": {
       "thinking_tokens": 0
     }
   },
-  "cost_usd_estimate": 0.049080000000000006,
+  "cost_usd_estimate": 0.052805000000000005,
   "legal_roster": [
     [
       "lobbyist_registration_required",
@@ -77,24 +77,40 @@
         "value": true
       },
       "cell_class": "BinaryCell",
-      "cited_section": "§13.63(1)(a) and §13.66",
-      "justification": "Section 13.66 prohibits any person from engaging in lobbying as a lobbyist unless licensed under §13.63, which requires application to and license issuance by the commission."
+      "cited_section": "§13.66 and §13.62(11)",
+      "justification": "Section 13.66 requires that no person may engage in lobbying as a lobbyist unless licensed under §13.63 and authorized under §13.65, and §13.62(11) defines lobbyist as anyone employed/contracted by a principal whose duties include lobbying, so all paid lobbyists must register."
     },
     {
       "cell": {
         "cell_id": [
-          "lobbyist_registration_renewal_cadence",
+          "lobbyist_registration_amendment_deadline_days",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": 10
+      },
+      "cell_class": "IntCell",
+      "cited_section": "§13.695(2)",
+      "justification": "Section 13.695(2) requires any change in name of officer/employee or general area of legislative action disclosed in the statement to be reported in writing to the commission within 10 days; this is the closest analog statutory change-reporting deadline (note: this provision governs agency filings; §13.64(3) requires written notice \"before\" lobbying in a new area, with no specific day count)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_deadline_days_after_first_lobbying",
           "legal"
         ],
         "conditional": false,
         "condition_text": null,
         "confidence": "high",
         "provenance": [],
-        "value": 24
+        "value": 0
       },
       "cell_class": "IntCell",
-      "cited_section": "§13.63(1)(a)",
-      "justification": "A lobbyist license issued under §13.63(1)(a) expires on December 31 of each even-numbered year, meaning a biennial (24-month) renewal cadence."
+      "cited_section": "§13.66 and §13.65",
+      "justification": "Section 13.66 prohibits engaging in lobbying as a lobbyist unless already licensed under §13.63 and authorized under §13.65, and §13.65 requires authorization \"before engaging in lobbying\" — so the lobbyist must register/be licensed before any lobbying, i.e., zero days after first lobbying."
     },
     {
       "cell": {
@@ -110,7 +126,7 @@
       },
       "cell_class": "BinaryCell",
       "cited_section": "§13.63(1)(a), §13.64(1), and §13.65",
-      "justification": "Lobbyists must be individually licensed under §13.63, principals must separately register under §13.64, and a separate written authorization must be filed under §13.65 for each principal-lobbyist relationship."
+      "justification": "The statute requires separate filings: the lobbyist applies for a license under §13.63, the principal files a registration statement under §13.64, and a written authorization under §13.65 links them — these are distinct filings for each party."
     },
     {
       "cell": {
@@ -126,7 +142,7 @@
       },
       "cell_class": "BinaryCell",
       "cited_section": "§13.63(1)(a)",
-      "justification": "Section 13.63(1)(a) enumerates the application requirements (signature, SSN, fee) and does not require a photograph, and no other section in the subchapter imposes a photograph requirement."
+      "justification": "Section 13.63(1)(a) lists application requirements (social security number, signature, fee) but does not require submission of a photograph with the license application."
     },
     {
       "cell": {
@@ -142,7 +158,7 @@
       },
       "cell_class": "BinaryCell",
       "cited_section": "§13.621(3)",
-      "justification": "Section 13.621(3) exempts elective state officials, local officials, tribal officials, and legislative employees from §§13.63, 13.64, 13.65, 13.68, and 13.695 when acting in an official capacity."
+      "justification": "Section 13.621(3) (\"Performance of public official duties\") exempts elective state officials, local officials, tribal officials, and employees of the legislature from §§13.63, 13.64, 13.65, 13.68, and 13.695 when acting in an official capacity."
     },
     {
       "cell": {
@@ -158,144 +174,161 @@
       },
       "cell_class": "BinaryCell",
       "cited_section": "§13.621(2) and §13.695",
-      "justification": "An agency that files a statement under §13.695 (and named officials) is exempt from §§13.625, 13.63, 13.64, 13.65, and 13.68 except as provided in §13.695, constituting a partial exemption with separate disclosure obligations."
+      "justification": "Section 13.621(2) provides that an agency which files a statement under §13.695 and its named officials are not subject to §§13.625, 13.63, 13.64, 13.65, or 13.68 (except as provided in §13.695), giving state agencies a partial exemption with a separate, lighter reporting regime under §13.695."
     }
   ],
-  "unscoreable_emissions": [
+  "unscoreable_emissions": [],
+  "errors": [
     {
-      "row_id": "lobbyist_registration_amendment_deadline_days",
-      "axis": "legal",
-      "reason": "The statute requires principals to provide written notice before lobbying in a new area (§13.64(3)) and agencies to report changes within 10 days (§13.695(2)), but no specific deadline is set for a lobbyist to amend their own license/registration."
-    },
-    {
-      "row_id": "lobbyist_registration_deadline_days_after_first_lobbying",
-      "axis": "legal",
-      "reason": "Wisconsin requires the lobbyist to be licensed BEFORE engaging in lobbying (§13.66 and §13.65 require licensing/authorization before lobbying), so there is no statutory \"days after first lobbying\" deadline for the lobbyist; the 10-day post-threshold deadline in §13.64(1) applies to the principal's registration, not the lobbyist's license."
+      "reason": "instantiation_failed",
+      "key": [
+        "lobbyist_registration_renewal_cadence",
+        "legal"
+      ],
+      "error": "ValueError('IntCell: cannot coerce \\'\"MODERATE\"\\' to int')",
+      "arguments": {
+        "handle": "row_002",
+        "axis": "legal",
+        "value": "\"MODERATE\"",
+        "confidence": "high",
+        "cited_section": "§13.63(1)(a) and §13.64(2)",
+        "justification": "Lobbyist licenses expire December 31 of each even-numbered year, and principal registrations also expire December 31 of each even-numbered year, meaning registration/licensure is biennial rather than annual."
+      }
     }
   ],
-  "errors": [],
   "response": {
-    "id": "msg_01UCaPtm4B9WRxaR9exHvsct",
+    "id": "msg_01QrmDWURv3Enfy8Ft2M4ea7",
     "container": null,
     "content": [
       {
-        "id": "toolu_019ZhdcEJgfd8tMyoWJsozBD",
+        "citations": null,
+        "text": "I'll analyze each cell based on the Wisconsin statute text provided.",
+        "type": "text"
+      },
+      {
+        "id": "toolu_013EzFhjznih3cFtWNtMGWXm",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbyist_registration_required",
+          "handle": "row_001",
           "axis": "legal",
           "value": true,
           "confidence": "high",
-          "cited_section": "§13.63(1)(a) and §13.66",
-          "justification": "Section 13.66 prohibits any person from engaging in lobbying as a lobbyist unless licensed under §13.63, which requires application to and license issuance by the commission."
+          "cited_section": "§13.66 and §13.62(11)",
+          "justification": "Section 13.66 requires that no person may engage in lobbying as a lobbyist unless licensed under §13.63 and authorized under §13.65, and §13.62(11) defines lobbyist as anyone employed/contracted by a principal whose duties include lobbying, so all paid lobbyists must register."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_0115HnhcLencDFRzySvLavhp",
+        "id": "toolu_01AtgBybWStQ8oZ18MtsRpji",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbyist_registration_renewal_cadence",
+          "handle": "row_002",
           "axis": "legal",
-          "value": "24",
+          "value": "\"MODERATE\"",
           "confidence": "high",
-          "cited_section": "§13.63(1)(a)",
-          "justification": "A lobbyist license issued under §13.63(1)(a) expires on December 31 of each even-numbered year, meaning a biennial (24-month) renewal cadence."
+          "cited_section": "§13.63(1)(a) and §13.64(2)",
+          "justification": "Lobbyist licenses expire December 31 of each even-numbered year, and principal registrations also expire December 31 of each even-numbered year, meaning registration/licensure is biennial rather than annual."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01X85M2rmYBND7JqBEw53Ado",
+        "id": "toolu_01621585RS3ce7R4MmC5ySoq",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbyist_registration_amendment_deadline_days",
+          "handle": "row_003",
           "axis": "legal",
-          "reason": "The statute requires principals to provide written notice before lobbying in a new area (§13.64(3)) and agencies to report changes within 10 days (§13.695(2)), but no specific deadline is set for a lobbyist to amend their own license/registration."
+          "value": "10",
+          "confidence": "medium",
+          "cited_section": "§13.695(2)",
+          "justification": "Section 13.695(2) requires any change in name of officer/employee or general area of legislative action disclosed in the statement to be reported in writing to the commission within 10 days; this is the closest analog statutory change-reporting deadline (note: this provision governs agency filings; §13.64(3) requires written notice \"before\" lobbying in a new area, with no specific day count)."
         },
-        "name": "record_unscoreable_cell",
+        "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_015FcaN7xhpDWN2GLpDdfWXp",
+        "id": "toolu_019vf2sgsEVz9mVi9WJLvt3W",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbyist_registration_deadline_days_after_first_lobbying",
+          "handle": "row_004",
           "axis": "legal",
-          "reason": "Wisconsin requires the lobbyist to be licensed BEFORE engaging in lobbying (§13.66 and §13.65 require licensing/authorization before lobbying), so there is no statutory \"days after first lobbying\" deadline for the lobbyist; the 10-day post-threshold deadline in §13.64(1) applies to the principal's registration, not the lobbyist's license."
+          "value": "0",
+          "confidence": "high",
+          "cited_section": "§13.66 and §13.65",
+          "justification": "Section 13.66 prohibits engaging in lobbying as a lobbyist unless already licensed under §13.63 and authorized under §13.65, and §13.65 requires authorization \"before engaging in lobbying\" — so the lobbyist must register/be licensed before any lobbying, i.e., zero days after first lobbying."
         },
-        "name": "record_unscoreable_cell",
+        "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01TUfg7Z9hU4MtNVisXuuVie",
+        "id": "toolu_019fRFDy4AQ1YDXLzy76hc6r",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "separate_registrations_for_lobbyists_and_clients",
+          "handle": "row_005",
           "axis": "legal",
           "value": true,
           "confidence": "high",
           "cited_section": "§13.63(1)(a), §13.64(1), and §13.65",
-          "justification": "Lobbyists must be individually licensed under §13.63, principals must separately register under §13.64, and a separate written authorization must be filed under §13.65 for each principal-lobbyist relationship."
+          "justification": "The statute requires separate filings: the lobbyist applies for a license under §13.63, the principal files a registration statement under §13.64, and a written authorization under §13.65 links them — these are distinct filings for each party."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01NhjDxthbC5qAMZgwXFunsc",
+        "id": "toolu_01NWi8dSGs6G7mcKis6gpWr6",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbyist_required_to_submit_photograph_with_registration",
+          "handle": "row_006",
           "axis": "legal",
           "value": false,
           "confidence": "high",
           "cited_section": "§13.63(1)(a)",
-          "justification": "Section 13.63(1)(a) enumerates the application requirements (signature, SSN, fee) and does not require a photograph, and no other section in the subchapter imposes a photograph requirement."
+          "justification": "Section 13.63(1)(a) lists application requirements (social security number, signature, fee) but does not require submission of a photograph with the license application."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01CPB8gu43oXeDdfB4AGMMoh",
+        "id": "toolu_0196Qi3ds1jWxizToLfyBo77",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "exemption_for_govt_official_capacity_exists",
+          "handle": "row_007",
           "axis": "legal",
           "value": true,
           "confidence": "high",
           "cited_section": "§13.621(3)",
-          "justification": "Section 13.621(3) exempts elective state officials, local officials, tribal officials, and legislative employees from §§13.63, 13.64, 13.65, 13.68, and 13.695 when acting in an official capacity."
+          "justification": "Section 13.621(3) (\"Performance of public official duties\") exempts elective state officials, local officials, tribal officials, and employees of the legislature from §§13.63, 13.64, 13.65, 13.68, and 13.695 when acting in an official capacity."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_012KjBmPtQkR11BZ6jw3GMzD",
+        "id": "toolu_01E8Pm25TFwZZhggaCK4fXnm",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "exemption_partial_for_govt_agencies",
+          "handle": "row_008",
           "axis": "legal",
           "value": true,
           "confidence": "high",
           "cited_section": "§13.621(2) and §13.695",
-          "justification": "An agency that files a statement under §13.695 (and named officials) is exempt from §§13.625, 13.63, 13.64, 13.65, and 13.68 except as provided in §13.695, constituting a partial exemption with separate disclosure obligations."
+          "justification": "Section 13.621(2) provides that an agency which files a statement under §13.695 and its named officials are not subject to §§13.625, 13.63, 13.64, 13.65, or 13.68 (except as provided in §13.695), giving state agencies a partial exemption with a separate, lighter reporting regime under §13.695."
         },
         "name": "record_cell",
         "type": "tool_use"
@@ -310,13 +343,13 @@
     "usage": {
       "cache_creation": {
         "ephemeral_1h_input_tokens": 0,
-        "ephemeral_5m_input_tokens": 1116
+        "ephemeral_5m_input_tokens": 1307
       },
-      "cache_creation_input_tokens": 1116,
-      "cache_read_input_tokens": 29445,
+      "cache_creation_input_tokens": 1307,
+      "cache_read_input_tokens": 29466,
       "inference_geo": "global",
       "input_tokens": 6,
-      "output_tokens": 1962,
+      "output_tokens": 2111,
       "server_tool_use": null,
       "service_tier": "standard",
       "output_tokens_details": {

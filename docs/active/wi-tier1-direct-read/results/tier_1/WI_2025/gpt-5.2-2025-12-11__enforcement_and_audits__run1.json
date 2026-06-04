@@ -9,13 +9,13 @@
     "state_abbr": "WI",
     "vintage_year": 2025,
     "prompt_sha256": "cf5e534eb79e06bd8862cb6a71fa3ba6db44eb86d8d1b12b85431ef394b042c8",
-    "timestamp_utc": "2026-06-01T17:06:32+00:00"
+    "timestamp_utc": "2026-06-04T17:04:57+00:00"
   },
-  "wall_clock_seconds": 4.474282500013942,
+  "wall_clock_seconds": 4.062941249983851,
   "usage": {
-    "completion_tokens": 212,
-    "prompt_tokens": 19010,
-    "total_tokens": 19222,
+    "completion_tokens": 222,
+    "prompt_tokens": 19129,
+    "total_tokens": 19351,
     "completion_tokens_details": {
       "accepted_prediction_tokens": 0,
       "audio_tokens": 0,
@@ -24,10 +24,10 @@
     },
     "prompt_tokens_details": {
       "audio_tokens": 0,
-      "cached_tokens": 17920
+      "cached_tokens": 18688
     }
   },
-  "cost_usd_estimate": 0.0362355,
+  "cost_usd_estimate": 0.03658375,
   "legal_roster": [
     [
       "lobbying_violation_penalties_imposed_in_practice",
@@ -49,23 +49,24 @@
         "condition_text": null,
         "confidence": "high",
         "provenance": [],
-        "value": "Yes—commission examination/audit authority required"
+        "value": "MODERATE"
       },
       "cell_class": "EnumCell",
-      "cited_section": "Wis. Stat. § 13.74(1) (2025)",
-      "justification": "Section 13.74(1) provides that the Ethics Commission 'shall cause to have made an examination of all statements' required under the subchapter, establishing a mandatory auditing/examination requirement."
+      "cited_section": "Wis. Stat. § 13.74(1)–(2) (2025)",
+      "justification": "The commission must examine ('cause to have made an examination of') all required lobbying statements and may subpoena records in investigations, which constitutes a mandated compliance review/audit function but not a requirement for regular auditing by an independent third party."
     }
   ],
   "unscoreable_emissions": [
     {
-      "row_id": "lobbying_violation_penalties_imposed_in_practice",
+      "handle": "row_001",
       "axis": "legal",
-      "reason": "The bundled statute text describes available penalties and enforcement mechanisms (e.g., forfeitures, fines, imprisonment), but does not state whether penalties are imposed 'in practice,' which is an empirical/practical question not answered de jure by the statute."
+      "reason": "The prompt’s scoring rubric concerns whether offenders are 'always/generally/rarely' sanctioned in practice when violations are discovered, but the bundled statute text only provides maximum penalties and enforcement/audit authority (e.g., forfeiture caps and discretionary suspension), not a legal mandate that sanctions must be imposed upon discovery or any statutory standard about consistency of sanctioning.",
+      "row_id": "lobbying_violation_penalties_imposed_in_practice"
     }
   ],
   "errors": [],
   "response": {
-    "id": "chatcmpl-Dm0NoTKY6OqrpKeTnBC1U2YbpFsGc",
+    "id": "chatcmpl-Dn5mvR9IYWH0SFoViWS6SNZR6yCsY",
     "choices": [
       {
         "finish_reason": "tool_calls",
@@ -80,17 +81,17 @@
           "function_call": null,
           "tool_calls": [
             {
-              "id": "call_dK6aWtIP82ZQ79AzzFVY7YZv",
+              "id": "call_PY7896ecvAu8MCOWgQ9iZ1NA",
               "function": {
-                "arguments": "{\"row_id\": \"lobbying_violation_penalties_imposed_in_practice\", \"axis\": \"legal\", \"reason\": \"The bundled statute text describes available penalties and enforcement mechanisms (e.g., forfeitures, fines, imprisonment), but does not state whether penalties are imposed 'in practice,' which is an empirical/practical question not answered de jure by the statute.\"}",
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"reason\": \"The prompt’s scoring rubric concerns whether offenders are 'always/generally/rarely' sanctioned in practice when violations are discovered, but the bundled statute text only provides maximum penalties and enforcement/audit authority (e.g., forfeiture caps and discretionary suspension), not a legal mandate that sanctions must be imposed upon discovery or any statutory standard about consistency of sanctioning.\"}",
                 "name": "record_unscoreable_cell"
               },
               "type": "function"
             },
             {
-              "id": "call_22xueSXw2suRoOHdHEV3NUa3",
+              "id": "call_3myLCBU1bfeS9HvitBZ6RXbx",
               "function": {
-                "arguments": "{\"row_id\": \"lobbying_disclosure_audit_required_in_law\", \"axis\": \"legal\", \"value\": \"Yes—commission examination/audit authority required\", \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.74(1) (2025)\", \"justification\": \"Section 13.74(1) provides that the Ethics Commission 'shall cause to have made an examination of all statements' required under the subchapter, establishing a mandatory auditing/examination requirement.\"}",
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": \"MODERATE\", \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.74(1)–(2) (2025)\", \"justification\": \"The commission must examine ('cause to have made an examination of') all required lobbying statements and may subpoena records in investigations, which constitutes a mandated compliance review/audit function but not a requirement for regular auditing by an independent third party.\"}",
                 "name": "record_cell"
               },
               "type": "function"
@@ -99,15 +100,15 @@
         }
       }
     ],
-    "created": 1780333588,
+    "created": 1780592693,
     "model": "gpt-5.2-2025-12-11",
     "object": "chat.completion",
     "service_tier": "default",
     "system_fingerprint": null,
     "usage": {
-      "completion_tokens": 212,
-      "prompt_tokens": 19010,
-      "total_tokens": 19222,
+      "completion_tokens": 222,
+      "prompt_tokens": 19129,
+      "total_tokens": 19351,
       "completion_tokens_details": {
         "accepted_prediction_tokens": 0,
         "audio_tokens": 0,
@@ -116,7 +117,7 @@
       },
       "prompt_tokens_details": {
         "audio_tokens": 0,
-        "cached_tokens": 17920
+        "cached_tokens": 18688
       }
     }
   }

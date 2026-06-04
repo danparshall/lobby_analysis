@@ -9,13 +9,13 @@
     "state_abbr": "WI",
     "vintage_year": 2025,
     "prompt_sha256": "cf5e534eb79e06bd8862cb6a71fa3ba6db44eb86d8d1b12b85431ef394b042c8",
-    "timestamp_utc": "2026-06-01T17:02:35+00:00"
+    "timestamp_utc": "2026-06-04T17:01:00+00:00"
   },
-  "wall_clock_seconds": 16.847168292006245,
+  "wall_clock_seconds": 19.45079649996478,
   "usage": {
-    "completion_tokens": 1391,
-    "prompt_tokens": 19299,
-    "total_tokens": 20690,
+    "completion_tokens": 1397,
+    "prompt_tokens": 19731,
+    "total_tokens": 21128,
     "completion_tokens_details": {
       "accepted_prediction_tokens": 0,
       "audio_tokens": 0,
@@ -24,10 +24,10 @@
     },
     "prompt_tokens_details": {
       "audio_tokens": 0,
-      "cached_tokens": 18944
+      "cached_tokens": 19584
     }
   },
-  "cost_usd_estimate": 0.053247249999999996,
+  "cost_usd_estimate": 0.054087249999999996,
   "legal_roster": [
     [
       "def_lobbying_activity_types",
@@ -102,18 +102,16 @@
         "confidence": "high",
         "provenance": [],
         "value": [
-          "administrative_action",
-          "public_hearing_or_meeting_appearance",
-          "oral_communication",
-          "preparation_time",
-          "legislative_action",
-          "written_communication",
-          "service_on_committee"
+          "oral communications",
+          "written communications",
+          "time spent preparing for communications",
+          "appearances at public hearings or meetings",
+          "service on a committee in which preparation or communication occurs"
         ]
       },
       "cell_class": "EnumSetCell",
       "cited_section": "Wis. Stat. § 13.62(10)",
-      "justification": "The statute defines “lobbying” as attempting to influence legislative or administrative action by oral or written communication and explicitly includes time spent preparing for such communication, appearances at public hearings or meetings, and service on a committee in which such preparation or communication occurs."
+      "justification": "The statute defines 'lobbying' as attempting to influence legislative or administrative action by oral or written communication, and expressly includes preparation time and appearances at hearings/meetings or committee service where such communication occurs."
     },
     {
       "cell": {
@@ -126,12 +124,29 @@
         "confidence": "high",
         "provenance": [],
         "value": [
-          "individual"
+          "in-house company/organization lobbyists (employees)",
+          "professional lobbyists/consultants"
         ]
       },
       "cell_class": "EnumSetCell",
-      "cited_section": "Wis. Stat. § 13.62(11)",
-      "justification": "A “lobbyist” is defined as an individual employed by or receiving economic consideration from a principal whose duties include lobbying, with a 5-days-per-reporting-period test if duties are not exclusively lobbying."
+      "cited_section": "Wis. Stat. §§ 13.62(11), 13.62(12)",
+      "justification": "'Lobbyist' includes any individual employed by a principal or who contracts for/receives economic consideration from a principal whose duties include lobbying, covering both outside consultants and in-house employees who meet the communication-day threshold."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "law_defines_public_entity",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. §§ 13.61-13.75 (as provided)",
+      "justification": "The provided statutory text defines several entity types (e.g., 'agency,' 'business entity') but does not define 'public entity' as such."
     },
     {
       "cell": {
@@ -146,8 +161,8 @@
         "value": true
       },
       "cell_class": "BinaryCell",
-      "cited_section": "Wis. Stat. § 13.62(11)",
-      "justification": "When an individual’s duties are not limited exclusively to lobbying, the statute applies a quantitative threshold—lobbying communications on at least 5 days within a reporting period—to determine whether the person is a lobbyist."
+      "cited_section": "Wis. Stat. § 13.64(1); Wis. Stat. § 13.621(5)",
+      "justification": "Coverage for principal registration/reporting is triggered only when nonexempt lobbying expenditures/obligations exceed $500 in a calendar year, and principals anticipating ≤$500 may file a verified statement to avoid licensing/registration/reporting if true."
     },
     {
       "cell": {
@@ -162,8 +177,8 @@
         "value": true
       },
       "cell_class": "BinaryCell",
-      "cited_section": "Wis. Stat. §§ 13.62(2)-(3), 13.62(10)",
-      "justification": "Lobbying includes communications intended to influence administrative action with an “agency official,” and “agency” is defined broadly as state government boards, commissions, departments, offices, etc."
+      "cited_section": "Wis. Stat. §§ 13.62(10), 13.62(8)",
+      "justification": "'Lobbying' includes communications with 'any elective state official' to influence 'legislative action,' and 'legislative action' expressly includes the governor's approval/veto of bills and proposal development."
     },
     {
       "cell": {
@@ -178,8 +193,8 @@
         "value": true
       },
       "cell_class": "BinaryCell",
-      "cited_section": "Wis. Stat. §§ 13.62(3), 13.62(10)",
-      "justification": "“Agency official” includes an agency member, officer, employee, or consultant who participates in administrative action, and lobbying is defined as communication with an agency official to influence legislative or administrative action."
+      "cited_section": "Wis. Stat. §§ 13.62(10), 13.62(10g), 13.62(3), 13.62(6), 13.62(8m)",
+      "justification": "Lobbying/lobbying communications target 'any elective state official, agency official or legislative employee,' which includes executive-branch agency officials and legislative personnel as well as elected state officials."
     },
     {
       "cell": {
@@ -194,8 +209,8 @@
         "value": true
       },
       "cell_class": "BinaryCell",
-      "cited_section": "Wis. Stat. § 13.62(8) and (10)",
-      "justification": "“Legislative action” expressly includes the governor’s approval or veto of bills and development of proposals for introduction in the legislature, and lobbying covers attempts to influence legislative action via communication with covered officials."
+      "cited_section": "Wis. Stat. §§ 13.62(10), 13.62(8)",
+      "justification": "The definition of lobbying covers communications to influence legislative action, and legislative action includes actions by the legislature and the governor (approve/veto and proposal development)."
     },
     {
       "cell": {
@@ -210,8 +225,8 @@
         "value": true
       },
       "cell_class": "BinaryCell",
-      "cited_section": "Wis. Stat. § 13.62(2)",
-      "justification": "The definition of “agency” encompasses boards, commissions, councils, committees, and various authorities in state government (excluding only legislative councils/committees), covering independent agencies and commissions."
+      "cited_section": "Wis. Stat. §§ 13.62(10), 13.62(1), 13.62(3)",
+      "justification": "Lobbying includes communications attempting to influence 'administrative action,' defined as agency rulemaking activity, via communications with 'agency officials' who participate in administrative action."
     },
     {
       "cell": {
@@ -226,8 +241,8 @@
         "value": true
       },
       "cell_class": "BinaryCell",
-      "cited_section": "Wis. Stat. §§ 13.62(8), 13.62(10)",
-      "justification": "“Legislative action” includes actions by the legislature and its committees, and “lobbying” includes attempts to influence legislative action by communication with covered officials."
+      "cited_section": "Wis. Stat. §§ 13.62(10), 13.62(6)",
+      "justification": "Because 'elective state official' is a defined target of lobbying communications, communications with state elected officials are within the statutory definition of lobbying."
     },
     {
       "cell": {
@@ -242,8 +257,8 @@
         "value": true
       },
       "cell_class": "BinaryCell",
-      "cited_section": "Wis. Stat. §§ 13.62(8m), 13.62(10)",
-      "justification": "Lobbying is defined as communication with a “legislative employee,” and “legislative employee” is defined to include members/officers of the legislature and specified legislative employees/service agency staff."
+      "cited_section": "Wis. Stat. §§ 13.62(10g), 13.62(6), 13.62(3), 13.62(8m)",
+      "justification": "The statute defines 'lobbying communication' as attempting to influence legislative/administrative action via oral or written communication with any elective state official, agency official, or legislative employee, covering legislative and executive/administrative targets and their staff."
     },
     {
       "cell": {
@@ -255,11 +270,11 @@
         "condition_text": null,
         "confidence": "high",
         "provenance": [],
-        "value": true
+        "value": false
       },
       "cell_class": "BinaryCell",
-      "cited_section": "Wis. Stat. §§ 13.62(6), 13.62(10)",
-      "justification": "The statute defines “elective state official” and includes such officials as covered targets for lobbying communications in the definition of lobbying."
+      "cited_section": "Wis. Stat. §§ 13.62(11), 13.621(3)",
+      "justification": "Registration/licensure duties attach to 'lobbyists' employed by principals, while elective state officials and legislative employees are expressly not subject to key lobbying requirements when acting in an official capacity."
     },
     {
       "cell": {
@@ -274,35 +289,33 @@
         "value": true
       },
       "cell_class": "BinaryCell",
-      "cited_section": "Wis. Stat. §§ 13.62(3), 13.62(8m), 13.62(10)",
-      "justification": "The lobbying definition covers communications with “agency officials” and “legislative employees,” both of which include employees (and certain consultants) of state agencies or the legislature."
+      "cited_section": "Wis. Stat. § 13.62(11)",
+      "justification": "An in-house employee can be a 'lobbyist' if employed by a principal and duties include lobbying, and if not exclusively lobbying the individual is covered only if making lobbying communications on at least 5 days within a reporting period (a time standard)."
     }
   ],
   "unscoreable_emissions": [
     {
-      "row_id": "law_defines_public_entity",
+      "handle": "row_013",
       "axis": "legal",
-      "reason": "The bundled provisions (Wis. Stat. §§ 13.61-13.75) do not define a general term like “public entity”; they define “agency,” “local official,” and “tribal official,” but not a public-entity definition for this compendium row."
+      "reason": "The provided text does not include any definition of 'public entity,' so it cannot be determined whether any such definition relies on public charter or special government protection.",
+      "row_id": "public_entity_def_relies_on_charter"
     },
     {
-      "row_id": "public_entity_def_relies_on_charter",
+      "handle": "row_014",
       "axis": "legal",
-      "reason": "No definition of “public entity” (or criteria such as creation by charter) appears in the provided statutory sections, so this attribute cannot be determined from the bundle."
+      "reason": "The provided text does not define 'public entity,' so it cannot be determined whether any such definition relies on ownership.",
+      "row_id": "public_entity_def_relies_on_ownership"
     },
     {
-      "row_id": "public_entity_def_relies_on_ownership",
+      "handle": "row_015",
       "axis": "legal",
-      "reason": "The provided statute text does not define “public entity” using ownership/control criteria, so the cell cannot be answered from the bundle."
-    },
-    {
-      "row_id": "public_entity_def_relies_on_revenue_structure",
-      "axis": "legal",
-      "reason": "The provided statute text does not define “public entity” using revenue structure (taxing power, public funding, etc.), so the cell cannot be answered from the bundle."
+      "reason": "The provided text does not define 'public entity,' so it cannot be determined whether any such definition relies on structure or composition of revenue.",
+      "row_id": "public_entity_def_relies_on_revenue_structure"
     }
   ],
   "errors": [],
   "response": {
-    "id": "chatcmpl-Dm0JoiwI3Hklsu4JLwKfkq0vxQhZ7",
+    "id": "chatcmpl-Dn5irNtoTlY74ptpM0XvusxUoRwOa",
     "choices": [
       {
         "finish_reason": "tool_calls",
@@ -317,121 +330,121 @@
           "function_call": null,
           "tool_calls": [
             {
-              "id": "call_lUPS20V3U7Zope4ku7tkWfdC",
+              "id": "call_ykW5EF9CXArDpb9xlm5tl2T1",
               "function": {
-                "arguments": "{\"row_id\": \"def_lobbying_activity_types\", \"axis\": \"legal\", \"value\": [\"administrative_action\", \"legislative_action\", \"oral_communication\", \"preparation_time\", \"public_hearing_or_meeting_appearance\", \"service_on_committee\", \"written_communication\"], \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.62(10)\", \"justification\": \"The statute defines “lobbying” as attempting to influence legislative or administrative action by oral or written communication and explicitly includes time spent preparing for such communication, appearances at public hearings or meetings, and service on a committee in which such preparation or communication occurs.\"}",
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"value\": [\"oral communications\", \"written communications\", \"time spent preparing for communications\", \"appearances at public hearings or meetings\", \"service on a committee in which preparation or communication occurs\"], \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.62(10)\", \"justification\": \"The statute defines 'lobbying' as attempting to influence legislative or administrative action by oral or written communication, and expressly includes preparation time and appearances at hearings/meetings or committee service where such communication occurs.\"}",
                 "name": "record_cell"
               },
               "type": "function"
             },
             {
-              "id": "call_KQ5wInKIVSIlt9JKy55K5e2f",
+              "id": "call_3dj4hndqRy1Zg4KqFTYdR2i1",
               "function": {
-                "arguments": "{\"row_id\": \"def_lobbyist_actor_types\", \"axis\": \"legal\", \"value\": [\"individual\"], \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.62(11)\", \"justification\": \"A “lobbyist” is defined as an individual employed by or receiving economic consideration from a principal whose duties include lobbying, with a 5-days-per-reporting-period test if duties are not exclusively lobbying.\"}",
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": [\"professional lobbyists/consultants\", \"in-house company/organization lobbyists (employees)\"], \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. §§ 13.62(11), 13.62(12)\", \"justification\": \"'Lobbyist' includes any individual employed by a principal or who contracts for/receives economic consideration from a principal whose duties include lobbying, covering both outside consultants and in-house employees who meet the communication-day threshold.\"}",
                 "name": "record_cell"
               },
               "type": "function"
             },
             {
-              "id": "call_alH4fz9vzYqVldETscvVbP7B",
+              "id": "call_HKjY9kpUB5FLxW9FSsrrksDj",
               "function": {
-                "arguments": "{\"row_id\": \"law_defines_public_entity\", \"axis\": \"legal\", \"reason\": \"The bundled provisions (Wis. Stat. §§ 13.61-13.75) do not define a general term like “public entity”; they define “agency,” “local official,” and “tribal official,” but not a public-entity definition for this compendium row.\"}",
+                "arguments": "{\"handle\": \"row_003\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. §§ 13.61-13.75 (as provided)\", \"justification\": \"The provided statutory text defines several entity types (e.g., 'agency,' 'business entity') but does not define 'public entity' as such.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_FpfwvGp5nOkkO8tH8ZL4EzJW",
+              "function": {
+                "arguments": "{\"handle\": \"row_004\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.64(1); Wis. Stat. § 13.621(5)\", \"justification\": \"Coverage for principal registration/reporting is triggered only when nonexempt lobbying expenditures/obligations exceed $500 in a calendar year, and principals anticipating ≤$500 may file a verified statement to avoid licensing/registration/reporting if true.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_CmyjpneAb6IrXxCNlbnRJu1s",
+              "function": {
+                "arguments": "{\"handle\": \"row_005\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. §§ 13.62(10), 13.62(8)\", \"justification\": \"'Lobbying' includes communications with 'any elective state official' to influence 'legislative action,' and 'legislative action' expressly includes the governor's approval/veto of bills and proposal development.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_864Wsi3S90PyGjxHTHvav7Jp",
+              "function": {
+                "arguments": "{\"handle\": \"row_006\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. §§ 13.62(10), 13.62(10g), 13.62(3), 13.62(6), 13.62(8m)\", \"justification\": \"Lobbying/lobbying communications target 'any elective state official, agency official or legislative employee,' which includes executive-branch agency officials and legislative personnel as well as elected state officials.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_Z1X29DzOx4ZUdstWaDIER3Mg",
+              "function": {
+                "arguments": "{\"handle\": \"row_007\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. §§ 13.62(10), 13.62(8)\", \"justification\": \"The definition of lobbying covers communications to influence legislative action, and legislative action includes actions by the legislature and the governor (approve/veto and proposal development).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_Rtjkwv5k5Q4sKuyjvMqfe423",
+              "function": {
+                "arguments": "{\"handle\": \"row_008\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. §§ 13.62(10), 13.62(1), 13.62(3)\", \"justification\": \"Lobbying includes communications attempting to influence 'administrative action,' defined as agency rulemaking activity, via communications with 'agency officials' who participate in administrative action.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_AGayt3eXPBn3caZdv7FBNE2Q",
+              "function": {
+                "arguments": "{\"handle\": \"row_009\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. §§ 13.62(10), 13.62(6)\", \"justification\": \"Because 'elective state official' is a defined target of lobbying communications, communications with state elected officials are within the statutory definition of lobbying.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_VI4L4sXyF3oRKizxCxrhW749",
+              "function": {
+                "arguments": "{\"handle\": \"row_010\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. §§ 13.62(10g), 13.62(6), 13.62(3), 13.62(8m)\", \"justification\": \"The statute defines 'lobbying communication' as attempting to influence legislative/administrative action via oral or written communication with any elective state official, agency official, or legislative employee, covering legislative and executive/administrative targets and their staff.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_XJfl4zAJgQ0GQPreCt06HqO5",
+              "function": {
+                "arguments": "{\"handle\": \"row_011\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. §§ 13.62(11), 13.621(3)\", \"justification\": \"Registration/licensure duties attach to 'lobbyists' employed by principals, while elective state officials and legislative employees are expressly not subject to key lobbying requirements when acting in an official capacity.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_0CTSOzJv982tIRyS1VOqjNJc",
+              "function": {
+                "arguments": "{\"handle\": \"row_012\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.62(11)\", \"justification\": \"An in-house employee can be a 'lobbyist' if employed by a principal and duties include lobbying, and if not exclusively lobbying the individual is covered only if making lobbying communications on at least 5 days within a reporting period (a time standard).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_pG9Xr5jtNXPp9HAcG5MyfEXM",
+              "function": {
+                "arguments": "{\"handle\": \"row_013\", \"axis\": \"legal\", \"reason\": \"The provided text does not include any definition of 'public entity,' so it cannot be determined whether any such definition relies on public charter or special government protection.\"}",
                 "name": "record_unscoreable_cell"
               },
               "type": "function"
             },
             {
-              "id": "call_Z1s9SqN6p0O3R9MMApehFYJs",
+              "id": "call_VBRyt2m0uMEp0txRrLTgSoP6",
               "function": {
-                "arguments": "{\"row_id\": \"law_includes_materiality_test\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.62(11)\", \"justification\": \"When an individual’s duties are not limited exclusively to lobbying, the statute applies a quantitative threshold—lobbying communications on at least 5 days within a reporting period—to determine whether the person is a lobbyist.\"}",
-                "name": "record_cell"
-              },
-              "type": "function"
-            },
-            {
-              "id": "call_N46eH6RDIme6JTU8jToCjoB7",
-              "function": {
-                "arguments": "{\"row_id\": \"def_target_executive_agency\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. §§ 13.62(2)-(3), 13.62(10)\", \"justification\": \"Lobbying includes communications intended to influence administrative action with an “agency official,” and “agency” is defined broadly as state government boards, commissions, departments, offices, etc.\"}",
-                "name": "record_cell"
-              },
-              "type": "function"
-            },
-            {
-              "id": "call_su5lYiSoklnkdpahXQOs7kQV",
-              "function": {
-                "arguments": "{\"row_id\": \"def_target_executive_staff\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. §§ 13.62(3), 13.62(10)\", \"justification\": \"“Agency official” includes an agency member, officer, employee, or consultant who participates in administrative action, and lobbying is defined as communication with an agency official to influence legislative or administrative action.\"}",
-                "name": "record_cell"
-              },
-              "type": "function"
-            },
-            {
-              "id": "call_IwrVg7cn14YSweTHVcSxB8jd",
-              "function": {
-                "arguments": "{\"row_id\": \"def_target_governors_office\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.62(8) and (10)\", \"justification\": \"“Legislative action” expressly includes the governor’s approval or veto of bills and development of proposals for introduction in the legislature, and lobbying covers attempts to influence legislative action via communication with covered officials.\"}",
-                "name": "record_cell"
-              },
-              "type": "function"
-            },
-            {
-              "id": "call_g1h7EcVFvgaQerBpqTCyNG47",
-              "function": {
-                "arguments": "{\"row_id\": \"def_target_independent_agency\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.62(2)\", \"justification\": \"The definition of “agency” encompasses boards, commissions, councils, committees, and various authorities in state government (excluding only legislative councils/committees), covering independent agencies and commissions.\"}",
-                "name": "record_cell"
-              },
-              "type": "function"
-            },
-            {
-              "id": "call_QFVm1KA5Y4J1s96NUlPTzwaH",
-              "function": {
-                "arguments": "{\"row_id\": \"def_target_legislative_branch\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. §§ 13.62(8), 13.62(10)\", \"justification\": \"“Legislative action” includes actions by the legislature and its committees, and “lobbying” includes attempts to influence legislative action by communication with covered officials.\"}",
-                "name": "record_cell"
-              },
-              "type": "function"
-            },
-            {
-              "id": "call_2llCLxd3ghTLLn17rI0UihnL",
-              "function": {
-                "arguments": "{\"row_id\": \"def_target_legislative_staff\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. §§ 13.62(8m), 13.62(10)\", \"justification\": \"Lobbying is defined as communication with a “legislative employee,” and “legislative employee” is defined to include members/officers of the legislature and specified legislative employees/service agency staff.\"}",
-                "name": "record_cell"
-              },
-              "type": "function"
-            },
-            {
-              "id": "call_w2WuXFkhsBXYfkkbBDF7VCbH",
-              "function": {
-                "arguments": "{\"row_id\": \"def_actor_class_elected_officials\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. §§ 13.62(6), 13.62(10)\", \"justification\": \"The statute defines “elective state official” and includes such officials as covered targets for lobbying communications in the definition of lobbying.\"}",
-                "name": "record_cell"
-              },
-              "type": "function"
-            },
-            {
-              "id": "call_gPndXjwA1ozNOLyXXg2xHKdX",
-              "function": {
-                "arguments": "{\"row_id\": \"def_actor_class_public_employees\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. §§ 13.62(3), 13.62(8m), 13.62(10)\", \"justification\": \"The lobbying definition covers communications with “agency officials” and “legislative employees,” both of which include employees (and certain consultants) of state agencies or the legislature.\"}",
-                "name": "record_cell"
-              },
-              "type": "function"
-            },
-            {
-              "id": "call_AwlMCC3XqwP8hCdO6vQnUJwe",
-              "function": {
-                "arguments": "{\"row_id\": \"public_entity_def_relies_on_charter\", \"axis\": \"legal\", \"reason\": \"No definition of “public entity” (or criteria such as creation by charter) appears in the provided statutory sections, so this attribute cannot be determined from the bundle.\"}",
+                "arguments": "{\"handle\": \"row_014\", \"axis\": \"legal\", \"reason\": \"The provided text does not define 'public entity,' so it cannot be determined whether any such definition relies on ownership.\"}",
                 "name": "record_unscoreable_cell"
               },
               "type": "function"
             },
             {
-              "id": "call_nW23VA7EkMWQKw7fWZbTbRNV",
+              "id": "call_rq5dcdWHyt81ZR5CgVQhjbpj",
               "function": {
-                "arguments": "{\"row_id\": \"public_entity_def_relies_on_ownership\", \"axis\": \"legal\", \"reason\": \"The provided statute text does not define “public entity” using ownership/control criteria, so the cell cannot be answered from the bundle.\"}",
-                "name": "record_unscoreable_cell"
-              },
-              "type": "function"
-            },
-            {
-              "id": "call_UVH86LQ1JXaAHMye42hFxalV",
-              "function": {
-                "arguments": "{\"row_id\": \"public_entity_def_relies_on_revenue_structure\", \"axis\": \"legal\", \"reason\": \"The provided statute text does not define “public entity” using revenue structure (taxing power, public funding, etc.), so the cell cannot be answered from the bundle.\"}",
+                "arguments": "{\"handle\": \"row_015\", \"axis\": \"legal\", \"reason\": \"The provided text does not define 'public entity,' so it cannot be determined whether any such definition relies on structure or composition of revenue.\"}",
                 "name": "record_unscoreable_cell"
               },
               "type": "function"
@@ -440,15 +453,15 @@
         }
       }
     ],
-    "created": 1780333340,
+    "created": 1780592441,
     "model": "gpt-5.2-2025-12-11",
     "object": "chat.completion",
     "service_tier": "default",
     "system_fingerprint": null,
     "usage": {
-      "completion_tokens": 1391,
-      "prompt_tokens": 19299,
-      "total_tokens": 20690,
+      "completion_tokens": 1397,
+      "prompt_tokens": 19731,
+      "total_tokens": 21128,
       "completion_tokens_details": {
         "accepted_prediction_tokens": 0,
         "audio_tokens": 0,
@@ -457,7 +470,7 @@
       },
       "prompt_tokens_details": {
         "audio_tokens": 0,
-        "cached_tokens": 18944
+        "cached_tokens": 19584
       }
     }
   }

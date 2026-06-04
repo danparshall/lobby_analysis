@@ -1,0 +1,715 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "principal_spending_report",
+    "run_index": 2,
+    "state_abbr": "WI",
+    "vintage_year": 2025,
+    "prompt_sha256": "cf5e534eb79e06bd8862cb6a71fa3ba6db44eb86d8d1b12b85431ef394b042c8",
+    "timestamp_utc": "2026-06-01T17:06:01+00:00"
+  },
+  "wall_clock_seconds": 23.527169374981895,
+  "usage": {
+    "completion_tokens": 2197,
+    "prompt_tokens": 19565,
+    "total_tokens": 21762,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 18944
+    }
+  },
+  "cost_usd_estimate": 0.06499674999999999,
+  "legal_roster": [
+    [
+      "principal_spending_report_cadence_includes_annual",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_includes_monthly",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_includes_other",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_includes_quarterly",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_includes_semiannual",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_includes_triannual",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_other_specification",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_business_nature",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_compensation_paid_to_lobbyists",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_contacts_made",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_general_issues",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_gifts_entertainment_transport_lodging",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_indirect_costs",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_lobbyist_contact_info",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_lobbyist_names",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_major_financial_contributors",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_principal_contact_info",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_specific_bill_number",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_total_expenditures",
+      "legal"
+    ],
+    [
+      "principal_spending_report_required",
+      "legal"
+    ],
+    [
+      "principal_spending_report_uses_itemized_format",
+      "legal"
+    ],
+    [
+      "lobbyist_or_principal_reg_form_includes_member_or_sponsor_names",
+      "legal"
+    ],
+    [
+      "principal_spending_report_lists_lobbyists_employed",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.68(1)",
+      "justification": "Section 13.68(1) requires every principal registered under § 13.64 to file an expense statement on or before July 31 and January 31 covering the preceding reporting period."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_semiannual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. §§ 13.62(12r), 13.68(1)",
+      "justification": "The statute defines each reporting period as a 6-month period and requires filing on Jan. 31 and July 31 for the preceding reporting period, establishing semiannual reporting."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_annual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. §§ 13.62(12r), 13.68(1)",
+      "justification": "Expense statements are due twice per year for 6-month reporting periods, not once annually."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_quarterly",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. §§ 13.62(12r), 13.68(1)",
+      "justification": "The required expense statements cover 6-month reporting periods with semiannual deadlines, not quarterly periods."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_monthly",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. §§ 13.62(12r), 13.68(1)",
+      "justification": "Reporting is tied to 6-month reporting periods with twice-yearly filings, not monthly filings."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_triannual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.68(1)",
+      "justification": "The statute specifies filings on or before July 31 and January 31, which is semiannual rather than three times per year."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_other",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.68(1)",
+      "justification": "Section 13.68(1) specifies only the January 31 and July 31 deadlines for expense statements and does not establish any additional periodic cadence."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_total_expenditures",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.68(1)(a)",
+      "justification": "The expense statement must include the aggregate total amount of lobbying expenditures made and obligations incurred for lobbying by the principal and all lobbyists for the principal."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_compensation_paid_to_lobbyists",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.68(1)(a)1., (a)6.",
+      "justification": "Lobbying expenditures include compensation to lobbyists and reimbursements, and if amounts to any lobbyist exceed $200 the lobbyist's name/address and total amount paid/incurred must be listed."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_indirect_costs",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.68(1)(b)",
+      "justification": "When the lobbyist is an employee/officer/director, the statement must report office space, utilities, supplies, and compensation of employees used in preparing for lobbying communications (overhead/indirect costs)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_lobbyist_names",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.68(1)(a)6.",
+      "justification": "If lobbying expenditures/obligations to any lobbyist exceed $200 during the reporting period, the statement must list the lobbyist's name."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_lobbyist_contact_info",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.68(1)(a)6.",
+      "justification": "For any lobbyist receiving more than $200, the statement must list the lobbyist's name and address, which is contact information."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_lists_lobbyists_employed",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.68(1)(a)6.",
+      "justification": "The expense statement requires identifying any lobbyist to whom more than $200 in lobbying expenditures/obligations were made or incurred, thereby listing lobbyists employed/paid above that threshold."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_uses_itemized_format",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.68(1)(c)",
+      "justification": "The statement must include a daily itemization of time spent lobbying and related activities on a commission-provided form, which is an itemized reporting requirement."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_contacts_made",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.68(1)(c)1.-2.",
+      "justification": "Section 13.68 requires reporting time spent meeting with officials and on research/preparation, but does not require listing each contact or communication made."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_general_issues",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.68(1)(bn)",
+      "justification": "The statement must report, for each legislative proposal, proposed administrative rule, budget bill subject or other topic accounting for 10% or more of lobbying time, the estimated proportion of time spent—capturing the issues/topics lobbied."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_specific_bill_number",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.68(1)(bn); see also § 13.67(1)",
+      "justification": "Expense statements must break out time by 'each legislative proposal' (and proposed rule number/budget bill subject), which necessarily includes identification by the specific proposal (e.g., bill) being lobbied."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_gifts_entertainment_transport_lodging",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.68(1)(d)",
+      "justification": "The statement must include the name of any covered official or candidate to whom the principal or its lobbyist provided reimbursement authorized under § 13.621(7)(a) and the date and amount reimbursed, which covers certain expense payments (e.g., actual and reasonable expenses)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_business_nature",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.68(1)",
+      "justification": "Section 13.68 specifies expenditure, time, and reimbursement disclosures for the expense statement but does not require describing the principal's business activity/nature in that periodic spending report (that information appears in the registration statement under § 13.64(1))."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_principal_contact_info",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.68(1)",
+      "justification": "The required contents of the expense statement do not include the principal’s name/address/phone; those identifying details are required in the registration statement under § 13.64(1), not in § 13.68."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_major_financial_contributors",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.68(1)",
+      "justification": "Section 13.68 lists required expenditure, time, and reimbursement disclosures but contains no requirement to disclose major financial contributors to the principal."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_or_principal_reg_form_includes_member_or_sponsor_names",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.64(1)(c)",
+      "justification": "If the principal is an industry, trade, or professional association, the registration statement must include the approximate number of members, which is member-related information required on the principal registration form."
+    }
+  ],
+  "unscoreable_emissions": [
+    {
+      "row_id": "principal_spending_report_cadence_other_specification",
+      "axis": "legal",
+      "value": null,
+      "confidence": "high",
+      "cited_section": "Wis. Stat. § 13.68(1)",
+      "justification": "Because the statute specifies only semiannual filing dates and no other cadence, there is no 'other' cadence to describe.",
+      "reason": "conditional cell not applicable (value null)"
+    }
+  ],
+  "errors": [],
+  "response": {
+    "id": "chatcmpl-Dm0N0ZCkXFjJrQ03Y7RzKrcI2MtLA",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_FPtRosDGJuhk7sLMzRqfxdTi",
+              "function": {
+                "arguments": "{\"row_id\": \"principal_spending_report_required\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.68(1)\", \"justification\": \"Section 13.68(1) requires every principal registered under § 13.64 to file an expense statement on or before July 31 and January 31 covering the preceding reporting period.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_Xn6OSqINT2bvsyKzKcgQ9vmO",
+              "function": {
+                "arguments": "{\"row_id\": \"principal_spending_report_cadence_includes_semiannual\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. §§ 13.62(12r), 13.68(1)\", \"justification\": \"The statute defines each reporting period as a 6-month period and requires filing on Jan. 31 and July 31 for the preceding reporting period, establishing semiannual reporting.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_dK7IoicBu0CTkOXTK8LQq77A",
+              "function": {
+                "arguments": "{\"row_id\": \"principal_spending_report_cadence_includes_annual\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. §§ 13.62(12r), 13.68(1)\", \"justification\": \"Expense statements are due twice per year for 6-month reporting periods, not once annually.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_XqbdLJPipt6ObwbMWirtBocS",
+              "function": {
+                "arguments": "{\"row_id\": \"principal_spending_report_cadence_includes_quarterly\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. §§ 13.62(12r), 13.68(1)\", \"justification\": \"The required expense statements cover 6-month reporting periods with semiannual deadlines, not quarterly periods.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_1cRLJwbGiXv4lHv9XZYBBS8u",
+              "function": {
+                "arguments": "{\"row_id\": \"principal_spending_report_cadence_includes_monthly\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. §§ 13.62(12r), 13.68(1)\", \"justification\": \"Reporting is tied to 6-month reporting periods with twice-yearly filings, not monthly filings.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_LpPdS8axJ03Fb3Q80ySsTSEN",
+              "function": {
+                "arguments": "{\"row_id\": \"principal_spending_report_cadence_includes_triannual\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.68(1)\", \"justification\": \"The statute specifies filings on or before July 31 and January 31, which is semiannual rather than three times per year.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_DbvdpQjLPlKTs1PeGVxNjQiJ",
+              "function": {
+                "arguments": "{\"row_id\": \"principal_spending_report_cadence_includes_other\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.68(1)\", \"justification\": \"Section 13.68(1) specifies only the January 31 and July 31 deadlines for expense statements and does not establish any additional periodic cadence.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_M2DSOjKcNetXChTQVCpI9DgJ",
+              "function": {
+                "arguments": "{\"row_id\": \"principal_spending_report_cadence_other_specification\", \"axis\": \"legal\", \"value\": null, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.68(1)\", \"justification\": \"Because the statute specifies only semiannual filing dates and no other cadence, there is no 'other' cadence to describe.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_qUyg8E0w5dGKwPISiD5QfrU9",
+              "function": {
+                "arguments": "{\"row_id\": \"principal_spending_report_includes_total_expenditures\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.68(1)(a)\", \"justification\": \"The expense statement must include the aggregate total amount of lobbying expenditures made and obligations incurred for lobbying by the principal and all lobbyists for the principal.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_45N1ogpNEEf0LsKVtb3I8KEh",
+              "function": {
+                "arguments": "{\"row_id\": \"principal_spending_report_includes_compensation_paid_to_lobbyists\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.68(1)(a)1., (a)6.\", \"justification\": \"Lobbying expenditures include compensation to lobbyists and reimbursements, and if amounts to any lobbyist exceed $200 the lobbyist's name/address and total amount paid/incurred must be listed.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_99uGin6x0yOVjjPIrtVrHIeh",
+              "function": {
+                "arguments": "{\"row_id\": \"principal_spending_report_includes_indirect_costs\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.68(1)(b)\", \"justification\": \"When the lobbyist is an employee/officer/director, the statement must report office space, utilities, supplies, and compensation of employees used in preparing for lobbying communications (overhead/indirect costs).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_UHCsPysRsfBvUN9jtdyorqwH",
+              "function": {
+                "arguments": "{\"row_id\": \"principal_spending_report_includes_lobbyist_names\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.68(1)(a)6.\", \"justification\": \"If lobbying expenditures/obligations to any lobbyist exceed $200 during the reporting period, the statement must list the lobbyist's name.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_kwz0AaYGgnma1rMPDNfavPUX",
+              "function": {
+                "arguments": "{\"row_id\": \"principal_spending_report_includes_lobbyist_contact_info\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.68(1)(a)6.\", \"justification\": \"For any lobbyist receiving more than $200, the statement must list the lobbyist's name and address, which is contact information.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_0myYBcOrJQ0c7CFjeOLcQf8m",
+              "function": {
+                "arguments": "{\"row_id\": \"principal_spending_report_lists_lobbyists_employed\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.68(1)(a)6.\", \"justification\": \"The expense statement requires identifying any lobbyist to whom more than $200 in lobbying expenditures/obligations were made or incurred, thereby listing lobbyists employed/paid above that threshold.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_8tCZENL9yc0xI3BkrXmh9OnP",
+              "function": {
+                "arguments": "{\"row_id\": \"principal_spending_report_uses_itemized_format\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.68(1)(c)\", \"justification\": \"The statement must include a daily itemization of time spent lobbying and related activities on a commission-provided form, which is an itemized reporting requirement.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_jZr4Q0lsvfHWTbbbf7ORtuDH",
+              "function": {
+                "arguments": "{\"row_id\": \"principal_spending_report_includes_contacts_made\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.68(1)(c)1.-2.\", \"justification\": \"Section 13.68 requires reporting time spent meeting with officials and on research/preparation, but does not require listing each contact or communication made.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_c8Cqfbpiey5S4pcLNgVLyLbS",
+              "function": {
+                "arguments": "{\"row_id\": \"principal_spending_report_includes_general_issues\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.68(1)(bn)\", \"justification\": \"The statement must report, for each legislative proposal, proposed administrative rule, budget bill subject or other topic accounting for 10% or more of lobbying time, the estimated proportion of time spent—capturing the issues/topics lobbied.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_N7iH9sYtOdxLCYweDAU3pduC",
+              "function": {
+                "arguments": "{\"row_id\": \"principal_spending_report_includes_specific_bill_number\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.68(1)(bn); see also § 13.67(1)\", \"justification\": \"Expense statements must break out time by 'each legislative proposal' (and proposed rule number/budget bill subject), which necessarily includes identification by the specific proposal (e.g., bill) being lobbied.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_2kFRIO9PhdO2ZXHvSNqZvqaR",
+              "function": {
+                "arguments": "{\"row_id\": \"principal_spending_report_includes_gifts_entertainment_transport_lodging\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.68(1)(d)\", \"justification\": \"The statement must include the name of any covered official or candidate to whom the principal or its lobbyist provided reimbursement authorized under § 13.621(7)(a) and the date and amount reimbursed, which covers certain expense payments (e.g., actual and reasonable expenses).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_zXC5UYc0LU2HtK0rMSOyubYv",
+              "function": {
+                "arguments": "{\"row_id\": \"principal_spending_report_includes_business_nature\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.68(1)\", \"justification\": \"Section 13.68 specifies expenditure, time, and reimbursement disclosures for the expense statement but does not require describing the principal's business activity/nature in that periodic spending report (that information appears in the registration statement under § 13.64(1)).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_DcwAD4SWJ89rbDNiXF5pIkBx",
+              "function": {
+                "arguments": "{\"row_id\": \"principal_spending_report_includes_principal_contact_info\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.68(1)\", \"justification\": \"The required contents of the expense statement do not include the principal’s name/address/phone; those identifying details are required in the registration statement under § 13.64(1), not in § 13.68.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_WrCiuCVUUS5bFDcbLK1IMdQk",
+              "function": {
+                "arguments": "{\"row_id\": \"principal_spending_report_includes_major_financial_contributors\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.68(1)\", \"justification\": \"Section 13.68 lists required expenditure, time, and reimbursement disclosures but contains no requirement to disclose major financial contributors to the principal.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_8hS6LDkaCpcJXRJxJ7PNs20z",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_or_principal_reg_form_includes_member_or_sponsor_names\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.64(1)(c)\", \"justification\": \"If the principal is an industry, trade, or professional association, the registration statement must include the approximate number of members, which is member-related information required on the principal registration form.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1780333538,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 2197,
+      "prompt_tokens": 19565,
+      "total_tokens": 21762,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 18944
+      }
+    }
+  }
+}

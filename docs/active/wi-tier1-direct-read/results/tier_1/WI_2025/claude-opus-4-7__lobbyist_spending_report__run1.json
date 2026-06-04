@@ -9,26 +9,26 @@
     "state_abbr": "WI",
     "vintage_year": 2025,
     "prompt_sha256": "cf5e534eb79e06bd8862cb6a71fa3ba6db44eb86d8d1b12b85431ef394b042c8",
-    "timestamp_utc": "2026-06-03T22:29:31+00:00"
+    "timestamp_utc": "2026-06-04T16:53:37+00:00"
   },
-  "wall_clock_seconds": 56.15794183401158,
+  "wall_clock_seconds": 61.37076637498103,
   "usage": {
     "cache_creation": {
       "ephemeral_1h_input_tokens": 0,
-      "ephemeral_5m_input_tokens": 29445
+      "ephemeral_5m_input_tokens": 0
     },
-    "cache_creation_input_tokens": 29445,
-    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 29466,
     "inference_geo": "global",
-    "input_tokens": 5716,
-    "output_tokens": 6698,
+    "input_tokens": 5254,
+    "output_tokens": 6694,
     "server_tool_use": null,
     "service_tier": "standard",
     "output_tokens_details": {
       "thinking_tokens": 0
     }
   },
-  "cost_usd_estimate": 0.19602999999999998,
+  "cost_usd_estimate": 0.19362000000000001,
   "legal_roster": [
     [
       "lobbyist_spending_report_cadence_includes_annual",
@@ -155,22 +155,6 @@
     {
       "cell": {
         "cell_id": [
-          "lobbyist_spending_report_required",
-          "legal"
-        ],
-        "conditional": false,
-        "condition_text": null,
-        "confidence": "high",
-        "provenance": [],
-        "value": false
-      },
-      "cell_class": "BinaryCell",
-      "cited_section": "§13.68(1)",
-      "justification": "Wisconsin's statute requires \"Every principal which is registered under s. 13.64\" to file the expense statement; the lobbyist is not the named filer of a separate spending report."
-    },
-    {
-      "cell": {
-        "cell_id": [
           "lobbyist_spending_report_cadence_includes_annual",
           "legal"
         ],
@@ -182,7 +166,7 @@
       },
       "cell_class": "BinaryCell",
       "cited_section": "§13.68(1)",
-      "justification": "No separate lobbyist spending report exists; the principal files the expense statement per §13.68(1)."
+      "justification": "Expense statements are filed semi-annually (on or before July 31 and January 31), not annually."
     },
     {
       "cell": {
@@ -198,7 +182,7 @@
       },
       "cell_class": "BinaryCell",
       "cited_section": "§13.68(1)",
-      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+      "justification": "Expense statements are filed semi-annually, not monthly."
     },
     {
       "cell": {
@@ -214,7 +198,7 @@
       },
       "cell_class": "BinaryCell",
       "cited_section": "§13.68(1)",
-      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+      "justification": "The statute specifies semi-annual filing; no \"other\" frequency applies."
     },
     {
       "cell": {
@@ -230,7 +214,7 @@
       },
       "cell_class": "BinaryCell",
       "cited_section": "§13.68(1)",
-      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+      "justification": "Expense statements are filed semi-annually, not quarterly."
     },
     {
       "cell": {
@@ -246,7 +230,7 @@
       },
       "cell_class": "BinaryCell",
       "cited_section": "§13.68(1)",
-      "justification": "Although the principal files semi-annually (by July 31 and January 31), the lobbyist is not the named filer of a separate spending report."
+      "justification": "While reports are filed semi-annually, the statute mandates the PRINCIPAL (not the lobbyist) as the filer; per the row's qualifier, this is FALSE in such regimes."
     },
     {
       "cell": {
@@ -262,23 +246,23 @@
       },
       "cell_class": "BinaryCell",
       "cited_section": "§13.68(1)",
-      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+      "justification": "Filing is on fixed semi-annual dates, not tri-annual or linked to legislative calendar."
     },
     {
       "cell": {
         "cell_id": [
-          "lobbyist_spending_report_filing_cadence",
+          "lobbyist_spending_report_cadence_other_specification",
           "legal"
         ],
         "conditional": false,
         "condition_text": null,
         "confidence": "high",
         "provenance": [],
-        "value": "none"
+        "value": "Semi-annual: principal files expense statement on or before July 31 and January 31 covering the preceding 6-month reporting period (§13.68(1); reporting period defined in §13.62(12r))."
       },
-      "cell_class": "EnumCell",
-      "cited_section": "§13.68(1)",
-      "justification": "No separate lobbyist spending report is mandated; §13.68(1) requires the principal (not the lobbyist) to file the expense statement."
+      "cell_class": "FreeTextCell",
+      "cited_section": "§13.68(1); §13.62(12r)",
+      "justification": "Section 13.68(1) requires filings by July 31 and January 31; §13.62(12r) defines reporting period as a 6-month period."
     },
     {
       "cell": {
@@ -294,7 +278,23 @@
       },
       "cell_class": "BinaryCell",
       "cited_section": "§13.68(1)",
-      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+      "justification": "The PRINCIPAL, not the lobbyist, is the named filer of the expense statement under §13.68(1); per the row's qualifier this is FALSE."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_filing_cadence",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": "50"
+      },
+      "cell_class": "EnumCell",
+      "cited_section": "§13.68(1)",
+      "justification": "Reports are filed semi-annually (not quarterly) and report aggregate totals rather than full item-level itemization with bill numbers, fitting the 50-score tier of semi-annual reports lacking sufficient detail."
     },
     {
       "cell": {
@@ -310,7 +310,7 @@
       },
       "cell_class": "BinaryCell",
       "cited_section": "§13.68(1)",
-      "justification": "No separate lobbyist spending report exists; the principal is the filer of the expense statement per §13.68(1)."
+      "justification": "The PRINCIPAL, not the lobbyist, is the named filer of the expense statement; per the row's qualifier this is FALSE."
     },
     {
       "cell": {
@@ -320,13 +320,13 @@
         ],
         "conditional": false,
         "condition_text": null,
-        "confidence": "high",
+        "confidence": "medium",
         "provenance": [],
         "value": false
       },
       "cell_class": "BinaryCell",
-      "cited_section": "§13.68(1)",
-      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+      "cited_section": "§13.68(1)(a)6.",
+      "justification": "Lobbyists themselves do not file disclosing earnings; the principal reports compensation paid to lobbyists in its expense statement (over $200 threshold), and the lobbyist is not the filer."
     },
     {
       "cell": {
@@ -341,8 +341,8 @@
         "value": false
       },
       "cell_class": "BinaryCell",
-      "cited_section": "§13.68(1)",
-      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+      "cited_section": "§13.68(1)(c)",
+      "justification": "The statute requires a record of time spent meeting with officials but does not require the lobbyist to file a list of contacts; moreover the principal is the filer."
     },
     {
       "cell": {
@@ -357,8 +357,8 @@
         "value": false
       },
       "cell_class": "BinaryCell",
-      "cited_section": "§13.68(1)",
-      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+      "cited_section": "§13.68(1)(bn)",
+      "justification": "The statute requires only a reasonable estimate of the proportion of TIME spent on each topic (10%+ threshold), not expenditure per issue."
     },
     {
       "cell": {
@@ -374,7 +374,7 @@
       },
       "cell_class": "BinaryCell",
       "cited_section": "§13.68(1)",
-      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+      "justification": "The PRINCIPAL, not the lobbyist, is the named filer; per the row's qualifier this is FALSE."
     },
     {
       "cell": {
@@ -390,7 +390,7 @@
       },
       "cell_class": "BinaryCell",
       "cited_section": "§13.68(1)",
-      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+      "justification": "The PRINCIPAL, not the lobbyist, is the named filer; per the row's qualifier this is FALSE."
     },
     {
       "cell": {
@@ -405,8 +405,8 @@
         "value": false
       },
       "cell_class": "BinaryCell",
-      "cited_section": "§13.68(1)",
-      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+      "cited_section": "§13.68(1); §13.625(1g)",
+      "justification": "The PRINCIPAL is the named filer; additionally, lobbyists are prohibited from giving gifts/lodging/transport so itemizing them on a lobbyist report is moot. Per the row's qualifier this is FALSE."
     },
     {
       "cell": {
@@ -422,7 +422,7 @@
       },
       "cell_class": "BinaryCell",
       "cited_section": "§13.68(1)",
-      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+      "justification": "The PRINCIPAL, not the lobbyist, is the named filer; per the row's qualifier this is FALSE."
     },
     {
       "cell": {
@@ -438,7 +438,7 @@
       },
       "cell_class": "BinaryCell",
       "cited_section": "§13.68(1)",
-      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+      "justification": "Wisconsin requires only aggregate totals (not itemized expenses with bill numbers), and the principal — not the lobbyist — is the filer, so no YES."
     },
     {
       "cell": {
@@ -454,7 +454,7 @@
       },
       "cell_class": "BinaryCell",
       "cited_section": "§13.68(1)",
-      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1), even though lobbyist name/address may be listed in the principal's report."
+      "justification": "The PRINCIPAL, not the lobbyist, is the named filer of the spending report; per the row's qualifier this is FALSE."
     },
     {
       "cell": {
@@ -469,8 +469,8 @@
         "value": false
       },
       "cell_class": "BinaryCell",
-      "cited_section": "§13.68(1)",
-      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+      "cited_section": "§13.68(1); §13.67(1)",
+      "justification": "The principal (not the lobbyist) reports legislative proposals/topics under §13.67(1); no separate lobbyist report identifies bills/actions or positions."
     },
     {
       "cell": {
@@ -486,7 +486,7 @@
       },
       "cell_class": "BinaryCell",
       "cited_section": "§13.68(1)",
-      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+      "justification": "No statutory requirement in the expense statement that the lobbyist disclose the principal's public/private business nature."
     },
     {
       "cell": {
@@ -502,7 +502,7 @@
       },
       "cell_class": "BinaryCell",
       "cited_section": "§13.68(1)",
-      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+      "justification": "The expense statement does not require lobbyists to disclose address/phone of principals; principal contact info is in registration under §13.64, not the periodic spending report."
     },
     {
       "cell": {
@@ -518,7 +518,7 @@
       },
       "cell_class": "BinaryCell",
       "cited_section": "§13.68(1)",
-      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+      "justification": "The PRINCIPAL, not the lobbyist, is the named filer of the spending report; per the row's qualifier this is FALSE."
     },
     {
       "cell": {
@@ -534,7 +534,7 @@
       },
       "cell_class": "BinaryCell",
       "cited_section": "§13.68(1)",
-      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+      "justification": "The PRINCIPAL, not the lobbyist, is the named filer; per the row's qualifier this is FALSE."
     },
     {
       "cell": {
@@ -550,7 +550,7 @@
       },
       "cell_class": "BinaryCell",
       "cited_section": "§13.68(1)",
-      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1), though compensation paid to lobbyists is reported within the principal's aggregate."
+      "justification": "The PRINCIPAL, not the lobbyist, is the named filer; per the row's qualifier this is FALSE."
     },
     {
       "cell": {
@@ -565,8 +565,24 @@
         "value": false
       },
       "cell_class": "BinaryCell",
+      "cited_section": "§13.68(1)(a)",
+      "justification": "The PRINCIPAL files the aggregate total of lobbying expenditures; per the row's qualifier this is FALSE because the lobbyist is not the filer."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
       "cited_section": "§13.68(1)",
-      "justification": "No separate lobbyist spending report exists; §13.68(1) requires the principal to file the aggregate expense statement."
+      "justification": "The PRINCIPAL, not the lobbyist, is the named filer; per the row's qualifier this is FALSE."
     },
     {
       "cell": {
@@ -582,7 +598,7 @@
       },
       "cell_class": "BinaryCell",
       "cited_section": "§13.68(1)",
-      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+      "justification": "The PRINCIPAL, not the lobbyist, is the named filer of expense statements; per the row's qualifier this is FALSE."
     },
     {
       "cell": {
@@ -597,8 +613,8 @@
         "value": false
       },
       "cell_class": "BinaryCell",
-      "cited_section": "§13.68(1)",
-      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+      "cited_section": "§13.625(1g), (4m)(d)",
+      "justification": "Lobbyists are prohibited from furnishing things of pecuniary value to officials (and §13.625(4m)(d) exempts furnishing to relatives/household members of lobbyist), so no requirement to report spending on officials' household members exists."
     },
     {
       "cell": {
@@ -613,507 +629,497 @@
         "value": false
       },
       "cell_class": "BinaryCell",
-      "cited_section": "§13.68(1)",
-      "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+      "cited_section": "§13.68(1)(a)",
+      "justification": "The expense statement reports \"aggregate total\" lobbying expenditures and obligations rather than itemized expenditures; only compensation to lobbyists exceeding $200 is listed by name and total."
     }
   ],
-  "unscoreable_emissions": [
-    {
-      "row_id": "lobbyist_spending_report_cadence_other_specification",
-      "axis": "legal",
-      "value": null,
-      "confidence": "high",
-      "cited_section": "§13.68(1)",
-      "justification": "No separate lobbyist spending report is required; the principal files the expense statement per §13.68(1), so there is no \"other\" lobbyist cadence to specify.",
-      "reason": "conditional cell not applicable (value null)"
-    }
-  ],
+  "unscoreable_emissions": [],
   "errors": [],
   "response": {
-    "id": "msg_01FXF55PUcDtpUhuncLnrMed",
+    "id": "msg_01KXn22YTAGPmJvdyL6D7L7P",
     "container": null,
     "content": [
       {
         "citations": null,
-        "text": "Looking at the Wisconsin statute, §13.68 mandates that the PRINCIPAL (not the lobbyist) files the expense statement. The lobbyist only provides information to the principal under §13.68(4) and signs that information, but the principal is the named filer of the spending report. Per the rubric instructions, this means most lobbyist-spending-report cells should be FALSE.",
+        "text": "I'll analyze the Wisconsin statute carefully. The key observation is that under WI Stat § 13.68, the **PRINCIPAL** (not the lobbyist) files the expense statement. This is critical for most rows which specifically ask whether the LOBBYIST is the named filer.\n\nUnder § 13.68(4), the lobbyist provides information to the principal, and the principal files it (signed by the lobbyist) with the commission — but the principal is the named filer. So rows with the \"FALSE in regimes where the statute mandates the PRINCIPAL as the filer\" qualifier should be FALSE.",
         "type": "text"
       },
       {
-        "id": "toolu_01TeY7WCdYkU5EF895DukTBH",
+        "id": "toolu_01WC3FkPVbDx85CNbhQiv6e8",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbyist_spending_report_required",
+          "handle": "row_001",
           "axis": "legal",
           "value": false,
           "confidence": "high",
           "cited_section": "§13.68(1)",
-          "justification": "Wisconsin's statute requires \"Every principal which is registered under s. 13.64\" to file the expense statement; the lobbyist is not the named filer of a separate spending report."
+          "justification": "Expense statements are filed semi-annually (on or before July 31 and January 31), not annually."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01BZhVaccBHT9Q7KryyWFLq4",
+        "id": "toolu_016H369zCaPYGdifqbtprXA8",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbyist_spending_report_cadence_includes_annual",
+          "handle": "row_002",
           "axis": "legal",
           "value": false,
           "confidence": "high",
           "cited_section": "§13.68(1)",
-          "justification": "No separate lobbyist spending report exists; the principal files the expense statement per §13.68(1)."
+          "justification": "Expense statements are filed semi-annually, not monthly."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_015GrAJ6jkgeAF4y88w6oAaJ",
+        "id": "toolu_018VWXVwZh6fiqUUnvzv8HJF",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbyist_spending_report_cadence_includes_monthly",
+          "handle": "row_003",
           "axis": "legal",
           "value": false,
           "confidence": "high",
           "cited_section": "§13.68(1)",
-          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+          "justification": "The statute specifies semi-annual filing; no \"other\" frequency applies."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01Y5gyq4oQ8aGRd3prwEUayN",
+        "id": "toolu_016SZyKjTma1oux7b55ySwyv",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbyist_spending_report_cadence_includes_other",
+          "handle": "row_004",
           "axis": "legal",
           "value": false,
           "confidence": "high",
           "cited_section": "§13.68(1)",
-          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+          "justification": "Expense statements are filed semi-annually, not quarterly."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01MwQuLvFwUkeTa6QbTkoC7p",
+        "id": "toolu_01RA1gjxntUqWNPUddBYihXs",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbyist_spending_report_cadence_includes_quarterly",
+          "handle": "row_005",
           "axis": "legal",
           "value": false,
           "confidence": "high",
           "cited_section": "§13.68(1)",
-          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+          "justification": "While reports are filed semi-annually, the statute mandates the PRINCIPAL (not the lobbyist) as the filer; per the row's qualifier, this is FALSE in such regimes."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_015gGk3n6DocEBYhK8gywhgz",
+        "id": "toolu_01N44mKRnLXTbCibnBBTfQAe",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbyist_spending_report_cadence_includes_semiannual",
+          "handle": "row_006",
           "axis": "legal",
           "value": false,
           "confidence": "high",
           "cited_section": "§13.68(1)",
-          "justification": "Although the principal files semi-annually (by July 31 and January 31), the lobbyist is not the named filer of a separate spending report."
+          "justification": "Filing is on fixed semi-annual dates, not tri-annual or linked to legislative calendar."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_015dENJV7ZygnYB69qfMw9QN",
+        "id": "toolu_01RJER4UWwNv1LzjGuaQLv2W",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbyist_spending_report_cadence_includes_triannual",
+          "handle": "row_007",
+          "axis": "legal",
+          "value": "Semi-annual: principal files expense statement on or before July 31 and January 31 covering the preceding 6-month reporting period (§13.68(1); reporting period defined in §13.62(12r)).",
+          "confidence": "high",
+          "cited_section": "§13.68(1); §13.62(12r)",
+          "justification": "Section 13.68(1) requires filings by July 31 and January 31; §13.62(12r) defines reporting period as a 6-month period."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01XwpnBCn3dLD8YnpQK23gCx",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_008",
           "axis": "legal",
           "value": false,
           "confidence": "high",
           "cited_section": "§13.68(1)",
-          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+          "justification": "The PRINCIPAL, not the lobbyist, is the named filer of the expense statement under §13.68(1); per the row's qualifier this is FALSE."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01NwmyVZRzpNqx7BUEEBXxMx",
+        "id": "toolu_01NFqJbL2vmNWb5pD1eULnPe",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbyist_spending_report_cadence_other_specification",
+          "handle": "row_009",
           "axis": "legal",
-          "value": null,
-          "confidence": "high",
+          "value": "50",
+          "confidence": "medium",
           "cited_section": "§13.68(1)",
-          "justification": "No separate lobbyist spending report is required; the principal files the expense statement per §13.68(1), so there is no \"other\" lobbyist cadence to specify."
+          "justification": "Reports are filed semi-annually (not quarterly) and report aggregate totals rather than full item-level itemization with bill numbers, fitting the 50-score tier of semi-annual reports lacking sufficient detail."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01J1v7xDwxtyFHdJDyLeum81",
+        "id": "toolu_01JNdBFdJ1Ax6Txa5NSnzsr4",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbyist_spending_report_filing_cadence",
-          "axis": "legal",
-          "value": "none",
-          "confidence": "high",
-          "cited_section": "§13.68(1)",
-          "justification": "No separate lobbyist spending report is mandated; §13.68(1) requires the principal (not the lobbyist) to file the expense statement."
-        },
-        "name": "record_cell",
-        "type": "tool_use"
-      },
-      {
-        "id": "toolu_01MtA2y7wKkk5LBCQdCarBNz",
-        "caller": {
-          "type": "direct"
-        },
-        "input": {
-          "row_id": "lobbyist_spending_report_categorizes_expenses_by_type",
+          "handle": "row_010",
           "axis": "legal",
           "value": false,
           "confidence": "high",
           "cited_section": "§13.68(1)",
-          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+          "justification": "The PRINCIPAL, not the lobbyist, is the named filer of the expense statement; per the row's qualifier this is FALSE."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01VXhxRxcKct1sDsW1ybzVEw",
+        "id": "toolu_01RWJTBXtMKWEZ45Z2CBVQGy",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbyist_spending_report_includes_bill_or_action_identifier",
+          "handle": "row_011",
           "axis": "legal",
           "value": false,
-          "confidence": "high",
-          "cited_section": "§13.68(1)",
-          "justification": "No separate lobbyist spending report exists; the principal is the filer of the expense statement per §13.68(1)."
+          "confidence": "medium",
+          "cited_section": "§13.68(1)(a)6.",
+          "justification": "Lobbyists themselves do not file disclosing earnings; the principal reports compensation paid to lobbyists in its expense statement (over $200 threshold), and the lobbyist is not the filer."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01Kr2fChgFer4z6aJRMptE2e",
+        "id": "toolu_01Kqq3JQZPWjDpFvhdK1DEWf",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbyist_spending_report_includes_compensation_broken_down_by_payer",
+          "handle": "row_012",
           "axis": "legal",
           "value": false,
           "confidence": "high",
-          "cited_section": "§13.68(1)",
-          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+          "cited_section": "§13.68(1)(c)",
+          "justification": "The statute requires a record of time spent meeting with officials but does not require the lobbyist to file a list of contacts; moreover the principal is the filer."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01Vnx9b4QtRCUPBnVwbNucF1",
+        "id": "toolu_01VMvWzzs4Mh7JaAxGBqqBgM",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbyist_spending_report_includes_contacts_made",
+          "handle": "row_013",
           "axis": "legal",
           "value": false,
           "confidence": "high",
-          "cited_section": "§13.68(1)",
-          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+          "cited_section": "§13.68(1)(bn)",
+          "justification": "The statute requires only a reasonable estimate of the proportion of TIME spent on each topic (10%+ threshold), not expenditure per issue."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01JxnVACpr8rY1TUdorLF7kw",
+        "id": "toolu_01UXB4j1CjYQe4UZmaacAUXF",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbyist_spending_report_includes_expenditure_per_issue",
+          "handle": "row_014",
           "axis": "legal",
           "value": false,
           "confidence": "high",
           "cited_section": "§13.68(1)",
-          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+          "justification": "The PRINCIPAL, not the lobbyist, is the named filer; per the row's qualifier this is FALSE."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01BxQd16AdTuML3goXmCjQBj",
+        "id": "toolu_01SbQaiVSSYfWEp59zJVWQcS",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbyist_spending_report_includes_general_issues",
+          "handle": "row_015",
           "axis": "legal",
           "value": false,
           "confidence": "high",
           "cited_section": "§13.68(1)",
-          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+          "justification": "The PRINCIPAL, not the lobbyist, is the named filer; per the row's qualifier this is FALSE."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_014eDc6NDWfJ9u5phtZJsmr3",
+        "id": "toolu_011eiUNLZcD2TvGZLsdkR9yZ",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbyist_spending_report_includes_general_subject_matter",
+          "handle": "row_016",
           "axis": "legal",
           "value": false,
           "confidence": "high",
-          "cited_section": "§13.68(1)",
-          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+          "cited_section": "§13.68(1); §13.625(1g)",
+          "justification": "The PRINCIPAL is the named filer; additionally, lobbyists are prohibited from giving gifts/lodging/transport so itemizing them on a lobbyist report is moot. Per the row's qualifier this is FALSE."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01MD78mZVRnPyocuQcxsg7QZ",
+        "id": "toolu_01BRjz2aVtffohPTKaCJucsK",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbyist_spending_report_includes_gifts_entertainment_transport_lodging",
+          "handle": "row_017",
           "axis": "legal",
           "value": false,
           "confidence": "high",
           "cited_section": "§13.68(1)",
-          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+          "justification": "The PRINCIPAL, not the lobbyist, is the named filer; per the row's qualifier this is FALSE."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01QWkeeGKfk5TuaEQ83duxED",
+        "id": "toolu_01P2tr99KVDHBJTRpmwTe4ce",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbyist_spending_report_includes_indirect_costs",
+          "handle": "row_018",
           "axis": "legal",
           "value": false,
           "confidence": "high",
           "cited_section": "§13.68(1)",
-          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+          "justification": "Wisconsin requires only aggregate totals (not itemized expenses with bill numbers), and the principal — not the lobbyist — is the filer, so no YES."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01L4r6W5GST2FKcAJfR4L9W5",
+        "id": "toolu_01A79uj5KHQzgHhxDaK9nUcf",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbyist_spending_report_includes_itemized_expenses",
+          "handle": "row_019",
           "axis": "legal",
           "value": false,
           "confidence": "high",
           "cited_section": "§13.68(1)",
-          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+          "justification": "The PRINCIPAL, not the lobbyist, is the named filer of the spending report; per the row's qualifier this is FALSE."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01CardFeg38b6XUvk3HcGwKW",
+        "id": "toolu_01SjdQyW4bea6vpeHNtRoYK1",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbyist_spending_report_includes_lobbyist_contact_info",
+          "handle": "row_020",
           "axis": "legal",
           "value": false,
           "confidence": "high",
-          "cited_section": "§13.68(1)",
-          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1), even though lobbyist name/address may be listed in the principal's report."
+          "cited_section": "§13.68(1); §13.67(1)",
+          "justification": "The principal (not the lobbyist) reports legislative proposals/topics under §13.67(1); no separate lobbyist report identifies bills/actions or positions."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_015NqhL33E1B2i33ZoYw8EMZ",
+        "id": "toolu_01FqZ9iB8ibm6wifyHSCXtnr",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbyist_spending_report_includes_position_on_bill",
+          "handle": "row_021",
           "axis": "legal",
           "value": false,
           "confidence": "high",
           "cited_section": "§13.68(1)",
-          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+          "justification": "No statutory requirement in the expense statement that the lobbyist disclose the principal's public/private business nature."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01MBSgWpqKXySM5sMyLw5S8M",
+        "id": "toolu_01KREDBXtCzw2HCWMuzW3HvU",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbyist_spending_report_includes_principal_business_nature",
+          "handle": "row_022",
           "axis": "legal",
           "value": false,
           "confidence": "high",
           "cited_section": "§13.68(1)",
-          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+          "justification": "The expense statement does not require lobbyists to disclose address/phone of principals; principal contact info is in registration under §13.64, not the periodic spending report."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01Vr3Lt3tsDSrbLtsXdMf8nH",
+        "id": "toolu_01XP1VEAiVv88XyvgA47uW2U",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbyist_spending_report_includes_principal_contact_info",
+          "handle": "row_023",
           "axis": "legal",
           "value": false,
           "confidence": "high",
           "cited_section": "§13.68(1)",
-          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+          "justification": "The PRINCIPAL, not the lobbyist, is the named filer of the spending report; per the row's qualifier this is FALSE."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01ASBy9FsGRGRAD8qd6UN42Y",
+        "id": "toolu_011wEz3ccSCzycpQ4McXE72f",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbyist_spending_report_includes_principal_names",
+          "handle": "row_024",
           "axis": "legal",
           "value": false,
           "confidence": "high",
           "cited_section": "§13.68(1)",
-          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+          "justification": "The PRINCIPAL, not the lobbyist, is the named filer; per the row's qualifier this is FALSE."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_016zAinthhHY9u8DM94eTT2s",
+        "id": "toolu_01VWEPWMkWY5A41kWhT5TVKD",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbyist_spending_report_includes_specific_bill_number",
+          "handle": "row_025",
           "axis": "legal",
           "value": false,
           "confidence": "high",
           "cited_section": "§13.68(1)",
-          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+          "justification": "The PRINCIPAL, not the lobbyist, is the named filer; per the row's qualifier this is FALSE."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01G7CykczzoY42ay3CB8Vkqa",
+        "id": "toolu_01PKnRXBeKagovL9MDzcukv3",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbyist_spending_report_includes_total_compensation",
+          "handle": "row_026",
           "axis": "legal",
           "value": false,
           "confidence": "high",
-          "cited_section": "§13.68(1)",
-          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1), though compensation paid to lobbyists is reported within the principal's aggregate."
+          "cited_section": "§13.68(1)(a)",
+          "justification": "The PRINCIPAL files the aggregate total of lobbying expenditures; per the row's qualifier this is FALSE because the lobbyist is not the filer."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01Vk7jE8SfwYqwavhwPgy4Gv",
+        "id": "toolu_01CeWXDq88YbVUNPgatFSTrn",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbyist_spending_report_includes_total_expenditures",
+          "handle": "row_027",
           "axis": "legal",
           "value": false,
           "confidence": "high",
           "cited_section": "§13.68(1)",
-          "justification": "No separate lobbyist spending report exists; §13.68(1) requires the principal to file the aggregate expense statement."
+          "justification": "The PRINCIPAL, not the lobbyist, is the named filer; per the row's qualifier this is FALSE."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01BqGr6sGUczdV8nJe3e91d4",
+        "id": "toolu_01Y6WEPvuAXFPRtPf3C3yvUP",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbyist_spending_report_required_when_no_activity",
+          "handle": "row_028",
           "axis": "legal",
           "value": false,
           "confidence": "high",
           "cited_section": "§13.68(1)",
-          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+          "justification": "The PRINCIPAL, not the lobbyist, is the named filer of expense statements; per the row's qualifier this is FALSE."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_0194hJeLm158LuM8ihJi5FPa",
+        "id": "toolu_01LtooKeLXdi5NHjhK1nRGPo",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbyist_spending_report_scope_includes_household_members_of_officials",
+          "handle": "row_029",
           "axis": "legal",
           "value": false,
           "confidence": "high",
-          "cited_section": "§13.68(1)",
-          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+          "cited_section": "§13.625(1g), (4m)(d)",
+          "justification": "Lobbyists are prohibited from furnishing things of pecuniary value to officials (and §13.625(4m)(d) exempts furnishing to relatives/household members of lobbyist), so no requirement to report spending on officials' household members exists."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_011M2pK8Q3SRyhEKcsbTsEnb",
+        "id": "toolu_01WuuhAgcdjFnrRVY9PkJ4zx",
         "caller": {
           "type": "direct"
         },
         "input": {
-          "row_id": "lobbyist_spending_report_uses_itemized_format",
+          "handle": "row_030",
           "axis": "legal",
           "value": false,
           "confidence": "high",
-          "cited_section": "§13.68(1)",
-          "justification": "No separate lobbyist spending report exists; the principal is the filer per §13.68(1)."
+          "cited_section": "§13.68(1)(a)",
+          "justification": "The expense statement reports \"aggregate total\" lobbying expenditures and obligations rather than itemized expenditures; only compensation to lobbyists exceeding $200 is listed by name and total."
         },
         "name": "record_cell",
         "type": "tool_use"
@@ -1128,13 +1134,13 @@
     "usage": {
       "cache_creation": {
         "ephemeral_1h_input_tokens": 0,
-        "ephemeral_5m_input_tokens": 29445
+        "ephemeral_5m_input_tokens": 0
       },
-      "cache_creation_input_tokens": 29445,
-      "cache_read_input_tokens": 0,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 29466,
       "inference_geo": "global",
-      "input_tokens": 5716,
-      "output_tokens": 6698,
+      "input_tokens": 5254,
+      "output_tokens": 6694,
       "server_tool_use": null,
       "service_tier": "standard",
       "output_tokens_details": {
