@@ -36,18 +36,21 @@ AxisLiteral = Literal["legal", "practical"]
 class CompendiumCellSpec:
     """Pin a (row_id, axis) tuple to the expected CompendiumCell subclass.
 
-    `prompt_text` carries the verbatim source-rubric question text (when
-    available) so the dispatch prompt can include it alongside the row_id.
-    Empty strings in the TSV become `None`. The narrow WI fix populates
-    `prompt_text` for the 17 confirmed inter-model disagreement rows
-    identified in convo `20260603_statute_disagreement_prior_art_review`;
-    the wide 181-row pass is a separate session.
+    `prompt` carries the model-facing question text that the dispatch
+    renderer emits to the LLM. Populated from the sidecar YAML at
+    `compendium/source_quotes.yaml` at registry-build time (the YAML is the
+    prompt SSOT after the 2026-06-04 wide-pass design). `None` for rows the
+    YAML does not (yet) cover — Commit 1 of the wide-pass plan migrates the
+    17 narrow-pass rows from the dropped `prompt_text` TSV column; Commit 2
+    populates the remaining 164. See convo
+    `20260604_wide_pass_yaml_sidecar_design` for the design and plan
+    `20260604_wide_prompt_text_pass.md` for the migration sequence.
     """
 
     row_id: str
     axis: AxisLiteral
     expected_cell_class: type[CompendiumCell]
-    prompt_text: str | None = None
+    prompt: str | None = None
 
 
 # ---------------------------------------------------------------------------
@@ -157,24 +160,35 @@ def _parse_combined_cell_type(
 
 
 def build_cell_spec_registry() -> dict[tuple[str, AxisLiteral], CompendiumCellSpec]:
-    """Build the canonical 186-entry cell-spec registry from the v2 TSV.
+    """Build the canonical 186-entry cell-spec registry from the v2 TSV +
+    the source-quotes YAML sidecar.
 
-    Calls `load_v2_compendium()` for the raw rows, walks each row, parses
-    its `cell_type` + `axis` columns, and emits 1 or 2 entries per row.
+    Calls `load_v2_compendium()` for the raw row-set contract (row_id, axis,
+    cell_type), and `load_source_quotes()` for the prompt SSOT. The two
+    files have separate change cycles: TSV bumps the compendium version;
+    YAML does not.
+
+    Rows absent from the YAML get `prompt=None`; the wide-pass plan
+    populates the remaining 164 rows in Commit 2.
     """
-    # Local import: compendium_loader lives in the same package and imports
-    # are otherwise circular if pulled at module-import time.
+    # Local imports: compendium_loader + source_quotes_loader live in the
+    # same package; pulling them at module-import time would cycle through
+    # the models_v2 package back into itself.
     from lobby_analysis.compendium_loader import load_v2_compendium
+    from lobby_analysis.source_quotes_loader import load_source_quotes
+
+    source_quotes = load_source_quotes()
 
     registry: dict[tuple[str, AxisLiteral], CompendiumCellSpec] = {}
     for row in load_v2_compendium():
         row_id = row["compendium_row_id"]
         cell_type = row["cell_type"]
         axis = row["axis"]
-        # Tolerate absence of the prompt_text column (older TSV vintages).
-        # Empty cell -> None so callers can branch on truthiness uniformly.
-        prompt_text_raw = (row.get("prompt_text") or "").strip()
-        prompt_text = prompt_text_raw or None
+        # Prompt is None for rows not yet in YAML — callers branch on
+        # truthiness. Behavior matches the prior `prompt_text=None` default
+        # for un-populated rows.
+        entry = source_quotes.get(row_id)
+        prompt = entry.prompt if entry is not None else None
 
         if axis == "legal":
             cls = _resolve_cell_class(_strip_axis_suffix(cell_type))
@@ -182,7 +196,7 @@ def build_cell_spec_registry() -> dict[tuple[str, AxisLiteral], CompendiumCellSp
                 row_id=row_id,
                 axis="legal",
                 expected_cell_class=cls,
-                prompt_text=prompt_text,
+                prompt=prompt,
             )
         elif axis == "practical":
             cls = _resolve_cell_class(_strip_axis_suffix(cell_type))
@@ -190,7 +204,7 @@ def build_cell_spec_registry() -> dict[tuple[str, AxisLiteral], CompendiumCellSp
                 row_id=row_id,
                 axis="practical",
                 expected_cell_class=cls,
-                prompt_text=prompt_text,
+                prompt=prompt,
             )
         elif axis == "legal+practical":
             legal_cls, practical_cls = _parse_combined_cell_type(cell_type)
@@ -198,13 +212,13 @@ def build_cell_spec_registry() -> dict[tuple[str, AxisLiteral], CompendiumCellSp
                 row_id=row_id,
                 axis="legal",
                 expected_cell_class=legal_cls,
-                prompt_text=prompt_text,
+                prompt=prompt,
             )
             registry[(row_id, "practical")] = CompendiumCellSpec(
                 row_id=row_id,
                 axis="practical",
                 expected_cell_class=practical_cls,
-                prompt_text=prompt_text,
+                prompt=prompt,
             )
         else:
             raise ValueError(

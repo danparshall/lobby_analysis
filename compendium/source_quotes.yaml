@@ -1,0 +1,88 @@
+# compendium/source_quotes.yaml
+#
+# Source-quotes sidecar — prompt SSOT for the tier-1 dispatch.
+#
+# Per-row schema:
+#   <compendium_row_id>:
+#     source_quotes:                            # non-empty dict
+#       <rubric>_<vintage>_<section_ref>: "<verbatim quote>"
+#     prompt: "<what the model sees>"        # non-empty string
+#
+# `source_quotes` is immutable reference material; provenance lives
+# in the keys. `prompt` is mutable — the Ralph loop edits it.
+# Citations DO NOT appear inside the `prompt` value; they live in
+# the `source_quotes` keys only. See
+# `convos/20260604_wide_pass_yaml_sidecar_design.md` for the design.
+#
+# Commit 1 (wide-pass plan): 17 narrow-pass rows migrated from the
+# now-dropped `prompt_text` TSV column. Commit 2 populates the
+# remaining 164.
+
+"lobbyist_filing_de_minimis_threshold_time_percent":
+  "source_quotes":
+    "pri_2010_§III.D_D2_present": "\"Time threshold exists: if amount of time devoted to lobbying is less than a threshold percentage of an individual's compensated time the individual or entity is exempted from filing disclosure.\""
+  "prompt": "\"Time threshold exists: if amount of time devoted to lobbying is less than a threshold percentage of an individual's compensated time the individual or entity is exempted from filing disclosure.\" Asks about the LOBBYIST's own filing-de-minimis time-percent exemption, not a principal-side itemized-reporting threshold."
+"lobbyist_registration_deadline_days_after_first_lobbying":
+  "source_quotes":
+    "cpi_2015_IND_200": "\"A 100 score is earned if lobbyists register before or within five days of initial lobbying activity. ... A 50 score is earned if lobbyists register about 10 days after initial lobbying activity ... A 0 score is earned if lobbyists register 20 or more days after initial lobbying activity ...\""
+  "prompt": "\"A 100 score is earned if lobbyists register before or within five days of initial lobbying activity. ... A 50 score is earned if lobbyists register about 10 days after initial lobbying activity ... A 0 score is earned if lobbyists register 20 or more days after initial lobbying activity ...\" Asks about the LOBBYIST's own statutory registration deadline — i.e., the number of days after first lobbying within which the LOBBYIST must register, not a principal-side filing trigger."
+"lobbyist_registration_threshold_expenditure_dollars":
+  "source_quotes":
+    "newmark_2017_def_expenditure_standard": "\"if they spend a certain amount of money in lobbying (expenditure standards)\""
+  "prompt": "\"if they spend a certain amount of money in lobbying (expenditure standards)\" Asks about the LOBBYIST-DEFINITION expenditure threshold — i.e., the dollar amount the LOBBYIST spends in lobbying that triggers their registration as a lobbyist, not a principal-side filing trigger."
+"lobbyist_spending_report_cadence_includes_semiannual":
+  "source_quotes":
+    "pri_2010_§III.E2.h.iv": "\"Reporting frequency option: Semi-annually.\""
+  "prompt": "\"Reporting frequency option: Semi-annually.\" Asks whether the LOBBYIST is the named filer of a separate spending report — NOT whether the principal's expense statement contains lobbyist info (e.g., the lobbyist's signature on the principal's form, the lobbyist's name/address listed by the principal, or compensation paid to lobbyists itemized within the principal's aggregate). FALSE in regimes where the statute mandates the PRINCIPAL as the filer of the spending report, even if the principal's report references the lobbyist."
+"lobbyist_spending_report_categorizes_expenses_by_type":
+  "source_quotes":
+    "sunlight_2015_#2_expenditure_transparency_tier_1": "\"Expenditure Transparency: Are lobbyists required to itemize all the expenses associated with their work, such as travel, holding an event, or buying gifts for lawmakers? Tier 2: Lobbyists report itemized list of expenses with dates and description of direct expenditure; Tier 1: Lobbyists report list of expenses categorized under broad descriptions, e.g. food, travel, meetings, media, etc.; Tier 0: Lobbyists report lump total of expenditures; Tier -1: Lobbyists do not report total expenditures.\""
+  "prompt": "\"Expenditure Transparency: Are lobbyists required to itemize all the expenses associated with their work, such as travel, holding an event, or buying gifts for lawmakers? Tier 2: Lobbyists report itemized list of expenses with dates and description of direct expenditure; Tier 1: Lobbyists report list of expenses categorized under broad descriptions, e.g. food, travel, meetings, media, etc.; Tier 0: Lobbyists report lump total of expenditures; Tier -1: Lobbyists do not report total expenditures.\" Asks whether the LOBBYIST is the named filer of a separate spending report — NOT whether the principal's expense statement contains lobbyist info (e.g., the lobbyist's signature on the principal's form, the lobbyist's name/address listed by the principal, or compensation paid to lobbyists itemized within the principal's aggregate). FALSE in regimes where the statute mandates the PRINCIPAL as the filer of the spending report, even if the principal's report references the lobbyist."
+"lobbyist_spending_report_includes_bill_or_action_identifier":
+  "source_quotes":
+    "sunlight_2015_#1_lobbyist_activity_tier_1_2": "\"Lobbyist Activity: Do lobbyists have to reveal which pieces of legislation or executive actions they are seeking to influence? Tier 2: Lobbyists report the bill/action discussed and position taken; Tier 1: Lobbyists report the bill/action discussed; Tier 0: Lobbyists report the general subjects of lobbying; Tier -1: Lobbyists do not report activity.\""
+  "prompt": "\"Lobbyist Activity: Do lobbyists have to reveal which pieces of legislation or executive actions they are seeking to influence? Tier 2: Lobbyists report the bill/action discussed and position taken; Tier 1: Lobbyists report the bill/action discussed; Tier 0: Lobbyists report the general subjects of lobbying; Tier -1: Lobbyists do not report activity.\" Asks whether the LOBBYIST is the named filer of a separate spending report — NOT whether the principal's expense statement contains lobbyist info (e.g., the lobbyist's signature on the principal's form, the lobbyist's name/address listed by the principal, or compensation paid to lobbyists itemized within the principal's aggregate). FALSE in regimes where the statute mandates the PRINCIPAL as the filer of the spending report, even if the principal's report references the lobbyist."
+"lobbyist_spending_report_includes_general_issues":
+  "source_quotes":
+    "pri_2010_§III.E2.g.i": "\"Are lobbyists required to disclose information on the issue lobbied by the general issues lobbied?\""
+  "prompt": "\"Are lobbyists required to disclose information on the issue lobbied by the general issues lobbied?\" Asks whether the LOBBYIST is the named filer of a separate spending report — NOT whether the principal's expense statement contains lobbyist info (e.g., the lobbyist's signature on the principal's form, the lobbyist's name/address listed by the principal, or compensation paid to lobbyists itemized within the principal's aggregate). FALSE in regimes where the statute mandates the PRINCIPAL as the filer of the spending report, even if the principal's report references the lobbyist."
+"lobbyist_spending_report_includes_general_subject_matter":
+  "source_quotes":
+    "sunlight_2015_#1_lobbyist_activity_tier_0": "\"Lobbyist Activity: Do lobbyists have to reveal which pieces of legislation or executive actions they are seeking to influence? ... Tier 0: Lobbyists report the general subjects of lobbying; Tier -1: Lobbyists do not report activity.\""
+  "prompt": "\"Lobbyist Activity: Do lobbyists have to reveal which pieces of legislation or executive actions they are seeking to influence? ... Tier 0: Lobbyists report the general subjects of lobbying; Tier -1: Lobbyists do not report activity.\" Asks whether the LOBBYIST is the named filer of a separate spending report — NOT whether the principal's expense statement contains lobbyist info (e.g., the lobbyist's signature on the principal's form, the lobbyist's name/address listed by the principal, or compensation paid to lobbyists itemized within the principal's aggregate). FALSE in regimes where the statute mandates the PRINCIPAL as the filer of the spending report, even if the principal's report references the lobbyist."
+"lobbyist_spending_report_includes_gifts_entertainment_transport_lodging":
+  "source_quotes":
+    "pri_2010_§III.E2.f.iii": "\"Required component of disclosure report: Other costs such as gifts, entertainment, transportation, and lodging.\""
+  "prompt": "\"Required component of disclosure report: Other costs such as gifts, entertainment, transportation, and lodging.\" Asks whether the LOBBYIST is the named filer of a separate spending report — NOT whether the principal's expense statement contains lobbyist info (e.g., the lobbyist's signature on the principal's form, the lobbyist's name/address listed by the principal, or compensation paid to lobbyists itemized within the principal's aggregate). FALSE in regimes where the statute mandates the PRINCIPAL as the filer of the spending report, even if the principal's report references the lobbyist."
+"lobbyist_spending_report_includes_indirect_costs":
+  "source_quotes":
+    "pri_2010_§III.E2.f.ii": "\"Required component of disclosure report: Indirect lobbying costs (non-compensation).\""
+  "prompt": "\"Required component of disclosure report: Indirect lobbying costs (non-compensation).\" Asks whether the LOBBYIST is the named filer of a separate spending report — NOT whether the principal's expense statement contains lobbyist info (e.g., the lobbyist's signature on the principal's form, the lobbyist's name/address listed by the principal, or compensation paid to lobbyists itemized within the principal's aggregate). FALSE in regimes where the statute mandates the PRINCIPAL as the filer of the spending report, even if the principal's report references the lobbyist."
+"lobbyist_spending_report_includes_lobbyist_contact_info":
+  "source_quotes":
+    "pri_2010_§III.E2.b": "\"Are lobbyists required to disclose their address and phone number?\""
+  "prompt": "\"Are lobbyists required to disclose their address and phone number?\" Asks whether the LOBBYIST is the named filer of a separate spending report — NOT whether the principal's expense statement contains lobbyist info (e.g., the lobbyist's signature on the principal's form, the lobbyist's name/address listed by the principal, or compensation paid to lobbyists itemized within the principal's aggregate). FALSE in regimes where the statute mandates the PRINCIPAL as the filer of the spending report, even if the principal's report references the lobbyist."
+"lobbyist_spending_report_includes_principal_names":
+  "source_quotes":
+    "pri_2010_§III.E2.c": "\"Are lobbyists required to disclose the names of all the principals represented?\""
+  "prompt": "\"Are lobbyists required to disclose the names of all the principals represented?\" Asks whether the LOBBYIST is the named filer of a separate spending report — NOT whether the principal's expense statement contains lobbyist info (e.g., the lobbyist's signature on the principal's form, the lobbyist's name/address listed by the principal, or compensation paid to lobbyists itemized within the principal's aggregate). FALSE in regimes where the statute mandates the PRINCIPAL as the filer of the spending report, even if the principal's report references the lobbyist."
+"lobbyist_spending_report_includes_specific_bill_number":
+  "source_quotes":
+    "pri_2010_§III.E2.g.ii": "\"Are lobbyists required to disclose information on the issue lobbied by the specific bill number or legislation ID?\""
+  "prompt": "\"Are lobbyists required to disclose information on the issue lobbied by the specific bill number or legislation ID?\" Asks whether the LOBBYIST is the named filer of a separate spending report — NOT whether the principal's expense statement contains lobbyist info (e.g., the lobbyist's signature on the principal's form, the lobbyist's name/address listed by the principal, or compensation paid to lobbyists itemized within the principal's aggregate). FALSE in regimes where the statute mandates the PRINCIPAL as the filer of the spending report, even if the principal's report references the lobbyist."
+"lobbyist_spending_report_includes_total_compensation":
+  "source_quotes":
+    "pri_2010_§III.E2.f.i": "\"Required component of disclosure report: Direct lobbying costs (compensation).\""
+  "prompt": "\"Required component of disclosure report: Direct lobbying costs (compensation).\" Asks whether the LOBBYIST is the named filer of a separate spending report — NOT whether the principal's expense statement contains lobbyist info (e.g., the lobbyist's signature on the principal's form, the lobbyist's name/address listed by the principal, or compensation paid to lobbyists itemized within the principal's aggregate). FALSE in regimes where the statute mandates the PRINCIPAL as the filer of the spending report, even if the principal's report references the lobbyist."
+"lobbyist_spending_report_includes_total_expenditures":
+  "source_quotes":
+    "newmark_2017_disclosure_total_expenditures": "\"total expenditures toward lobbying\""
+  "prompt": "\"total expenditures toward lobbying\" Asks whether the LOBBYIST is the named filer of a separate spending report — NOT whether the principal's expense statement contains lobbyist info (e.g., the lobbyist's signature on the principal's form, the lobbyist's name/address listed by the principal, or compensation paid to lobbyists itemized within the principal's aggregate). FALSE in regimes where the statute mandates the PRINCIPAL as the filer of the spending report, even if the principal's report references the lobbyist."
+"lobbyist_spending_report_required":
+  "source_quotes":
+    "cpi_2015_IND_201": "\"A YES score is earned if lobbyists are required to file itemized spending reports (including name of employer, lobbied issues and bill number(s) and compensation/payments received for lobbying services). A MODERATE score is earned if lobbyists are required to file itemized spending reports or compensation/payments received, but not both. A NO score is earned if no such law exists.\""
+  "prompt": "\"A YES score is earned if lobbyists are required to file itemized spending reports (including name of employer, lobbied issues and bill number(s) and compensation/payments received for lobbying services). A MODERATE score is earned if lobbyists are required to file itemized spending reports or compensation/payments received, but not both. A NO score is earned if no such law exists.\" Asks whether the LOBBYIST is the named filer of a separate spending report — NOT whether the principal's expense statement contains lobbyist info (e.g., the lobbyist's signature on the principal's form, the lobbyist's name/address listed by the principal, or compensation paid to lobbyists itemized within the principal's aggregate). FALSE in regimes where the statute mandates the PRINCIPAL as the filer of the spending report, even if the principal's report references the lobbyist."
+"lobbyist_spending_report_required_when_no_activity":
+  "source_quotes":
+    "hiredguns_2007_Q25": "\"Is a lobbyist who has done no spending during a filing period required to make a report of no activity?\""
+  "prompt": "\"Is a lobbyist who has done no spending during a filing period required to make a report of no activity?\" Asks whether the LOBBYIST is the named filer of a separate spending report — NOT whether the principal's expense statement contains lobbyist info (e.g., the lobbyist's signature on the principal's form, the lobbyist's name/address listed by the principal, or compensation paid to lobbyists itemized within the principal's aggregate). FALSE in regimes where the statute mandates the PRINCIPAL as the filer of the spending report, even if the principal's report references the lobbyist."

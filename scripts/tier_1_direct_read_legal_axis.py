@@ -172,6 +172,148 @@ cited section. Cite precisely.
 
 
 # ---------------------------------------------------------------------------
+# Tool schemas — tier-1 owns its own variants of record_cell and
+# record_unscoreable_cell with the parameter `handle` in place of `row_id`.
+# Per the 2026-06-04 wide-pass design (convo
+# `20260604_wide_pass_yaml_sidecar_design`), opaque per-chunk handles
+# replace any leakage of compendium row_ids into the model's view; tier-0's
+# row-id-keyed tool schemas stay untouched (they belong to the archived
+# smoke pipeline). The tool *names* (`record_cell`,
+# `record_unscoreable_cell`) are deliberately the same as tier-0's so the
+# shared `parse_response` / `_instantiate_cell` helpers keep working.
+# ---------------------------------------------------------------------------
+
+
+RECORD_CELL_INPUT_SCHEMA_HANDLE: dict[str, Any] = {
+    "type": "object",
+    "properties": {
+        "handle": {
+            "type": "string",
+            "description": (
+                "Opaque per-chunk row handle (e.g., 'row_001'). Use exactly "
+                "the handle string listed for the row you are answering — "
+                "the runtime maps the handle back to a compendium row "
+                "internally."
+            ),
+        },
+        "axis": {
+            "type": "string",
+            "enum": ["legal", "practical"],
+        },
+        "value": {
+            "oneOf": [
+                {"type": "number"},
+                {"type": "integer"},
+                {"type": "string"},
+                {"type": "boolean"},
+                {"type": "array"},
+                {"type": "object"},
+                {"type": "null"},
+            ],
+        },
+        "condition_text": {"type": ["string", "null"]},
+        "confidence": {
+            "type": "string",
+            "enum": ["high", "medium", "low"],
+        },
+        "cited_section": {
+            "type": "string",
+            "description": (
+                "Free-text statute section reference, e.g. '§101.85(B)(2)'. "
+                "The downstream verifier reads this section and rules on "
+                "whether it actually supports the value."
+            ),
+        },
+        "justification": {
+            "type": "string",
+            "description": (
+                "One sentence explaining how the cited section supports the "
+                "value. Used by the downstream verifier."
+            ),
+        },
+    },
+    "required": [
+        "handle",
+        "axis",
+        "value",
+        "confidence",
+        "cited_section",
+        "justification",
+    ],
+}
+
+
+RECORD_UNSCOREABLE_INPUT_SCHEMA_HANDLE: dict[str, Any] = {
+    "type": "object",
+    "properties": {
+        "handle": {"type": "string"},
+        "axis": {
+            "type": "string",
+            "enum": ["legal", "practical"],
+        },
+        "reason": {
+            "type": "string",
+            "description": (
+                "Why this cell could not be scored from the bundle "
+                "(e.g., 'penalty schedule referenced but §307.99 not included')."
+            ),
+        },
+    },
+    "required": ["handle", "axis", "reason"],
+}
+
+
+_RECORD_CELL_DESCRIPTION_HANDLE = (
+    "Record a typed answer for one compendium cell. Call this once per "
+    "(handle, axis) you can answer. Cite the specific statute section that "
+    "supports the value; a one-sentence justification will be checked by a "
+    "downstream verifier reading that section."
+)
+
+
+_RECORD_UNSCOREABLE_DESCRIPTION_HANDLE = (
+    "Record that a compendium cell cannot be answered from the bundled "
+    "statute text (e.g., the law references a penalty schedule in a "
+    "different chapter that isn't shown). Provide a brief reason. "
+    "Do not guess."
+)
+
+
+ANTHROPIC_TOOLS_HANDLE: list[dict[str, Any]] = [
+    {
+        "name": "record_cell",
+        "description": _RECORD_CELL_DESCRIPTION_HANDLE,
+        "input_schema": RECORD_CELL_INPUT_SCHEMA_HANDLE,
+    },
+    {
+        "name": "record_unscoreable_cell",
+        "description": _RECORD_UNSCOREABLE_DESCRIPTION_HANDLE,
+        "input_schema": RECORD_UNSCOREABLE_INPUT_SCHEMA_HANDLE,
+    },
+]
+
+
+OPENAI_TOOLS_HANDLE: list[dict[str, Any]] = [
+    {
+        "type": "function",
+        "function": {
+            "name": "record_cell",
+            "description": _RECORD_CELL_DESCRIPTION_HANDLE,
+            "parameters": RECORD_CELL_INPUT_SCHEMA_HANDLE,
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "record_unscoreable_cell",
+            "description": _RECORD_UNSCOREABLE_DESCRIPTION_HANDLE,
+            "parameters": RECORD_UNSCOREABLE_INPUT_SCHEMA_HANDLE,
+        },
+    },
+]
+
+
+# ---------------------------------------------------------------------------
 # Step 3 — legal-axis roster filter.
 # ---------------------------------------------------------------------------
 
@@ -202,39 +344,47 @@ def _value_shape_hint(cls: Any) -> str:
     return f" — emit `value` as a JSON object with keys: {', '.join(non_common)}"
 
 
-def render_legal_roster(chunk_id: str, topic: str, legal_specs: list[Any]) -> str:
+def render_legal_roster(
+    chunk_id: str, topic: str, legal_specs: list[Any]
+) -> tuple[str, dict[str, str]]:
     """Render a legal-only roster as the per-chunk user message.
 
-    Each line carries the row_id + axis + expected cell class. If the spec
-    carries a `prompt_text` (verbatim source-rubric question text from the
-    `prompt_text` TSV column), it is emitted on a continuation line beneath
-    the row metadata. This addresses the convo
-    `20260603_statute_disagreement_prior_art_review` finding that row IDs
-    alone are a lossy compression of the source-author intent — populating
-    `prompt_text` for the 17 confirmed WI inter-model disagreement rows
-    tests whether the disambiguation resolves Claude/GPT divergence on
-    those rows.
+    Returns ``(message, handle_to_row_id_map)``. The message uses opaque
+    per-chunk handles (``row_001``, ``row_002``, …) instead of leaking the
+    compendium ``row_id`` into the model's view. The map decodes the
+    model's handle-keyed response back to the original row_ids.
+
+    Per convo `20260604_wide_pass_yaml_sidecar_design`: row IDs are
+    structurally a lossy compression of the source-author intent and were
+    the Pattern A bug surface in the WI dispatch. Suppressing them from the
+    model's view is the wide-pass forcing-function for prompt quality —
+    prompts cannot lean on row-name semantic content. Each spec's `prompt`
+    field (from `compendium/source_quotes.yaml` via the registry) is
+    emitted on the continuation line beneath the handle's metadata.
     """
+    handle_to_row_id: dict[str, str] = {}
     lines = [
         f"Answer all {len(legal_specs)} DE JURE (legal-axis) cells for chunk "
         f"`{chunk_id}` ({topic}):"
     ]
-    for cs in legal_specs:
+    for idx, cs in enumerate(legal_specs):
+        handle = f"row_{idx + 1:03d}"
+        handle_to_row_id[handle] = cs.row_id
         cls = cs.expected_cell_class
         lines.append(
-            f"- row_id={cs.row_id!r}, axis='legal', "
+            f"- handle={handle!r}, axis='legal', "
             f"expected_cell_class={cls.__name__}{_value_shape_hint(cls)}"
         )
-        prompt_text = getattr(cs, "prompt_text", None)
-        if prompt_text:
-            lines.append(f"  source-rubric question: {prompt_text}")
+        prompt = getattr(cs, "prompt", None)
+        if prompt:
+            lines.append(f"  {prompt}")
     lines.append("")
     lines.append(
-        "Emit one `record_cell` call per (row_id, axis) you can answer from the "
-        "statute text alone. Emit `record_unscoreable_cell` if the answer needs "
-        "out-of-bundle cross-references. Every axis here is 'legal'."
+        "Emit one `record_cell` call per (handle, axis) you can answer from "
+        "the statute text alone. Emit `record_unscoreable_cell` if the answer "
+        "needs out-of-bundle cross-references. Every axis here is 'legal'."
     )
-    return "\n".join(lines)
+    return "\n".join(lines), handle_to_row_id
 
 
 # ---------------------------------------------------------------------------
@@ -393,7 +543,7 @@ def _dispatch_anthropic(system_prompt: str, user_message: str) -> tuple[Any, flo
                 "cache_control": {"type": "ephemeral"},
             }
         ],
-        tools=tier0.ANTHROPIC_TOOLS,
+        tools=ANTHROPIC_TOOLS_HANDLE,
         messages=[{"role": "user", "content": user_message}],
     )
     return response, time.monotonic() - started
@@ -411,7 +561,7 @@ def _dispatch_openai(system_prompt: str, user_message: str) -> tuple[Any, float]
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_message},
         ],
-        tools=tier0.OPENAI_TOOLS,
+        tools=OPENAI_TOOLS_HANDLE,
         max_completion_tokens=_MAX_OUTPUT_TOKENS,
     )
     return response, time.monotonic() - started
@@ -467,15 +617,39 @@ def _is_null_freetext_abstention(spec: Any, arguments: dict[str, Any]) -> bool:
 
 
 def _parse_and_instantiate(
-    response: Any, sdk: str, registry: dict[Any, Any]
+    response: Any,
+    sdk: str,
+    registry: dict[Any, Any],
+    handle_to_row_id: dict[str, str],
 ) -> tuple[list[dict], list[dict], list[dict]]:
-    """Parse a response into (instantiated_cells, unscoreable, errors)."""
+    """Parse a response into (instantiated_cells, unscoreable, errors).
+
+    The model emits ``record_cell`` / ``record_unscoreable_cell`` calls with
+    an opaque per-chunk ``handle`` in place of the (legacy) ``row_id``.
+    ``handle_to_row_id`` is the chunk-local map produced by
+    ``render_legal_roster``. An emission whose ``handle`` is not in the map
+    (unknown handle, missing handle, or model leaking back the actual
+    compendium row_id) routes to ``errors`` — never to ``instantiated`` —
+    so contract violations are loud.
+    """
     instantiated: list[dict] = []
     unscoreable: list[dict] = []
     errors: list[dict] = []
     for call in tier0.parse_response(response, sdk):
         if call.tool_name == "record_cell":
-            key = (call.arguments.get("row_id"), call.arguments.get("axis"))
+            handle = call.arguments.get("handle")
+            axis = call.arguments.get("axis")
+            if handle is None or handle not in handle_to_row_id:
+                errors.append(
+                    {
+                        "reason": "unknown_handle",
+                        "handle": handle,
+                        "arguments": call.arguments,
+                    }
+                )
+                continue
+            row_id = handle_to_row_id[handle]
+            key = (row_id, axis)
             spec = registry.get(key)
             if spec is None:
                 errors.append(
@@ -486,6 +660,8 @@ def _parse_and_instantiate(
                 unscoreable.append(
                     {
                         **call.arguments,
+                        "row_id": row_id,
+                        "axis": axis,
                         "reason": "conditional cell not applicable (value null)",
                     }
                 )
@@ -502,7 +678,25 @@ def _parse_and_instantiate(
                     }
                 )
         elif call.tool_name == "record_unscoreable_cell":
-            unscoreable.append(call.arguments)
+            handle = call.arguments.get("handle")
+            axis = call.arguments.get("axis")
+            if handle is None or handle not in handle_to_row_id:
+                errors.append(
+                    {
+                        "reason": "unknown_handle",
+                        "handle": handle,
+                        "arguments": call.arguments,
+                    }
+                )
+                continue
+            row_id = handle_to_row_id[handle]
+            unscoreable.append(
+                {
+                    **call.arguments,
+                    "row_id": row_id,
+                    "axis": axis,
+                }
+            )
         else:
             errors.append(
                 {
@@ -592,7 +786,9 @@ def main(argv: list[str] | None = None) -> int:
     for model in _MODELS:
         sdk, dispatcher = _DISPATCHERS[model]
         for chunk_id, (chunk, legal) in rosters.items():
-            user_message = render_legal_roster(chunk_id, chunk.topic, legal)
+            user_message, handle_to_row_id = render_legal_roster(
+                chunk_id, chunk.topic, legal
+            )
             for run_idx in range(1, _N_RUNS + 1):
                 if is_dispatch_done(results_dir, model, chunk_id, run_idx):
                     n_skipped += 1
@@ -623,7 +819,7 @@ def main(argv: list[str] | None = None) -> int:
                     return 3
 
                 instantiated, unscoreable, errors = _parse_and_instantiate(
-                    response, sdk, registry
+                    response, sdk, registry, handle_to_row_id
                 )
                 provenance = {
                     "originating_convo": _ORIGINATING_CONVO,
