@@ -1,0 +1,112 @@
+"""Phase 2 grain-collapse for the NY Open NY (Socrata) lobbying pipeline.
+
+NY's datasets are denormalized ~1,300x: one filing emits hundreds-to-thousands
+of rows (the cartesian of bills x subjects x parties-lobbied x ...), with the
+filing-level compensation replicated on every row. Separately, an amendment is
+a NEW submission (a new ``form_submission_id``) that supersedes the prior
+submission for the same business key; re-amendment is common.
+
+:func:`collapse_to_filing_grain` is the load-bearing dollar-conservation guard.
+It runs two steps, in order:
+
+1. **Supersede resolution.** Group by the business key and keep only the rows
+   whose ``form_submission_id`` is the maximum for that key. Verified against
+   live data: amendment ids are strictly greater than the superseded original's
+   id, so ``max(form_submission_id)`` is the latest version. This drops
+   superseded submissions entirely, so their (often different) compensation can
+   never be summed in.
+
+2. **Grain collapse.** Reduce the surviving row explosion to one row per
+   ``(reporting_year, reporting_period, form_submission_id, principal_lobbyist,
+   beneficial_client, bill_id)``. Compensation is filing-level and replicated,
+   so it is carried (not summed) onto each surviving bill row; summing it over
+   *distinct* filings then equals the true total.
+
+The function operates on **canonical** column names (see :data:`BUSINESS_KEY`
+and :data:`GRAIN`); per-dataset raw column names are normalized upstream by the
+column map before this step.
+"""
+
+from __future__ import annotations
+
+import pandas as pd
+
+#: Identity of a single filing across submissions. An amendment shares this key
+#: with the submission it supersedes but carries a higher ``form_submission_id``.
+BUSINESS_KEY: tuple[str, ...] = (
+    "reporting_year",
+    "reporting_period",
+    "principal_lobbyist",
+    "beneficial_client",
+    "contractual_client_name",
+)
+
+#: One output row per this tuple. ``bill_id`` is null for non-bill focus rows.
+GRAIN: tuple[str, ...] = (
+    "reporting_year",
+    "reporting_period",
+    "form_submission_id",
+    "principal_lobbyist",
+    "beneficial_client",
+    "bill_id",
+)
+
+_CARRIED = ("contractual_client_name", "filing_compensation")
+_REQUIRED = set(BUSINESS_KEY) | set(GRAIN) | {"filing_compensation"}
+
+
+def collapse_to_filing_grain(
+    df: pd.DataFrame,
+    *,
+    business_key: tuple[str, ...] = BUSINESS_KEY,
+) -> pd.DataFrame:
+    """Resolve superseded submissions and collapse the row explosion to grain.
+
+    Returns one row per :data:`GRAIN` tuple, carrying ``contractual_client_name``,
+    the filing-level ``filing_compensation`` (replicated, not summed), and
+    ``n_bills_in_filing`` (the count of distinct real bills in the filing — the
+    denominator a downstream even-split needs). Rows are deterministically
+    sorted so re-runs diff cleanly.
+
+    Expects the canonical ``bill_id`` column to already exist — it is derived by
+    the **parser step**, which runs downstream of :func:`columns.normalize_columns`
+    (rename) and upstream of this collapse. ``normalize_columns`` output alone is
+    not directly consumable here; the parser must interpose to add ``bill_id``.
+
+    Assumptions (true for the verified data shape): ``form_submission_id`` is the
+    submission primary key (so the max id per business key is a single
+    submission), and ``filing_compensation`` is replicated identically across a
+    filing's rows (so de-duplicating to grain keeps the correct value).
+
+    Raises :class:`KeyError` if a required canonical column is absent.
+    """
+    missing = _REQUIRED.difference(df.columns)
+    if missing:
+        raise KeyError(f"grain-collapse requires canonical columns; missing: {sorted(missing)}")
+
+    work = df.copy()
+
+    # 1. Supersede resolution: keep only the latest submission per business key.
+    # dropna=False is load-bearing: a NaN in any business-key column (e.g. an
+    # absent contractual_client_name) would otherwise make groupby drop that
+    # group, transform("max") return NaN, and every row for the filing fall out
+    # of the `== latest` filter — silently losing the filing's dollars.
+    work["__seq"] = pd.to_numeric(work["form_submission_id"], errors="raise")
+    latest_seq = work.groupby(list(business_key), dropna=False)["__seq"].transform("max")
+    survivors = work.loc[work["__seq"] == latest_seq].drop(columns="__seq")
+
+    # 2. Collapse the explosion to one row per (filing, bill).
+    collapsed = survivors.drop_duplicates(subset=list(GRAIN))
+
+    # Distinct real bills per surviving filing (null bill_id excluded).
+    real_bills = survivors.loc[survivors["bill_id"].notna()]
+    n_bills = real_bills.groupby("form_submission_id")["bill_id"].nunique()
+
+    out_cols = list(GRAIN) + [c for c in _CARRIED if c not in GRAIN]
+    out = collapsed.loc[:, out_cols].copy()
+    out["n_bills_in_filing"] = (
+        out["form_submission_id"].map(n_bills).fillna(0).astype(int)
+    )
+
+    out = out.sort_values(by=list(GRAIN), na_position="last").reset_index(drop=True)
+    return out
