@@ -1,0 +1,134 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "enforcement_and_audits",
+    "run_index": 1,
+    "state_abbr": "WI",
+    "vintage_year": 2025,
+    "prompt_sha256": "cf5e534eb79e06bd8862cb6a71fa3ba6db44eb86d8d1b12b85431ef394b042c8",
+    "timestamp_utc": "2026-06-05T11:38:14+00:00"
+  },
+  "wall_clock_seconds": 6.008263833005913,
+  "usage": {
+    "completion_tokens": 220,
+    "prompt_tokens": 19166,
+    "total_tokens": 19386,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.0366205,
+  "legal_roster": [
+    [
+      "lobbying_violation_penalties_defined_in_law",
+      "legal"
+    ],
+    [
+      "lobbying_disclosure_audit_required_in_law",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_disclosure_audit_required_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "MODERATE"
+      },
+      "cell_class": "EnumCell",
+      "cited_section": "Wis. Stat. § 13.74(1)-(2) (2025)",
+      "justification": "Section 13.74 requires the commission to examine all required filings and authorizes investigative examination and subpoenas, indicating compliance review/audit authority rather than a mandated regular independent third-party audit schedule."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [
+    {
+      "reason": "instantiation_failed",
+      "key": [
+        "lobbying_violation_penalties_defined_in_law",
+        "legal"
+      ],
+      "error": "ValueError(\"BinaryCell: cannot coerce 'yes' to bool\")",
+      "arguments": {
+        "handle": "row_001",
+        "axis": "legal",
+        "value": "yes",
+        "confidence": "high",
+        "cited_section": "Wis. Stat. § 13.69(1)-(4), (6m), (7) (2025)",
+        "justification": "Section 13.69 sets civil forfeitures for principals and lobbyists, criminal penalties for falsified filings, penalties for acting without a license, and license revocation/ineligibility for violations of lobbying disclosure requirements."
+      }
+    }
+  ],
+  "response": {
+    "id": "chatcmpl-DnNAIxih1ZTvMkFMMh7miWld1QyCR",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_4bs8QXi1rnkB4VKU4qKosfr1",
+              "function": {
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"value\": \"yes\", \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.69(1)-(4), (6m), (7) (2025)\", \"justification\": \"Section 13.69 sets civil forfeitures for principals and lobbyists, criminal penalties for falsified filings, penalties for acting without a license, and license revocation/ineligibility for violations of lobbying disclosure requirements.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_X8f53hw6qCvL2exio9t6goH7",
+              "function": {
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": \"MODERATE\", \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.74(1)-(2) (2025)\", \"justification\": \"Section 13.74 requires the commission to examine all required filings and authorizes investigative examination and subpoenas, indicating compliance review/audit authority rather than a mandated regular independent third-party audit schedule.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1780659490,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 220,
+      "prompt_tokens": 19166,
+      "total_tokens": 19386,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 0
+      }
+    }
+  }
+}

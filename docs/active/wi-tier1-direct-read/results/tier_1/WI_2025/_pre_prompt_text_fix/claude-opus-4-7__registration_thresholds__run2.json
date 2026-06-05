@@ -1,0 +1,281 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "registration_thresholds",
+    "run_index": 2,
+    "state_abbr": "WI",
+    "vintage_year": 2025,
+    "prompt_sha256": "cf5e534eb79e06bd8862cb6a71fa3ba6db44eb86d8d1b12b85431ef394b042c8",
+    "timestamp_utc": "2026-06-01T16:53:56+00:00"
+  },
+  "wall_clock_seconds": 22.64509916602401,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 881
+    },
+    "cache_creation_input_tokens": 881,
+    "cache_read_input_tokens": 29445,
+    "inference_geo": "global",
+    "input_tokens": 6,
+    "output_tokens": 2138,
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.05348000000000001,
+  "legal_roster": [
+    [
+      "lobbyist_registration_threshold_compensation_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_threshold_expenditure_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_threshold_time_percent",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_itemization_de_minimis_threshold_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_de_minimis_threshold_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_de_minimis_threshold_time_percent",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_threshold_expenditure_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "500"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "§13.64(1)",
+      "justification": "§13.64(1) requires every principal who makes expenditures or incurs obligations exceeding $500 in a calendar year for non-exempt lobbying to file a registration statement with the commission within 10 days after exceeding $500."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_filing_itemization_de_minimis_threshold_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "200"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "§13.68(1)(a)6",
+      "justification": "§13.68(1)(a)6 requires that if total lobbying expenditures/obligations made or incurred to any lobbyist exceed $200 during the reporting period, the name and address of the lobbyist and the total amount must be itemized."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_filing_de_minimis_threshold_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "500"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "§13.621(5)",
+      "justification": "§13.621(5) exempts a principal from licensing under §13.63, registration under §13.64, and reporting requirements under §13.68 if the principal files a verified statement and does not exceed $500 in aggregate lobbying expenditures or obligations in a calendar year."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_filing_de_minimis_threshold_time_percent",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": 10.0
+      },
+      "cell_class": "FloatCell",
+      "cited_section": "§13.68(1)(bn)",
+      "justification": "§13.68(1)(bn) requires reporting a reasonable estimate of proportion of time spent in lobbying only for each legislative proposal, proposed rule, budget bill subject, or other topic that accounts for 10 percent or more of the principal's lobbying time during the reporting period, establishing a 10% de minimis threshold for itemized topic time reporting."
+    }
+  ],
+  "unscoreable_emissions": [
+    {
+      "row_id": "lobbyist_registration_threshold_compensation_dollars",
+      "axis": "legal",
+      "reason": "§13.62(11) defines lobbyist by receipt of economic consideration other than reimbursement for actual expenses, with no specified dollar compensation threshold for the lobbyist; the $500 threshold in §13.64(1)/§13.621(5) applies to the principal's expenditures, not lobbyist compensation."
+    }
+  ],
+  "errors": [
+    {
+      "reason": "instantiation_failed",
+      "key": [
+        "lobbyist_registration_threshold_time_percent",
+        "legal"
+      ],
+      "error": "2 validation errors for TimeThresholdCell\nmagnitude\n  Input should be an instance of Decimal [type=is_instance_of, input_value=5, input_type=int]\n    For further information visit https://errors.pydantic.dev/2.13/v/is_instance_of\nunit\n  Input should be 'hours_per_quarter', 'hours_per_year', 'days_per_year' or 'percent_of_work_time' [type=literal_error, input_value='days_per_6_month_reporting_period', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.13/v/literal_error",
+      "arguments": {
+        "row_id": "lobbyist_registration_threshold_time_percent",
+        "axis": "legal",
+        "value": {
+          "magnitude": 5,
+          "unit": "days_per_6_month_reporting_period"
+        },
+        "confidence": "high",
+        "cited_section": "§13.62(11), with reporting period defined in §13.62(12r)",
+        "justification": "§13.62(11) provides that if an individual's duties are not exclusively lobbying, the individual is a lobbyist only if he or she makes lobbying communications on each of at least 5 days within a reporting period (defined in §13.62(12r) as a 6-month period)."
+      }
+    }
+  ],
+  "response": {
+    "id": "msg_0131qhYcoMQcJGUxUsTLYsxw",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "I'll analyze the Wisconsin statute text to answer each cell.\n\n**Analysis:**\n\n1. **Lobbyist registration threshold (compensation)**: §13.62(11) defines lobbyist as one who receives \"economic consideration, other than reimbursement for actual expenses\" — no dollar threshold for the lobbyist itself.\n\n2. **Lobbyist registration threshold (expenditure)**: §13.64(1) requires principal registration when expenditures/obligations exceed $500. §13.621(5) allows verified statement for principals not exceeding $500.\n\n3. **Lobbyist registration threshold (time)**: §13.62(11) — if duties aren't exclusively lobbying, individual is lobbyist only if making lobbying communications on at least 5 days within a reporting period (6 months).\n\n4. **Itemization de minimis**: §13.68(1)(a)6 — must itemize lobbyist if expenditures to that lobbyist exceed $200 during reporting period. Also §13.68(1)(a)5 — paid advertising must be reported if exceeds $500.\n\n5. **Filing de minimis dollars**: §13.621(5) — $500 aggregate threshold.\n\n6. **Filing de minimis time percent**: §13.68(1)(a) excludes employees who devote not more than 10 hours to lobbying — that's hours not a percent. §13.68(1)(bn) uses a 10% threshold for reporting topics.",
+        "type": "text"
+      },
+      {
+        "id": "toolu_01L3M4ngQ7LDumsfn2QqQcHf",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "lobbyist_registration_threshold_compensation_dollars",
+          "axis": "legal",
+          "reason": "§13.62(11) defines lobbyist by receipt of economic consideration other than reimbursement for actual expenses, with no specified dollar compensation threshold for the lobbyist; the $500 threshold in §13.64(1)/§13.621(5) applies to the principal's expenditures, not lobbyist compensation."
+        },
+        "name": "record_unscoreable_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_019yjSjMmyPFrKPeFgV7mLsh",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "lobbyist_registration_threshold_expenditure_dollars",
+          "axis": "legal",
+          "value": "500",
+          "confidence": "high",
+          "cited_section": "§13.64(1)",
+          "justification": "§13.64(1) requires every principal who makes expenditures or incurs obligations exceeding $500 in a calendar year for non-exempt lobbying to file a registration statement with the commission within 10 days after exceeding $500."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01QuMsZTi9nVMFmswG4UVN2h",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "lobbyist_registration_threshold_time_percent",
+          "axis": "legal",
+          "value": {
+            "magnitude": 5,
+            "unit": "days_per_6_month_reporting_period"
+          },
+          "confidence": "high",
+          "cited_section": "§13.62(11), with reporting period defined in §13.62(12r)",
+          "justification": "§13.62(11) provides that if an individual's duties are not exclusively lobbying, the individual is a lobbyist only if he or she makes lobbying communications on each of at least 5 days within a reporting period (defined in §13.62(12r) as a 6-month period)."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01KhULpBKHrSaTa534rkweum",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "lobbyist_filing_itemization_de_minimis_threshold_dollars",
+          "axis": "legal",
+          "value": "200",
+          "confidence": "high",
+          "cited_section": "§13.68(1)(a)6",
+          "justification": "§13.68(1)(a)6 requires that if total lobbying expenditures/obligations made or incurred to any lobbyist exceed $200 during the reporting period, the name and address of the lobbyist and the total amount must be itemized."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01BGAzHa7bwtZViHYmRtxr3g",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "lobbyist_filing_de_minimis_threshold_dollars",
+          "axis": "legal",
+          "value": "500",
+          "confidence": "high",
+          "cited_section": "§13.621(5)",
+          "justification": "§13.621(5) exempts a principal from licensing under §13.63, registration under §13.64, and reporting requirements under §13.68 if the principal files a verified statement and does not exceed $500 in aggregate lobbying expenditures or obligations in a calendar year."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_017JaKk3YVwJ7jT1Tnr5mkMb",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "lobbyist_filing_de_minimis_threshold_time_percent",
+          "axis": "legal",
+          "value": "10",
+          "confidence": "medium",
+          "cited_section": "§13.68(1)(bn)",
+          "justification": "§13.68(1)(bn) requires reporting a reasonable estimate of proportion of time spent in lobbying only for each legislative proposal, proposed rule, budget bill subject, or other topic that accounts for 10 percent or more of the principal's lobbying time during the reporting period, establishing a 10% de minimis threshold for itemized topic time reporting."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 881
+      },
+      "cache_creation_input_tokens": 881,
+      "cache_read_input_tokens": 29445,
+      "inference_geo": "global",
+      "input_tokens": 6,
+      "output_tokens": 2138,
+      "server_tool_use": null,
+      "service_tier": "standard",
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      }
+    }
+  }
+}

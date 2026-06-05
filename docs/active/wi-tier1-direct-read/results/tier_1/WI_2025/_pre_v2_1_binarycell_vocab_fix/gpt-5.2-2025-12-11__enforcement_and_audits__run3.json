@@ -1,0 +1,134 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "enforcement_and_audits",
+    "run_index": 3,
+    "state_abbr": "WI",
+    "vintage_year": 2025,
+    "prompt_sha256": "cf5e534eb79e06bd8862cb6a71fa3ba6db44eb86d8d1b12b85431ef394b042c8",
+    "timestamp_utc": "2026-06-05T11:38:24+00:00"
+  },
+  "wall_clock_seconds": 4.599406207969878,
+  "usage": {
+    "completion_tokens": 207,
+    "prompt_tokens": 19166,
+    "total_tokens": 19373,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 19072
+    }
+  },
+  "cost_usd_estimate": 0.0364385,
+  "legal_roster": [
+    [
+      "lobbying_violation_penalties_defined_in_law",
+      "legal"
+    ],
+    [
+      "lobbying_disclosure_audit_required_in_law",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_disclosure_audit_required_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "moderate"
+      },
+      "cell_class": "EnumCell",
+      "cited_section": "Wis. Stat. § 13.74(1)-(2) (2025)",
+      "justification": "Section 13.74 authorizes the ethics commission to examine required statements and related documents and use investigative subpoenas, indicating compliance review/audit authority but not a mandated regular independent third-party audit schedule."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [
+    {
+      "reason": "instantiation_failed",
+      "key": [
+        "lobbying_violation_penalties_defined_in_law",
+        "legal"
+      ],
+      "error": "ValueError(\"BinaryCell: cannot coerce 'yes' to bool\")",
+      "arguments": {
+        "handle": "row_001",
+        "axis": "legal",
+        "value": "yes",
+        "confidence": "high",
+        "cited_section": "Wis. Stat. § 13.69(1)-(4), (6m) (2025)",
+        "justification": "Section 13.69 establishes civil forfeitures for principals and lobbyists who violate lobbying-disclosure provisions and additional criminal penalties for falsified filings and unlicensed lobbying."
+      }
+    }
+  ],
+  "response": {
+    "id": "chatcmpl-DnNASqMA64jWHboOfgtcerdpow97g",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_Vma7TV8NPvXIsDOBdkxRt34V",
+              "function": {
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"value\": \"yes\", \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.69(1)-(4), (6m) (2025)\", \"justification\": \"Section 13.69 establishes civil forfeitures for principals and lobbyists who violate lobbying-disclosure provisions and additional criminal penalties for falsified filings and unlicensed lobbying.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_BplSFsxMgtVYSGt41XxQhjew",
+              "function": {
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": \"moderate\", \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.74(1)-(2) (2025)\", \"justification\": \"Section 13.74 authorizes the ethics commission to examine required statements and related documents and use investigative subpoenas, indicating compliance review/audit authority but not a mandated regular independent third-party audit schedule.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1780659500,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 207,
+      "prompt_tokens": 19166,
+      "total_tokens": 19373,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 19072
+      }
+    }
+  }
+}

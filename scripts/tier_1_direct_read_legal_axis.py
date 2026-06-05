@@ -27,6 +27,7 @@ Single-file by design (YAGNI), consistent with Tier-0.
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import importlib.util
 import json
@@ -68,9 +69,10 @@ tier0 = _load_tier_0()
 # Constants — Tier-1 scope.
 # ---------------------------------------------------------------------------
 
-# The 6 chunks containing the CPI-2015 C11 de-jure items (IND_196/197/199/
-# 201/203/207). Resolved in Step 1 of the plan; recorded in the writeup.
-_RESOLVED_CHUNKS: tuple[str, ...] = (
+# The 6 default chunks dispatched when --chunks is omitted: the CPI-2015 C11
+# de-jure items (IND_196/197/199/201/203/207). Resolved in Step 1 of the plan;
+# recorded in the writeup.
+_DEFAULT_CHUNKS: tuple[str, ...] = (
     "lobbying_definitions",
     "registration_thresholds",
     "registration_mechanics_and_exemptions",
@@ -79,8 +81,16 @@ _RESOLVED_CHUNKS: tuple[str, ...] = (
     "enforcement_and_audits",
 )
 
-_STATE_ABBR = "OH"
-_VINTAGE_YEAR = 2025
+# Additional chunk_ids accepted as --chunks values (but NOT in the default
+# dispatch set). Phase A A2.b (2026-06-05) adds `actor_registration_required`
+# — 11 pure-binary rows — as the BinaryCell template verification chunk.
+_PHASE_A_EXTRA_CHUNKS: tuple[str, ...] = (
+    "actor_registration_required",
+)
+
+# Full set of valid --chunks values: defaults + Phase A additions.
+_RESOLVED_CHUNKS: tuple[str, ...] = _DEFAULT_CHUNKS + _PHASE_A_EXTRA_CHUNKS
+
 _N_RUNS = 3
 _MODELS: tuple[str, ...] = (tier0._ANTHROPIC_MODEL, tier0._OPENAI_MODEL)
 _ORIGINATING_CONVO = "convos/20260520_tier_0_direct_read_execution.md"
@@ -89,12 +99,90 @@ _ORIGINATING_CONVO = "convos/20260520_tier_0_direct_read_execution.md"
 # Tier-0's observed Claude rate (~335 tok/cell).
 _MAX_OUTPUT_TOKENS = 16384
 
-_STATUTE_BUNDLE_DIR = (
-    _WORKTREE_ROOT / "data" / "statutes" / _STATE_ABBR / str(_VINTAGE_YEAR) / "sections"
+# Results/checkpoint base. The per-run directory is keyed by <STATE>_<VINTAGE>
+# under this base (see resolve_results_dir) so no two state-vintages share a
+# checkpoint directory.
+_DEFAULT_RESULTS_BASE = (
+    _WORKTREE_ROOT / "docs" / "active" / "wi-tier1-direct-read" / "results" / "tier_1"
 )
-_RESULTS_DIR = (
-    _WORKTREE_ROOT / "docs" / "active" / "extraction-harness-brainstorm" / "results" / "tier_1"
-)
+
+
+def resolve_bundle_dir(state: str, vintage: int) -> Path:
+    """The statute bundle directory for one (state, vintage)."""
+    return _WORKTREE_ROOT / "data" / "statutes" / state / str(vintage) / "sections"
+
+
+def resolve_results_dir(
+    state: str, vintage: int, results_base: Path | None = None
+) -> Path:
+    """The state-keyed results/checkpoint directory for one (state, vintage).
+
+    Keying by ``<STATE>_<VINTAGE>`` is the correctness-critical fix: a run for
+    one state can never write into, or resume-skip against, another state's
+    result files. The previously un-keyed shared directory let a second
+    state's run skip every dispatch on the first state's checkpoints and emit
+    the wrong state's answers under the new label.
+    """
+    base = Path(results_base) if results_base is not None else _DEFAULT_RESULTS_BASE
+    return base / f"{state}_{vintage}"
+
+
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    """Parse --state/--vintage. Both required — no default OH re-run by accident."""
+    parser = argparse.ArgumentParser(
+        description=(
+            "Tier-1 direct-read legal-axis extraction for one (state, vintage). "
+            "Dispatches both models x 6 chunks x N runs with per-dispatch "
+            "checkpoint/resume into a state-keyed results directory."
+        )
+    )
+    parser.add_argument(
+        "--state",
+        required=True,
+        help="Two-letter state abbreviation, e.g. WI (matches data/statutes/<STATE>/).",
+    )
+    parser.add_argument(
+        "--vintage",
+        required=True,
+        type=int,
+        help="Statute vintage year, e.g. 2025 (matches data/statutes/<STATE>/<VINTAGE>/).",
+    )
+    parser.add_argument(
+        "--chunks",
+        nargs="+",
+        default=None,
+        help=(
+            "Optional subset of chunk_ids to dispatch (one or more). When "
+            "omitted, all 6 chunks dispatch (current behavior). Use for "
+            "Phase B Ralph per-iteration single-chunk dispatches. Valid "
+            f"chunk_ids: {', '.join(_RESOLVED_CHUNKS)}."
+        ),
+    )
+    return parser.parse_args(argv)
+
+
+def resolve_active_chunks(chunks_arg: list[str] | None) -> tuple[str, ...]:
+    """Resolve the --chunks argument to a tuple of chunk_ids to dispatch.
+
+    If ``chunks_arg`` is ``None`` (flag omitted), returns ``_DEFAULT_CHUNKS``
+    (the original 6 CPI-2015 C11 chunks) — backward-compatible with the
+    pre-Phase-B behavior. If ``chunks_arg`` is provided, validates each
+    entry against ``_RESOLVED_CHUNKS`` (defaults + Phase A extras) and
+    returns only those, preserving caller-specified order. An unknown
+    chunk_id raises ``SystemExit`` with a message naming the bad chunk AND
+    the full valid list — silent fall-through to "all chunks" is the
+    regression to prevent.
+    """
+    if not chunks_arg:
+        return _DEFAULT_CHUNKS
+    valid = set(_RESOLVED_CHUNKS)
+    unknown = [c for c in chunks_arg if c not in valid]
+    if unknown:
+        raise SystemExit(
+            f"ERROR: unknown chunk_id(s): {', '.join(unknown)}. "
+            f"Valid chunk_ids: {', '.join(_RESOLVED_CHUNKS)}."
+        )
+    return tuple(chunks_arg)
 
 # Per-call abort retained from Tier-0; session ceiling raised to $10 for 36
 # calls (~$2-4 expected). Both confirmed with the user 2026-05-20.
@@ -130,6 +218,148 @@ cited section. Cite precisely.
 
 
 # ---------------------------------------------------------------------------
+# Tool schemas — tier-1 owns its own variants of record_cell and
+# record_unscoreable_cell with the parameter `handle` in place of `row_id`.
+# Per the 2026-06-04 wide-pass design (convo
+# `20260604_wide_pass_yaml_sidecar_design`), opaque per-chunk handles
+# replace any leakage of compendium row_ids into the model's view; tier-0's
+# row-id-keyed tool schemas stay untouched (they belong to the archived
+# smoke pipeline). The tool *names* (`record_cell`,
+# `record_unscoreable_cell`) are deliberately the same as tier-0's so the
+# shared `parse_response` / `_instantiate_cell` helpers keep working.
+# ---------------------------------------------------------------------------
+
+
+RECORD_CELL_INPUT_SCHEMA_HANDLE: dict[str, Any] = {
+    "type": "object",
+    "properties": {
+        "handle": {
+            "type": "string",
+            "description": (
+                "Opaque per-chunk row handle (e.g., 'row_001'). Use exactly "
+                "the handle string listed for the row you are answering — "
+                "the runtime maps the handle back to a compendium row "
+                "internally."
+            ),
+        },
+        "axis": {
+            "type": "string",
+            "enum": ["legal", "practical"],
+        },
+        "value": {
+            "oneOf": [
+                {"type": "number"},
+                {"type": "integer"},
+                {"type": "string"},
+                {"type": "boolean"},
+                {"type": "array"},
+                {"type": "object"},
+                {"type": "null"},
+            ],
+        },
+        "condition_text": {"type": ["string", "null"]},
+        "confidence": {
+            "type": "string",
+            "enum": ["high", "medium", "low"],
+        },
+        "cited_section": {
+            "type": "string",
+            "description": (
+                "Free-text statute section reference, e.g. '§101.85(B)(2)'. "
+                "The downstream verifier reads this section and rules on "
+                "whether it actually supports the value."
+            ),
+        },
+        "justification": {
+            "type": "string",
+            "description": (
+                "One sentence explaining how the cited section supports the "
+                "value. Used by the downstream verifier."
+            ),
+        },
+    },
+    "required": [
+        "handle",
+        "axis",
+        "value",
+        "confidence",
+        "cited_section",
+        "justification",
+    ],
+}
+
+
+RECORD_UNSCOREABLE_INPUT_SCHEMA_HANDLE: dict[str, Any] = {
+    "type": "object",
+    "properties": {
+        "handle": {"type": "string"},
+        "axis": {
+            "type": "string",
+            "enum": ["legal", "practical"],
+        },
+        "reason": {
+            "type": "string",
+            "description": (
+                "Why this cell could not be scored from the bundle "
+                "(e.g., 'penalty schedule referenced but §307.99 not included')."
+            ),
+        },
+    },
+    "required": ["handle", "axis", "reason"],
+}
+
+
+_RECORD_CELL_DESCRIPTION_HANDLE = (
+    "Record a typed answer for one compendium cell. Call this once per "
+    "(handle, axis) you can answer. Cite the specific statute section that "
+    "supports the value; a one-sentence justification will be checked by a "
+    "downstream verifier reading that section."
+)
+
+
+_RECORD_UNSCOREABLE_DESCRIPTION_HANDLE = (
+    "Record that a compendium cell cannot be answered from the bundled "
+    "statute text (e.g., the law references a penalty schedule in a "
+    "different chapter that isn't shown). Provide a brief reason. "
+    "Do not guess."
+)
+
+
+ANTHROPIC_TOOLS_HANDLE: list[dict[str, Any]] = [
+    {
+        "name": "record_cell",
+        "description": _RECORD_CELL_DESCRIPTION_HANDLE,
+        "input_schema": RECORD_CELL_INPUT_SCHEMA_HANDLE,
+    },
+    {
+        "name": "record_unscoreable_cell",
+        "description": _RECORD_UNSCOREABLE_DESCRIPTION_HANDLE,
+        "input_schema": RECORD_UNSCOREABLE_INPUT_SCHEMA_HANDLE,
+    },
+]
+
+
+OPENAI_TOOLS_HANDLE: list[dict[str, Any]] = [
+    {
+        "type": "function",
+        "function": {
+            "name": "record_cell",
+            "description": _RECORD_CELL_DESCRIPTION_HANDLE,
+            "parameters": RECORD_CELL_INPUT_SCHEMA_HANDLE,
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "record_unscoreable_cell",
+            "description": _RECORD_UNSCOREABLE_DESCRIPTION_HANDLE,
+            "parameters": RECORD_UNSCOREABLE_INPUT_SCHEMA_HANDLE,
+        },
+    },
+]
+
+
+# ---------------------------------------------------------------------------
 # Step 3 — legal-axis roster filter.
 # ---------------------------------------------------------------------------
 
@@ -160,25 +390,47 @@ def _value_shape_hint(cls: Any) -> str:
     return f" — emit `value` as a JSON object with keys: {', '.join(non_common)}"
 
 
-def render_legal_roster(chunk_id: str, topic: str, legal_specs: list[Any]) -> str:
-    """Render a legal-only roster as the per-chunk user message."""
+def render_legal_roster(
+    chunk_id: str, topic: str, legal_specs: list[Any]
+) -> tuple[str, dict[str, str]]:
+    """Render a legal-only roster as the per-chunk user message.
+
+    Returns ``(message, handle_to_row_id_map)``. The message uses opaque
+    per-chunk handles (``row_001``, ``row_002``, …) instead of leaking the
+    compendium ``row_id`` into the model's view. The map decodes the
+    model's handle-keyed response back to the original row_ids.
+
+    Per convo `20260604_wide_pass_yaml_sidecar_design`: row IDs are
+    structurally a lossy compression of the source-author intent and were
+    the Pattern A bug surface in the WI dispatch. Suppressing them from the
+    model's view is the wide-pass forcing-function for prompt quality —
+    prompts cannot lean on row-name semantic content. Each spec's `prompt`
+    field (from `compendium/source_quotes.yaml` via the registry) is
+    emitted on the continuation line beneath the handle's metadata.
+    """
+    handle_to_row_id: dict[str, str] = {}
     lines = [
         f"Answer all {len(legal_specs)} DE JURE (legal-axis) cells for chunk "
         f"`{chunk_id}` ({topic}):"
     ]
-    for cs in legal_specs:
+    for idx, cs in enumerate(legal_specs):
+        handle = f"row_{idx + 1:03d}"
+        handle_to_row_id[handle] = cs.row_id
         cls = cs.expected_cell_class
         lines.append(
-            f"- row_id={cs.row_id!r}, axis='legal', "
+            f"- handle={handle!r}, axis='legal', "
             f"expected_cell_class={cls.__name__}{_value_shape_hint(cls)}"
         )
+        prompt = getattr(cs, "prompt", None)
+        if prompt:
+            lines.append(f"  {prompt}")
     lines.append("")
     lines.append(
-        "Emit one `record_cell` call per (row_id, axis) you can answer from the "
-        "statute text alone. Emit `record_unscoreable_cell` if the answer needs "
-        "out-of-bundle cross-references. Every axis here is 'legal'."
+        "Emit one `record_cell` call per (handle, axis) you can answer from "
+        "the statute text alone. Emit `record_unscoreable_cell` if the answer "
+        "needs out-of-bundle cross-references. Every axis here is 'legal'."
     )
-    return "\n".join(lines)
+    return "\n".join(lines), handle_to_row_id
 
 
 # ---------------------------------------------------------------------------
@@ -337,7 +589,7 @@ def _dispatch_anthropic(system_prompt: str, user_message: str) -> tuple[Any, flo
                 "cache_control": {"type": "ephemeral"},
             }
         ],
-        tools=tier0.ANTHROPIC_TOOLS,
+        tools=ANTHROPIC_TOOLS_HANDLE,
         messages=[{"role": "user", "content": user_message}],
     )
     return response, time.monotonic() - started
@@ -355,7 +607,7 @@ def _dispatch_openai(system_prompt: str, user_message: str) -> tuple[Any, float]
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_message},
         ],
-        tools=tier0.OPENAI_TOOLS,
+        tools=OPENAI_TOOLS_HANDLE,
         max_completion_tokens=_MAX_OUTPUT_TOKENS,
     )
     return response, time.monotonic() - started
@@ -372,7 +624,7 @@ _DISPATCHERS: dict[str, tuple[str, Any]] = {
 # ---------------------------------------------------------------------------
 
 
-def _preflight() -> None:
+def _preflight(bundle_dir: Path) -> None:
     """Fail fast before any API spend if keys or the statute bundle are absent."""
     missing = [v for v in ("ANTHROPIC_API_KEY", "OPENAI_API_KEY") if not os.environ.get(v)]
     if missing:
@@ -383,9 +635,9 @@ def _preflight() -> None:
             file=sys.stderr,
         )
         sys.exit(2)
-    if not _STATUTE_BUNDLE_DIR.exists():
+    if not bundle_dir.exists():
         print(
-            f"ERROR: statute bundle directory not found: {_STATUTE_BUNDLE_DIR}. "
+            f"ERROR: statute bundle directory not found: {bundle_dir}. "
             "Stop and surface — do not substitute another vintage.",
             file=sys.stderr,
         )
@@ -411,15 +663,39 @@ def _is_null_freetext_abstention(spec: Any, arguments: dict[str, Any]) -> bool:
 
 
 def _parse_and_instantiate(
-    response: Any, sdk: str, registry: dict[Any, Any]
+    response: Any,
+    sdk: str,
+    registry: dict[Any, Any],
+    handle_to_row_id: dict[str, str],
 ) -> tuple[list[dict], list[dict], list[dict]]:
-    """Parse a response into (instantiated_cells, unscoreable, errors)."""
+    """Parse a response into (instantiated_cells, unscoreable, errors).
+
+    The model emits ``record_cell`` / ``record_unscoreable_cell`` calls with
+    an opaque per-chunk ``handle`` in place of the (legacy) ``row_id``.
+    ``handle_to_row_id`` is the chunk-local map produced by
+    ``render_legal_roster``. An emission whose ``handle`` is not in the map
+    (unknown handle, missing handle, or model leaking back the actual
+    compendium row_id) routes to ``errors`` — never to ``instantiated`` —
+    so contract violations are loud.
+    """
     instantiated: list[dict] = []
     unscoreable: list[dict] = []
     errors: list[dict] = []
     for call in tier0.parse_response(response, sdk):
         if call.tool_name == "record_cell":
-            key = (call.arguments.get("row_id"), call.arguments.get("axis"))
+            handle = call.arguments.get("handle")
+            axis = call.arguments.get("axis")
+            if handle is None or handle not in handle_to_row_id:
+                errors.append(
+                    {
+                        "reason": "unknown_handle",
+                        "handle": handle,
+                        "arguments": call.arguments,
+                    }
+                )
+                continue
+            row_id = handle_to_row_id[handle]
+            key = (row_id, axis)
             spec = registry.get(key)
             if spec is None:
                 errors.append(
@@ -430,6 +706,8 @@ def _parse_and_instantiate(
                 unscoreable.append(
                     {
                         **call.arguments,
+                        "row_id": row_id,
+                        "axis": axis,
                         "reason": "conditional cell not applicable (value null)",
                     }
                 )
@@ -446,7 +724,25 @@ def _parse_and_instantiate(
                     }
                 )
         elif call.tool_name == "record_unscoreable_cell":
-            unscoreable.append(call.arguments)
+            handle = call.arguments.get("handle")
+            axis = call.arguments.get("axis")
+            if handle is None or handle not in handle_to_row_id:
+                errors.append(
+                    {
+                        "reason": "unknown_handle",
+                        "handle": handle,
+                        "arguments": call.arguments,
+                    }
+                )
+                continue
+            row_id = handle_to_row_id[handle]
+            unscoreable.append(
+                {
+                    **call.arguments,
+                    "row_id": row_id,
+                    "axis": axis,
+                }
+            )
         else:
             errors.append(
                 {
@@ -458,7 +754,9 @@ def _parse_and_instantiate(
     return instantiated, unscoreable, errors
 
 
-def _compute_and_print_agreement(rosters: dict[str, tuple[Any, list[Any]]]) -> dict[str, Any]:
+def _compute_and_print_agreement(
+    rosters: dict[str, tuple[Any, list[Any]]], results_dir: Path
+) -> dict[str, Any]:
     """Read every saved dispatch, classify each cell's N runs, print sigma_noise."""
     print("\n=== inter-run agreement / sigma_noise (N=3) ===")
     report: dict[str, Any] = {}
@@ -467,7 +765,7 @@ def _compute_and_print_agreement(rosters: dict[str, tuple[Any, list[Any]]]) -> d
         for chunk_id, (_chunk, legal) in rosters.items():
             run_results = []
             for run_idx in range(1, _N_RUNS + 1):
-                path = dispatch_result_path(_RESULTS_DIR, model, chunk_id, run_idx)
+                path = dispatch_result_path(results_dir, model, chunk_id, run_idx)
                 if path.exists():
                     run_results.append(json.loads(path.read_text(encoding="utf-8")))
             if len(run_results) < _N_RUNS:
@@ -484,9 +782,15 @@ def _compute_and_print_agreement(rosters: dict[str, tuple[Any, list[Any]]]) -> d
     return report
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
     """Run the 36-dispatch Tier-1 legal-axis sweep end-to-end. Resumable."""
-    _preflight()
+    args = parse_args(argv)
+    state = args.state
+    vintage = args.vintage
+    bundle_dir = resolve_bundle_dir(state, vintage)
+    results_dir = resolve_results_dir(state, vintage)
+
+    _preflight(bundle_dir)
 
     from lobby_analysis.chunks_v2 import build_chunks
     from lobby_analysis.models_v2 import build_cell_spec_registry
@@ -494,14 +798,21 @@ def main() -> int:
     chunks = {c.chunk_id: c for c in build_chunks()}
     registry = build_cell_spec_registry()
 
-    statute_text, statute_filenames = tier0.load_statute_bundle(_STATUTE_BUNDLE_DIR)
+    statute_text, statute_filenames = tier0.load_statute_bundle(bundle_dir)
     system_prompt = _SYSTEM_PROMPT_TEMPLATE.format(statute_text=statute_text)
     prompt_sha256 = hashlib.sha256(system_prompt.encode("utf-8")).hexdigest()
-    _RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    results_dir.mkdir(parents=True, exist_ok=True)
+    print(f"State/vintage: {state} {vintage}")
+    print(f"Bundle dir: {bundle_dir}")
+    print(f"Results dir: {results_dir}")
+
+    active_chunks = resolve_active_chunks(args.chunks)
+    if args.chunks is not None:
+        print(f"Filtered to {len(active_chunks)} of {len(_RESOLVED_CHUNKS)} chunks: {', '.join(active_chunks)}")
 
     # Build the legal-only rosters once.
     rosters: dict[str, tuple[Any, list[Any]]] = {}
-    for chunk_id in _RESOLVED_CHUNKS:
+    for chunk_id in active_chunks:
         if chunk_id not in chunks:
             print(f"ERROR: chunk {chunk_id!r} not in CHUNKS_V2 manifest.", file=sys.stderr)
             return 2
@@ -525,9 +836,11 @@ def main() -> int:
     for model in _MODELS:
         sdk, dispatcher = _DISPATCHERS[model]
         for chunk_id, (chunk, legal) in rosters.items():
-            user_message = render_legal_roster(chunk_id, chunk.topic, legal)
+            user_message, handle_to_row_id = render_legal_roster(
+                chunk_id, chunk.topic, legal
+            )
             for run_idx in range(1, _N_RUNS + 1):
-                if is_dispatch_done(_RESULTS_DIR, model, chunk_id, run_idx):
+                if is_dispatch_done(results_dir, model, chunk_id, run_idx):
                     n_skipped += 1
                     continue
                 print(f"\ndispatch {sdk}/{model} chunk={chunk_id} run={run_idx} ...")
@@ -556,7 +869,7 @@ def main() -> int:
                     return 3
 
                 instantiated, unscoreable, errors = _parse_and_instantiate(
-                    response, sdk, registry
+                    response, sdk, registry, handle_to_row_id
                 )
                 provenance = {
                     "originating_convo": _ORIGINATING_CONVO,
@@ -565,12 +878,12 @@ def main() -> int:
                     "sdk": sdk,
                     "chunk_id": chunk_id,
                     "run_index": run_idx,
-                    "state_abbr": _STATE_ABBR,
-                    "vintage_year": _VINTAGE_YEAR,
+                    "state_abbr": state,
+                    "vintage_year": vintage,
                     "prompt_sha256": prompt_sha256,
                     "timestamp_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
                 }
-                path = dispatch_result_path(_RESULTS_DIR, model, chunk_id, run_idx)
+                path = dispatch_result_path(results_dir, model, chunk_id, run_idx)
                 tier0._save_json(
                     path,
                     {
@@ -596,7 +909,7 @@ def main() -> int:
         f"\ndispatched={n_dispatched}  skipped(resumed)={n_skipped}  "
         f"session_cost=${session_cost:.4f}"
     )
-    _compute_and_print_agreement(rosters)
+    _compute_and_print_agreement(rosters, results_dir)
     return 0
 
 

@@ -1,0 +1,385 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "actor_registration_required",
+    "run_index": 1,
+    "state_abbr": "WI",
+    "vintage_year": 2025,
+    "prompt_sha256": "cf5e534eb79e06bd8862cb6a71fa3ba6db44eb86d8d1b12b85431ef394b042c8",
+    "timestamp_utc": "2026-06-05T17:30:32+00:00"
+  },
+  "wall_clock_seconds": 15.58904375002021,
+  "usage": {
+    "completion_tokens": 1113,
+    "prompt_tokens": 19324,
+    "total_tokens": 20437,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.049399,
+  "legal_roster": [
+    [
+      "actor_executive_agency_registration_required",
+      "legal"
+    ],
+    [
+      "actor_governors_office_registration_required",
+      "legal"
+    ],
+    [
+      "actor_independent_agency_registration_required",
+      "legal"
+    ],
+    [
+      "actor_intergov_agency_lobbying_registration_required",
+      "legal"
+    ],
+    [
+      "actor_legislative_branch_registration_required",
+      "legal"
+    ],
+    [
+      "actor_lobbying_firm_registration_required",
+      "legal"
+    ],
+    [
+      "actor_local_government_registration_required",
+      "legal"
+    ],
+    [
+      "actor_paid_lobbyist_registration_required",
+      "legal"
+    ],
+    [
+      "actor_principal_registration_required",
+      "legal"
+    ],
+    [
+      "actor_public_entity_other_registration_required",
+      "legal"
+    ],
+    [
+      "actor_volunteer_lobbyist_registration_required",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "actor_executive_agency_registration_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.621(2); § 13.695(1)",
+      "justification": "State agencies that file a statement under § 13.695 (covering officers/employees paid a salary whose duties include influencing legislative action) are not subject to the licensing/registration provisions, so executive branch agencies are not required to register as lobbyists."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "actor_governors_office_registration_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.62(10) (definition of lobbying); § 13.621(3)",
+      "justification": "An elective state official (which includes the governor) is not subject to the licensing/registration/reporting provisions when acting in an official capacity, so the governor’s office is not required to register as a lobbyist."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "actor_independent_agency_registration_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.621(2); § 13.62(2)",
+      "justification": "Independent state agencies fall within the definition of 'agency' and, if filing under § 13.695, are exempted from lobbyist licensing and principal registration requirements under § 13.621(2)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "actor_intergov_agency_lobbying_registration_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.621(1)(d)",
+      "justification": "The subchapter does not apply to 'lobbying of an agency official by an agency official of a different agency or another agency official of the same agency,' so government agencies lobbying other agencies are not required to register as lobbyists for that conduct."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "actor_legislative_branch_registration_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.621(3)",
+      "justification": "A 'member or employee of the legislature' (legislative branch officials/employees) is not subject to the lobbying regulatory provisions when acting in an official capacity, so they are not required to register as lobbyists."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "actor_lobbying_firm_registration_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.62(11); § 13.66",
+      "justification": "An individual paid by a principal whose duties include lobbying is a 'lobbyist' and, unless exempt, may not lobby as a lobbyist unless licensed and authorized, which applies to lobbyists working for lobbying firms."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "actor_local_government_registration_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.62(12) (principal); § 13.64(1)",
+      "justification": "Any 'person' (which can include local governmental units) that employs a lobbyist is a 'principal' and must register if it exceeds $500 in nonexempt lobbying expenditures/obligations in a calendar year."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "actor_paid_lobbyist_registration_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.66; § 13.63(1)(a)",
+      "justification": "Except as authorized under § 13.621, no person may engage in lobbying as a lobbyist unless licensed under § 13.63 and authorized under § 13.65, meaning lobbyists must obtain a license (i.e., register) to lobby."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "actor_principal_registration_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.64(1)",
+      "justification": "Every principal that exceeds $500 in nonexempt lobbying expenditures/obligations in a calendar year must file a registration statement with the commission within 10 days after exceeding $500."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "actor_public_entity_other_registration_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.64(1); § 13.62(12)",
+      "justification": "The registration requirement applies to 'every principal' and a principal is 'any person who employs a lobbyist,' which encompasses public entities other than state agencies when they employ lobbyists and exceed the $500 threshold."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "actor_volunteer_lobbyist_registration_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.62(11)",
+      "justification": "A 'lobbyist' must receive 'economic consideration, other than reimbursement for actual expenses,' so unpaid volunteer lobbyists are not lobbyists and thus are not subject to lobbyist licensing/registration requirements."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "chatcmpl-DnSf4zssxDReISi2HdG4PDvL8pe7y",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_rbhoVQQBQ5dkAVv6GGZfNMWC",
+              "function": {
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.621(2); § 13.695(1)\", \"justification\": \"State agencies that file a statement under § 13.695 (covering officers/employees paid a salary whose duties include influencing legislative action) are not subject to the licensing/registration provisions, so executive branch agencies are not required to register as lobbyists.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_YeYjQmfM7AZPEFz7AKRjFwuU",
+              "function": {
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.62(10) (definition of lobbying); § 13.621(3)\", \"justification\": \"An elective state official (which includes the governor) is not subject to the licensing/registration/reporting provisions when acting in an official capacity, so the governor’s office is not required to register as a lobbyist.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_VgDswKWA0F5EmiiSc2tZ8At9",
+              "function": {
+                "arguments": "{\"handle\": \"row_003\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.621(2); § 13.62(2)\", \"justification\": \"Independent state agencies fall within the definition of 'agency' and, if filing under § 13.695, are exempted from lobbyist licensing and principal registration requirements under § 13.621(2).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_4sdT9zZlP1KSLYFV5EXIeIKL",
+              "function": {
+                "arguments": "{\"handle\": \"row_004\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.621(1)(d)\", \"justification\": \"The subchapter does not apply to 'lobbying of an agency official by an agency official of a different agency or another agency official of the same agency,' so government agencies lobbying other agencies are not required to register as lobbyists for that conduct.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_QOzeE9DfvhZUSasSTHcXsJLt",
+              "function": {
+                "arguments": "{\"handle\": \"row_005\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.621(3)\", \"justification\": \"A 'member or employee of the legislature' (legislative branch officials/employees) is not subject to the lobbying regulatory provisions when acting in an official capacity, so they are not required to register as lobbyists.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_ZGxLgqIFUARjjoEnQFiglVxO",
+              "function": {
+                "arguments": "{\"handle\": \"row_006\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.62(11); § 13.66\", \"justification\": \"An individual paid by a principal whose duties include lobbying is a 'lobbyist' and, unless exempt, may not lobby as a lobbyist unless licensed and authorized, which applies to lobbyists working for lobbying firms.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_80w3R1nnhVnJMUrFfBaGhRgF",
+              "function": {
+                "arguments": "{\"handle\": \"row_007\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.62(12) (principal); § 13.64(1)\", \"justification\": \"Any 'person' (which can include local governmental units) that employs a lobbyist is a 'principal' and must register if it exceeds $500 in nonexempt lobbying expenditures/obligations in a calendar year.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_bitf3fjBkXIWuov70lBnrktf",
+              "function": {
+                "arguments": "{\"handle\": \"row_008\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.66; § 13.63(1)(a)\", \"justification\": \"Except as authorized under § 13.621, no person may engage in lobbying as a lobbyist unless licensed under § 13.63 and authorized under § 13.65, meaning lobbyists must obtain a license (i.e., register) to lobby.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_PmbJHkJ115TCrRptMMVRCBft",
+              "function": {
+                "arguments": "{\"handle\": \"row_009\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.64(1)\", \"justification\": \"Every principal that exceeds $500 in nonexempt lobbying expenditures/obligations in a calendar year must file a registration statement with the commission within 10 days after exceeding $500.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_B6lFM269e9vzBZ89ZuqIblv1",
+              "function": {
+                "arguments": "{\"handle\": \"row_010\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"medium\", \"cited_section\": \"Wis. Stat. § 13.64(1); § 13.62(12)\", \"justification\": \"The registration requirement applies to 'every principal' and a principal is 'any person who employs a lobbyist,' which encompasses public entities other than state agencies when they employ lobbyists and exceed the $500 threshold.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_tVOqZxzkfWYi55nf0EIpDi7T",
+              "function": {
+                "arguments": "{\"handle\": \"row_011\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.62(11)\", \"justification\": \"A 'lobbyist' must receive 'economic consideration, other than reimbursement for actual expenses,' so unpaid volunteer lobbyists are not lobbyists and thus are not subject to lobbyist licensing/registration requirements.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1780680618,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 1113,
+      "prompt_tokens": 19324,
+      "total_tokens": 20437,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 0
+      }
+    }
+  }
+}

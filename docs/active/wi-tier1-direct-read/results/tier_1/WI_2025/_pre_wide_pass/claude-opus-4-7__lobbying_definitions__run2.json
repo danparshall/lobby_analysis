@@ -1,0 +1,618 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "lobbying_definitions",
+    "run_index": 2,
+    "state_abbr": "WI",
+    "vintage_year": 2025,
+    "prompt_sha256": "cf5e534eb79e06bd8862cb6a71fa3ba6db44eb86d8d1b12b85431ef394b042c8",
+    "timestamp_utc": "2026-06-01T16:52:38+00:00"
+  },
+  "wall_clock_seconds": 35.07974766701227,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 1141
+    },
+    "cache_creation_input_tokens": 1141,
+    "cache_read_input_tokens": 29445,
+    "inference_geo": "global",
+    "input_tokens": 6,
+    "output_tokens": 3727,
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.093205,
+  "legal_roster": [
+    [
+      "def_lobbying_activity_types",
+      "legal"
+    ],
+    [
+      "def_lobbyist_actor_types",
+      "legal"
+    ],
+    [
+      "law_defines_public_entity",
+      "legal"
+    ],
+    [
+      "law_includes_materiality_test",
+      "legal"
+    ],
+    [
+      "def_target_executive_agency",
+      "legal"
+    ],
+    [
+      "def_target_executive_staff",
+      "legal"
+    ],
+    [
+      "def_target_governors_office",
+      "legal"
+    ],
+    [
+      "def_target_independent_agency",
+      "legal"
+    ],
+    [
+      "def_target_legislative_branch",
+      "legal"
+    ],
+    [
+      "def_target_legislative_staff",
+      "legal"
+    ],
+    [
+      "def_actor_class_elected_officials",
+      "legal"
+    ],
+    [
+      "def_actor_class_public_employees",
+      "legal"
+    ],
+    [
+      "public_entity_def_relies_on_charter",
+      "legal"
+    ],
+    [
+      "public_entity_def_relies_on_ownership",
+      "legal"
+    ],
+    [
+      "public_entity_def_relies_on_revenue_structure",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "def_lobbying_activity_types",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": [
+          "oral_communication",
+          "committee_service",
+          "public_hearing_appearances",
+          "preparation_for_communication",
+          "written_communication"
+        ]
+      },
+      "cell_class": "EnumSetCell",
+      "cited_section": "§13.62(10)",
+      "justification": "Section 13.62(10) defines \"lobbying\" as attempting to influence legislative or administrative action by oral or written communication, and includes time spent in preparation for such communication and appearances at public hearings or meetings or service on a committee."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_lobbyist_actor_types",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": [
+          "employee_of_principal",
+          "compensated_individual",
+          "contractor_for_principal"
+        ]
+      },
+      "cell_class": "EnumSetCell",
+      "cited_section": "§13.62(11)",
+      "justification": "Section 13.62(11) defines a lobbyist as an individual who is employed by a principal, or contracts for or receives economic consideration from a principal, whose duties include lobbying on behalf of the principal."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "law_defines_public_entity",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.62(2)",
+      "justification": "Section 13.62(2) defines \"Agency\" as any board, commission, department, office, society, institution of higher education, council, or committee in state government, or specified authorities, providing a definition of a public entity."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "law_includes_materiality_test",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.62(11)",
+      "justification": "Section 13.62(11) imposes a materiality threshold: if an individual's duties are not exclusively lobbying, the individual is a lobbyist only if he or she makes lobbying communications on at least 5 days within a reporting period; additionally §13.64(1) sets a $500 expenditure threshold for principal registration."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_executive_agency",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.62(2), (10)",
+      "justification": "Lobbying under §13.62(10) includes communications with agency officials to influence administrative action, and \"agency\" under §13.62(2) includes state boards, commissions, departments, and offices."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_executive_staff",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.62(3), (10)",
+      "justification": "Section 13.62(3) defines \"agency official\" to include employees and consultants of an agency who participate in administrative action, and §13.62(10) defines lobbying as communications with such agency officials."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_governors_office",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.62(8), (11p)",
+      "justification": "Section 13.62(8) defines \"legislative action\" to include actions of the governor in approving/vetoing bills and developing proposals, and §13.62(11p) lists governor as a partisan elective state office, making the Governor a covered target."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_independent_agency",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.62(2)",
+      "justification": "Section 13.62(2) includes within \"agency\" any authority created in subch. II of ch. 114 or in chs. 231, 232, 233, 234, 237, 238, or 279, which are independent state authorities."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_legislative_branch",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.62(8), (10)",
+      "justification": "Section 13.62(10) defines lobbying as attempting to influence legislative action, and §13.62(8) defines legislative action as action by the legislature, either house, committees, or legislators."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_legislative_staff",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.62(8m), (10)",
+      "justification": "Section 13.62(10) defines lobbying to include communications with \"legislative employee,\" and §13.62(8m) defines legislative employee to include employees of legislative service agencies."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_actor_class_elected_officials",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.621(3)",
+      "justification": "Section 13.621(3) exempts elective state officials, local officials, tribal officials, and legislative employees from registration/reporting requirements when acting in their official capacity, so elected officials acting officially are not treated as lobbyists."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_actor_class_public_employees",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.695(1)",
+      "justification": "Section 13.695(1) requires each agency to file statements identifying salaried officers and employees whose regular duties include attempting to influence legislative action, indicating that public employees can be a covered actor class (subject to specific agency reporting rules)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "public_entity_def_relies_on_ownership",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.62(2)",
+      "justification": "Section 13.62(2) defines \"agency\" by listing types of bodies in state government and specified statutory authorities, without referencing any ownership test (public vs. private ownership)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "public_entity_def_relies_on_revenue_structure",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.62(2)",
+      "justification": "Section 13.62(2) defines \"agency\" by enumeration of governmental bodies and authorities, without reference to revenue source, funding structure, or how the entity is financed."
+    }
+  ],
+  "unscoreable_emissions": [
+    {
+      "row_id": "public_entity_def_relies_on_charter",
+      "axis": "legal",
+      "reason": "Section 13.62(2) defines \"agency\" by enumeration of state government bodies and authorities created in specified chapters; it does not articulate a charter-based test, and assessing this would require reviewing the cross-referenced authorizing chapters (114, 231-279) not included in the bundle."
+    }
+  ],
+  "errors": [],
+  "response": {
+    "id": "msg_01W4XYEWSkz2ptVYrfnG2tbf",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "I'll analyze each row based on the Wisconsin statute text provided.",
+        "type": "text"
+      },
+      {
+        "id": "toolu_01BuTEAkzUT2ACZNau6ao2ic",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "def_lobbying_activity_types",
+          "axis": "legal",
+          "value": [
+            "oral_communication",
+            "written_communication",
+            "preparation_for_communication",
+            "public_hearing_appearances",
+            "committee_service"
+          ],
+          "confidence": "high",
+          "cited_section": "§13.62(10)",
+          "justification": "Section 13.62(10) defines \"lobbying\" as attempting to influence legislative or administrative action by oral or written communication, and includes time spent in preparation for such communication and appearances at public hearings or meetings or service on a committee."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01QtKNYWUrq8mUsBwbvt4RcH",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "def_lobbyist_actor_types",
+          "axis": "legal",
+          "value": [
+            "employee_of_principal",
+            "contractor_for_principal",
+            "compensated_individual"
+          ],
+          "confidence": "high",
+          "cited_section": "§13.62(11)",
+          "justification": "Section 13.62(11) defines a lobbyist as an individual who is employed by a principal, or contracts for or receives economic consideration from a principal, whose duties include lobbying on behalf of the principal."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_013Hj8pEcWJw6e1o23i35wUa",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "law_defines_public_entity",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.62(2)",
+          "justification": "Section 13.62(2) defines \"Agency\" as any board, commission, department, office, society, institution of higher education, council, or committee in state government, or specified authorities, providing a definition of a public entity."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01GzB5tkRbGCH5zv8WhZovXa",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "law_includes_materiality_test",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.62(11)",
+          "justification": "Section 13.62(11) imposes a materiality threshold: if an individual's duties are not exclusively lobbying, the individual is a lobbyist only if he or she makes lobbying communications on at least 5 days within a reporting period; additionally §13.64(1) sets a $500 expenditure threshold for principal registration."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_016VpZP4fqzXqteS7aaponUQ",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "def_target_executive_agency",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.62(2), (10)",
+          "justification": "Lobbying under §13.62(10) includes communications with agency officials to influence administrative action, and \"agency\" under §13.62(2) includes state boards, commissions, departments, and offices."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01QeAUkS35aJfnwU7peKDESn",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "def_target_executive_staff",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.62(3), (10)",
+          "justification": "Section 13.62(3) defines \"agency official\" to include employees and consultants of an agency who participate in administrative action, and §13.62(10) defines lobbying as communications with such agency officials."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01JF2ytcA1cxZrYLPLTLtALK",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "def_target_governors_office",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.62(8), (11p)",
+          "justification": "Section 13.62(8) defines \"legislative action\" to include actions of the governor in approving/vetoing bills and developing proposals, and §13.62(11p) lists governor as a partisan elective state office, making the Governor a covered target."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_019NCWBfJ3jyoN2YxHzYYgj8",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "def_target_independent_agency",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.62(2)",
+          "justification": "Section 13.62(2) includes within \"agency\" any authority created in subch. II of ch. 114 or in chs. 231, 232, 233, 234, 237, 238, or 279, which are independent state authorities."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_019f9nkyutLcuMj4mHb9g4iG",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "def_target_legislative_branch",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.62(8), (10)",
+          "justification": "Section 13.62(10) defines lobbying as attempting to influence legislative action, and §13.62(8) defines legislative action as action by the legislature, either house, committees, or legislators."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_011mBRkWTFsoLCdtK6m4qFct",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "def_target_legislative_staff",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.62(8m), (10)",
+          "justification": "Section 13.62(10) defines lobbying to include communications with \"legislative employee,\" and §13.62(8m) defines legislative employee to include employees of legislative service agencies."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01N7hK3qvDo98sFiaCmFK6Pa",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "def_actor_class_elected_officials",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§13.621(3)",
+          "justification": "Section 13.621(3) exempts elective state officials, local officials, tribal officials, and legislative employees from registration/reporting requirements when acting in their official capacity, so elected officials acting officially are not treated as lobbyists."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01BYoCrV8amiHE2zUa4HSPv6",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "def_actor_class_public_employees",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.695(1)",
+          "justification": "Section 13.695(1) requires each agency to file statements identifying salaried officers and employees whose regular duties include attempting to influence legislative action, indicating that public employees can be a covered actor class (subject to specific agency reporting rules)."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01JYBKWyko9y82akAvVHFKhh",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "public_entity_def_relies_on_charter",
+          "axis": "legal",
+          "reason": "Section 13.62(2) defines \"agency\" by enumeration of state government bodies and authorities created in specified chapters; it does not articulate a charter-based test, and assessing this would require reviewing the cross-referenced authorizing chapters (114, 231-279) not included in the bundle."
+        },
+        "name": "record_unscoreable_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01FRPovPEH4GVdK9TTQGGCmS",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "public_entity_def_relies_on_ownership",
+          "axis": "legal",
+          "value": false,
+          "confidence": "medium",
+          "cited_section": "§13.62(2)",
+          "justification": "Section 13.62(2) defines \"agency\" by listing types of bodies in state government and specified statutory authorities, without referencing any ownership test (public vs. private ownership)."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01YQJ1hvtAxxed5wrzRnzVA2",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "public_entity_def_relies_on_revenue_structure",
+          "axis": "legal",
+          "value": false,
+          "confidence": "medium",
+          "cited_section": "§13.62(2)",
+          "justification": "Section 13.62(2) defines \"agency\" by enumeration of governmental bodies and authorities, without reference to revenue source, funding structure, or how the entity is financed."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 1141
+      },
+      "cache_creation_input_tokens": 1141,
+      "cache_read_input_tokens": 29445,
+      "inference_geo": "global",
+      "input_tokens": 6,
+      "output_tokens": 3727,
+      "server_tool_use": null,
+      "service_tier": "standard",
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      }
+    }
+  }
+}

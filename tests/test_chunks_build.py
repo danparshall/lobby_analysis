@@ -14,11 +14,11 @@ import pytest
 
 
 # Per Q3 brainstorm lock: both halves of these rows must land in the same chunk.
+# v2.1: shrunk 5 → 3 after Pattern C row split (`_audit_required_in_law` and
+# `_imposed_in_practice` un-combined into single-axis pairs + new sibling rows).
 COMBINED_AXIS_ROWS = (
     "lobbyist_registration_required",
     "lobbyist_spending_report_filing_cadence",
-    "lobbying_disclosure_audit_required_in_law",
-    "lobbying_violation_penalties_imposed_in_practice",
     "lobbyist_registration_deadline_days_after_first_lobbying",
 )
 

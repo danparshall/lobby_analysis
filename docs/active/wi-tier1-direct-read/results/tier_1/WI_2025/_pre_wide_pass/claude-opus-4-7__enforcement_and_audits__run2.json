@@ -1,0 +1,138 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "enforcement_and_audits",
+    "run_index": 2,
+    "state_abbr": "WI",
+    "vintage_year": 2025,
+    "prompt_sha256": "cf5e534eb79e06bd8862cb6a71fa3ba6db44eb86d8d1b12b85431ef394b042c8",
+    "timestamp_utc": "2026-06-01T17:01:23+00:00"
+  },
+  "wall_clock_seconds": 7.255217166006332,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 654
+    },
+    "cache_creation_input_tokens": 654,
+    "cache_read_input_tokens": 29445,
+    "inference_geo": "global",
+    "input_tokens": 6,
+    "output_tokens": 578,
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.01448,
+  "legal_roster": [
+    [
+      "lobbying_violation_penalties_imposed_in_practice",
+      "legal"
+    ],
+    [
+      "lobbying_disclosure_audit_required_in_law",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_violation_penalties_imposed_in_practice",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.69",
+      "justification": "Section 13.69 authorizes forfeitures (up to $5,000 for principals, $1,000 for lobbyists), criminal fines/imprisonment, Class H felony for false statements, and license revocation for violations of the lobbying provisions, establishing that statutory penalties exist for lobbying violations."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_disclosure_audit_required_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "mandatory"
+      },
+      "cell_class": "EnumCell",
+      "cited_section": "§13.74(1) and §13.685(3)",
+      "justification": "Section 13.74(1) states the commission \"shall cause to have made an examination of all statements\" filed under the subchapter, and §13.685(3) provides the commission \"shall examine each statement filed under s. 13.68,\" making review of disclosure statements mandatory by law."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "msg_01DijEm46Q8JvP5ofyNMSY9J",
+    "container": null,
+    "content": [
+      {
+        "id": "toolu_011eD6HhXDJb2tz8bLaqkJ9g",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "lobbying_violation_penalties_imposed_in_practice",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.69",
+          "justification": "Section 13.69 authorizes forfeitures (up to $5,000 for principals, $1,000 for lobbyists), criminal fines/imprisonment, Class H felony for false statements, and license revocation for violations of the lobbying provisions, establishing that statutory penalties exist for lobbying violations."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01CdXGB1ejhnHRQP3HHkG4Dy",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "lobbying_disclosure_audit_required_in_law",
+          "axis": "legal",
+          "value": "mandatory",
+          "confidence": "high",
+          "cited_section": "§13.74(1) and §13.685(3)",
+          "justification": "Section 13.74(1) states the commission \"shall cause to have made an examination of all statements\" filed under the subchapter, and §13.685(3) provides the commission \"shall examine each statement filed under s. 13.68,\" making review of disclosure statements mandatory by law."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 654
+      },
+      "cache_creation_input_tokens": 654,
+      "cache_read_input_tokens": 29445,
+      "inference_geo": "global",
+      "input_tokens": 6,
+      "output_tokens": 578,
+      "server_tool_use": null,
+      "service_tier": "standard",
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      }
+    }
+  }
+}

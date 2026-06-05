@@ -283,8 +283,13 @@ def project_ind_207(cells: dict[str, Any]) -> int:
 
 
 def project_ind_208(cells: dict[str, Any]) -> int:
-    """IND_208: lobbying disclosures actually audited. 5-tier passthrough."""
-    return int(_practical(cells, "lobbying_disclosure_audit_required_in_law") or 0)
+    """IND_208: lobbying disclosures actually audited. 5-tier passthrough.
+
+    v2.1 (2026-06-05): reads `_audit_required_in_practice`, the new practical-
+    axis sibling created by the Pattern C inverse split. Prior to v2.1 this
+    read the practical axis of `_audit_required_in_law` (mis-keyed by name).
+    """
+    return int(_practical(cells, "lobbying_disclosure_audit_required_in_practice") or 0)
 
 
 def project_ind_209(cells: dict[str, Any]) -> int:

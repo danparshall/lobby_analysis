@@ -1,0 +1,124 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "enforcement_and_audits",
+    "run_index": 1,
+    "state_abbr": "WI",
+    "vintage_year": 2025,
+    "prompt_sha256": "cf5e534eb79e06bd8862cb6a71fa3ba6db44eb86d8d1b12b85431ef394b042c8",
+    "timestamp_utc": "2026-06-04T17:04:57+00:00"
+  },
+  "wall_clock_seconds": 4.062941249983851,
+  "usage": {
+    "completion_tokens": 222,
+    "prompt_tokens": 19129,
+    "total_tokens": 19351,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 18688
+    }
+  },
+  "cost_usd_estimate": 0.03658375,
+  "legal_roster": [
+    [
+      "lobbying_violation_penalties_imposed_in_practice",
+      "legal"
+    ],
+    [
+      "lobbying_disclosure_audit_required_in_law",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_disclosure_audit_required_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "MODERATE"
+      },
+      "cell_class": "EnumCell",
+      "cited_section": "Wis. Stat. § 13.74(1)–(2) (2025)",
+      "justification": "The commission must examine ('cause to have made an examination of') all required lobbying statements and may subpoena records in investigations, which constitutes a mandated compliance review/audit function but not a requirement for regular auditing by an independent third party."
+    }
+  ],
+  "unscoreable_emissions": [
+    {
+      "handle": "row_001",
+      "axis": "legal",
+      "reason": "The prompt’s scoring rubric concerns whether offenders are 'always/generally/rarely' sanctioned in practice when violations are discovered, but the bundled statute text only provides maximum penalties and enforcement/audit authority (e.g., forfeiture caps and discretionary suspension), not a legal mandate that sanctions must be imposed upon discovery or any statutory standard about consistency of sanctioning.",
+      "row_id": "lobbying_violation_penalties_imposed_in_practice"
+    }
+  ],
+  "errors": [],
+  "response": {
+    "id": "chatcmpl-Dn5mvR9IYWH0SFoViWS6SNZR6yCsY",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_PY7896ecvAu8MCOWgQ9iZ1NA",
+              "function": {
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"reason\": \"The prompt’s scoring rubric concerns whether offenders are 'always/generally/rarely' sanctioned in practice when violations are discovered, but the bundled statute text only provides maximum penalties and enforcement/audit authority (e.g., forfeiture caps and discretionary suspension), not a legal mandate that sanctions must be imposed upon discovery or any statutory standard about consistency of sanctioning.\"}",
+                "name": "record_unscoreable_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_3myLCBU1bfeS9HvitBZ6RXbx",
+              "function": {
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": \"MODERATE\", \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.74(1)–(2) (2025)\", \"justification\": \"The commission must examine ('cause to have made an examination of') all required lobbying statements and may subpoena records in investigations, which constitutes a mandated compliance review/audit function but not a requirement for regular auditing by an independent third party.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1780592693,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 222,
+      "prompt_tokens": 19129,
+      "total_tokens": 19351,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 18688
+      }
+    }
+  }
+}
