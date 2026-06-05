@@ -22,6 +22,14 @@ This branch is the **infrastructure counterpart** to Track B's per-state extract
 
 (Newest entries first.)
 
+### 2026-06-05 — Postgres swap validated + merged up to main
+
+- The SQLite → Postgres swap (written 2026-06-02, blocked on having no local Postgres) validated end-to-end this session after Docker Desktop was installed: `docker compose up -d postgres` brings up postgres:16 with `lobby_dev` + `lobby_test`; tests isolate via session-scoped engine + per-test `TRUNCATE` (`tests/conftest.py`).
+- **All SQLite-run invariants reproduced exactly:** 4,798 filings / 944 orgs / 773 persons / DoorDash YTD $2,183,623.40 via `/search`; six curl checks pass against the live API; **20/20 backend tests green** before and after the main merge. Commit `ccea3b6`.
+- Merged `origin/main` (`28f3e47` — compendium 2.0, WI releases + archive sweep, projections) into the branch; conflicts on `pyproject.toml` (dep union), `uv.lock` (took main's + re-locked), `STATUS.md` (kept main's narrative + our branch row). Merge commit `ee27e02`. Main's tip is now an ancestor → future PR merge is clean.
+- Gotcha for other devs: `uv sync` after a lockfile change drops dev extras; use `uv sync --extra dev` to keep pytest.
+- Convo: [`convos/20260605_postgres_swap_validation.md`](convos/20260605_postgres_swap_validation.md).
+
 ### 2026-05-28 (pm) — WI release ingest
 
 - Shipped `src/lobby_analysis/backend/ingest_wi.py` to map Dan's `releases/wi/` TSVs into `LobbyingFiling` records. Five behavior tests under TDD, all green.
@@ -49,7 +57,7 @@ This branch is the **infrastructure counterpart** to Track B's per-state extract
 
 ## Convos
 
-(Convo summary for this session lands via `finish-convo` at end-of-session.)
+- [`20260605_postgres_swap_validation.md`](convos/20260605_postgres_swap_validation.md) — Postgres swap validated end-to-end (invariants byte-identical to SQLite run); branch merged up to `origin/main` for a clean future PR.
 
 ## Results
 
