@@ -15,6 +15,40 @@ This is the data-acquisition counterpart to Dan's Track A work (`statute-retriev
 
 (Newest entries first.)
 
+### 2026-06-05 (later) — provenance fixes implemented (TDD): code-populated `raw_text` + true regime
+
+- **Part 1 — `raw_text` code-populated (commit `9b0fd7d`).** `extract.py`:
+  `build_tool_schema()` drops `raw_text` from the model-visible tool schema;
+  `assemble_filing()` sets `raw_text = aer_text` after validation, so the audit
+  field is source-of-truth regardless of (and overriding) any model value. Also
+  trims output tokens per call.
+- **Part 2 — true OLAC regime captured (commit `629ce28`).** `discover.py`:
+  `category` on `FiledForm`, `category_to_regime()` (L/E/R →
+  legislative/executive/retirement_system, unknown → None — never a silent
+  legislative default), `regime` column in the TSV. `batch.py`:
+  `read_url_regimes` (header-based DictReader, back-compatible with plain URL
+  lists / pre-regime TSVs) + `select_legislative` (skip non-legislative/unknown
+  by default; `--include-nonlegislative` override). `pipeline.py`:
+  `extract_one_filing(regime=...)` stamps the regime into `extraction_run.json`
+  and warns when a non-legislative/unknown filing is run through the legislative
+  brief.
+- **Regime mapping confirmed empirically.** Scanned all 2,684 cached agent pages
+  (364,351 AER rows): Category is exactly `L`/`E`/`R`, no blanks — resolving the
+  plan's Medium-confidence flag on `R`. (`L` 52.3% / `E` 46.9% / `R` 0.8%,
+  all-years.) Result: `results/20260605_olac_category_regime_distribution.md`.
+- **Code review caught a real defect.** The non-legislative warning keyed on
+  `DEFAULT_REGIME` rather than the brief regime, so an unknown-regime (`None`)
+  filing under `--include-nonlegislative` emitted "None brief not yet
+  implemented." Fixed at root + added the missing `regime=None` test.
+- **Verification:** 37/37 oh_portal tests green (16 new, TDD); `ruff check`
+  clean. Repo has no CI and isn't maintained under `ruff format` (left format
+  alone). The 3 `test_pipeline.py` failures are local-data-only (untracked CA
+  snapshot), not a regression. Branch `MERGEABLE`, pushed to PR #33.
+- **Deferred:** step 21 (doubled `_discover_dir` cache path) → issue
+  [#36](https://github.com/danparshall/lobby_analysis/issues/36); do post-merge
+  so stale-code worktrees can't re-double the path. Includes cache migration.
+- Convo: `convos/20260605_provenance_fixes_implementation.md`.
+
 ### 2026-06-05 — OH `discover --all` bulk grab (45,605 AERs) + 300-filing slice validation
 
 - **ToS gate (handoff blocker) cleared.** `www2.jlec-olig.state.oh.us/robots.txt` → 404
