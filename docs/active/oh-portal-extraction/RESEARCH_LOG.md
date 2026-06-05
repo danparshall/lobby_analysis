@@ -34,7 +34,23 @@ This is the data-acquisition counterpart to Dan's Track A work (`statute-retriev
   at scale; (2) serial `batch.py` = ~8 days for the full 45K. Also a doubled discover
   cache-path bug (`_discover_dir` re-appends `oh_portal`).
 - **Decision:** full-universe extraction deferred to a dedicated build (Message Batches API
-  + prompt caching + transient retry ≈ $800 async). Checkpointed + stopped per user.
+  + prompt caching + transient retry ≈ $800 async) — issue
+  [#35](https://github.com/danparshall/lobby_analysis/issues/35).
+- **Content analysis of the 300 (post-checkpoint).** Of 305 distinct extracted filings:
+  **53% fully nil** ("No Activity / No expenditures"), 45% list bills lobbied (mean 3.8,
+  max 108 bills; 1,145 bill-rows total), only **5% report any expenditure**. No
+  support/oppose stance (same gap as WI). **Regime mix:** among the 109 with raw_text,
+  ~86% legislative / ~13% executive / ~1% retirement — the crawl spans all 3 OH regimes,
+  but `pipeline.py` runs every filing through the *legislative* brief and stamps
+  `regime="legislative"`. Empirical confirmation of the v2.2 regime gap that main's
+  `STATE_REGIME_SPLITTING.md` predicted from statute.
+- **`raw_text` root-caused.** Missing on ~64% of filings because it's an *optional
+  model-emitted* field (omitted even on 71% of nil filings → not truncation); when present
+  it's byte-identical to `html_to_aer_text(raw.html)` (EXACT match verified on 1509340).
+  Fix = code-populate from source + drop from the tool schema.
+- **Plan created:** `plans/20260605_extraction_provenance_fixes.md` (TDD; raw_text + true
+  regime; do before #35). Doubled discover cache-path bug (`_discover_dir`) folded in as
+  optional step 21.
 - Results: `results/20260605_slice_validation_300.md`. Convo:
   `convos/20260605_oh_discover_all_and_slice_validation.md`.
 
