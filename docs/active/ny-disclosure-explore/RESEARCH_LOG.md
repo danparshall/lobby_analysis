@@ -5,7 +5,17 @@ Purpose: Build a New York state lobbying-disclosure pull pipeline — `releases/
 
 Newest entries first.
 
-> **HANDOFF (next session):** Phase 0 is done and the architecture is locked — pick up at **Phase 1 (bulk-CSV acquisition)** in [`plans/ny_disclosure_pipeline.md`](plans/ny_disclosure_pipeline.md), starting with a full `pytest` baseline; build 2025 first via the `client_semiannual` (qym9-xzj6) spine, and close out GH issue [#37](https://github.com/danparshall/lobby_analysis/issues/37) (semiannual-vs-bimonthly double-count check) before merge.
+> **HANDOFF (next session):** Phase 1 (acquisition) is done — `io/ny/acquire.py` ships `download_bulk_csv()` + `SocrataProbeClient`, 10 green tests (commit `db64354`). Pick up at **Phase 2 (per-dataset parse + materialize)** in [`plans/ny_disclosure_pipeline.md`](plans/ny_disclosure_pipeline.md), starting with the **grain-collapse** step (the load-bearing dollar-conservation guard) and the per-dataset **column map** (Phase 0 flagged inconsistent names across the 6 datasets). Build 2025 first via the `client_semiannual` (qym9-xzj6) spine. Still open before merge: GH [#37](https://github.com/danparshall/lobby_analysis/issues/37) (semiannual-vs-bimonthly double-count). Baseline note: clean green count on this machine is **1636**; 3 pre-existing `scoring` reds are tracked in GH [#38](https://github.com/danparshall/lobby_analysis/issues/38) (not NY-scoped).
+
+---
+
+## 2026-06-05 — Phase 1 acquisition layer implemented (TDD)
+
+- **Convo:** [`convos/20260605_ny_phase1_acquisition.md`](convos/20260605_ny_phase1_acquisition.md)
+- **What happened:** Ran the mandated full `pytest` baseline (1636 passed, 3 failed). Diagnosed the 3 failures as out-of-scope `scoring`-module data drift (`SNAPSHOT_DATE_DEFAULT="2026-04-13"` pinned, but only the `2026-05-01` CA snapshot exists in local `data/`) — captured as GH #38, left untouched per multi-committer hygiene. Then implemented Phase 1 test-first.
+- **Shipped (commit `db64354`, pushed):** `io/ny/acquire.py` — `download_bulk_csv()` (streaming Socrata bulk CSV export, resume-skip, `force`, app-token, atomic `.part`-then-rename, typed `NYAcquisitionError`) + `SocrataProbeClient` (SoQL `$select/$where/$group/$limit` passthrough, `from_env` reads `SOCRATA_APP_TOKEN`). 10 TDD tests, all green; full suite collects 1655.
+- **Decisions:** task-issue (not in-branch fix) for the `scoring` reds; stop at the Phase 1 checkpoint (no Phase 2 this session).
+- **Next steps:** Phase 2 — grain-collapse (dollar-conservation invariant) + per-dataset column-map parsers + `materialize_ny`.
 
 ---
 
