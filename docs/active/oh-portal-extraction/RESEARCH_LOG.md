@@ -15,6 +15,29 @@ This is the data-acquisition counterpart to Dan's Track A work (`statute-retriev
 
 (Newest entries first.)
 
+### 2026-06-05 — OH `discover --all` bulk grab (45,605 AERs) + 300-filing slice validation
+
+- **ToS gate (handoff blocker) cleared.** `www2.jlec-olig.state.oh.us/robots.txt` → 404
+  (no policy); no Terms of Use on OLAC; data is Ohio statutory public record (ORC §§101.70+).
+- **Crawler etiquette fixed before crawling (commit `4ebd2e3`).** The runbook claimed
+  "polite spacing is built in" — it wasn't (`discover_all` had no inter-request sleep), and
+  the crawler spoofed a Chrome UA. Renamed `CHROME_UA` → honest `USER_AGENT`; added
+  `REQUEST_DELAY_SECONDS=0.5` throttle at live-network entry points (cache hits unthrottled);
+  TDD'd a UA-honesty contract test; corrected the runbook. Suite 372 pass / 3 pre-existing.
+- **`discover --all` ran:** **45,605 AER filings** (2025=34,080 / 2026=11,525), 2,684 agents,
+  2,741 employers, **100% employer-populated, 0 dup report_ids**. Index → `recent.tsv`
+  (gitignored, regenerable). The employer-misfile fix holds at scale.
+- **300-filing slice validation (sonnet-4-6):** 299 extracted first-pass + 1 transient 529
+  (1396214) **recovered on one retry** → effectively **300/300 extractable, 0 genuine
+  failures**. Measured **15.6 s/filing**, ~$0.035/filing.
+- **Two gaps surfaced (pre-existing):** (1) no retry on transient API errors → silent drops
+  at scale; (2) serial `batch.py` = ~8 days for the full 45K. Also a doubled discover
+  cache-path bug (`_discover_dir` re-appends `oh_portal`).
+- **Decision:** full-universe extraction deferred to a dedicated build (Message Batches API
+  + prompt caching + transient retry ≈ $800 async). Checkpointed + stopped per user.
+- Results: `results/20260605_slice_validation_300.md`. Convo:
+  `convos/20260605_oh_discover_all_and_slice_validation.md`.
+
 ### 2026-06-04 (later) — sonnet validated → employer/warnings schema fix → statute-extraction archived
 
 - **Sonnet validation.** `claude-sonnet-4-7` doesn't exist (404); sonnet is on `4-6`,
