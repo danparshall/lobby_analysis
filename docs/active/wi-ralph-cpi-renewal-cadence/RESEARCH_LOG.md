@@ -13,6 +13,15 @@ Upstream lineage (this branch exists because of):
 
 ## Session history (newest first)
 
+### 2026-06-05 (latest, finish-branch) — `finishing-a-research-branch` skill walk-through; branch archived; PR 40 merge gated on user confirmation
+Convo appendix: [`convos/20260605_pr40_pressure_test.md`](convos/20260605_pr40_pressure_test.md) §"Appendix 2026-06-05 (later) — `finishing-a-research-branch` skill walk-through"
+- **Session shape.** Mechanical archive + merge per skill. Pre-flight clean (origin synced; worktree on `wi-ralph-cpi-renewal-cadence` at `6914704`; `docs/active/<branch>/` present). Full pytest **1890 / 3 skip / 3 xfail** — baseline holds.
+- **No new research findings.** Substantive findings of this branch are in the 10 prior convos + RESEARCH_LOG body; this entry exists only to keep the link graph self-consistent at finish-branch commit (per `[[doc-system-is-persistent-memory-not-patchwork]]` memo).
+- **Archive mechanics.** `git mv docs/active/wi-ralph-cpi-renewal-cadence → docs/historical/wi-ralph-cpi-renewal-cadence`; STATUS.md row moved from Active to Archived Research Lines table with archive-date `2026-06-05` and material pointer `docs/historical/wi-ralph-cpi-renewal-cadence/`.
+- **PR 40 merge.** Already open at https://github.com/danparshall/lobby_analysis/pull/40 (`mergeable: MERGEABLE`); description verified; CI polled in foreground; user asked explicitly before squash/merge per skill Step 12.
+- **Successor branch.** `cross-state-cpi-2015-validation` (or similar) cut off main AFTER merge, per the amended plan's §Pre-execution checklist. First read on the successor: `docs/historical/wi-ralph-cpi-renewal-cadence/plans/20260605_cross_state_cpi_2015_validation.md` (now at the historical path).
+- **Spend ledger:** This session $0. wi-ralph cumulative **$3.5127** (unchanged; final). Cross-state envelope still $0 of $10 (allocated to successor). Grand total **$10.8073** (unchanged; final for wi-ralph).
+
 ### 2026-06-05 (latest, PR 40 review) — Pressure-test of v2.1 + Phase A inheritance story; cross-state plan amended in place (10 states → 5; 3-chunk subset → default 6; "projection accuracy per state" continuous → per-(state, indicator) de-jure exact-match)
 Convo: [`convos/20260605_pr40_pressure_test.md`](convos/20260605_pr40_pressure_test.md) · Plan (amended): [`plans/20260605_cross_state_cpi_2015_validation.md`](plans/20260605_cross_state_cpi_2015_validation.md)
 - **Session shape.** Discussion + plan-amendment commit. PR 40 (`wi-ralph-cpi-renewal-cadence` → `main`) bundles wi-tier1 absorbed + v2.1 schema bump + Phase A YAML audit at scale; Dan opened with *"let's discuss PR 40"* and asked to pressure-test the v2.1 + Phase A inheritance story. No API spend; no code/test edits; only the plan document + this convo + this RESEARCH_LOG entry.

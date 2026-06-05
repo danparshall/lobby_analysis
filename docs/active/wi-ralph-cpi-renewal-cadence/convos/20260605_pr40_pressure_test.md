@@ -114,3 +114,48 @@ Grand total: **$10.8073** (unchanged).
 - If Dan wants to merge PR 40: standard merge → `wi-ralph-cpi-renewal-cadence` moves to `docs/historical/` per the active → historical lifecycle (per skill `finishing-a-research-branch`).
 - Then: successor branch (`cross-state-cpi-2015-validation` or similar) cut off main; reads the amended plan (now at `docs/historical/wi-ralph-cpi-renewal-cadence/plans/...`); fresh-session TDD execution per the §Pre-execution checklist.
 - No remaining pre-dispatch blocking open questions — the original Open Q #1 (chunk-set swap) and #2 (tolerance) were resolved by this session's amendment.
+
+---
+
+## Appendix 2026-06-05 (later) — `finishing-a-research-branch` skill walk-through
+
+Same-day continuation: Dan asked to run the finish-branch skill before merging PR 40. Skill steps executed in order; no substantive findings, just the archive + merge mechanics.
+
+### Pre-flight (Step 1)
+
+- `git fetch origin` clean.
+- Local `main` 35 commits behind `origin/main` — left untouched (other worktrees / fellows have unstaged work in main; will pull main only after the merge step, in the worktree we land on).
+- Branch handling: switched into existing worktree `.worktrees/wi-ralph-cpi-renewal-cadence/` (clean; up to date with `origin/wi-ralph-cpi-renewal-cadence` at `6914704`).
+- `docs/active/wi-ralph-cpi-renewal-cadence/` present with `RESEARCH_LOG.md` + `convos/` + `plans/` + `results/` — branch is tracked as a research line and is eligible to archive.
+
+### Test suite (Step 2)
+
+- `uv run pytest -q` (via `--project` to point at the worktree): **1890 passed / 3 skipped / 3 xfailed in 46.76 s**. Baseline holds — no test regression introduced by the PR 40 pressure-test commit.
+
+### finish-convo (Step 3)
+
+- This appendix + RESEARCH_LOG entry + STATUS.md one-liner together checkpoint the finish-branch session.
+
+### audit-docs (Step 4)
+
+- Pending — runs next. Any flagged structural issues fix before archive.
+
+### maintaining-decision-docs (Step 5)
+
+- `docs/DOCS_INDEX.md` does not exist in this repo — skill skips silently.
+
+### Archive + PR (Steps 6-10)
+
+- `git mv docs/active/wi-ralph-cpi-renewal-cadence docs/historical/wi-ralph-cpi-renewal-cadence` after this convo + audit fixes land.
+- STATUS.md: move the wi-ralph row from Active Research Lines to Archived Research Lines table with archived-date `2026-06-05` and material pointer `docs/historical/wi-ralph-cpi-renewal-cadence/`.
+- Commit the archive; push the branch.
+- PR 40 already open at https://github.com/danparshall/lobby_analysis/pull/40 with `mergeable: MERGEABLE`. Confirm description matches finished-branch template (Summary + Key Findings + Documentation links) — edit if needed.
+
+### Merge gate (Steps 11-13)
+
+- `gh pr checks` polled in foreground for CI green-light.
+- User asked explicitly before merge (research-branch merge becomes permanent main history).
+
+### What this appendix is NOT
+
+- Not a substantive research finding. Findings of this branch are already captured in the 10 prior convos + the RESEARCH_LOG body. This appendix exists only to make the finish-branch mechanical work visible inside the link graph (per the `doc-system-is-persistent-memory-not-patchwork` feedback memo: end-of-session commits should land graph self-consistent).
