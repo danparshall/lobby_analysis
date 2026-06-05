@@ -51,6 +51,14 @@ GRAIN: tuple[str, ...] = (
     "bill_id",
 )
 
+#: Identity of a single firm's filing (one firm's report-of-work for one client
+#: in one period) — ``GRAIN`` minus ``bill_id``. This is NOT ``form_submission_id``
+#: alone: a ``form_submission_id`` is the *client's* semi-annual report id, shared
+#: across every firm the client retains (verified on live 2025 data — 26% of
+#: submissions list >1 firm). Per-filing aggregates (e.g. ``n_bills_in_filing``)
+#: must group by this key, or a co-retained firm's bills leak into another's.
+FILING_KEY: tuple[str, ...] = GRAIN[:-1]
+
 _CARRIED = ("contractual_client_name", "filing_compensation")
 _REQUIRED = set(BUSINESS_KEY) | set(GRAIN) | {"filing_compensation"}
 
@@ -98,15 +106,17 @@ def collapse_to_filing_grain(
     # 2. Collapse the explosion to one row per (filing, bill).
     collapsed = survivors.drop_duplicates(subset=list(GRAIN))
 
-    # Distinct real bills per surviving filing (null bill_id excluded).
+    # Distinct real bills per surviving filing (null bill_id excluded). Keyed by
+    # FILING_KEY, not form_submission_id alone — a shared client submission lists
+    # multiple firms, each with its own bills; grouping by submission would give
+    # every co-retained firm the union of all their bill counts.
     real_bills = survivors.loc[survivors["bill_id"].notna()]
-    n_bills = real_bills.groupby("form_submission_id")["bill_id"].nunique()
+    n_bills = real_bills.groupby(list(FILING_KEY))["bill_id"].nunique()
 
     out_cols = list(GRAIN) + [c for c in _CARRIED if c not in GRAIN]
     out = collapsed.loc[:, out_cols].copy()
-    out["n_bills_in_filing"] = (
-        out["form_submission_id"].map(n_bills).fillna(0).astype(int)
-    )
+    filing_keys = list(zip(*(out[col] for col in FILING_KEY)))
+    out["n_bills_in_filing"] = [int(n_bills.get(key, 0)) for key in filing_keys]
 
     out = out.sort_values(by=list(GRAIN), na_position="last").reset_index(drop=True)
     return out

@@ -232,6 +232,100 @@ def test_filing_with_no_bills_emits_no_bill_links(tmp_path, two_filing_grain):
     assert all(link["filing_id"] != "793902" for link in links)
 
 
+@pytest.fixture()
+def shared_submission_grain() -> pd.DataFrame:
+    """The real NY shape the live 2025 pull exposed: ONE client semi-annual
+    report (one ``form_submission_id``) covers MULTIPLE retained firms, each with
+    its own compensation and its own bills. ``form_submission_id`` is the
+    *client's* report id, NOT a per-firm filing key.
+
+    Submission 800 = ACCENTURE's report, listing two firms: Brown & Weinraub
+    ($45,000, lobbying on S550-A and A100) and Accenture in-house ($179, S550-A
+    only). They share the same ``beneficial_client`` ("ACCENTURE, LLP;") — the
+    only thing distinguishing the two filings is ``principal_lobbyist``."""
+    rows = _exploded_rows(
+        form_submission_id="800",
+        filing_type="Original",
+        comp="45000",
+        bills=["S550-A", "A100"],
+        principal_lobbyist="BROWN & WEINRAUB ADVISORS, LLC",
+        beneficial_client="ACCENTURE, LLP;",
+        contractual_client_name="ACCENTURE, LLP",
+    ) + _exploded_rows(
+        form_submission_id="800",
+        filing_type="Original",
+        comp="179",
+        bills=["S550-A"],
+        principal_lobbyist="ACCENTURE, LLP",
+        beneficial_client="ACCENTURE, LLP;",
+        contractual_client_name="ACCENTURE, LLP",
+    )
+    return _grain_from_raw(rows)
+
+
+def test_shared_submission_id_does_not_collapse_distinct_firm_filings(
+    tmp_path, shared_submission_grain
+):
+    """Two firms sharing one client's ``form_submission_id`` must produce TWO
+    filing rows, each carrying its own compensation — not one row that silently
+    drops the other firm's dollars. This is the dollar-loss bug the live 2025
+    pull exposed: a filing-dict keyed by (submission, client) without the firm
+    collides every co-retained firm onto one row."""
+    materialize_ny(shared_submission_grain, output_dir=tmp_path)
+
+    filings = _read_tsv(tmp_path / "NY_filings.tsv")
+    sub800 = [f for f in filings if f["filing_id"] == "800"]
+    assert len(sub800) == 2, "both firms' filings must survive a shared submission id"
+
+    by_firm = {f["lobbyist_id"]: f for f in sub800}
+    assert by_firm["NY-lobbyist-brown-weinraub-advisors-llc"]["total_compensation"] == "45000"
+    assert by_firm["NY-lobbyist-accenture-llp"]["total_compensation"] == "179"
+    # the two filing rows have distinct ids (the firm disambiguates them)
+    assert sub800[0]["id"] != sub800[1]["id"]
+
+
+def test_shared_submission_comp_conservation(tmp_path, shared_submission_grain):
+    """Summing comp over the distinct filings of one shared submission equals the
+    sum of every co-retained firm's compensation ($45,000 + $179), not just the
+    survivor's."""
+    materialize_ny(shared_submission_grain, output_dir=tmp_path)
+
+    filings = _read_tsv(tmp_path / "NY_filings.tsv")
+    total = sum(
+        Decimal(f["total_compensation"])
+        for f in filings
+        if f["total_compensation"] not in ("", None)
+    )
+    assert total == Decimal("45179")
+
+
+def test_shared_submission_n_bills_is_per_firm_not_per_submission(
+    tmp_path, shared_submission_grain
+):
+    """``n_bills_in_filing`` must count each firm's OWN bills, not the union of
+    all firms' bills under the shared submission. Accenture lobbied 1 bill
+    (S550-A); Brown & Weinraub lobbied 2 (S550-A, A100). A submission-keyed
+    count would wrongly give Accenture 2 and split its $179 across two bills."""
+    materialize_ny(shared_submission_grain, output_dir=tmp_path)
+
+    links = _read_tsv(tmp_path / "NY_filing_bill_links.tsv")
+    accenture = [
+        link for link in links if link["lobbyist_id"] == "NY-lobbyist-accenture-llp"
+    ]
+    assert len(accenture) == 1
+    assert accenture[0]["n_bills_in_filing"] == "1"
+    assert accenture[0]["comp_per_bill"] == "179"
+
+    bw = [
+        link
+        for link in links
+        if link["lobbyist_id"] == "NY-lobbyist-brown-weinraub-advisors-llc"
+    ]
+    assert len(bw) == 2
+    assert {link["n_bills_in_filing"] for link in bw} == {"2"}
+    assert sum(Decimal(link["comp_per_bill"]) for link in bw) == Decimal("45000")
+
+
 def test_absent_compensation_is_empty_cell_not_zero(tmp_path):
     """A filing whose compensation coerces to absent ('$') writes an empty
     total_compensation cell, never '0' — a missing comp is not a reported $0.

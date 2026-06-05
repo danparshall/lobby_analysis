@@ -196,14 +196,20 @@ def materialize_ny(grain: pd.DataFrame, *, output_dir: Path) -> dict[str, int]:
 
         comp = coerce_money(record.get("filing_compensation"))
         n_bills = int(record.get("n_bills_in_filing") or 0)
-        # The filing is keyed by (submission, client): one firm submission can
-        # cover several clients, each its own filing row.
-        filing_id = f"NY-filing-{submission}-{client.id.split('NY-client-', 1)[-1]}"
+        # A filing is one FIRM's report-of-work for one client in one period. The
+        # key MUST include the firm: ``form_submission_id`` is the *client's*
+        # report id, shared across every firm the client retains (26% of live
+        # 2025 submissions list >1 firm), so keying on (submission, client) alone
+        # collapses co-retained firms onto one row and drops their dollars.
+        firm_suffix = firm.id.split("NY-lobbyist-", 1)[-1]
+        client_suffix = client.id.split("NY-client-", 1)[-1]
+        filing_uid = f"NY-filing-{submission}-{firm_suffix}-{client_suffix}"
         filings.setdefault(
-            submission + "|" + client.id,
+            (record.get("reporting_year"), record.get("reporting_period"),
+             submission, firm.id, client.id),
             {
                 "filing_id": submission,
-                "id": filing_id,
+                "id": filing_uid,
                 "state": STATE,
                 "filing_type": "expenditure_report",
                 "filer_role": "firm",
@@ -237,11 +243,14 @@ def materialize_ny(grain: pd.DataFrame, *, output_dir: Path) -> dict[str, int]:
         )
 
     # Even-split per filing so SUM(comp_per_bill) == filing_compensation exactly.
-    # Group the link rows by (submission, client_id); split that filing's comp
-    # across its bills.
+    # Group by (submission, lobbyist, client) — the firm is load-bearing: a shared
+    # client submission carries several firms' bills, and splitting on
+    # (submission, client) alone would pool them and mis-divide each firm's comp.
     by_filing: dict[tuple, list[dict]] = {}
     for link in bill_links:
-        by_filing.setdefault((link["filing_id"], link["client_id"]), []).append(link)
+        by_filing.setdefault(
+            (link["filing_id"], link["lobbyist_id"], link["client_id"]), []
+        ).append(link)
     for group in by_filing.values():
         comp = group[0]["_comp"]
         if comp is None:
@@ -257,11 +266,12 @@ def materialize_ny(grain: pd.DataFrame, *, output_dir: Path) -> dict[str, int]:
     client_rows = sorted(clients.values(), key=lambda r: r["id"])
     lobbyist_rows = sorted(lobbyists.values(), key=lambda r: r["id"])
     filing_rows = sorted(
-        filings.values(), key=lambda r: (r["filing_id"], r["client_id"])
+        filings.values(),
+        key=lambda r: (r["filing_id"], r["lobbyist_id"], r["client_id"]),
     )
     link_rows = sorted(
         bill_links,
-        key=lambda r: (r["filing_id"], r["client_id"], r["bill_id"]),
+        key=lambda r: (r["filing_id"], r["lobbyist_id"], r["client_id"], r["bill_id"]),
     )
 
     counts = {
