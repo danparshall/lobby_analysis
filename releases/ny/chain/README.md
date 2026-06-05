@@ -17,14 +17,14 @@ normalization).
 
 | metric | value |
 |---|---|
-| chain rows | 87,534 |
+| chain rows | 83,786 |
 | distinct lobbying firms | 927 |
-| distinct beneficiaries (post coalition-split) | 1,892 |
+| distinct beneficiaries (post coalition-split) | 1,812 |
 | distinct bills (source `bill_id`) | 6,352 |
 | distinct sponsoring lawmakers (`ocd-person`) | 213 (= full NY legislature: 150 Assembly + 63 Senate) |
-| rows resolved to an OS bill+sponsor (`os_matched=True`) | 87,446 (99.9%) |
+| rows resolved to an OS bill+sponsor (`os_matched=True`) | 83,704 (99.9%) |
 | distinct bills **un**matched (flagged, not dropped) | 30 (0.5%) |
-| coalition filings (M>1 beneficiaries) | 476 |
+| coalition filings (M>1 beneficiaries) | 276 |
 | **total compensation, summed over distinct cells** | **$153,064,191.00** |
 
 The total reconciles **exactly** ($0 delta) against the Phase-3 release's
@@ -94,8 +94,13 @@ NY discloses no per-bill or per-beneficiary effort weight, so the split is
   malformed source ids (e.g. `A51578` — NY Assembly tops out near `A 11019`),
   i.e. lobbyist typos, plus a few plausible numbers absent from the 2025-2026
   OS session.
-- **HTML entities (`&amp;`) are undecoded** in some beneficiary names, carried
-  verbatim from the Phase-3 release for source fidelity.
+- **HTML entities are decoded.** Names arrive HTML-encoded (`A&amp;E`); the
+  parser decodes them (`A&E`) before the coalition split. This is load-bearing,
+  not cosmetic: the encoded ampersand `&amp;` ends in a `;`, the same delimiter
+  the coalition splitter uses, so an undecoded `AT&amp;T` would fracture into the
+  phantom beneficiaries `AT&amp` + `T`. (An earlier build shipped this bug; it
+  inflated the coalition-filing count to 476 and split 3,748 rows' dollars across
+  phantom members. The fix conserves the per-filing total to the cent.)
 - **Session scope.** The OS spine is the NY **2025-2026** regular session; the
   bill-id join uses the base bill (suffix stripped — see methodology).
 
@@ -125,9 +130,15 @@ Requires the Open States NY 2025-2026 CSV bundle staged under
 ## v1.1 follow-ups
 
 - **`parties_lobbied` as a second, disclosed lawmaker edge.** Requires
-  re-pulling `client_semiannual` with the `parties_lobbied` /
-  `..._person_lobbied` fields added to the `$select` (the 2025 pull fetched only
-  9 fields), then resolving the free-text names/titles to `ocd-person` ids.
-- Decode `&amp;` HTML entities in names.
+  re-pulling `client_semiannual` with the `parties_lobbied` field added to the
+  `$select` (the 2025 pull fetched only 9 fields), then resolving the free-text
+  names/titles to `ocd-person` ids. **Reconnaissance done** (the field is
+  populated on 99.9% of rows): ~83% are named legislators (`Senator X` /
+  `Assembly member X`, often with a `, staff member` suffix — the resolvable
+  core), but ~17% are *not* individual legislators (executive offices, agencies,
+  program/counsel staff, and "communication sent to entire NYS Legislature"
+  broadcasts) and have no `ocd-person`. So this is a free-text-normalization
+  ingest with a routing step, not a clean join. See
+  `docs/active/ny-disclosure-explore/results/20260605_ny_parties_lobbied_recon.md`.
 - Fold in cosponsors as a secondary sponsor edge.
 - Multi-year backfill (2019→) once the single-year chain is proven.

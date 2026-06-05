@@ -1,5 +1,18 @@
 <!-- Generated during: convos/20260605_ny_phase4_chain_composer.md -->
 
+> **SUPERSEDED in part by the v1.1 `&amp;`-decode fix (2026-06-05, convo
+> `20260605_ny_v1_1_amp_decode_and_parties_recon.md`).** The chain-aggregate
+> table below reflects the pre-fix build, in which HTML-encoded ampersands
+> (`AT&amp;T`) fractured in the coalition split (the `&amp;` ends in the `;`
+> delimiter), creating phantom beneficiaries. After the fix the chain-level
+> numbers are: **chain rows 83,786**, **distinct beneficiaries 1,812**, **rows
+> `os_matched=True` 83,704 (99.9%)**, **coalition filings (M>1) 276** (the old
+> 476 was inflated ~42% by standalone names mis-split into M=2). The
+> **conservation total is unchanged at $153,064,191.00** ($0 delta) and the
+> bill-match rate (30 unmatched, 99.9%) is unchanged. The client/link-level
+> numbers in this doc (346 coalition clients, 6,053 coalition link rows — both
+> semicolon-based) are unaffected. See `results/20260605_ny_amp_decode_recompute.md`.
+
 # NY Phase 4 chain — aggregates, match rate, conservation (2025)
 
 Source: `releases/ny/chain/NY_chain_2025.tsv`, composed from `releases/ny/` +

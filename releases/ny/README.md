@@ -86,7 +86,7 @@ These are New York's recognized top-tier lobbying firms, a strong face-validity 
 
 3. **Coalition `beneficial_client` cells.** Some filings pack many beneficiaries into one semicolon-delimited `beneficial_client` field; the parser treats the whole list as a single client entity (with a very long slug id). Splitting them is a modeling decision with no disclosed per-beneficiary dollar weight — deferred. Such composite-client rows are real filings, not duplicates.
 
-4. **Unescaped HTML entities in some names.** A handful of client names arrive with raw entities (e.g. `Solow Realty &amp; Development`) exactly as the portal serves them. No parser action was taken; decode at the consumer if needed.
+4. **HTML entities are decoded.** Client names arrive HTML-encoded from the portal (`Solow Realty &amp; Development`); the parser decodes them to literal characters (`Solow Realty & Development`) and derives entity ids from the decoded name. This is load-bearing for the chain: the encoded `&amp;` ends in `;`, the coalition delimiter, so an undecoded name would fracture in the chain's coalition split (`AT&amp;T` → `AT&amp` + `T`).
 
 5. **`bill_id` and `bill_print_version` are identical in this release** (both the suffixed canonical form, e.g. `S550-A`). The suffix is deliberately preserved at this stage; the Phase-4 chain normalizer strips it to the Open States base key and uses `bill_print_version` to measure match rate both ways.
 

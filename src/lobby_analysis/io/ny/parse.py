@@ -28,6 +28,7 @@ and :func:`grain.collapse_to_filing_grain` (which requires a canonical
 
 from __future__ import annotations
 
+import html
 import re
 from decimal import Decimal, InvalidOperation
 
@@ -101,8 +102,18 @@ def add_bill_id_column(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def _clean_name(raw) -> str:
-    """Strip a trailing ``;`` delimiter and collapse stray whitespace."""
+    """Decode HTML entities, strip a trailing ``;`` delimiter, trim whitespace.
+
+    The Open NY name fields are HTML-encoded (``A&amp;E`` for ``A&E``). Decoding
+    must precede the ``;`` strip: the encoded ampersand ``&amp;`` itself ends in
+    a semicolon, so stripping first would truncate an entity sitting before the
+    trailing delimiter. Decoding here (the shared cleaner for firm + client
+    names) keeps the encoded ``;`` out of the downstream coalition splitter,
+    which splits ``beneficial_client`` on ``;`` and would otherwise fracture
+    ``AT&amp;T`` into ``AT&amp`` + ``T``.
+    """
     text = "" if raw is None else str(raw)
+    text = html.unescape(text)
     return text.strip().rstrip(";").strip()
 
 
@@ -134,7 +145,9 @@ def parse_individual_lobbyists(raw) -> list[Person]:
         return []
     people: list[Person] = []
     seen: set[str] = set()
-    for token in str(raw).split(";"):
+    # Decode entities before splitting: the encoded ``&amp;`` ends in ``;`` and
+    # would otherwise fracture an entity-bearing name across the delimiter.
+    for token in html.unescape(str(raw)).split(";"):
         name = token.strip()
         if not name:
             continue

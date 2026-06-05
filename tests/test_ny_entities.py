@@ -109,3 +109,66 @@ def test_individual_lobbyists_dedupe_within_one_field():
 
     assert len(people) == 1
     assert people[0].name == "Levy, Scott"
+
+
+# ---------------------------------------------------------------------------
+# HTML-entity decoding
+#
+# The Open NY ``beneficial_client`` field arrives HTML-encoded: an ampersand is
+# ``&amp;`` (e.g. ``A&amp;E Real Estate Management LLC``). This is not merely
+# cosmetic. The encoded entity *ends in a semicolon*, and the coalition splitter
+# (``chain.split_beneficiaries``) splits ``beneficial_client`` on ``;`` -- so an
+# undecoded ``AT&amp;T`` fractures into the phantom beneficiaries ``AT&amp`` and
+# ``T``, inflating the coalition member count and misallocating ``comp_per_cell``.
+# Decoding at the parse layer (``_clean_name``) is the root-cause fix: the shipped
+# release names + ids are clean, and the chain -- which reads the decoded release
+# -- then splits coalitions correctly.
+# ---------------------------------------------------------------------------
+
+
+def test_client_name_html_entity_decoded():
+    """``beneficial_client`` ``A&amp;E Real Estate Management LLC`` must parse to
+    a name with a literal ampersand and an id with no ``-amp-`` artifact."""
+    org = parse_client("A&amp;E Real Estate Management LLC")
+
+    assert org.name == "A&E Real Estate Management LLC"
+    assert "amp" not in org.id.split("-")
+    assert org.id == "NY-client-a-e-real-estate-management-llc"
+
+
+def test_client_html_entity_decoded_before_semicolon_strip():
+    """Decode must precede the trailing-``;`` strip: a name that is both
+    entity-bearing and carries the delimiter artifact (``A&amp;H ... LLC;``)
+    must decode the ``&amp;`` *and* drop only the trailing delimiter."""
+    org = parse_client("A&amp;H SECURITY SERVICES, LLC;")
+
+    assert org.name == "A&H SECURITY SERVICES, LLC"
+
+
+def test_coalition_client_html_entity_decoded():
+    """A coalition ``beneficial_client`` is kept as the raw semicolon string in
+    ``NY_clients.tsv`` (Decision 7), but its entities must still be decoded so
+    the downstream chain splitter sees ``L&M`` not ``L&amp;M`` (which the ``;``
+    in ``&amp;`` would otherwise fracture)."""
+    org = parse_client("25 West 25th LLC; L&amp;M 25th Street LLC")
+
+    assert org.name == "25 West 25th LLC; L&M 25th Street LLC"
+
+
+def test_principal_lobbyist_html_entity_decoded():
+    """The firm name field is decoded the same way (idempotent on the common
+    case where firms already carry a literal ``&``)."""
+    org = parse_principal_lobbyist("Brown &amp; Weinraub PLLC")
+
+    assert org.name == "Brown & Weinraub PLLC"
+
+
+def test_individual_lobbyists_html_entity_not_fractured():
+    """``parse_individual_lobbyists`` splits the raw field on ``;`` directly
+    (it does not go through ``_clean_name``), so it must decode the whole field
+    *before* splitting -- otherwise an entity-bearing name fractures into
+    phantom people."""
+    people = parse_individual_lobbyists("Brown &amp; Weinraub PLLC; Smith, Jane")
+
+    names = [p.name for p in people]
+    assert names == ["Brown & Weinraub PLLC", "Smith, Jane"]
