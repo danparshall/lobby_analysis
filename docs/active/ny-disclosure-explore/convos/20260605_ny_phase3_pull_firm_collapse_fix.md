@@ -73,8 +73,24 @@ tip of a systematic 32% undercount.
 - Wrote `releases/ny/README.md` from real aggregates (deferred until after the
   real run, as the plan required).
 - Did NOT split coalition `beneficial_client` lists or canonicalize bill padding
-  this session — captured as follow-ups (the padding one blocks Phase-4 join
-  quality).
+  this session — surfaced both to Dan, who decided them as Phase-4 work (below).
+
+### Phase 4 decisions landed this session (Dan)
+
+- **Decision 7 — split `beneficial_client` + even credit allocation.** Split the
+  semicolon-delimited beneficiary lists into one client per beneficiary, allocate
+  credit evenly (uniform, like the per-bill split — no disclosed per-beneficiary
+  weight). Composes multiplicatively with the per-bill even-split:
+  `comp_per_cell = C / (M_beneficiaries · N_bills)`, conserving `C`. Scoped as a
+  Phase-4 chain/allocation transform; the Phase-3 release entity tables keep the
+  raw disclosed string for source fidelity. **Open sub-question raised to Dan:**
+  whether `NY_clients.tsv` itself should also split (that would re-cut Phase 3).
+- **Decision 8 — bill-number padding → defer to Open States.** Source padding is
+  inconsistent (`A00804` vs `A804`); canonicalize NY ids to OS's `identifier`
+  format rather than inventing our own scheme. Acquire the OS NY bulk CSV *first*,
+  read its real identifiers, then write the normalizer to match.
+- Both recorded in the plan (Decisions 7 & 8 + reordered Phase-4 tasks) at
+  `a53cc84`.
 
 ## Results
 
@@ -83,10 +99,12 @@ tip of a systematic 32% undercount.
 ## Open Questions / Next Steps
 
 - **Phase 4** — chain composer (`allocation/ny/chain.py`, no IPF) + Open States
-  join on the **stripped** `bill_id` base key; must canonicalize bill-number
-  zero-padding before the join; measure OS match rate with vs. without suffix.
-- **Bill-number padding normalization** (Phase-4 correctness blocker) and
-  **coalition beneficial_client splitting** (modeling decision) — file as issues?
+  join. Now carries Decisions 7 & 8: split beneficiaries + even-allocate; defer
+  bill-padding to OS (acquire OS CSV first). Measure OS match rate with vs.
+  without the `-A/-B` suffix.
+- **Whether `NY_clients.tsv` should also split coalition beneficiaries** (would
+  re-cut Phase 3) — raised to Dan, awaiting steer.
 - Whether to fold `lobbyist_bimonthly` (itemized expenses + individual people)
   into the build, and multi-year materialization (currently 2025-only).
-- `LobbyingFiling.total_compensation` `Decimal`-typing pass (open follow-up).
+- `LobbyingFiling.total_compensation` `Decimal`-typing pass; `&amp;` HTML-entity
+  decoding (open follow-ups).
