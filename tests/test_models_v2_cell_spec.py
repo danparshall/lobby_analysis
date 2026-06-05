@@ -16,15 +16,17 @@ import pytest
 
 
 def test_build_cell_spec_registry_has_186_entries():
-    """The v2 TSV's 181 rows expand to 186 registry entries: 126 legal-only +
-    50 practical-only + 5 legal+practical (each doubled to one legal + one
-    practical entry) = 181 + 5 = 186 entries.
+    """The v2.1 TSV's 183 rows expand to 186 registry entries: 128 legal-only +
+    52 practical-only + 3 legal+practical (each doubled to one legal + one
+    practical entry) = 183 + 3 = 186 entries. (Cell-count-neutral with v2 via
+    Pattern C row split: 2 of v2's 5 combined-axis rows split into single-axis
+    pairs.)
     """
     from lobby_analysis.models_v2.cell_spec import build_cell_spec_registry
 
     registry = build_cell_spec_registry()
     assert len(registry) == 186, (
-        f"Expected 186 registry entries (181 TSV rows + 5 legal+practical "
+        f"Expected 186 registry entries (183 v2.1 TSV rows + 3 legal+practical "
         f"doublings); got {len(registry)}."
     )
 
@@ -44,8 +46,10 @@ def test_registry_keys_are_row_id_axis_tuples():
 
 
 def test_registry_legal_practical_split_matches_tsv_distribution():
-    """The TSV has 126 legal-only + 50 practical-only + 5 legal+practical.
-    After expansion: 131 legal entries + 55 practical entries = 186.
+    """The v2.1 TSV has 128 legal-only + 52 practical-only + 3 legal+practical.
+    After expansion: 131 legal entries + 55 practical entries = 186. (The
+    131/55 split is invariant under Pattern C's symmetric redistribution from
+    v2's 126/50/5 split — same totals, different per-row attribution.)
     """
     from lobby_analysis.models_v2.cell_spec import build_cell_spec_registry
 
@@ -89,7 +93,8 @@ def test_v2_1_pattern_c_split_rows_present_and_wrong_axes_removed():
 
 
 def test_registry_doubles_each_legal_plus_practical_row():
-    """The 5 known combined-axis rows must each have BOTH (row_id, 'legal') AND
+    """The 3 known combined-axis rows (down from 5 in v2; Pattern C split moved
+    2 into single-axis pairs) must each have BOTH (row_id, 'legal') AND
     (row_id, 'practical') in the registry.
     """
     from lobby_analysis.models_v2.cell_spec import build_cell_spec_registry

@@ -807,7 +807,7 @@ def main(argv: list[str] | None = None) -> int:
     print(f"Results dir: {results_dir}")
 
     active_chunks = resolve_active_chunks(args.chunks)
-    if active_chunks != _RESOLVED_CHUNKS:
+    if args.chunks is not None:
         print(f"Filtered to {len(active_chunks)} of {len(_RESOLVED_CHUNKS)} chunks: {', '.join(active_chunks)}")
 
     # Build the legal-only rosters once.

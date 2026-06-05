@@ -1,14 +1,18 @@
 """The compendium cell-spec registry.
 
-`build_cell_spec_registry()` loads the v2 TSV and returns a canonical
+`build_cell_spec_registry()` loads the v2.1 TSV and returns a canonical
 `dict[tuple[row_id, axis], CompendiumCellSpec]` of 186 entries:
 
-- 126 legal-only rows  → 1 entry each (axis="legal")
-- 50 practical-only rows → 1 entry each (axis="practical")
-- 5 legal+practical rows → 2 entries each (one per axis, each with its own
+- 128 legal-only rows  → 1 entry each (axis="legal")
+- 52 practical-only rows → 1 entry each (axis="practical")
+- 3 legal+practical rows → 2 entries each (one per axis, each with its own
   per-axis cell class)
 
-Total: 181 + 5 = 186 entries.
+Total: 183 + 3 = 186 entries.
+
+(v2 had 126 legal-only + 50 practical-only + 5 legal+practical = 181 + 5 = 186
+entries. v2.1's Pattern C row split moved 2 of the 5 combined-axis rows into
+single-axis pairs, keeping the registry cardinality at 186.)
 
 Each `CompendiumCellSpec` records the expected `CompendiumCell` subclass for
 its (row_id, axis) — this is the contract Phase C's projection functions
