@@ -85,3 +85,7 @@ this one was doing startup — verified intact, not redone here.)
 - Fix the doubled discover cache-path bug + migrate the existing cache (deferred task).
 - The 45,605-row discover index is gitignored (regenerable via `discover --all`) — is that
   acceptable, or should the index TSV be materialized into `releases/` like the WI chain?
+
+## Captured Tasks
+
+- [#35: Build OH full-universe extraction via Batches API + caching + retry](https://github.com/danparshall/lobby_analysis/issues/35) — captured 2026-06-05
