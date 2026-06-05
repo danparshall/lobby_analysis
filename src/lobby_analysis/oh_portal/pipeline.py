@@ -1,0 +1,110 @@
+"""Single-filing pipeline: fetch one OLAC AER, extract it, write artifacts.
+
+Factored out of __main__ so both the single-filing CLI and the (B') batch
+runner share one code path. Returns the written `filing.json` path and, as a
+side effect, writes the `extraction_run.json` sidecar next to it.
+"""
+
+from __future__ import annotations
+
+import json
+import uuid
+from datetime import datetime, timezone
+from hashlib import sha256
+from pathlib import Path
+from typing import Callable
+
+from lobby_analysis.oh_portal.extract import (
+    MODEL_ID,
+    TOOL_NAME,
+    extract_oh_legislative_filing,
+)
+from lobby_analysis.oh_portal.extraction_brief import build_oh_legislative_brief
+from lobby_analysis.oh_portal.fetch import DATA_DIR, fetch_olac_aer, parse_report_id
+from lobby_analysis.oh_portal.provenance import build_provenance
+
+EXTRACTOR_IDENTITY = "oh-portal-extraction/v0.1"
+# The only extraction brief that exists is OH legislative. The regime is a
+# caller-supplied property of each filing (from discover's OLAC Category column),
+# recorded in run metadata.
+BRIEF_REGIME = "legislative"
+# Default for the single-URL CLI (which has no regime to pass). Distinct symbol
+# from BRIEF_REGIME on purpose: one is the CLI fallback, the other is the regime
+# the brief actually matches; the warning logic below keys on the latter.
+DEFAULT_REGIME = BRIEF_REGIME
+
+
+def _noop(_msg: str) -> None:
+    pass
+
+
+def extract_one_filing(
+    url: str,
+    data_dir: Path = DATA_DIR,
+    *,
+    regime: str | None = DEFAULT_REGIME,
+    log: Callable[[str], None] = _noop,
+) -> Path:
+    """Fetch + extract + persist one OLAC AER. Return the `filing.json` path.
+
+    Writes `data_dir/extracted/<report_id>/<run_id>/{filing.json,extraction_run.json}`.
+    `regime` is the OLAC disclosure regime of this filing (from discover); it is
+    stamped into the run sidecar. Only a legislative brief exists, so any
+    non-legislative regime records an `extraction_warnings` entry on the filing
+    rather than being silently passed off as legislative.
+    Raises on fetch failure, missing tool call, or Pydantic validation failure
+    (fail-loud — the caller decides whether to isolate the failure).
+    """
+    report_id = parse_report_id(url)
+    run_id = uuid.uuid4().hex[:8]
+    started_at = datetime.now(timezone.utc)
+
+    log(f"[oh_portal] fetching {url}")
+    html_path = fetch_olac_aer(url)
+    log(f"[oh_portal] saved {html_path}")
+
+    brief = build_oh_legislative_brief()
+    prompt_sha = sha256(brief.encode()).hexdigest()[:16]
+    prompt_version = f"{EXTRACTOR_IDENTITY}:{prompt_sha}"
+
+    provenance = build_provenance(
+        source_url=url,
+        model_version=MODEL_ID,
+        prompt_version=prompt_version,
+    )
+
+    log(f"[oh_portal] extracting via {MODEL_ID} tool={TOOL_NAME}")
+    filing = extract_oh_legislative_filing(html_path, brief, provenance)
+    if regime != BRIEF_REGIME:
+        if regime is None:
+            filing.extraction_warnings.append(
+                "regime unknown; extracted with legislative brief on caller override"
+            )
+        else:
+            filing.extraction_warnings.append(
+                f"extracted with legislative brief; {regime} brief not yet implemented"
+            )
+    finished_at = datetime.now(timezone.utc)
+
+    out_dir = data_dir / "extracted" / report_id / run_id
+    out_dir.mkdir(parents=True, exist_ok=True)
+    filing_path = out_dir / "filing.json"
+    filing_path.write_text(filing.model_dump_json(indent=2))
+
+    run_meta = {
+        "run_id": run_id,
+        "report_id": report_id,
+        "source_url": url,
+        "raw_html_path": str(html_path),
+        "regime": regime,
+        "model_id": MODEL_ID,
+        "tool_name": TOOL_NAME,
+        "prompt_version": prompt_version,
+        "extractor_identity": EXTRACTOR_IDENTITY,
+        "started_at": started_at.isoformat(),
+        "finished_at": finished_at.isoformat(),
+        "duration_seconds": (finished_at - started_at).total_seconds(),
+    }
+    (out_dir / "extraction_run.json").write_text(json.dumps(run_meta, indent=2))
+
+    return filing_path
