@@ -5,7 +5,7 @@ Purpose: Build a New York state lobbying-disclosure pull pipeline — `releases/
 
 Newest entries first.
 
-> **HANDOFF (next session) — Phase 2 is code-complete; next is the real Phase-3 pull, then `releases/ny/README.md`.**
+> **HANDOFF (next session) — green claim SETTLED (56/56 NY tests, ruff clean @ `f1098b6b27`); Phase 3 real pull is BLOCKED on `data.ny.gov` egress, not yet done.**
 >
 > `materialize_ny` + `io/ny/materialize_cli.py` shipped (commit `f1098b6b27`, 11 new tests, NY-scoped suite 46 green locally, ruff clean). The full Phase-2 pipeline (`normalize_columns → add_bill_id_column → collapse_to_filing_grain → materialize_ny`) now runs end-to-end and writes the four `releases/ny/` TSVs. **Settled, do not re-litigate:**
 >
@@ -15,9 +15,25 @@ Newest entries first.
 >
 > **Your pickup, in order:** (a) **Phase 3 real pull** — acquire the `client_semiannual` (`qym9-xzj6`) 2025 bulk CSV via `io/ny/acquire.download_bulk_csv` into `data/raw/ny/2025/`, then `uv run python -m lobby_analysis.io.ny.materialize_cli --input data/raw/ny/2025/client_semiannual.csv --dataset client_semiannual --output-dir releases/ny`; sanity-check headline aggregates + spot-check 1–2 large filers against the live portal (as WI did with DoorDash/WMC). (b) **Then `releases/ny/README.md`** modeled on `releases/wi/README.md` — fill the aggregates from the real run (deliberately deferred until now so it isn't a placeholder). (c) **Then Phase 4** (chain composer + Open States join). At Phase-3 start, also run the low-risk live parse-rate probe on `Both`-level State-Bill rows (coverage check, not a correctness blocker — `derive_bill_id` degrades malformed ids to "not chain-eligible", so it cannot corrupt the chain).
 >
-> **OWED VERIFICATION (important):** this session's code was written test-first and verified GREEN *locally* against the real Pydantic models + the Phase-0 fixture, but the full repo `pytest`/`ruff` was **not** run (git push blocked in the agent env; worked via the GitHub REST API). Before trusting the green claim, a networked machine should run `uv run pytest tests/test_ny_materialize.py` and the full suite.
+> **OWED VERIFICATION — RESOLVED 2026-06-05 (later).** A networked run settled it: **56/56 NY tests pass** (all 7 NY files) + `ruff check` clean against real `pydantic` 2.13 / `pandas` 3.0.3 at `f1098b6b27`. See the 2026-06-05 (later) entry below. The full ~1650-test repo suite was not re-run (NY modules are self-contained; full-suite green was already recorded at an earlier commit), but the NY-scoped claim is now trustworthy.
+>
+> **NEW BLOCKER for Phase 3:** `data.ny.gov` is off the sandbox bash egress allowlist (`x-deny-reason: host_not_allowed`), so the live `client_semiannual` pull can't run from an agent sandbox as currently configured. Run Phase 3 from a networked machine that can reach `data.ny.gov`, or have an org owner add it to the egress allowlist.
 >
 > **Carry-forward facts (unchanged, still true):** dedup is `max(form_submission_id)` per business key `(reporting_year, reporting_period, principal_lobbyist, beneficial_client, contractual_client_name)` — in `grain.py`; GH [#37](https://github.com/danparshall/lobby_analysis/issues/37). Money is Decimal; `"$"`/`""`/None → None not 0 (`coerce_money`). 3 pre-existing `scoring` reds (GH [#38](https://github.com/danparshall/lobby_analysis/issues/38)) are NOT NY-scoped — leave them; clean NY-scoped baseline is 46 NY tests green. **Process note for committing (confirmed working again this session):** build GitHub Git-Data-API commit payloads in Python (create blobs → tree on `base_tree` → commit → PATCH the ref with `force: false`) and read file content from disk, not through shell string interpolation (it mangles newlines / breaks on dash). A reusable multi-file-commit recipe is still a pending addition to the project instructions (agreed with Dan; not yet written).
+
+---
+
+## 2026-06-05 (later) — Green claim settled (56/56 NY tests); Phase 3 blocked on data.ny.gov egress
+
+- **Convo:** [`convos/20260605_ny_green_verification_and_phase3_block.md`](convos/20260605_ny_green_verification_and_phase3_block.md)
+- **Owed verification discharged (NY-scoped).** Ran the NY suite on a networked machine against freshly-installed real deps (`pydantic` 2.13.4, `pandas` 3.0.3): **56/56 NY tests pass** across all 7 NY test files (`acquire` 10, `bill_id` 8, `columns` 4, `entities` 7, `filings` 7, `grain` 9, `materialize` 11) in 0.8 s; **`ruff check` clean** on `io/ny/` + the NY tests. This upgrades the prior session's "46 green locally" claim — it now holds against real Pydantic models on a clean checkout, all 7 files collected (nothing skipped). Commit `f1098b6b27`'s `materialize_ny` + `materialize_cli` are green.
+- **Method (sandbox without git):** git clone/push blocked (CONNECT rejected); worked via the GitHub REST API. Reconstructed the NY-scoped tree (7 `io/ny/` source files + `models/` + `pyproject.toml` + 7 NY test files + 2 fixtures) from the Contents API into a local venv and ran `PYTHONPATH=src pytest tests/test_ny_*.py`. The NY suite is network-mocked + fixture-driven by design, so it verifies fully offline.
+- **Did NOT re-run the full ~1650-test repo suite** — it needs the whole tree and carries the 3 known non-NY `scoring` reds (GH #38). The NY modules import only `io/ny/*` + `models/{entities,filings}`, so they can't have regressed unrelated suites; the grain-collapse session already recorded full-suite green (1659 passed) at an earlier commit and nothing since touches non-NY code.
+- **Phase 3 is BLOCKED in this environment, not done.** The data source `data.ny.gov` is **off this sandbox's bash egress allowlist** — the proxy returns `HTTP 403 / x-deny-reason: host_not_allowed` on the `qym9-xzj6` bulk-CSV URL (a proxy host-deny, not a server 403). The 2025 `client_semiannual` bulk CSV (11.2M rows) is unreachable from here, so the real pull could not run.
+- **`releases/ny/README.md` deliberately NOT written.** With no real pull there are no real aggregates, and the plan forbids a placeholder aggregates section. Writing it now would mean inventing numbers — stopped instead.
+- **Unblock paths:** an org owner can add `data.ny.gov` to the egress allowlist for a future agent session; short of that, run Phase 3 from a networked machine that can reach it (the OH branch handled the analogous block by handing the live run to a US-based collaborator).
+- **No code changed this session** — verify-and-checkpoint only.
+- **Next steps (unchanged):** Phase 3 real pull (`acquire.download_bulk_csv` `qym9-xzj6` 2025 → `materialize_cli` → sanity-check aggregates + spot-check large filers), **then** `releases/ny/README.md` from the real run, then Phase 4 chain composer + Open States join.
 
 ---
 
