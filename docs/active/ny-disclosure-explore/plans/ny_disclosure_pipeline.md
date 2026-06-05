@@ -68,8 +68,8 @@ Executed live against `data.ny.gov`. Full writeup: [`../results/20260605_ny_sche
 **Carried-forward facts the implementer must honor (from Phase 0):**
 - Pull via **bulk CSV export**, not API pagination (client_semiannual 2025 alone = 11.2M rows / only 8,613 filings).
 - Per-dataset **column map** required (names differ across datasets — see findings "Schema landmines").
-- Collapse to **filing grain** and keep the latest `filing_type` per `form_submission_id`.
-- **Dollar conservation:** comp is filing-level, replicated — dedup before summing.
+- Collapse to **filing grain**. **CORRECTED 2026-06-05** (see [`../results/20260605_ny_amendment_double_count.md`](../results/20260605_ny_amendment_double_count.md)): "keep latest `filing_type` per `form_submission_id`" is a **no-op** — an amendment is a *separate* submission with its own `form_submission_id`. Dedup must be on the **business key** `(reporting_year, reporting_period, principal_lobbyist, beneficial_client, contractual_client_name)`, keeping `max(form_submission_id)` (verified monotonic with submission order). **Implemented in `io/ny/grain.py`.**
+- **Dollar conservation:** comp is filing-level, replicated — dedup before summing. *And* drop superseded submissions first, else naive distinct-`form_submission_id` summing double-counts every superseded amendment (4.1× on the worst real key).
 - Chain spine = `client_semiannual` (`qym9-xzj6`); `lobbyist_bimonthly` (`t9kf-dqbc`) supplies itemized expenses + individual-person names. Don't double-count across the two.
 
 ### Phase 1 — Acquisition (`io/ny/acquire.py`)
@@ -83,10 +83,11 @@ Executed live against `data.ny.gov`. Full writeup: [`../results/20260605_ny_sche
 
 ### Phase 2 — Per-dataset fetch + parse + materialize (`io/ny/`)
 
-For each of the 6 datasets, a parser reads the bulk CSV → Pydantic models via a **per-dataset column map** (names differ — see findings "Schema landmines"). A **grain-collapse** step dedups the ~1,300× row explosion to filing grain and keeps the latest `filing_type` per `form_submission_id`. Then one `materialize` step + CLI mirroring `io/wi/tier_2_materialize_cli.py`.
+For each of the 6 datasets, a parser reads the bulk CSV → Pydantic models via a **per-dataset column map** (names differ — see findings "Schema landmines"). A **grain-collapse** step dedups the ~1,300× row explosion to filing grain, resolving superseded amendments on the business key first (see correction above). Then one `materialize` step + CLI mirroring `io/wi/tier_2_materialize_cli.py`.
 
-- [ ] Write a failing test for the **grain-collapse** step: a fixture with a filing emitting many denormalized rows (comp replicated) collapses to the agreed grain `(reporting_year, reporting_period, form_submission_id, principal_lobbyist, beneficial_client, bill_id)`; latest amendment wins; comp is **not** summed across the explosion. (This is the load-bearing correctness test — guard the dollar-conservation invariant here.)
-- [ ] Implement grain-collapse. Green. Commit.
+> **DONE 2026-06-05:** the grain-collapse step (`io/ny/grain.py`, `collapse_to_filing_grain`) and the column map (`io/ny/columns.py`, `normalize_columns`, 2 core datasets) are implemented + tested (13 tests). The remaining Phase 2 work below — `bill_id` derivation, the entity/filing/linkage parsers, and `materialize_ny` — is the next pickup. **`bill_id` open question:** Phase-0's `starts_with(level_of_government,'State')` filter wrongly drops a `State Bill` row filed at `Both` level (`S550-A` in the fixture); likely use `focus_type=='State Bill'` alone — resolve when building the parser.
+
+- [x] **DONE 2026-06-05.** Grain-collapse step: collapses denormalized rows to the agreed grain `(reporting_year, reporting_period, form_submission_id, principal_lobbyist, beneficial_client, bill_id)`; the *latest submission* (max `form_submission_id` per business key) wins and superseded submissions are dropped; comp is **not** summed across the explosion *or* across superseded amendments. 9 tests in `tests/test_ny_grain.py` (incl. a NaN-business-key dollar-loss regression test found in code review).
 
 - [ ] Write failing parser tests for the **entity** datasets (principals/clients, lobbyists) against the Phase-0 fixtures.
 - [ ] Implement those parsers → `Organization`/`Person`-style models. Green. Commit.
