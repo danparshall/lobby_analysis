@@ -6,7 +6,9 @@
 
 **Context:** The 2026-06-05 state-data-availability research (`docs/reports/state_bulk_data_availability/`) rates NY the **strongest Tier-1 state in the US**: COELIG / Open NY publishes ~278M records across 6 Socrata datasets (2019–present) with **transactional** compensation + itemized expenses and **bill-level** lobbyist→bill→client linkage. Unlike WI (which files only aggregate lobbyist hours and forced an IPF allocation step), NY discloses the lobbyist↔bill edge directly — so the NY chain is largely a *join*, not a model.
 
-**Confidence:** Medium. The *strategy* (Tier-1, bulk → chain → Open States join) is high-confidence and matches the proven WI pattern. The *column-level schema* is **unverified** — the report is explicit that NY's assessment comes from portal documentation, not from pulling files. **Phase 0 is a gating verification step; Phases 1–4 are provisional on its findings.**
+**Confidence:** Medium-high (raised after Phase 0). The *strategy* (Tier-1, bulk → chain → Open States join, **no IPF**) is confirmed against live data. Phase 0 (executed 2026-06-05, see [`../results/20260605_ny_schema_verification.md`](../results/20260605_ny_schema_verification.md)) verified all three gating claims and surfaced two refinements now folded in below: (1) bill linkage is a *typed subset* (`focus type = State Bill`, 88–96% of rows); (2) the API is denormalized ~1,300× — **pull via bulk CSV, collapse to filing grain, and never sum compensation across raw rows.** Phases 1–4 are now grounded in the real schema, not portal docs.
+
+> **Phase 0 is DONE.** Findings: [`../results/20260605_ny_schema_verification.md`](../results/20260605_ny_schema_verification.md). The 6 dataset ids, real columns, bill-coverage %, and grain counts are all recorded there. Read it before implementing.
 
 **Architecture:** A NY pull pipeline in two thin layers, mirroring WI's package layout but dropping the allocation layer:
 - `src/lobby_analysis/io/ny/` — a Socrata client + per-dataset fetchers + parsers + a `materialize` step that emits `releases/ny/` TSVs, reusing the Popolo/OCD Pydantic models in `src/lobby_analysis/models/`.
@@ -54,27 +56,37 @@ NOTE: I will write *all* tests before I add any implementation behavior.
 
 ## Phases & bite-sized steps
 
-### Phase 0 — Schema verification (GATING; pure investigation, no TDD)
+### Phase 0 — Schema verification (GATING) — ✅ DONE 2026-06-05
 
-The whole plan rests on the untested assumption that NY's columns are what the report infers. Resolve this first.
+Executed live against `data.ny.gov`. Full writeup: [`../results/20260605_ny_schema_verification.md`](../results/20260605_ny_schema_verification.md). Evidence committed under `tests/fixtures/ny/` + `../results/ny_*_2025.json`. Outcome:
 
-- [ ] Set up the worktree venv: from the worktree root, `uv venv --python 3.12` then `uv sync --extra dev` (the `dev` extra installs pytest + ruff; plain `uv sync` does not — see MEMORY note about worktree venv resolution).
-- [ ] Baseline the suite: `uv run pytest -q`. Record pass count (expect ~1550 passed per the WI handoff). If anything fails on a clean checkout, report before proceeding.
-- [ ] Find the **6 NY lobbying datasets** on `data.ny.gov` (COELIG / "Commission on Ethics and Lobbying in Government"; formerly JCOPE). Record each dataset's Socrata 4x4 ID, title, row count, and update cadence. Likely set (verify, do not assume): bi-monthly lobbyist reports, semi-annual client reports, registrations, a client/principal directory, a lobbyist directory, and the "parties lobbied" tabulation. **Save each dataset's data dictionary.**
-- [ ] Pull **one small sample** (`$limit=20`) from each dataset via the API. Inspect actual columns. For each dataset write down: the principal/client key, lobbyist key, **bill-number field** (exact name + example values), dollar fields (compensation vs. expenses, and their grain), reporting-period fields, and any linkage join keys.
-- [ ] Commit the samples as test fixtures under `tests/fixtures/ny/` and write `results/20260605_ny_schema_verification.md` documenting the real schema, mapping each NY field → the target `releases/ny/` column and → the Pydantic model field. **Explicitly confirm or refute:** (a) spend is transactional, (b) a real bill number is present on linkage rows, (c) stance is absent.
-- [ ] **Decision gate:** if any of (a)/(b)/(c) is false — especially if spend turns out aggregate or bill linkage is subject-matter-only — STOP and flag to Dan; the no-allocation architecture may not hold and the plan needs revision.
+- ✅ venv set up (`uv venv --python 3.12` + `uv sync --extra dev`). **NOTE: full `pytest` baseline not yet run** — implementer should run `uv run --active pytest -q` first and confirm ~1550 pass before writing code.
+- ✅ 6 datasets identified (ids in the findings doc). 2019→2025 coverage confirmed.
+- ✅ Real columns captured for all 6. Gating verdicts: **(a) transactional YES** (filing-period comp + itemized expenses), **(b) real bill # YES on the `State Bill` subset = 88–96% of rows** (`focus_identifying_number` = `S550-A`), **(c) stance absent CONFIRMED**.
+- ✅ Decision gate PASSED — no-allocation architecture holds. Two refinements folded into Phases 1–4 below.
 
-### Phase 1 — Socrata client (`io/ny/socrata_client.py`)
+**Carried-forward facts the implementer must honor (from Phase 0):**
+- Pull via **bulk CSV export**, not API pagination (client_semiannual 2025 alone = 11.2M rows / only 8,613 filings).
+- Per-dataset **column map** required (names differ across datasets — see findings "Schema landmines").
+- Collapse to **filing grain** and keep the latest `filing_type` per `form_submission_id`.
+- **Dollar conservation:** comp is filing-level, replicated — dedup before summing.
+- Chain spine = `client_semiannual` (`qym9-xzj6`); `lobbyist_bimonthly` (`t9kf-dqbc`) supplies itemized expenses + individual-person names. Don't double-count across the two.
 
-- [ ] Write the failing client tests (pagination, app-token header, error surfacing, query passthrough).
+### Phase 1 — Acquisition (`io/ny/acquire.py`)
+
+**Primary path = bulk CSV** (Phase 0 found the API too denormalized to paginate: 71M+ rows for 2025 across the two core datasets). The Socrata API client is kept only for cheap aggregate probes (counts, distinct-value checks), not full pulls.
+
+- [ ] Write failing tests for a bulk-CSV downloader: streams `https://data.ny.gov/api/views/<id>/rows.csv?accessType=DOWNLOAD` to `data/raw/ny/<year>/<dataset>.csv`, resumes/skips if the file already exists and is non-empty, and surfaces HTTP errors as typed exceptions (not a silent partial file). Mock the transport.
+- [ ] Write failing tests for a thin probe client (`$select`/`$group`/`$where` passthrough, app-token header from `SOCRATA_APP_TOKEN`, typed error on HTTP failure).
 - [ ] Run them; confirm they fail.
-- [ ] Implement the minimal `requests`-based client: a `fetch_all(dataset_id, where=None, select=None)` generator/list with `$limit`/`$offset` pagination and optional `X-App-Token` from env (`SOCRATA_APP_TOKEN` in `.env.local`; the API works tokenless but rate-limits harder). No app-specific parsing here.
-- [ ] Run tests; confirm green. Commit.
+- [ ] Implement both (`requests`, streaming download with a `.part` temp-then-rename so a truncated download is never mistaken for complete). Green. Commit.
 
 ### Phase 2 — Per-dataset fetch + parse + materialize (`io/ny/`)
 
-For each of the 6 datasets, a fetcher (thin wrapper over the client with the dataset id + any `$where` for the target year) and a parser (rows → Pydantic models). Then one `materialize` step + CLI mirroring `io/wi/tier_2_materialize_cli.py`.
+For each of the 6 datasets, a parser reads the bulk CSV → Pydantic models via a **per-dataset column map** (names differ — see findings "Schema landmines"). A **grain-collapse** step dedups the ~1,300× row explosion to filing grain and keeps the latest `filing_type` per `form_submission_id`. Then one `materialize` step + CLI mirroring `io/wi/tier_2_materialize_cli.py`.
+
+- [ ] Write a failing test for the **grain-collapse** step: a fixture with a filing emitting many denormalized rows (comp replicated) collapses to the agreed grain `(reporting_year, reporting_period, form_submission_id, principal_lobbyist, beneficial_client, bill_id)`; latest amendment wins; comp is **not** summed across the explosion. (This is the load-bearing correctness test — guard the dollar-conservation invariant here.)
+- [ ] Implement grain-collapse. Green. Commit.
 
 - [ ] Write failing parser tests for the **entity** datasets (principals/clients, lobbyists) against the Phase-0 fixtures.
 - [ ] Implement those parsers → `Organization`/`Person`-style models. Green. Commit.
@@ -122,7 +134,9 @@ For each of the 6 datasets, a fetcher (thin wrapper over the client with the dat
 - **Year scope.** Plan starts with one recent year for a fast first loop; multi-year backfill to 2019 is a follow-on once the single-year pipeline is proven.
 
 **Questions** (for Dan — none block drafting; several block *implementation*):
-1. **Target year(s) for v1?** Recommend one recent full year (2024 or 2025) first, then backfill to 2019. OK?
-2. **Client vs. lobbyist as the "principal" anchor.** NY's filer model differs from WI's (NY has lobbyist bi-monthly reports *and* client semi-annual reports). Which is the canonical spend source for the chain — or do we reconcile both? (Phase 0 will surface the overlap; flagging now because it affects the dollar-conservation invariant.)
-3. **Do we want the "parties lobbied" edge ingested in v1**, or is Open States the sole lawmaker source for now (matching the WI architecture)?
-4. **Single branch OK?** This plan keeps everything on `ny-disclosure-explore` (no separate allocation branch, since there's no allocation work). WI split io vs. allocation across two branches because the allocation was substantial; NY doesn't warrant the split.
+1. **Target year for v1?** Phase 0 confirms 2025 is the right test year (11.2M client rows, 8,613 filings, full coverage). Building 2025 first, then backfilling 2019–2024. (Dan greenlit "just 2025 is fine for testing.")
+2. ~~Client vs. lobbyist anchor~~ — **RESOLVED in Phase 0.** Chain spine = `client_semiannual` (`qym9-xzj6`); `lobbyist_bimonthly` supplies itemized expenses + individual-person names. Don't double-count dollars across the two. (See findings doc.)
+3. ~~"parties lobbied" in v1?~~ — **RESOLVED.** Dan: skip it, Open States is the lawmaker spine (confirmed solid for NY — live OS bill pages with real `S####`/`A####` ids). `parties_lobbied` kept as a passthrough column for optional future validation, not used in the chain.
+4. **Per-bill dollar attribution — the one real modeling choice.** A filing's comp covers multiple bills and is not split per-bill in the source. Recommend carrying filing-level comp + `n_bills_in_filing` on each chain row (consumer divides if wanted) rather than fabricating a per-bill dollar. Confirm this is acceptable, or specify an even-split / subject-weighted scheme. (NY analog of WI's `modeled_hours_per_sponsor`.)
+5. **Bill-id amendment suffix.** `S550-A` vs Open States `S550`: confirm we strip the suffix for the join (NY treats them as one bill, different print). Phase 4 measures the OS match rate both ways.
+6. **Single branch OK?** Everything stays on `ny-disclosure-explore` (no `allocation/ny` worktree split — there's no allocation work). WI split io vs. allocation because the IPF was substantial; NY doesn't warrant it.
