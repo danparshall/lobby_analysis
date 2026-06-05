@@ -9,29 +9,29 @@
     "state_abbr": "WI",
     "vintage_year": 2025,
     "prompt_sha256": "cf5e534eb79e06bd8862cb6a71fa3ba6db44eb86d8d1b12b85431ef394b042c8",
-    "timestamp_utc": "2026-06-04T16:59:57+00:00"
+    "timestamp_utc": "2026-06-05T11:41:38+00:00"
   },
-  "wall_clock_seconds": 11.898807333025616,
+  "wall_clock_seconds": 6.221776790975127,
   "usage": {
     "cache_creation": {
       "ephemeral_1h_input_tokens": 0,
-      "ephemeral_5m_input_tokens": 824
+      "ephemeral_5m_input_tokens": 883
     },
-    "cache_creation_input_tokens": 824,
+    "cache_creation_input_tokens": 883,
     "cache_read_input_tokens": 29466,
     "inference_geo": "global",
     "input_tokens": 6,
-    "output_tokens": 868,
+    "output_tokens": 524,
     "server_tool_use": null,
     "service_tier": "standard",
     "output_tokens_details": {
       "thinking_tokens": 0
     }
   },
-  "cost_usd_estimate": 0.02173,
+  "cost_usd_estimate": 0.013130000000000001,
   "legal_roster": [
     [
-      "lobbying_violation_penalties_imposed_in_practice",
+      "lobbying_violation_penalties_defined_in_law",
       "legal"
     ],
     [
@@ -43,76 +43,70 @@
     {
       "cell": {
         "cell_id": [
+          "lobbying_violation_penalties_defined_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.69",
+      "justification": "Section 13.69 prescribes forfeitures (up to $5,000 for principals, $1,000 for lobbyists) and Class H felony liability for violations of ss. 13.61–13.68, including filing false statements under §13.68 and acting as a lobbyist without registration/licensure."
+    },
+    {
+      "cell": {
+        "cell_id": [
           "lobbying_disclosure_audit_required_in_law",
           "legal"
         ],
         "conditional": false,
         "condition_text": null,
-        "confidence": "medium",
+        "confidence": "high",
         "provenance": [],
-        "value": "MODERATE"
+        "value": "YES"
       },
       "cell_class": "EnumCell",
-      "cited_section": "§13.74(1); §13.685(3)",
-      "justification": "Section 13.74(1) requires the Ethics Commission to examine all filed statements and §13.685(3) requires examination of each statement filed under §13.68, constituting a mandatory compliance review by the regulator, though not by an independent third-party auditor."
+      "cited_section": "§13.74(1)",
+      "justification": "Section 13.74(1) requires the Ethics Commission to \"cause to have made an examination of all statements which are required to be filed with it under this subchapter,\" establishing a legal requirement for regular auditing of lobbying disclosure records by the independent commission."
     }
   ],
   "unscoreable_emissions": [],
-  "errors": [
-    {
-      "reason": "instantiation_failed",
-      "key": [
-        "lobbying_violation_penalties_imposed_in_practice",
-        "legal"
-      ],
-      "error": "ValueError(\"BinaryCell: cannot coerce '50' to bool\")",
-      "arguments": {
-        "handle": "row_001",
-        "axis": "legal",
-        "value": "50",
-        "confidence": "medium",
-        "cited_section": "§13.69(1), (2), (3), (6m); §13.68(6)",
-        "justification": "The statute authorizes forfeitures up to $5,000 for principals, $1,000 for lobbyists, Class H felony for false filings, and suspension of lobbying privileges for failure to file expense statements, but uses discretionary \"may be required to forfeit\" language rather than mandating sanctions for every violation."
-      }
-    }
-  ],
+  "errors": [],
   "response": {
-    "id": "msg_01C3BqGce4GXVnUJPGctDMhF",
+    "id": "msg_01MJbrLCsiSZTEEQcS6874dK",
     "container": null,
     "content": [
       {
-        "citations": null,
-        "text": "I'll analyze each cell against the Wisconsin statute text.\n\n**Row 001 (sanctions for reporting violations):** Section 13.69 establishes mandatory-sounding forfeitures for principals ($5,000), lobbyists ($1,000), and felony charges for false statements. Section 13.68(6) provides for suspension of lobbying privileges for failure to file expense statements. The statute uses \"may be required to forfeit\" language — sanctions are authorized but discretionary, not automatic. However, the regime clearly has teeth with multiple enforcement mechanisms.\n\n**Row 002 (independent auditing requirement):** Section 13.74 requires the Ethics Commission to examine ALL statements filed and gives subpoena/investigation power. Section 13.685(3) also requires examination of each statement. This is a compliance review requirement, though performed by the Ethics Commission (the regulator itself, not a separate third party).",
-        "type": "text"
-      },
-      {
-        "id": "toolu_01JjMHaWgNqbwdiHVAqUdy5T",
+        "id": "toolu_01REwrUJLZzu82cxBWXbp9KJ",
         "caller": {
           "type": "direct"
         },
         "input": {
           "handle": "row_001",
           "axis": "legal",
-          "value": "50",
-          "confidence": "medium",
-          "cited_section": "§13.69(1), (2), (3), (6m); §13.68(6)",
-          "justification": "The statute authorizes forfeitures up to $5,000 for principals, $1,000 for lobbyists, Class H felony for false filings, and suspension of lobbying privileges for failure to file expense statements, but uses discretionary \"may be required to forfeit\" language rather than mandating sanctions for every violation."
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.69",
+          "justification": "Section 13.69 prescribes forfeitures (up to $5,000 for principals, $1,000 for lobbyists) and Class H felony liability for violations of ss. 13.61–13.68, including filing false statements under §13.68 and acting as a lobbyist without registration/licensure."
         },
         "name": "record_cell",
         "type": "tool_use"
       },
       {
-        "id": "toolu_01XrvnCrW5YY7zV9qT5ZLEog",
+        "id": "toolu_01H5LMgNa1UqWUtjr5q32zbg",
         "caller": {
           "type": "direct"
         },
         "input": {
           "handle": "row_002",
           "axis": "legal",
-          "value": "MODERATE",
-          "confidence": "medium",
-          "cited_section": "§13.74(1); §13.685(3)",
-          "justification": "Section 13.74(1) requires the Ethics Commission to examine all filed statements and §13.685(3) requires examination of each statement filed under §13.68, constituting a mandatory compliance review by the regulator, though not by an independent third-party auditor."
+          "value": "YES",
+          "confidence": "high",
+          "cited_section": "§13.74(1)",
+          "justification": "Section 13.74(1) requires the Ethics Commission to \"cause to have made an examination of all statements which are required to be filed with it under this subchapter,\" establishing a legal requirement for regular auditing of lobbying disclosure records by the independent commission."
         },
         "name": "record_cell",
         "type": "tool_use"
@@ -127,13 +121,13 @@
     "usage": {
       "cache_creation": {
         "ephemeral_1h_input_tokens": 0,
-        "ephemeral_5m_input_tokens": 824
+        "ephemeral_5m_input_tokens": 883
       },
-      "cache_creation_input_tokens": 824,
+      "cache_creation_input_tokens": 883,
       "cache_read_input_tokens": 29466,
       "inference_geo": "global",
       "input_tokens": 6,
-      "output_tokens": 868,
+      "output_tokens": 524,
       "server_tool_use": null,
       "service_tier": "standard",
       "output_tokens_details": {

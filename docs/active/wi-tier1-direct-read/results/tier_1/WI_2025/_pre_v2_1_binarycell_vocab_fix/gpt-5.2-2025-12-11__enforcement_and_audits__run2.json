@@ -9,13 +9,13 @@
     "state_abbr": "WI",
     "vintage_year": 2025,
     "prompt_sha256": "cf5e534eb79e06bd8862cb6a71fa3ba6db44eb86d8d1b12b85431ef394b042c8",
-    "timestamp_utc": "2026-06-05T11:41:46+00:00"
+    "timestamp_utc": "2026-06-05T11:38:19+00:00"
   },
-  "wall_clock_seconds": 4.056474708020687,
+  "wall_clock_seconds": 5.432593083009124,
   "usage": {
-    "completion_tokens": 236,
-    "prompt_tokens": 19162,
-    "total_tokens": 19398,
+    "completion_tokens": 214,
+    "prompt_tokens": 19166,
+    "total_tokens": 19380,
     "completion_tokens_details": {
       "accepted_prediction_tokens": 0,
       "audio_tokens": 0,
@@ -27,7 +27,7 @@
       "cached_tokens": 19072
     }
   },
-  "cost_usd_estimate": 0.036837499999999995,
+  "cost_usd_estimate": 0.0365365,
   "legal_roster": [
     [
       "lobbying_violation_penalties_defined_in_law",
@@ -42,22 +42,6 @@
     {
       "cell": {
         "cell_id": [
-          "lobbying_violation_penalties_defined_in_law",
-          "legal"
-        ],
-        "conditional": false,
-        "condition_text": null,
-        "confidence": "high",
-        "provenance": [],
-        "value": true
-      },
-      "cell_class": "BinaryCell",
-      "cited_section": "Wis. Stat. § 13.69(1)-(4), (6m) (2025)",
-      "justification": "Section 13.69 prescribes forfeitures and criminal penalties for violations of lobbying disclosure requirements, including acting as a lobbyist without being licensed, violating ss. 13.61 to 13.68, and filing statements that are not believed to be true."
-    },
-    {
-      "cell": {
-        "cell_id": [
           "lobbying_disclosure_audit_required_in_law",
           "legal"
         ],
@@ -69,13 +53,30 @@
       },
       "cell_class": "EnumCell",
       "cited_section": "Wis. Stat. § 13.74(1) (2025)",
-      "justification": "Section 13.74(1) requires the ethics commission to cause an examination of all required statements (a compliance review/audit function) but does not mandate routine audits by an external independent third party, supporting a moderate score rather than a yes."
+      "justification": "Section 13.74(1) directs the ethics commission to examine all required statements and allows it to examine underlying documents, which constitutes a mandated compliance review but not a specified regular independent third-party audit."
     }
   ],
   "unscoreable_emissions": [],
-  "errors": [],
+  "errors": [
+    {
+      "reason": "instantiation_failed",
+      "key": [
+        "lobbying_violation_penalties_defined_in_law",
+        "legal"
+      ],
+      "error": "ValueError(\"BinaryCell: cannot coerce 'yes' to bool\")",
+      "arguments": {
+        "handle": "row_001",
+        "axis": "legal",
+        "value": "yes",
+        "confidence": "high",
+        "cited_section": "Wis. Stat. § 13.69(1)-(7) (2025)",
+        "justification": "Section 13.69 sets forfeitures and criminal penalties for principals and lobbyists who violate lobbying requirements, including acting as a lobbyist without being licensed, failing to comply with reporting requirements, and filing falsified statements."
+      }
+    }
+  ],
   "response": {
-    "id": "chatcmpl-DnNDjM6fEuWZ8p40K6AX5w2iRytPW",
+    "id": "chatcmpl-DnNANncOFWkrDrRKNaWsRHfJWUrFM",
     "choices": [
       {
         "finish_reason": "tool_calls",
@@ -90,17 +91,17 @@
           "function_call": null,
           "tool_calls": [
             {
-              "id": "call_bLW6cG8vaIUrnZ5DGXxYd1Nw",
+              "id": "call_QW9D5qjsvZtJpjGzWObhfVde",
               "function": {
-                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.69(1)-(4), (6m) (2025)\", \"justification\": \"Section 13.69 prescribes forfeitures and criminal penalties for violations of lobbying disclosure requirements, including acting as a lobbyist without being licensed, violating ss. 13.61 to 13.68, and filing statements that are not believed to be true.\"}",
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"value\": \"yes\", \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.69(1)-(7) (2025)\", \"justification\": \"Section 13.69 sets forfeitures and criminal penalties for principals and lobbyists who violate lobbying requirements, including acting as a lobbyist without being licensed, failing to comply with reporting requirements, and filing falsified statements.\"}",
                 "name": "record_cell"
               },
               "type": "function"
             },
             {
-              "id": "call_X7adaG9WgEom2sbrxvML05Po",
+              "id": "call_c72vwTCRYmxTJDMZb3yCSeMn",
               "function": {
-                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": \"MODERATE\", \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.74(1) (2025)\", \"justification\": \"Section 13.74(1) requires the ethics commission to cause an examination of all required statements (a compliance review/audit function) but does not mandate routine audits by an external independent third party, supporting a moderate score rather than a yes.\"}",
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": \"MODERATE\", \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.74(1) (2025)\", \"justification\": \"Section 13.74(1) directs the ethics commission to examine all required statements and allows it to examine underlying documents, which constitutes a mandated compliance review but not a specified regular independent third-party audit.\"}",
                 "name": "record_cell"
               },
               "type": "function"
@@ -109,15 +110,15 @@
         }
       }
     ],
-    "created": 1780659703,
+    "created": 1780659495,
     "model": "gpt-5.2-2025-12-11",
     "object": "chat.completion",
     "service_tier": "default",
     "system_fingerprint": null,
     "usage": {
-      "completion_tokens": 236,
-      "prompt_tokens": 19162,
-      "total_tokens": 19398,
+      "completion_tokens": 214,
+      "prompt_tokens": 19166,
+      "total_tokens": 19380,
       "completion_tokens_details": {
         "accepted_prediction_tokens": 0,
         "audio_tokens": 0,

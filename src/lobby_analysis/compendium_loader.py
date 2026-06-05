@@ -27,7 +27,7 @@ import json
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_COMPENDIUM_V2_TSV = REPO_ROOT / "compendium" / "disclosure_side_compendium_items_v2.tsv"
+DEFAULT_COMPENDIUM_V2_TSV = REPO_ROOT / "compendium" / "disclosure_side_compendium_items_v2.1.tsv"
 DEFAULT_COMPENDIUM_V1_CSV = REPO_ROOT / "compendium" / "_deprecated" / "v1" / "disclosure_items.csv"
 
 

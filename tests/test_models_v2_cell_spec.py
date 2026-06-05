@@ -56,6 +56,38 @@ def test_registry_legal_practical_split_matches_tsv_distribution():
     assert practical_count == 55
 
 
+def test_v2_1_pattern_c_split_rows_present_and_wrong_axes_removed():
+    """v2.1 Pattern C row split (2026-06-05) contract.
+
+    Pattern C audit (per `docs/active/wi-ralph-cpi-renewal-cadence/plans/
+    20260605_pattern_c_row_split_v2_1.md`) un-combined two rows where the
+    paired axis was a category error:
+
+    - `lobbying_violation_penalties_imposed_in_practice` was legal+practical;
+      its legal-axis cell asked the incoherent "in law, are penalties imposed
+      in practice?" v2.1 strips it to practical-only and adds
+      `lobbying_violation_penalties_defined_in_law` (binary, legal) — the
+      de-jure pair CPI 2015 IND_209's projection mapping doc said should exist.
+    - `lobbying_disclosure_audit_required_in_law` was legal+practical with the
+      practical cell mis-keyed by row name. v2.1 strips it to legal-only and
+      adds `lobbying_disclosure_audit_required_in_practice` (typed int 0-100
+      step 25, practical).
+    """
+    from lobby_analysis.models_v2.cell_spec import build_cell_spec_registry
+
+    registry = build_cell_spec_registry()
+
+    # New sibling rows present at correct axes.
+    assert ("lobbying_violation_penalties_defined_in_law", "legal") in registry
+    assert ("lobbying_disclosure_audit_required_in_practice", "practical") in registry
+
+    # Old rows now single-axis (wrong-axis half removed).
+    assert ("lobbying_violation_penalties_imposed_in_practice", "legal") not in registry
+    assert ("lobbying_violation_penalties_imposed_in_practice", "practical") in registry
+    assert ("lobbying_disclosure_audit_required_in_law", "legal") in registry
+    assert ("lobbying_disclosure_audit_required_in_law", "practical") not in registry
+
+
 def test_registry_doubles_each_legal_plus_practical_row():
     """The 5 known combined-axis rows must each have BOTH (row_id, 'legal') AND
     (row_id, 'practical') in the registry.
@@ -64,8 +96,6 @@ def test_registry_doubles_each_legal_plus_practical_row():
 
     registry = build_cell_spec_registry()
     combined_row_ids = {
-        "lobbying_disclosure_audit_required_in_law",
-        "lobbying_violation_penalties_imposed_in_practice",
         "lobbyist_registration_required",
         "lobbyist_spending_report_filing_cadence",
         "lobbyist_registration_deadline_days_after_first_lobbying",
@@ -118,18 +148,8 @@ def test_anchor_row_maps_to_binary_cell_at_legal():
 @pytest.mark.parametrize(
     "row_id, legal_class_name, practical_class_name",
     [
-        # cell_type: 'enum (legal) + typed int 0-100 step 25 (practical)'
-        (
-            "lobbying_disclosure_audit_required_in_law",
-            "EnumCell",
-            "GradedIntCell",
-        ),
-        # cell_type: 'binary (legal) + typed int 0-100 step 25 (practical)'
-        (
-            "lobbying_violation_penalties_imposed_in_practice",
-            "BinaryCell",
-            "GradedIntCell",
-        ),
+        # v2.1 note: `_audit_required_in_law` and `_imposed_in_practice` were
+        # un-combined in the Pattern C row split; their entries dropped here.
         (
             "lobbyist_registration_required",
             "BinaryCell",

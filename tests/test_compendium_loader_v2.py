@@ -32,9 +32,11 @@ EXPECTED_V2_COLUMNS = {
 }
 
 # Per `compendium/_deprecated/v1/README.md` and the 2026-05-13 row-freeze decisions log,
-# v2 has 181 rows (180 firm + 1 path-b unvalidated). This is the load-bearing contract
-# the successor branches consume.
-EXPECTED_V2_ROW_COUNT = 181
+# v2 had 181 rows; v2.1 (2026-06-05, Pattern C row split on wi-ralph-cpi-renewal-cadence)
+# has 183 rows after un-combining `_imposed_in_practice` and `_audit_required_in_law`
+# into single-axis pairs (each + 1 sibling row). Cell count unchanged at 186.
+# The loader default now points at `disclosure_side_compendium_items_v2.1.tsv`.
+EXPECTED_V2_ROW_COUNT = 183
 
 # The most-validated row in Compendium 2.0 — read by all 8 score-projection rubrics
 # (CPI 2015, PRI 2010, Sunlight 2015, Newmark 2017, Newmark 2005, Opheim 1991,
@@ -42,10 +44,10 @@ EXPECTED_V2_ROW_COUNT = 181
 CANONICAL_8_RUBRIC_ROW_ID = "lobbyist_spending_report_includes_total_compensation"
 
 
-def test_load_v2_compendium_returns_181_rows():
+def test_load_v2_compendium_returns_expected_row_count():
     rows = load_v2_compendium()
     assert len(rows) == EXPECTED_V2_ROW_COUNT, (
-        f"v2 compendium contract is 181 rows; loader returned {len(rows)}"
+        f"v2.1 compendium contract is {EXPECTED_V2_ROW_COUNT} rows; loader returned {len(rows)}"
     )
 
 

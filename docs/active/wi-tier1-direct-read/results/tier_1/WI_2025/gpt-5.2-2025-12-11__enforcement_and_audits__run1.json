@@ -9,13 +9,13 @@
     "state_abbr": "WI",
     "vintage_year": 2025,
     "prompt_sha256": "cf5e534eb79e06bd8862cb6a71fa3ba6db44eb86d8d1b12b85431ef394b042c8",
-    "timestamp_utc": "2026-06-04T17:04:57+00:00"
+    "timestamp_utc": "2026-06-05T11:41:42+00:00"
   },
-  "wall_clock_seconds": 4.062941249983851,
+  "wall_clock_seconds": 4.145150708034635,
   "usage": {
-    "completion_tokens": 222,
-    "prompt_tokens": 19129,
-    "total_tokens": 19351,
+    "completion_tokens": 226,
+    "prompt_tokens": 19162,
+    "total_tokens": 19388,
     "completion_tokens_details": {
       "accepted_prediction_tokens": 0,
       "audio_tokens": 0,
@@ -24,13 +24,13 @@
     },
     "prompt_tokens_details": {
       "audio_tokens": 0,
-      "cached_tokens": 18688
+      "cached_tokens": 17920
     }
   },
-  "cost_usd_estimate": 0.03658375,
+  "cost_usd_estimate": 0.036697499999999994,
   "legal_roster": [
     [
-      "lobbying_violation_penalties_imposed_in_practice",
+      "lobbying_violation_penalties_defined_in_law",
       "legal"
     ],
     [
@@ -39,6 +39,22 @@
     ]
   ],
   "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_violation_penalties_defined_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.69(1)-(4), (6m) (2025)",
+      "justification": "Section 13.69 prescribes forfeitures for principals and lobbyists who violate §§13.61–13.68, criminal penalties for falsified statements, penalties for acting as a lobbyist without being licensed, and a felony for filing statements not believed to be true."
+    },
     {
       "cell": {
         "cell_id": [
@@ -52,21 +68,14 @@
         "value": "MODERATE"
       },
       "cell_class": "EnumCell",
-      "cited_section": "Wis. Stat. § 13.74(1)–(2) (2025)",
-      "justification": "The commission must examine ('cause to have made an examination of') all required lobbying statements and may subpoena records in investigations, which constitutes a mandated compliance review/audit function but not a requirement for regular auditing by an independent third party."
+      "cited_section": "Wis. Stat. § 13.74(1) (2025)",
+      "justification": "Section 13.74(1) requires the ethics commission to examine all required statements and permits examination of supporting documents, which is a compliance review rather than a scheduled independent third-party audit."
     }
   ],
-  "unscoreable_emissions": [
-    {
-      "handle": "row_001",
-      "axis": "legal",
-      "reason": "The prompt’s scoring rubric concerns whether offenders are 'always/generally/rarely' sanctioned in practice when violations are discovered, but the bundled statute text only provides maximum penalties and enforcement/audit authority (e.g., forfeiture caps and discretionary suspension), not a legal mandate that sanctions must be imposed upon discovery or any statutory standard about consistency of sanctioning.",
-      "row_id": "lobbying_violation_penalties_imposed_in_practice"
-    }
-  ],
+  "unscoreable_emissions": [],
   "errors": [],
   "response": {
-    "id": "chatcmpl-Dn5mvR9IYWH0SFoViWS6SNZR6yCsY",
+    "id": "chatcmpl-DnNDfqDxMJmxr5HAJhcCvuhEDzUwI",
     "choices": [
       {
         "finish_reason": "tool_calls",
@@ -81,17 +90,17 @@
           "function_call": null,
           "tool_calls": [
             {
-              "id": "call_PY7896ecvAu8MCOWgQ9iZ1NA",
+              "id": "call_EYSUnu7xL6tnFlQvaHPi4gEH",
               "function": {
-                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"reason\": \"The prompt’s scoring rubric concerns whether offenders are 'always/generally/rarely' sanctioned in practice when violations are discovered, but the bundled statute text only provides maximum penalties and enforcement/audit authority (e.g., forfeiture caps and discretionary suspension), not a legal mandate that sanctions must be imposed upon discovery or any statutory standard about consistency of sanctioning.\"}",
-                "name": "record_unscoreable_cell"
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.69(1)-(4), (6m) (2025)\", \"justification\": \"Section 13.69 prescribes forfeitures for principals and lobbyists who violate §§13.61–13.68, criminal penalties for falsified statements, penalties for acting as a lobbyist without being licensed, and a felony for filing statements not believed to be true.\"}",
+                "name": "record_cell"
               },
               "type": "function"
             },
             {
-              "id": "call_3myLCBU1bfeS9HvitBZ6RXbx",
+              "id": "call_uuKa4TzpvN3YOoSPAKHRC8qs",
               "function": {
-                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": \"MODERATE\", \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.74(1)–(2) (2025)\", \"justification\": \"The commission must examine ('cause to have made an examination of') all required lobbying statements and may subpoena records in investigations, which constitutes a mandated compliance review/audit function but not a requirement for regular auditing by an independent third party.\"}",
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": \"MODERATE\", \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.74(1) (2025)\", \"justification\": \"Section 13.74(1) requires the ethics commission to examine all required statements and permits examination of supporting documents, which is a compliance review rather than a scheduled independent third-party audit.\"}",
                 "name": "record_cell"
               },
               "type": "function"
@@ -100,15 +109,15 @@
         }
       }
     ],
-    "created": 1780592693,
+    "created": 1780659699,
     "model": "gpt-5.2-2025-12-11",
     "object": "chat.completion",
     "service_tier": "default",
     "system_fingerprint": null,
     "usage": {
-      "completion_tokens": 222,
-      "prompt_tokens": 19129,
-      "total_tokens": 19351,
+      "completion_tokens": 226,
+      "prompt_tokens": 19162,
+      "total_tokens": 19388,
       "completion_tokens_details": {
         "accepted_prediction_tokens": 0,
         "audio_tokens": 0,
@@ -117,7 +126,7 @@
       },
       "prompt_tokens_details": {
         "audio_tokens": 0,
-        "cached_tokens": 18688
+        "cached_tokens": 17920
       }
     }
   }

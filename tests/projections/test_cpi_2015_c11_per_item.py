@@ -378,15 +378,16 @@ def test_ind_207_no_when_no_audit_requirement():
 
 
 # ---------------------------------------------------------------------------
-# IND_208 - de facto 5-tier passthrough: lobbying_disclosure_audit_required_in_law
-# (reads practical_availability axis of the same row #207 hits in law).
+# IND_208 - de facto 5-tier passthrough: lobbying_disclosure_audit_required_in_practice
+# v2.1: Pattern C inverse split — practical axis of the de-jure audit row moved
+# to its own row, mirroring `_imposed_in_practice` / `_defined_in_law` split.
 # ---------------------------------------------------------------------------
 
 
 @pytest.mark.parametrize("value", [0, 25, 50, 75, 100])
 def test_ind_208_passes_through_practical_availability_value(value: int):
     cells = {
-        "lobbying_disclosure_audit_required_in_law": {"practical_availability": value}
+        "lobbying_disclosure_audit_required_in_practice": {"practical_availability": value}
     }
     assert project_ind_208(cells) == value
 
@@ -425,7 +426,7 @@ _DE_FACTO_PASSTHROUGH_ITEMS = {
         "principal_spending_report_includes_compensation_paid_to_lobbyists",
     ),
     "IND_206": (project_ind_206, "lobbying_data_open_data_quality"),
-    "IND_208": (project_ind_208, "lobbying_disclosure_audit_required_in_law"),
+    "IND_208": (project_ind_208, "lobbying_disclosure_audit_required_in_practice"),
     "IND_209": (project_ind_209, "lobbying_violation_penalties_imposed_in_practice"),
 }
 

@@ -9,13 +9,13 @@
     "state_abbr": "WI",
     "vintage_year": 2025,
     "prompt_sha256": "cf5e534eb79e06bd8862cb6a71fa3ba6db44eb86d8d1b12b85431ef394b042c8",
-    "timestamp_utc": "2026-06-04T17:05:05+00:00"
+    "timestamp_utc": "2026-06-05T11:41:50+00:00"
   },
-  "wall_clock_seconds": 4.087336750002578,
+  "wall_clock_seconds": 3.841507165983785,
   "usage": {
-    "completion_tokens": 196,
-    "prompt_tokens": 19129,
-    "total_tokens": 19325,
+    "completion_tokens": 205,
+    "prompt_tokens": 19162,
+    "total_tokens": 19367,
     "completion_tokens_details": {
       "accepted_prediction_tokens": 0,
       "audio_tokens": 0,
@@ -27,10 +27,10 @@
       "cached_tokens": 19072
     }
   },
-  "cost_usd_estimate": 0.036219749999999995,
+  "cost_usd_estimate": 0.03640349999999999,
   "legal_roster": [
     [
-      "lobbying_violation_penalties_imposed_in_practice",
+      "lobbying_violation_penalties_defined_in_law",
       "legal"
     ],
     [
@@ -39,6 +39,22 @@
     ]
   ],
   "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_violation_penalties_defined_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.69(1)-(4), (6m) (2025)",
+      "justification": "Section 13.69 prescribes civil forfeitures and criminal penalties for principals and lobbyists who violate lobbying-disclosure requirements (including filing falsified statements and acting as a lobbyist without a license)."
+    },
     {
       "cell": {
         "cell_id": [
@@ -52,21 +68,14 @@
         "value": "MODERATE"
       },
       "cell_class": "EnumCell",
-      "cited_section": "Wis. Stat. § 13.74(1)-(2) (2025)",
-      "justification": "The ethics commission is required to examine all required filings and may inspect supporting documents and subpoena records, establishing a compliance review/audit function rather than a requirement of regular independent third‑party audits."
+      "cited_section": "Wis. Stat. § 13.74(1) (2025)",
+      "justification": "The commission must examine all required filed statements and may examine supporting documents, which constitutes a compliance review rather than a mandated independent regular audit by an impartial third party."
     }
   ],
-  "unscoreable_emissions": [
-    {
-      "handle": "row_001",
-      "axis": "legal",
-      "reason": "The prompt’s scoring criteria asks whether offenders are 'always/generally/rarely' sanctioned when violations are discovered, which is an empirical enforcement-frequency question; the statute text (e.g., §13.69 penalties) specifies available penalties but not how consistently they are imposed.",
-      "row_id": "lobbying_violation_penalties_imposed_in_practice"
-    }
-  ],
+  "unscoreable_emissions": [],
   "errors": [],
   "response": {
-    "id": "chatcmpl-Dn5n30sAIkWHY7KvobEslGaYjwSz9",
+    "id": "chatcmpl-DnNDmCwFGhuUjgqYIEXdxlBPvXsMM",
     "choices": [
       {
         "finish_reason": "tool_calls",
@@ -81,17 +90,17 @@
           "function_call": null,
           "tool_calls": [
             {
-              "id": "call_8xynfvjvovHA6Bnzk5eakUTk",
+              "id": "call_5V7SmOD37we74mBsp2H6XNfC",
               "function": {
-                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"reason\": \"The prompt’s scoring criteria asks whether offenders are 'always/generally/rarely' sanctioned when violations are discovered, which is an empirical enforcement-frequency question; the statute text (e.g., §13.69 penalties) specifies available penalties but not how consistently they are imposed.\"}",
-                "name": "record_unscoreable_cell"
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.69(1)-(4), (6m) (2025)\", \"justification\": \"Section 13.69 prescribes civil forfeitures and criminal penalties for principals and lobbyists who violate lobbying-disclosure requirements (including filing falsified statements and acting as a lobbyist without a license).\"}",
+                "name": "record_cell"
               },
               "type": "function"
             },
             {
-              "id": "call_rXyrIQsDranATWv4VPxkMsxQ",
+              "id": "call_N9c8EOyPikrHcYbIUAKCe1kE",
               "function": {
-                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": \"MODERATE\", \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.74(1)-(2) (2025)\", \"justification\": \"The ethics commission is required to examine all required filings and may inspect supporting documents and subpoena records, establishing a compliance review/audit function rather than a requirement of regular independent third‑party audits.\"}",
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": \"MODERATE\", \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.74(1) (2025)\", \"justification\": \"The commission must examine all required filed statements and may examine supporting documents, which constitutes a compliance review rather than a mandated independent regular audit by an impartial third party.\"}",
                 "name": "record_cell"
               },
               "type": "function"
@@ -100,15 +109,15 @@
         }
       }
     ],
-    "created": 1780592701,
+    "created": 1780659706,
     "model": "gpt-5.2-2025-12-11",
     "object": "chat.completion",
     "service_tier": "default",
     "system_fingerprint": null,
     "usage": {
-      "completion_tokens": 196,
-      "prompt_tokens": 19129,
-      "total_tokens": 19325,
+      "completion_tokens": 205,
+      "prompt_tokens": 19162,
+      "total_tokens": 19367,
       "completion_tokens_details": {
         "accepted_prediction_tokens": 0,
         "audio_tokens": 0,
