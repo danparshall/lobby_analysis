@@ -55,9 +55,13 @@ tier1 = _load("tier_1_direct_read_legal_axis", _TIER_1_PATH)
 
 
 def test_omitting_chunks_resolves_to_all_six():
+    """Omitting --chunks dispatches the 6 default CPI-2015 C11 chunks.
+    Phase A A2.b's extension to ``_RESOLVED_CHUNKS`` adds
+    `actor_registration_required` as a permitted --chunks VALUE but
+    deliberately does NOT add it to the default dispatch set."""
     args = tier1.parse_args(["--state", "WI", "--vintage", "2025"])
     resolved = tier1.resolve_active_chunks(args.chunks)
-    assert resolved == tier1._RESOLVED_CHUNKS
+    assert resolved == tier1._DEFAULT_CHUNKS
     assert len(resolved) == 6
 
 
@@ -119,3 +123,29 @@ def test_unknown_chunk_id_raises_with_valid_list_in_message():
     assert "nonexistent_chunk" in msg
     for valid_chunk in tier1._RESOLVED_CHUNKS:
         assert valid_chunk in msg
+
+
+# ---------------------------------------------------------------------------
+# 5 — Phase A A2.b BinaryCell verification chunk must be dispatchable
+# ---------------------------------------------------------------------------
+
+
+def test_actor_registration_required_chunk_is_dispatchable():
+    """Phase A A2.b verification (plan 20260605_phase_a_yaml_audit_at_scale.md)
+    needs to dispatch ``actor_registration_required`` — 11 pure-binary
+    ``actor_*_registration_required`` rows — as the BinaryCell template
+    verification chunk before multi-state expansion runs blind.
+
+    The chunk_id must be in ``_RESOLVED_CHUNKS`` so the
+    ``--chunks actor_registration_required`` invocation passes validation.
+    No semantic dispatcher change; the chunk is already defined in the
+    chunks_v2 manifest.
+    """
+    args = tier1.parse_args(
+        [
+            "--state", "WI", "--vintage", "2025",
+            "--chunks", "actor_registration_required",
+        ]
+    )
+    resolved = tier1.resolve_active_chunks(args.chunks)
+    assert resolved == ("actor_registration_required",)

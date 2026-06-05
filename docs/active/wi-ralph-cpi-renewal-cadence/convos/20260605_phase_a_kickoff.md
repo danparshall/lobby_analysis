@@ -2,6 +2,7 @@
 
 **Plan:** [`../plans/20260605_phase_a_yaml_audit_at_scale.md`](../plans/20260605_phase_a_yaml_audit_at_scale.md)
 **Originating convo:** [`20260605_pattern_c_v2_1_execution.md`](20260605_pattern_c_v2_1_execution.md) §"Open questions / next-session candidates" item (i) "Phase A pre-flight YAML audit at scale"
+**Execution session:** [`20260605_phase_a_execution.md`](20260605_phase_a_execution.md) (Phase A landed 2026-06-05 even later; 163 YAML additives + A2.b dispatch on 3 chunks; BinaryCell + EnumCell templates confirmed at scale)
 
 ## Pre-flight
 

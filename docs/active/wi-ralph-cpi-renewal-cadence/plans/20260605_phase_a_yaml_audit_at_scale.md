@@ -5,6 +5,7 @@
 **Originating convo:** `convos/20260605_phase_a_kickoff.md` (this session — to be written at finish-convo)
 **Predecessor:** [`convos/20260605_pattern_c_v2_1_execution.md`](../convos/20260605_pattern_c_v2_1_execution.md) — 4-cell-type matrix structurally closed (IntCell ✓ EnumCell ✓ DecimalCell-Optional ✓ BinaryCell ✓)
 **Status:** APPROVED 2026-06-05 — Dan endorsed skipping A0 (instinct: "why not just append the template preemptively, it's free?") + A2.b verification ("after you make the edits, then we'll test"). v2.1 propagation to main remains deferred. Stages below are revised accordingly.
+**Executed:** 2026-06-05 (even later) — see [`convos/20260605_phase_a_execution.md`](../convos/20260605_phase_a_execution.md). 163 YAML additives landed under TDD; A2.b dispatch on 3 chunks ($0.8290; cumulative $3.5127) confirmed BinaryCell + EnumCell templates at scale; DecimalCell-Optional 2 of 4 stable; long-tail TimeThresholdCell DEFER call confirmed empirically.
 
 ## Plan revision 2026-06-05 (post-Dan-discussion)
 

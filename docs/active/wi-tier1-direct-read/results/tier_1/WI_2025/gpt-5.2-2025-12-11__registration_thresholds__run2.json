@@ -9,13 +9,13 @@
     "state_abbr": "WI",
     "vintage_year": 2025,
     "prompt_sha256": "cf5e534eb79e06bd8862cb6a71fa3ba6db44eb86d8d1b12b85431ef394b042c8",
-    "timestamp_utc": "2026-06-04T21:51:10+00:00"
+    "timestamp_utc": "2026-06-05T17:31:25+00:00"
   },
-  "wall_clock_seconds": 8.03217245801352,
+  "wall_clock_seconds": 10.225335374998394,
   "usage": {
-    "completion_tokens": 573,
-    "prompt_tokens": 19494,
-    "total_tokens": 20067,
+    "completion_tokens": 631,
+    "prompt_tokens": 19712,
+    "total_tokens": 20343,
     "completion_tokens_details": {
       "accepted_prediction_tokens": 0,
       "audio_tokens": 0,
@@ -24,10 +24,10 @@
     },
     "prompt_tokens_details": {
       "audio_tokens": 0,
-      "cached_tokens": 18944
+      "cached_tokens": 19584
     }
   },
-  "cost_usd_estimate": 0.0421365,
+  "cost_usd_estimate": 0.04333,
   "legal_roster": [
     [
       "lobbyist_registration_threshold_compensation_dollars",
@@ -68,8 +68,40 @@
         "value": "0"
       },
       "cell_class": "DecimalCell",
-      "cited_section": "Wis. Stat. § 13.62(11)",
-      "justification": "The statute defines a 'lobbyist' as an individual who receives 'economic consideration, other than reimbursement for actual expenses,' from a principal and whose duties include lobbying, without setting any minimum dollar amount of compensation."
+      "cited_section": "Wis. Stat. § 13.62(11) (2025)",
+      "justification": "The definition of “lobbyist” includes any individual who is employed by a principal or receives “economic consideration, other than reimbursement for actual expenses” and whose duties include lobbying, with no minimum dollar compensation amount stated."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_threshold_expenditure_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": null
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "Wis. Stat. § 13.62(11) (2025); § 13.66 (2025)",
+      "justification": "The statute’s lobbyist definition and licensing restriction hinge on employment/economic consideration and (in some cases) days of lobbying communications, but do not set any lobbyist-side lobbying-expenditure dollar trigger for being a lobbyist."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_filing_itemization_de_minimis_threshold_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": null
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "Wis. Stat. § 13.68 (2025)",
+      "justification": "Expense reporting duties in the provided text are imposed on principals (not lobbyists filing their own spending reports) and no per-item de minimis itemization threshold for lobbyist reports is stated."
     },
     {
       "cell": {
@@ -84,30 +116,27 @@
         "value": "500"
       },
       "cell_class": "DecimalCell",
-      "cited_section": "Wis. Stat. § 13.64(1); Wis. Stat. § 13.621(5)",
-      "justification": "A principal must register only after exceeding $500 in aggregate lobbying expenditures/obligations in a calendar year (§ 13.64(1)), and principals anticipating not exceeding $500 may file a verified statement and are exempt from licensing/registration/reporting (§ 13.621(5))."
-    }
-  ],
-  "unscoreable_emissions": [
-    {
-      "handle": "row_002",
-      "axis": "legal",
-      "reason": "The bundled provisions define 'lobbyist' based on receiving economic consideration and/or making lobbying communications on at least 5 days, but do not define any lobbyist-registration trigger based on the lobbyist’s own lobbying expenditures.",
-      "row_id": "lobbyist_registration_threshold_expenditure_dollars"
+      "cited_section": "Wis. Stat. § 13.64(1) and § 13.621(5) (2025)",
+      "justification": "A principal must register only after exceeding $500 in aggregate lobbying expenditures/obligations in a calendar year, and principals anticipating not exceeding $500 may file a verified statement and be exempt from licensing/registration/reporting if true."
     },
     {
-      "handle": "row_004",
-      "axis": "legal",
-      "reason": "The bundled text requires principals (not lobbyists) to file expense statements under § 13.68, and lobbyists only provide supporting information to principals (§ 13.68(4)); it does not establish a lobbyist-side expenditure reporting threshold.",
-      "row_id": "lobbyist_filing_itemization_de_minimis_threshold_dollars"
-    },
-    {
-      "handle": "row_006",
-      "axis": "legal",
-      "reason": "The statute includes a 10-hours-per-reporting-period exclusion for certain non-lobbyist employees in principal reporting (§ 13.68(1)(a),(c)), but it does not create any exemption keyed to a percentage of an individual’s compensated time devoted to lobbying.",
-      "row_id": "lobbyist_filing_de_minimis_threshold_time_percent"
+      "cell": {
+        "cell_id": [
+          "lobbyist_filing_de_minimis_threshold_time_percent",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": null
+      },
+      "cell_class": "FloatCell",
+      "cited_section": "Wis. Stat. § 13.62(11) (2025)",
+      "justification": "Wisconsin’s de minimis in the lobbyist definition is based on at least 5 days of lobbying communications (not a percentage of compensated time), and no percent-of-time exemption from disclosure is specified in the provided provisions."
     }
   ],
+  "unscoreable_emissions": [],
   "errors": [
     {
       "reason": "instantiation_failed",
@@ -124,13 +153,13 @@
           "unit": "days_per_reporting_period"
         },
         "confidence": "high",
-        "cited_section": "Wis. Stat. § 13.62(11); § 13.62(12r)",
-        "justification": "An individual whose duties are not exclusively lobbying is a 'lobbyist' only if he or she makes lobbying communications on at least 5 days within a 'reporting period,' which is defined as a 6-month period."
+        "cited_section": "Wis. Stat. § 13.62(11) and § 13.62(12r) (2025)",
+        "justification": "If an individual’s duties are not exclusively lobbying, the person is a lobbyist only if he or she makes lobbying communications on each of at least 5 days within a 6-month reporting period."
       }
     }
   ],
   "response": {
-    "id": "chatcmpl-DnAFqE1RQQ5RholYROk9Wd5RvmMwa",
+    "id": "chatcmpl-DnSg0rSwiG5yZi7jLmW3FSKimHOYG",
     "choices": [
       {
         "finish_reason": "tool_calls",
@@ -145,50 +174,50 @@
           "function_call": null,
           "tool_calls": [
             {
-              "id": "call_jHdUP4vm0LHcxJcWNcONYorH",
+              "id": "call_F7wsSI4tjUQkll25AEQfU1Ae",
               "function": {
-                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"value\": 0, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.62(11)\", \"justification\": \"The statute defines a 'lobbyist' as an individual who receives 'economic consideration, other than reimbursement for actual expenses,' from a principal and whose duties include lobbying, without setting any minimum dollar amount of compensation.\"}",
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"value\": 0, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.62(11) (2025)\", \"justification\": \"The definition of “lobbyist” includes any individual who is employed by a principal or receives “economic consideration, other than reimbursement for actual expenses” and whose duties include lobbying, with no minimum dollar compensation amount stated.\"}",
                 "name": "record_cell"
               },
               "type": "function"
             },
             {
-              "id": "call_6Rq9Jxr1c6IbTG8ZsTjki1lZ",
+              "id": "call_Q2Zx9BIyzeg3ICRmRRNW746i",
               "function": {
-                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"reason\": \"The bundled provisions define 'lobbyist' based on receiving economic consideration and/or making lobbying communications on at least 5 days, but do not define any lobbyist-registration trigger based on the lobbyist’s own lobbying expenditures.\"}",
-                "name": "record_unscoreable_cell"
-              },
-              "type": "function"
-            },
-            {
-              "id": "call_PwEOWGI1t8x7gE8TQRq7HvGN",
-              "function": {
-                "arguments": "{\"handle\": \"row_003\", \"axis\": \"legal\", \"value\": {\"magnitude\": 5, \"unit\": \"days_per_reporting_period\"}, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.62(11); § 13.62(12r)\", \"justification\": \"An individual whose duties are not exclusively lobbying is a 'lobbyist' only if he or she makes lobbying communications on at least 5 days within a 'reporting period,' which is defined as a 6-month period.\"}",
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": null, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.62(11) (2025); § 13.66 (2025)\", \"justification\": \"The statute’s lobbyist definition and licensing restriction hinge on employment/economic consideration and (in some cases) days of lobbying communications, but do not set any lobbyist-side lobbying-expenditure dollar trigger for being a lobbyist.\"}",
                 "name": "record_cell"
               },
               "type": "function"
             },
             {
-              "id": "call_iYYE3AZCaR5w49hWXqRafM2U",
+              "id": "call_jIHiVyAOx03bgHL0cbT2MFJs",
               "function": {
-                "arguments": "{\"handle\": \"row_004\", \"axis\": \"legal\", \"reason\": \"The bundled text requires principals (not lobbyists) to file expense statements under § 13.68, and lobbyists only provide supporting information to principals (§ 13.68(4)); it does not establish a lobbyist-side expenditure reporting threshold.\"}",
-                "name": "record_unscoreable_cell"
-              },
-              "type": "function"
-            },
-            {
-              "id": "call_wFDydixwCW2xOpyVjc21sE9c",
-              "function": {
-                "arguments": "{\"handle\": \"row_005\", \"axis\": \"legal\", \"value\": 500, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.64(1); Wis. Stat. § 13.621(5)\", \"justification\": \"A principal must register only after exceeding $500 in aggregate lobbying expenditures/obligations in a calendar year (§ 13.64(1)), and principals anticipating not exceeding $500 may file a verified statement and are exempt from licensing/registration/reporting (§ 13.621(5)).\"}",
+                "arguments": "{\"handle\": \"row_003\", \"axis\": \"legal\", \"value\": {\"magnitude\": 5, \"unit\": \"days_per_reporting_period\"}, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.62(11) and § 13.62(12r) (2025)\", \"justification\": \"If an individual’s duties are not exclusively lobbying, the person is a lobbyist only if he or she makes lobbying communications on each of at least 5 days within a 6-month reporting period.\"}",
                 "name": "record_cell"
               },
               "type": "function"
             },
             {
-              "id": "call_5n3eEDvc6yFNfDOfpXIvrFZP",
+              "id": "call_P8twvGTwlMBNMHNyIlhQnXCq",
               "function": {
-                "arguments": "{\"handle\": \"row_006\", \"axis\": \"legal\", \"reason\": \"The statute includes a 10-hours-per-reporting-period exclusion for certain non-lobbyist employees in principal reporting (§ 13.68(1)(a),(c)), but it does not create any exemption keyed to a percentage of an individual’s compensated time devoted to lobbying.\"}",
-                "name": "record_unscoreable_cell"
+                "arguments": "{\"handle\": \"row_004\", \"axis\": \"legal\", \"value\": null, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.68 (2025)\", \"justification\": \"Expense reporting duties in the provided text are imposed on principals (not lobbyists filing their own spending reports) and no per-item de minimis itemization threshold for lobbyist reports is stated.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_3F9P2w7xN1c0EJU2yVFElWET",
+              "function": {
+                "arguments": "{\"handle\": \"row_005\", \"axis\": \"legal\", \"value\": 500, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.64(1) and § 13.621(5) (2025)\", \"justification\": \"A principal must register only after exceeding $500 in aggregate lobbying expenditures/obligations in a calendar year, and principals anticipating not exceeding $500 may file a verified statement and be exempt from licensing/registration/reporting if true.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_aGQyEUxjVyWmKeDKP3QAloAi",
+              "function": {
+                "arguments": "{\"handle\": \"row_006\", \"axis\": \"legal\", \"value\": null, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.62(11) (2025)\", \"justification\": \"Wisconsin’s de minimis in the lobbyist definition is based on at least 5 days of lobbying communications (not a percentage of compensated time), and no percent-of-time exemption from disclosure is specified in the provided provisions.\"}",
+                "name": "record_cell"
               },
               "type": "function"
             }
@@ -196,15 +225,15 @@
         }
       }
     ],
-    "created": 1780609862,
+    "created": 1780680676,
     "model": "gpt-5.2-2025-12-11",
     "object": "chat.completion",
     "service_tier": "default",
     "system_fingerprint": null,
     "usage": {
-      "completion_tokens": 573,
-      "prompt_tokens": 19494,
-      "total_tokens": 20067,
+      "completion_tokens": 631,
+      "prompt_tokens": 19712,
+      "total_tokens": 20343,
       "completion_tokens_details": {
         "accepted_prediction_tokens": 0,
         "audio_tokens": 0,
@@ -213,7 +242,7 @@
       },
       "prompt_tokens_details": {
         "audio_tokens": 0,
-        "cached_tokens": 18944
+        "cached_tokens": 19584
       }
     }
   }

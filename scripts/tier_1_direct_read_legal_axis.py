@@ -69,9 +69,10 @@ tier0 = _load_tier_0()
 # Constants — Tier-1 scope.
 # ---------------------------------------------------------------------------
 
-# The 6 chunks containing the CPI-2015 C11 de-jure items (IND_196/197/199/
-# 201/203/207). Resolved in Step 1 of the plan; recorded in the writeup.
-_RESOLVED_CHUNKS: tuple[str, ...] = (
+# The 6 default chunks dispatched when --chunks is omitted: the CPI-2015 C11
+# de-jure items (IND_196/197/199/201/203/207). Resolved in Step 1 of the plan;
+# recorded in the writeup.
+_DEFAULT_CHUNKS: tuple[str, ...] = (
     "lobbying_definitions",
     "registration_thresholds",
     "registration_mechanics_and_exemptions",
@@ -79,6 +80,16 @@ _RESOLVED_CHUNKS: tuple[str, ...] = (
     "principal_spending_report",
     "enforcement_and_audits",
 )
+
+# Additional chunk_ids accepted as --chunks values (but NOT in the default
+# dispatch set). Phase A A2.b (2026-06-05) adds `actor_registration_required`
+# — 11 pure-binary rows — as the BinaryCell template verification chunk.
+_PHASE_A_EXTRA_CHUNKS: tuple[str, ...] = (
+    "actor_registration_required",
+)
+
+# Full set of valid --chunks values: defaults + Phase A additions.
+_RESOLVED_CHUNKS: tuple[str, ...] = _DEFAULT_CHUNKS + _PHASE_A_EXTRA_CHUNKS
 
 _N_RUNS = 3
 _MODELS: tuple[str, ...] = (tier0._ANTHROPIC_MODEL, tier0._OPENAI_MODEL)
@@ -153,16 +164,17 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 def resolve_active_chunks(chunks_arg: list[str] | None) -> tuple[str, ...]:
     """Resolve the --chunks argument to a tuple of chunk_ids to dispatch.
 
-    If ``chunks_arg`` is ``None`` (flag omitted), returns all 6 chunks —
-    backward-compatible with the pre-Phase-B behavior. If ``chunks_arg`` is
-    provided, validates each entry against ``_RESOLVED_CHUNKS`` and returns
-    only those, preserving caller-specified order. An unknown chunk_id
-    raises ``SystemExit`` with a message naming the bad chunk AND the full
-    valid list — silent fall-through to "all chunks" is the regression to
-    prevent.
+    If ``chunks_arg`` is ``None`` (flag omitted), returns ``_DEFAULT_CHUNKS``
+    (the original 6 CPI-2015 C11 chunks) — backward-compatible with the
+    pre-Phase-B behavior. If ``chunks_arg`` is provided, validates each
+    entry against ``_RESOLVED_CHUNKS`` (defaults + Phase A extras) and
+    returns only those, preserving caller-specified order. An unknown
+    chunk_id raises ``SystemExit`` with a message naming the bad chunk AND
+    the full valid list — silent fall-through to "all chunks" is the
+    regression to prevent.
     """
     if not chunks_arg:
-        return _RESOLVED_CHUNKS
+        return _DEFAULT_CHUNKS
     valid = set(_RESOLVED_CHUNKS)
     unknown = [c for c in chunks_arg if c not in valid]
     if unknown:
