@@ -82,3 +82,24 @@ note) before any normalization code. Everything downstream is provisional on Pha
   map to the WI-style `reporting_period_start/end` fields.
 - 2019 bulk-data cutoff — confirm and decide first target year(s).
 - Whether NY filings need an entity-resolution pass (same principal across years/filings).
+
+---
+
+## Update — Phase 0 executed same session (Dan: "try the schema-verification now, just 2025")
+
+Ran the gating Phase 0 live against `data.ny.gov` (scripts `scripts/ny_*.py`; venv set up). Full writeup: [`../results/20260605_ny_schema_verification.md`](../results/20260605_ny_schema_verification.md). Evidence committed under `tests/fixtures/ny/` (sample rows) + `../results/ny_*_2025.json` (aggregates).
+
+**Gating verdicts — all pass:** (a) spend transactional **YES** (per filing-period comp + itemized expenses); (b) real bill # **YES on the `State Bill` focus subset = 87.7% of client rows / 96.3% of lobbyist rows** (`focus_identifying_number` = `S550-A`); (c) stance **absent, confirmed**. No-IPF/no-allocation architecture **holds**.
+
+**Two refinements not anticipated in the kickoff plan:**
+1. **Bill linkage is a typed subset** (`focus type = State Bill`), not universal — chain closes for the 88–96% majority; other focus rows are subject/funding free text.
+2. **The API is denormalized ~1,300×.** Client semi-annual 2025 = 11.2M rows but only **8,613 distinct filings** (1,334 lobbyist firms, 4,376 clients, 8,303 distinct state bills). Compensation is filing-level, *replicated across rows*. ⇒ pull via **bulk CSV** (not API pagination), **collapse to filing grain**, **never sum comp across raw rows**.
+
+**Decisions locked (Dan):** chain spine = `client_semiannual` (`qym9-xzj6`); `lobbyist_bimonthly` (`t9kf-dqbc`) for itemized expenses + individual people; Open States is the lawmaker spine (web-confirmed solid for NY); skip `parties_lobbied` (kept as passthrough column only).
+
+## Update — two follow-up decisions (a1/a2)
+
+- **a1 — per-bill dollar attribution.** Dan challenged my framing: "carry filing comp + n_bills, let the consumer divide" is *declining* to model, the opposite of WI's `modeled_hours_per_sponsor` (which committed to a uniform allocation and shipped it). **Corrected: model it, even-split** — ship `comp_per_bill = filing_compensation / n_bills_in_filing` AND keep `filing_compensation` + `n_bills_in_filing` for re-aggregation. Precision: NY discloses no per-bill weight, so the split is uniform — analogous to WI's per-*sponsor* split, not its disclosed-% per-*bill* split; NY's spend chain is *less* modeled than WI's.
+- **a2 — bill-id suffix.** Web-confirmed: `S550-A` = Senate Bill 550, first amended print (`-B` second, …); base number is the bill identity, Open States keys by base. **Strip `-A/-B` for the OS join, preserve original as `bill_print_version`, measure OS match rate both ways in Phase 4.** Sources cited in the findings doc.
+
+**Session outcome:** Phase 0 closed; plan + RESEARCH_LOG updated with both refinements and both decisions; ready for Phase 1 (bulk-CSV acquisition) whenever Dan greenlights the build. Commits: `2a6d32b` (kickoff plan), `b11f15b` (Phase 0), `74c3c21` (a1/a2 decisions).
