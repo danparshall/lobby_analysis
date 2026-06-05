@@ -15,6 +15,8 @@ unsolved problem — this runner consumes a caller-supplied URL list.
 
 from __future__ import annotations
 
+import csv
+import io
 import re
 from dataclasses import dataclass
 from pathlib import Path
@@ -86,24 +88,65 @@ def run_batch(
     return results
 
 
-def _read_urls(args: Sequence[str]) -> list[str]:
-    """URLs come either as positional args, or via `--file <path>`.
+def read_url_regimes(args: Sequence[str]) -> list[tuple[str, Optional[str]]]:
+    """Read AER URLs paired with their OLAC regime, from `--file <path>` or args.
 
-    A `--file` may be a plain one-URL-per-line list OR the discover step's rich
-    TSV — each non-comment line is scanned for an `/olac/AERs/{id}/View` URL and
-    that token is taken (so the header and any extra columns are ignored). This
-    is what lets `discover --out x.tsv` pipe straight into `batch --file x.tsv`."""
+    A discover TSV carries `aer_url` + `regime` columns; each row yields
+    `(url, regime)`. A plain one-URL-per-line list (or a TSV predating the
+    `regime` column) yields `(url, None)` — an unknown regime is surfaced as
+    None, never silently treated as legislative. This is what lets
+    `discover --out x.tsv` pipe straight into `batch --file x.tsv`."""
     if len(args) >= 2 and args[0] == "--file":
-        urls: list[str] = []
-        for ln in Path(args[1]).read_text().splitlines():
-            ln = ln.strip()
-            if not ln or ln.startswith("#"):
+        return _read_file_url_regimes(Path(args[1]))
+    return [(u, None) for u in args]
+
+
+def _read_file_url_regimes(path: Path) -> list[tuple[str, Optional[str]]]:
+    text = path.read_text()
+    lines = [
+        ln for ln in text.splitlines()
+        if ln.strip() and not ln.lstrip().startswith("#")
+    ]
+    # discover TSV: a tab-delimited header naming aer_url. Pull the URL and the
+    # (optional) regime column by name so column order can't silently mismatch.
+    if lines and "\t" in lines[0] and "aer_url" in lines[0]:
+        out: list[tuple[str, Optional[str]]] = []
+        for row in csv.DictReader(io.StringIO(text), delimiter="\t"):
+            url = (row.get("aer_url") or "").strip()
+            if not url:
                 continue
-            m = _AER_URL_RE.search(ln)
-            if m:
-                urls.append(m.group(0))
-        return urls
-    return list(args)
+            regime = (row.get("regime") or "").strip() or None
+            out.append((url, regime))
+        return out
+    # plain one-URL-per-line list — scan each line, no regime available.
+    out = []
+    for ln in lines:
+        m = _AER_URL_RE.search(ln)
+        if m:
+            out.append((m.group(0), None))
+    return out
+
+
+def _read_urls(args: Sequence[str]) -> list[str]:
+    """URLs only (regime dropped) — back-compat wrapper over read_url_regimes."""
+    return [u for u, _ in read_url_regimes(args)]
+
+
+def select_legislative(
+    pairs: Sequence[tuple[str, Optional[str]]],
+    include_nonlegislative: bool,
+) -> tuple[list[tuple[str, Optional[str]]], int]:
+    """Partition (url, regime) pairs by the skip policy.
+
+    Only the legislative extraction brief exists, so by default non-legislative
+    (and unknown-regime) filings are skipped to keep the corpus trustworthy.
+    Returns (kept_pairs, skipped_count). With `include_nonlegislative=True`,
+    nothing is skipped (those filings run through the legislative brief and get
+    an extraction warning in `extract_one_filing`)."""
+    if include_nonlegislative:
+        return list(pairs), 0
+    kept = [(u, r) for (u, r) in pairs if r == "legislative"]
+    return kept, len(pairs) - len(kept)
 
 
 def cli_main() -> int:
@@ -115,17 +158,38 @@ def cli_main() -> int:
     from lobby_analysis.oh_portal.pipeline import extract_one_filing
 
     load_env_local()
-    urls = _read_urls(sys.argv[1:])
-    if not urls:
+    argv = list(sys.argv[1:])
+    include_nonlegislative = False
+    if "--include-nonlegislative" in argv:
+        argv.remove("--include-nonlegislative")
+        include_nonlegislative = True
+
+    pairs = read_url_regimes(argv)
+    if not pairs:
         print(
             "usage: python -m lobby_analysis.oh_portal.batch <OLAC_AER_URL>... "
-            "| --file <path>",
+            "| --file <path> [--include-nonlegislative]",
             file=sys.stderr,
         )
         return 2
 
+    kept, skipped = select_legislative(pairs, include_nonlegislative)
+    if skipped:
+        print(
+            f"[oh_portal.batch] skipping {skipped} non-legislative/unknown-regime "
+            "filing(s); pass --include-nonlegislative to extract them with the "
+            "legislative brief (flagged via extraction_warnings)",
+            file=sys.stderr,
+        )
+    regime_by_url = dict(kept)
+    urls = [u for u, _ in kept]
+
     def process_one(url: str) -> Path:
-        return extract_one_filing(url, log=lambda m: print(m, file=sys.stderr))
+        return extract_one_filing(
+            url,
+            regime=regime_by_url.get(url),
+            log=lambda m: print(m, file=sys.stderr),
+        )
 
     results = run_batch(urls, DATA_DIR, process_one)
 

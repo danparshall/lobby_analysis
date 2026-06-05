@@ -7,6 +7,7 @@ column-order assumptions, AER-vs-registration discrimination, year filtering.
 """
 
 from lobby_analysis.oh_portal.discover import (
+    category_to_regime,
     parse_agent_roster,
     parse_forms_filed,
     parse_search_agent_ids,
@@ -79,6 +80,29 @@ def test_parse_forms_filed_keeps_registration_distinguishable() -> None:
     initial = next(f for f in forms if f.report_id == "487198")
     assert initial.form_type == "Initial"
     assert "/olac/Initials/" in initial.view_url
+
+
+def test_parse_forms_filed_captures_category() -> None:
+    # The Category column (L/E/R) is what distinguishes the OLAC disclosure
+    # regime; without it the agent-axis crawl can't tell a legislative AER from
+    # an executive one. Index 5 in the real 8-column table.
+    forms = parse_forms_filed(FORMS_FILED_HTML)
+    cats = {f.report_id: f.category for f in forms}
+    assert cats["1492518"] == "L"  # legislative AER
+    assert cats["1427844"] == "E"  # executive AER
+
+
+def test_category_to_regime_maps_known_letters() -> None:
+    assert category_to_regime("L") == "legislative"
+    assert category_to_regime("E") == "executive"
+    assert category_to_regime("R") == "retirement_system"
+
+
+def test_category_to_regime_unknown_is_none_not_legislative() -> None:
+    # The bug being removed is defaulting unknowns to "legislative". An
+    # unrecognized or blank category must surface as None, not a silent default.
+    assert category_to_regime("") is None
+    assert category_to_regime("X") is None
 
 
 def test_recent_aers_filters_by_type_and_year() -> None:

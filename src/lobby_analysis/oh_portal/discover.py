@@ -52,8 +52,25 @@ class FiledForm:
     year: int
     employer: str
     form_type: str
+    category: str
     reporting_period: str
     view_url: str
+
+
+# OLAC's "Category" column encodes the disclosure regime the form belongs to.
+# Confirmed empirically against 364,351 cached AER rows (2026-06-05): the column
+# takes exactly L / E / R, no blanks. Anything else is treated as unknown (None),
+# never silently defaulted to legislative.
+_CATEGORY_TO_REGIME = {
+    "L": "legislative",
+    "E": "executive",
+    "R": "retirement_system",
+}
+
+
+def category_to_regime(category: str) -> str | None:
+    """Map an OLAC Category letter to a disclosure regime, or None if unknown."""
+    return _CATEGORY_TO_REGIME.get((category or "").strip())
 
 
 # --------------------------------------------------------------------------- #
@@ -91,10 +108,10 @@ def parse_forms_filed(forms_html: str) -> list[FiledForm]:
     """Parse an Agents/{id}/FormsFiled table into FiledForm rows.
 
     Only data rows (those with a /View link) are returned; the header row and
-    any chrome are skipped. Columns are positional per the portal's table:
-    0=Year, 1=Employer, 2=Type, 6=Reporting Period, and the trailing cell's
-    anchor carries the view URL + report_id (path segment differs by form
-    type: /olac/AERs/ vs /olac/Initials/)."""
+    any chrome are skipped. Columns are positional per the portal's 8-column
+    table: 0=Year, 1=Employer, 2=Type, 5=Category, 6=Reporting Period, and the
+    trailing cell's anchor carries the view URL + report_id (path segment
+    differs by form type: /olac/AERs/ vs /olac/Initials/)."""
     forms: list[FiledForm] = []
     for rowm in _ROW_RE.finditer(forms_html):
         row = rowm.group(1)
@@ -114,6 +131,7 @@ def parse_forms_filed(forms_html: str) -> list[FiledForm]:
                 year=year,
                 employer=cells[1],
                 form_type=cells[2],
+                category=cells[5],
                 reporting_period=cells[6],
                 view_url=view.group(1),
             )
@@ -193,7 +211,7 @@ def fetch_agent_forms(
 # Orchestration
 # --------------------------------------------------------------------------- #
 
-TSV_HEADER = ["report_id", "agent", "agent_id", "employer", "year", "reporting_period", "form_type", "aer_url"]
+TSV_HEADER = ["report_id", "agent", "agent_id", "employer", "year", "reporting_period", "form_type", "regime", "aer_url"]
 
 
 def discover_for_agent_ids(
@@ -224,6 +242,7 @@ def discover_for_agent_ids(
                     "year": f.year,
                     "reporting_period": f.reporting_period,
                     "form_type": f.form_type,
+                    "regime": category_to_regime(f.category),
                     "aer_url": BASE + f.view_url,
                 }
             )

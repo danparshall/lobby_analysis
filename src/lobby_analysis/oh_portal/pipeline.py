@@ -24,10 +24,14 @@ from lobby_analysis.oh_portal.fetch import DATA_DIR, fetch_olac_aer, parse_repor
 from lobby_analysis.oh_portal.provenance import build_provenance
 
 EXTRACTOR_IDENTITY = "oh-portal-extraction/v0.1"
-# This brief is OH legislative-regime-specific, so regime is a constant property
-# of the run (caller-stamped), not something the model extracts. Recorded in run
-# metadata; a first-class regime axis is deferred to the v2.2 schema pivot.
-REGIME = "legislative"
+# The only extraction brief that exists is OH legislative. The regime is a
+# caller-supplied property of each filing (from discover's OLAC Category column),
+# recorded in run metadata.
+BRIEF_REGIME = "legislative"
+# Default for the single-URL CLI (which has no regime to pass). Distinct symbol
+# from BRIEF_REGIME on purpose: one is the CLI fallback, the other is the regime
+# the brief actually matches; the warning logic below keys on the latter.
+DEFAULT_REGIME = BRIEF_REGIME
 
 
 def _noop(_msg: str) -> None:
@@ -38,11 +42,16 @@ def extract_one_filing(
     url: str,
     data_dir: Path = DATA_DIR,
     *,
+    regime: str | None = DEFAULT_REGIME,
     log: Callable[[str], None] = _noop,
 ) -> Path:
     """Fetch + extract + persist one OLAC AER. Return the `filing.json` path.
 
     Writes `data_dir/extracted/<report_id>/<run_id>/{filing.json,extraction_run.json}`.
+    `regime` is the OLAC disclosure regime of this filing (from discover); it is
+    stamped into the run sidecar. Only a legislative brief exists, so any
+    non-legislative regime records an `extraction_warnings` entry on the filing
+    rather than being silently passed off as legislative.
     Raises on fetch failure, missing tool call, or Pydantic validation failure
     (fail-loud — the caller decides whether to isolate the failure).
     """
@@ -66,6 +75,15 @@ def extract_one_filing(
 
     log(f"[oh_portal] extracting via {MODEL_ID} tool={TOOL_NAME}")
     filing = extract_oh_legislative_filing(html_path, brief, provenance)
+    if regime != BRIEF_REGIME:
+        if regime is None:
+            filing.extraction_warnings.append(
+                "regime unknown; extracted with legislative brief on caller override"
+            )
+        else:
+            filing.extraction_warnings.append(
+                f"extracted with legislative brief; {regime} brief not yet implemented"
+            )
     finished_at = datetime.now(timezone.utc)
 
     out_dir = data_dir / "extracted" / report_id / run_id
@@ -78,7 +96,7 @@ def extract_one_filing(
         "report_id": report_id,
         "source_url": url,
         "raw_html_path": str(html_path),
-        "regime": REGIME,
+        "regime": regime,
         "model_id": MODEL_ID,
         "tool_name": TOOL_NAME,
         "prompt_version": prompt_version,

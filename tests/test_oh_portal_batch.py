@@ -18,7 +18,9 @@ from pathlib import Path
 from lobby_analysis.oh_portal.batch import (
     _read_urls,
     find_existing_extraction,
+    read_url_regimes,
     run_batch,
+    select_legislative,
 )
 
 
@@ -114,3 +116,55 @@ def test_read_urls_still_accepts_plain_url_list(tmp_path: Path) -> None:
         "https://www2.jlec-olig.state.oh.us/olac/AERs/1427844/View",
         "https://www2.jlec-olig.state.oh.us/olac/AERs/1459616/View",
     ]
+
+
+def test_read_url_regimes_pairs_each_url_with_its_regime(tmp_path: Path) -> None:
+    # The discover TSV now carries a regime column; batch must pair each AER
+    # URL with its regime so the right brief (and skip policy) can be applied.
+    tsv = tmp_path / "recent.tsv"
+    tsv.write_text(
+        "report_id\tagent\tagent_id\temployer\tyear\treporting_period\t"
+        "form_type\tregime\taer_url\n"
+        "1427844\tJane\t5272\tARC\t2025\tMay-Aug25\tAER\texecutive\t"
+        "https://www2.jlec-olig.state.oh.us/olac/AERs/1427844/View\n"
+        "1492518\tJane\t5272\tALPS\t2026\tJan-Apr26\tAER\tlegislative\t"
+        "https://www2.jlec-olig.state.oh.us/olac/AERs/1492518/View\n"
+    )
+    assert read_url_regimes(["--file", str(tsv)]) == [
+        ("https://www2.jlec-olig.state.oh.us/olac/AERs/1427844/View", "executive"),
+        ("https://www2.jlec-olig.state.oh.us/olac/AERs/1492518/View", "legislative"),
+    ]
+
+
+def test_read_url_regimes_yields_none_regime_when_column_absent(tmp_path: Path) -> None:
+    # An old discover TSV (or a plain URL list) predates the regime column; the
+    # regime must come back as None (unknown), never silently "legislative".
+    tsv = tmp_path / "old.tsv"
+    tsv.write_text(
+        "report_id\tagent\tagent_id\temployer\tyear\treporting_period\t"
+        "form_type\taer_url\n"
+        "1427844\tJane\t5272\tARC\t2025\tMay-Aug25\tAER\t"
+        "https://www2.jlec-olig.state.oh.us/olac/AERs/1427844/View\n"
+    )
+    assert read_url_regimes(["--file", str(tsv)]) == [
+        ("https://www2.jlec-olig.state.oh.us/olac/AERs/1427844/View", None),
+    ]
+
+
+def test_select_legislative_drops_non_legislative_by_default() -> None:
+    pairs = [
+        ("u-leg", "legislative"),
+        ("u-exec", "executive"),
+        ("u-ret", "retirement_system"),
+        ("u-unknown", None),
+    ]
+    kept, skipped = select_legislative(pairs, include_nonlegislative=False)
+    assert kept == [("u-leg", "legislative")]
+    assert skipped == 3
+
+
+def test_select_legislative_keeps_everything_when_flag_set() -> None:
+    pairs = [("u-leg", "legislative"), ("u-exec", "executive")]
+    kept, skipped = select_legislative(pairs, include_nonlegislative=True)
+    assert kept == pairs
+    assert skipped == 0
