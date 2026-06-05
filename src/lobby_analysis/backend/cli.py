@@ -6,12 +6,15 @@ Subcommands:
     list [--state OH] [--filer-role lobbyist]
                             Print one TSV line per filing in the DB.
 
-All subcommands take `--db <path>` (default: data/backend/prototype.db).
+All subcommands take `--db-url <url>` (default: `$DATABASE_URL`). The URL is
+a SQLAlchemy connection string, e.g.
+`postgresql+psycopg://lobby:lobby@localhost:5432/lobby_dev`.
 """
 
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 from pathlib import Path
 
@@ -22,8 +25,6 @@ from lobby_analysis.backend.storage import (
     list_filings,
 )
 from lobby_analysis.models.filings import LobbyingFiling
-
-DEFAULT_DB = "data/backend/prototype.db"
 
 
 def _cmd_ingest(engine, args) -> int:
@@ -64,7 +65,12 @@ _DISPATCH = {
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="lobby_analysis.backend")
-    parser.add_argument("--db", default=DEFAULT_DB, help="SQLite DB path")
+    parser.add_argument(
+        "--db-url",
+        dest="db_url",
+        default=os.environ.get("DATABASE_URL"),
+        help="Postgres URL (defaults to $DATABASE_URL)",
+    )
     sub = parser.add_subparsers(dest="cmd", required=True)
 
     p_ingest = sub.add_parser("ingest", help="Load a LobbyingFiling JSON file")
@@ -78,7 +84,10 @@ def main(argv: list[str] | None = None) -> int:
     p_list.add_argument("--filer-role", dest="filer_role")
 
     args = parser.parse_args(argv)
-    engine = init_engine(args.db)
+    if not args.db_url:
+        print("error: --db-url is required (or set DATABASE_URL)", file=sys.stderr)
+        return 2
+    engine = init_engine(args.db_url)
     return _DISPATCH[args.cmd](engine, args)
 
 

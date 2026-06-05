@@ -7,7 +7,7 @@ Endpoints:
     GET  /search?q=...         Substring match on filer name.
 
 Storage engine is injected via the `get_engine` dependency so tests can swap
-in an in-memory SQLite engine without touching module state.
+in a test engine without touching module state.
 """
 
 from __future__ import annotations
@@ -26,18 +26,23 @@ from lobby_analysis.backend.storage import (
 )
 from lobby_analysis.models.filings import LobbyingFiling
 
-DEFAULT_DB = os.environ.get("BACKEND_DB", "data/backend/prototype.db")
-
-app = FastAPI(title="Lobby Analysis Backend", version="0.1")
+app = FastAPI(title="Lobby Analysis Backend", version="0.2")
 
 _engine: Engine | None = None
 
 
 def get_engine() -> Engine:
-    """Lazy-init the storage engine on first request; cached thereafter."""
+    """Lazy-init the storage engine on first request; cached thereafter.
+
+    Reads `DATABASE_URL` at first call so tests can monkeypatch it before
+    spinning up the app.
+    """
     global _engine
     if _engine is None:
-        _engine = init_engine(DEFAULT_DB)
+        url = os.environ.get("DATABASE_URL")
+        if not url:
+            raise RuntimeError("DATABASE_URL is not set")
+        _engine = init_engine(url)
     return _engine
 
 

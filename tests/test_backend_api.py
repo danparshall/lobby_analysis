@@ -1,22 +1,21 @@
 """Behavior tests for src/lobby_analysis/backend/api.py.
 
 Uses FastAPI's TestClient with the `get_engine` dependency overridden to
-point at an in-memory SQLite engine, so each test starts with a clean DB.
+point at the shared `lobby_test` postgres engine; the autouse TRUNCATE
+fixture in conftest.py keeps each test isolated.
 """
 
 import pytest
 from fastapi.testclient import TestClient
 
 from lobby_analysis.backend.api import app, get_engine
-from lobby_analysis.backend.storage import init_engine
 from lobby_analysis.models.entities import Person
 from lobby_analysis.models.filings import LobbyingFiling
 
 
 @pytest.fixture
-def client():
-    test_engine = init_engine(":memory:")
-    app.dependency_overrides[get_engine] = lambda: test_engine
+def client(engine):
+    app.dependency_overrides[get_engine] = lambda: engine
     try:
         yield TestClient(app)
     finally:

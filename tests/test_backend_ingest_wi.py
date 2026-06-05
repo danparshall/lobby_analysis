@@ -14,7 +14,7 @@ from lobby_analysis.backend.ingest_wi import (
     load_organizations,
     load_persons,
 )
-from lobby_analysis.backend.storage import init_engine, list_filings
+from lobby_analysis.backend.storage import list_filings
 from lobby_analysis.models.entities import Organization, Person
 from lobby_analysis.models.filings import LobbyingFiling
 
@@ -102,8 +102,7 @@ def test_iter_lobbyist_filings_yields_correct_records(wi_mini):
     assert f.filer_organization is None
 
 
-def test_ingest_release_dir_persists_all_filings(wi_mini):
-    engine = init_engine()
+def test_ingest_release_dir_persists_all_filings(wi_mini, engine):
     counts = ingest_release_dir(wi_mini, engine)
     assert counts["principal_filings"] == 2
     assert counts["lobbyist_filings"] == 1

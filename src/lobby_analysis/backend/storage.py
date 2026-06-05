@@ -1,21 +1,19 @@
-"""SQLite-backed storage for LobbyingFiling records.
+"""Postgres-backed storage for LobbyingFiling records.
 
 Single table `filings` holds the full pydantic-serialized JSON in a `payload`
 column plus a handful of denormalized columns for index-backed filtering and
-LIKE-based filer-name search. The serialized JSON is the source of truth;
+ILIKE-based filer-name search. The serialized JSON is the source of truth;
 the indexed columns are derived at insert time and exist only to make
-queries fast at SQLite scale.
+queries fast.
 """
 
 from __future__ import annotations
 
 from datetime import datetime, timezone
-from pathlib import Path
 
 from sqlalchemy import DateTime, String, Text, create_engine, select
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column
-from sqlalchemy.pool import StaticPool
 
 from lobby_analysis.models.filings import LobbyingFiling
 
@@ -38,27 +36,13 @@ class FilingRow(Base):
     ingested_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
 
 
-def init_engine(db_path: str = ":memory:") -> Engine:
-    """Create a SQLite engine and ensure the schema exists.
+def init_engine(url: str) -> Engine:
+    """Create a postgres engine and ensure the schema exists.
 
-    `db_path=":memory:"` (default) uses an in-memory database — convenient for
-    tests. For a file-backed DB pass an absolute or relative path; the parent
-    directory is created if missing.
+    `url` is a SQLAlchemy URL like
+    `postgresql+psycopg://lobby:lobby@localhost:5432/lobby_dev`.
     """
-    if db_path == ":memory:":
-        # StaticPool + check_same_thread=False makes all connections share one
-        # in-memory DB — without it, a new SQLAlchemy connection gets its own
-        # empty DB, which breaks tests where the API endpoint runs on a
-        # different connection than the one that created the schema.
-        engine = create_engine(
-            "sqlite:///:memory:",
-            connect_args={"check_same_thread": False},
-            poolclass=StaticPool,
-            echo=False,
-        )
-    else:
-        Path(db_path).parent.mkdir(parents=True, exist_ok=True)
-        engine = create_engine(f"sqlite:///{db_path}", echo=False)
+    engine = create_engine(url)
     Base.metadata.create_all(engine)
     return engine
 
