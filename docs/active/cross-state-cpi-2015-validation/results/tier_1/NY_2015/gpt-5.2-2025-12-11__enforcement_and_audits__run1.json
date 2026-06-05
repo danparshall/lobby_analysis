@@ -1,0 +1,133 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "enforcement_and_audits",
+    "run_index": 1,
+    "state_abbr": "NY",
+    "vintage_year": 2015,
+    "prompt_sha256": "5b190c5f3ee4c228f8dbb4f4aef627d6bfb11f1ad2f8b10c7017df148000be6e",
+    "timestamp_utc": "2026-06-05T21:20:45+00:00"
+  },
+  "wall_clock_seconds": 4.190758624987211,
+  "usage": {
+    "completion_tokens": 214,
+    "prompt_tokens": 30899,
+    "total_tokens": 31113,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 30336
+    }
+  },
+  "cost_usd_estimate": 0.057069249999999995,
+  "legal_roster": [
+    [
+      "lobbying_violation_penalties_defined_in_law",
+      "legal"
+    ],
+    [
+      "lobbying_disclosure_audit_required_in_law",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_violation_penalties_defined_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "NY Legis L § 1-o(a)-(b) (2015)",
+      "justification": "Section 1-o establishes criminal penalties (class A misdemeanor; class E felony for repeat offenses) and civil penalties for knowingly and willfully failing to timely file required lobbying reports/statements or filing false information or violating the gift ban."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_disclosure_audit_required_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "YES"
+      },
+      "cell_class": "EnumCell",
+      "cited_section": "NY Legis L § 1-d(b)(iii) (2015)",
+      "justification": "Section 1-d(b) authorizes a program of random audits and requires the commission to contract with an outside accounting entity to monitor and certify the random audit selection and process, establishing regular auditing with third-party oversight."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "chatcmpl-DnWG2A2RBqEOJX03C6nKDZSTLCCPR",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_j7xGISR5uw6SGdF2oxlSKxpu",
+              "function": {
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-o(a)-(b) (2015)\", \"justification\": \"Section 1-o establishes criminal penalties (class A misdemeanor; class E felony for repeat offenses) and civil penalties for knowingly and willfully failing to timely file required lobbying reports/statements or filing false information or violating the gift ban.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_ekLNgR7OIJiptgFUDoAoDyEC",
+              "function": {
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": \"YES\", \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-d(b)(iii) (2015)\", \"justification\": \"Section 1-d(b) authorizes a program of random audits and requires the commission to contract with an outside accounting entity to monitor and certify the random audit selection and process, establishing regular auditing with third-party oversight.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1780694442,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 214,
+      "prompt_tokens": 30899,
+      "total_tokens": 31113,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 30336
+      }
+    }
+  }
+}

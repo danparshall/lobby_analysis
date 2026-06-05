@@ -1,0 +1,138 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "enforcement_and_audits",
+    "run_index": 2,
+    "state_abbr": "NY",
+    "vintage_year": 2015,
+    "prompt_sha256": "5b190c5f3ee4c228f8dbb4f4aef627d6bfb11f1ad2f8b10c7017df148000be6e",
+    "timestamp_utc": "2026-06-05T21:15:52+00:00"
+  },
+  "wall_clock_seconds": 10.18146983301267,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 1021
+    },
+    "cache_creation_input_tokens": 1021,
+    "cache_read_input_tokens": 45024,
+    "inference_geo": "global",
+    "input_tokens": 6,
+    "output_tokens": 566,
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.01418,
+  "legal_roster": [
+    [
+      "lobbying_violation_penalties_defined_in_law",
+      "legal"
+    ],
+    [
+      "lobbying_disclosure_audit_required_in_law",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_violation_penalties_defined_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-o(a)-(b)",
+      "justification": "Section 1-o prescribes class A misdemeanor (and class E felony for repeat offenders) criminal penalties and civil penalties up to $25,000 (or $50,000 for false reports) for lobbyists, public corporations, or clients who knowingly and wilfully fail to timely file required reports/statements or who file false information."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_disclosure_audit_required_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "YES"
+      },
+      "cell_class": "EnumCell",
+      "cited_section": "§1-d(b)",
+      "justification": "Section 1-d(b) requires the commission to conduct a program of random audits of lobbyist/client reports and registration statements, and §1-d(b)(iii) requires the commission to contract with an outside accounting entity to monitor and certify the audit selection process, satisfying the impartial-third-party regular auditing requirement."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "msg_01BWRvC5kDtdJoWxeqV7ynba",
+    "container": null,
+    "content": [
+      {
+        "id": "toolu_01AU5jqP14yZj1rWRktAZPvs",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_001",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§1-o(a)-(b)",
+          "justification": "Section 1-o prescribes class A misdemeanor (and class E felony for repeat offenders) criminal penalties and civil penalties up to $25,000 (or $50,000 for false reports) for lobbyists, public corporations, or clients who knowingly and wilfully fail to timely file required reports/statements or who file false information."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01PWjz6EkfZggie5zfnW9mhB",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_002",
+          "axis": "legal",
+          "value": "YES",
+          "confidence": "high",
+          "cited_section": "§1-d(b)",
+          "justification": "Section 1-d(b) requires the commission to conduct a program of random audits of lobbyist/client reports and registration statements, and §1-d(b)(iii) requires the commission to contract with an outside accounting entity to monitor and certify the audit selection process, satisfying the impartial-third-party regular auditing requirement."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 1021
+      },
+      "cache_creation_input_tokens": 1021,
+      "cache_read_input_tokens": 45024,
+      "inference_geo": "global",
+      "input_tokens": 6,
+      "output_tokens": 566,
+      "server_tool_use": null,
+      "service_tier": "standard",
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      }
+    }
+  }
+}

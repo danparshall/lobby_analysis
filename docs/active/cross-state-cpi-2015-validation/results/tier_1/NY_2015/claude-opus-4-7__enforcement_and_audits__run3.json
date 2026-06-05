@@ -1,0 +1,138 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "enforcement_and_audits",
+    "run_index": 3,
+    "state_abbr": "NY",
+    "vintage_year": 2015,
+    "prompt_sha256": "5b190c5f3ee4c228f8dbb4f4aef627d6bfb11f1ad2f8b10c7017df148000be6e",
+    "timestamp_utc": "2026-06-05T21:16:00+00:00"
+  },
+  "wall_clock_seconds": 7.6437607909902,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 1021
+    },
+    "cache_creation_input_tokens": 1021,
+    "cache_read_input_tokens": 45024,
+    "inference_geo": "global",
+    "input_tokens": 6,
+    "output_tokens": 529,
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.013255,
+  "legal_roster": [
+    [
+      "lobbying_violation_penalties_defined_in_law",
+      "legal"
+    ],
+    [
+      "lobbying_disclosure_audit_required_in_law",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_violation_penalties_defined_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-O(a)-(b)",
+      "justification": "Section 1-o expressly prescribes class A misdemeanor (and class E felony for repeat) criminal penalties and civil penalties up to $25,000 or $50,000 for knowingly and wilfully failing to timely file, or filing false, required lobbying statements/reports."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_disclosure_audit_required_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "YES"
+      },
+      "cell_class": "EnumCell",
+      "cited_section": "§1-D(b)",
+      "justification": "Section 1-d(b) authorizes/requires the commission to conduct a program of random audits of lobbyist/client reports and registration statements, with an outside accounting entity contracted to monitor the random selection process, constituting regular impartial-third-party auditing."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "msg_01Cr5m3YEu4XLwgt13d6KH7z",
+    "container": null,
+    "content": [
+      {
+        "id": "toolu_012L4GEs3AbdnEVFFtjYyH7v",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "axis": "legal",
+          "cited_section": "§1-O(a)-(b)",
+          "confidence": "high",
+          "handle": "row_001",
+          "justification": "Section 1-o expressly prescribes class A misdemeanor (and class E felony for repeat) criminal penalties and civil penalties up to $25,000 or $50,000 for knowingly and wilfully failing to timely file, or filing false, required lobbying statements/reports.",
+          "value": true
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01MWGWU4jV3fWA64ev9yGynX",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "axis": "legal",
+          "cited_section": "§1-D(b)",
+          "confidence": "high",
+          "handle": "row_002",
+          "justification": "Section 1-d(b) authorizes/requires the commission to conduct a program of random audits of lobbyist/client reports and registration statements, with an outside accounting entity contracted to monitor the random selection process, constituting regular impartial-third-party auditing.",
+          "value": "YES"
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 1021
+      },
+      "cache_creation_input_tokens": 1021,
+      "cache_read_input_tokens": 45024,
+      "inference_geo": "global",
+      "input_tokens": 6,
+      "output_tokens": 529,
+      "server_tool_use": null,
+      "service_tier": "standard",
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      }
+    }
+  }
+}

@@ -1,0 +1,908 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "lobbyist_spending_report",
+    "run_index": 1,
+    "state_abbr": "NY",
+    "vintage_year": 2015,
+    "prompt_sha256": "5b190c5f3ee4c228f8dbb4f4aef627d6bfb11f1ad2f8b10c7017df148000be6e",
+    "timestamp_utc": "2026-06-05T21:18:34+00:00"
+  },
+  "wall_clock_seconds": 31.83485245902557,
+  "usage": {
+    "completion_tokens": 2420,
+    "prompt_tokens": 33850,
+    "total_tokens": 36270,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 30336
+    }
+  },
+  "cost_usd_estimate": 0.09311749999999999,
+  "legal_roster": [
+    [
+      "lobbyist_spending_report_cadence_includes_annual",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_includes_monthly",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_includes_other",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_includes_quarterly",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_includes_semiannual",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_includes_triannual",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_other_specification",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_categorizes_expenses_by_type",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_filing_cadence",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_bill_or_action_identifier",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_compensation_broken_down_by_payer",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_contacts_made",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_expenditure_per_issue",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_general_issues",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_general_subject_matter",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_gifts_entertainment_transport_lodging",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_indirect_costs",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_itemized_expenses",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_lobbyist_contact_info",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_position_on_bill",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_principal_business_nature",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_principal_contact_info",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_principal_names",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_specific_bill_number",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_total_compensation",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_total_expenditures",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_required",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_required_when_no_activity",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_scope_includes_household_members_of_officials",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_uses_itemized_format",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_annual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "NY Legis L § 1-h(a) (2015)",
+      "justification": "Lobbyists who meet the threshold must file bi-monthly reports, not annual spending reports."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_monthly",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "NY Legis L § 1-h(a) (2015)",
+      "justification": "The statute sets bi-monthly reporting periods and does not require monthly lobbyist spending reports."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_other",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "NY Legis L § 1-h(a) (2015)",
+      "justification": "The lobbyist periodic spending report is required on a bi-monthly cadence, which is an 'other' frequency."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_quarterly",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "NY Legis L § 1-h(a) (2015)",
+      "justification": "Reporting is bi-monthly (six periods per year), not quarterly."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_semiannual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "NY Legis L § 1-j(a) (2015)",
+      "justification": "Semi-annual reports are filed by clients, while lobbyists file bi-monthly reports under § 1-h."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_triannual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "NY Legis L § 1-h(a) (2015)",
+      "justification": "The statute specifies bi-monthly periods rather than three-times-per-year (tri-annual) reports."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_other_specification",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "Bi-monthly (every two months; due the 15th day after each Jan-Feb, Mar-Apr, May-Jun, Jul-Aug, Sep-Oct, Nov-Dec period)."
+      },
+      "cell_class": "FreeTextCell",
+      "cited_section": "NY Legis L § 1-h(a) (2015)",
+      "justification": "Section 1-h(a) lists six two-month reporting periods and requires filing by the 15th day after each period ends."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_categorizes_expenses_by_type",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "NY Legis L § 1-h(b)(5)(ii) (2015)",
+      "justification": "Lobbyist bi-monthly reports must itemize expenses over $75 by amount, payee, and purpose (with names when on behalf of one person), indicating itemized expense disclosure."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_filing_cadence",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "other"
+      },
+      "cell_class": "EnumCell",
+      "cited_section": "NY Legis L § 1-h(a) (2015)",
+      "justification": "Lobbyists must file bi-monthly spending reports (six times per year), which is not one of the standard annual/semiannual/quarterly/monthly options."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_bill_or_action_identifier",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "NY Legis L § 1-h(b)(3) (2015)",
+      "justification": "The lobbyist’s bi-monthly report must include legislative bill numbers and executive order identifiers/subject matter and other specific matters lobbied."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_compensation_broken_down_by_payer",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "NY Legis L § 1-h(b)(5)(i) (2015)",
+      "justification": "Bi-monthly lobbyist reports must state the compensation paid or owed to the lobbyist."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_contacts_made",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "NY Legis L § 1-h(b) (2015)",
+      "justification": "The bi-monthly report requires identifying matters lobbied and the body before which lobbying occurred, but it does not require disclosure of specific contacts/communications."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_expenditure_per_issue",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "NY Legis L § 1-h(b)(5) (2015)",
+      "justification": "Section 1-h requires compensation and expenses reporting but does not require allocating expenditures by issue/bill."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_general_issues",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "NY Legis L § 1-h(b)(3)(i) (2015)",
+      "justification": "Lobbyists must report a description of the general subject or subjects on which they have lobbied."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_general_subject_matter",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "NY Legis L § 1-h(b)(3)(i) (2015)",
+      "justification": "The bi-monthly report includes the general subject or subjects lobbied, satisfying the Tier 0 'general subjects' activity disclosure."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_gifts_entertainment_transport_lodging",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "NY Legis L § 1-h(b)(5)(iii)(A) (2015)",
+      "justification": "The statute excludes the lobbyist’s personal sustenance, lodging and travel disbursements from reportable expenses, so such 'other costs' are not comprehensively required components."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_indirect_costs",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "NY Legis L § 1-h(b)(5)(i)-(iv) (2015)",
+      "justification": "Lobbyists must report expenses incurred for lobbying (with certain exclusions) and aggregate non-lobbyist salary expenses, covering non-compensation/indirect lobbying costs."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_itemized_expenses",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "NY Legis L § 1-h(b)(1)-(5) (2015)",
+      "justification": "Lobbyists’ bi-monthly reports include their identity, client, issues/bill numbers, and compensation plus expenses, meeting the described itemized spending/compensation disclosure elements."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_lobbyist_contact_info",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "NY Legis L § 1-h(b)(1) (2015)",
+      "justification": "The bi-monthly report must contain the lobbyist’s name, address and telephone number."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_position_on_bill",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "NY Legis L § 1-h(b)(3)(ii)-(iv) (2015)",
+      "justification": "Lobbyists must report bill numbers and executive order identifiers/subject matter, which is disclosure of specific legislation/executive actions being influenced."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_principal_business_nature",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "NY Legis L § 1-h(b) (2015)",
+      "justification": "The bi-monthly lobbyist report requires client identification but does not require stating whether the principal is public or private or describing the nature of its business."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_principal_contact_info",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "NY Legis L § 1-h(b)(2) (2015)",
+      "justification": "Lobbyists must disclose the client’s name, address and telephone number."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_principal_names",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "NY Legis L § 1-h(b)(2) (2015)",
+      "justification": "Each bi-monthly report lists the client by whom or on whose behalf the lobbyist is retained, employed, or designated."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_specific_bill_number",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "NY Legis L § 1-h(b)(3)(ii) (2015)",
+      "justification": "The bi-monthly report must include the legislative bill numbers of any bills on which the lobbyist has lobbied."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_total_compensation",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "NY Legis L § 1-h(b)(5)(i) (2015)",
+      "justification": "The report requires disclosure of compensation paid or owed to the lobbyist, i.e., direct lobbying costs (compensation)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_total_expenditures",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "NY Legis L § 1-h(b)(5)(i) (2015)",
+      "justification": "Lobbyists must report compensation paid or owed and expenses expended/received/incurred for lobbying, which provides total spending components toward lobbying for the period."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "NY Legis L § 1-h(b)(1)-(5) (2015)",
+      "justification": "Because lobbyists file bi-monthly reports with issues/bill numbers and itemized expenses over $75 plus compensation, the regime meets the 'YES/MODERATE' criteria rather than having no such law."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_scope_includes_household_members_of_officials",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "NY Legis L § 1-h(b)(5)(i)-(iii) (2015)",
+      "justification": "Lobbyist spending reports require reporting of lobbying compensation/expenses but do not specifically require reporting spending on household members of public officials."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_uses_itemized_format",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "NY Legis L § 1-h(b)(5)(ii) (2015)",
+      "justification": "Expenses over $75 must be detailed by amount, payee, and purpose (and sometimes beneficiary name), requiring itemized rather than purely lump-sum disclosure."
+    }
+  ],
+  "unscoreable_emissions": [
+    {
+      "handle": "row_028",
+      "axis": "legal",
+      "reason": "The provided statute text does not state whether a registered lobbyist must file a bi-monthly report showing 'no activity' or 'no spending' when nothing is spent/owed during a period.",
+      "row_id": "lobbyist_spending_report_required_when_no_activity"
+    }
+  ],
+  "errors": [],
+  "response": {
+    "id": "chatcmpl-DnWDTbDTSMvaeX99I24UBHGOWMjiB",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_tDmok4hLMjuxnipZVPpUJXrO",
+              "function": {
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-h(a) (2015)\", \"justification\": \"Lobbyists who meet the threshold must file bi-monthly reports, not annual spending reports.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_JUHC7PNFcjwvb5eTBvtZvmQo",
+              "function": {
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-h(a) (2015)\", \"justification\": \"The statute sets bi-monthly reporting periods and does not require monthly lobbyist spending reports.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_r8ypM6YDsGEJ8V4jBzzexPid",
+              "function": {
+                "arguments": "{\"handle\": \"row_003\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-h(a) (2015)\", \"justification\": \"The lobbyist periodic spending report is required on a bi-monthly cadence, which is an 'other' frequency.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_WcTlzJcbizaBbi7flwZfF6uw",
+              "function": {
+                "arguments": "{\"handle\": \"row_004\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-h(a) (2015)\", \"justification\": \"Reporting is bi-monthly (six periods per year), not quarterly.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_dmLVzXJ3zX2SyHrBxE0G078g",
+              "function": {
+                "arguments": "{\"handle\": \"row_005\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-j(a) (2015)\", \"justification\": \"Semi-annual reports are filed by clients, while lobbyists file bi-monthly reports under § 1-h.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_5TT2Xq7lpqK0yoOD5bw4Alex",
+              "function": {
+                "arguments": "{\"handle\": \"row_006\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-h(a) (2015)\", \"justification\": \"The statute specifies bi-monthly periods rather than three-times-per-year (tri-annual) reports.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_sPyD4duuCdlmqeOryA5Xaibh",
+              "function": {
+                "arguments": "{\"handle\": \"row_007\", \"axis\": \"legal\", \"value\": \"Bi-monthly (every two months; due the 15th day after each Jan-Feb, Mar-Apr, May-Jun, Jul-Aug, Sep-Oct, Nov-Dec period).\", \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-h(a) (2015)\", \"justification\": \"Section 1-h(a) lists six two-month reporting periods and requires filing by the 15th day after each period ends.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_S6NdGn8dUHPmfRRJZma1FKp0",
+              "function": {
+                "arguments": "{\"handle\": \"row_008\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-h(b)(5)(ii) (2015)\", \"justification\": \"Lobbyist bi-monthly reports must itemize expenses over $75 by amount, payee, and purpose (with names when on behalf of one person), indicating itemized expense disclosure.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_jxPFtlISr3mMzYSd4wy2goG6",
+              "function": {
+                "arguments": "{\"handle\": \"row_009\", \"axis\": \"legal\", \"value\": \"other\", \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-h(a) (2015)\", \"justification\": \"Lobbyists must file bi-monthly spending reports (six times per year), which is not one of the standard annual/semiannual/quarterly/monthly options.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_0R75WOusDH95zsTTjGWUu3xf",
+              "function": {
+                "arguments": "{\"handle\": \"row_010\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-h(b)(3) (2015)\", \"justification\": \"The lobbyist’s bi-monthly report must include legislative bill numbers and executive order identifiers/subject matter and other specific matters lobbied.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_kGEbqUZ7Lt4iVKfOCo7BtB20",
+              "function": {
+                "arguments": "{\"handle\": \"row_011\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-h(b)(5)(i) (2015)\", \"justification\": \"Bi-monthly lobbyist reports must state the compensation paid or owed to the lobbyist.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_h2td7KrTARZLRk2LhXemBLay",
+              "function": {
+                "arguments": "{\"handle\": \"row_012\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-h(b) (2015)\", \"justification\": \"The bi-monthly report requires identifying matters lobbied and the body before which lobbying occurred, but it does not require disclosure of specific contacts/communications.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_JcJiRtEPIgruBdePtMUGLkSO",
+              "function": {
+                "arguments": "{\"handle\": \"row_013\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-h(b)(5) (2015)\", \"justification\": \"Section 1-h requires compensation and expenses reporting but does not require allocating expenditures by issue/bill.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_Sxxaq0KRYeQFeWmLcDaylr6F",
+              "function": {
+                "arguments": "{\"handle\": \"row_014\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-h(b)(3)(i) (2015)\", \"justification\": \"Lobbyists must report a description of the general subject or subjects on which they have lobbied.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_ZlojNKlQTVgWvc4bMrhKA2x5",
+              "function": {
+                "arguments": "{\"handle\": \"row_015\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-h(b)(3)(i) (2015)\", \"justification\": \"The bi-monthly report includes the general subject or subjects lobbied, satisfying the Tier 0 'general subjects' activity disclosure.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_glgfdehgfc0ZIx2nYgMeV7p5",
+              "function": {
+                "arguments": "{\"handle\": \"row_016\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-h(b)(5)(iii)(A) (2015)\", \"justification\": \"The statute excludes the lobbyist’s personal sustenance, lodging and travel disbursements from reportable expenses, so such 'other costs' are not comprehensively required components.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_rPaonrcVXo3fsMKQMxtYhtaB",
+              "function": {
+                "arguments": "{\"handle\": \"row_017\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-h(b)(5)(i)-(iv) (2015)\", \"justification\": \"Lobbyists must report expenses incurred for lobbying (with certain exclusions) and aggregate non-lobbyist salary expenses, covering non-compensation/indirect lobbying costs.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_NBC8X9P0OUzuOnblZZNyvDuE",
+              "function": {
+                "arguments": "{\"handle\": \"row_018\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-h(b)(1)-(5) (2015)\", \"justification\": \"Lobbyists’ bi-monthly reports include their identity, client, issues/bill numbers, and compensation plus expenses, meeting the described itemized spending/compensation disclosure elements.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_TxSf4sZejxvpfeYq5eouI3co",
+              "function": {
+                "arguments": "{\"handle\": \"row_019\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-h(b)(1) (2015)\", \"justification\": \"The bi-monthly report must contain the lobbyist’s name, address and telephone number.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_rvbu22vxJZt2Y3XM5jLJnOQ5",
+              "function": {
+                "arguments": "{\"handle\": \"row_020\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-h(b)(3)(ii)-(iv) (2015)\", \"justification\": \"Lobbyists must report bill numbers and executive order identifiers/subject matter, which is disclosure of specific legislation/executive actions being influenced.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_c4Ny25csbcKM2hQxQqziMixE",
+              "function": {
+                "arguments": "{\"handle\": \"row_021\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-h(b) (2015)\", \"justification\": \"The bi-monthly lobbyist report requires client identification but does not require stating whether the principal is public or private or describing the nature of its business.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_ideMFS4t89kODh4pGwXAOiB2",
+              "function": {
+                "arguments": "{\"handle\": \"row_022\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-h(b)(2) (2015)\", \"justification\": \"Lobbyists must disclose the client’s name, address and telephone number.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_VikEVtDJPOftbm76tJeouQ6D",
+              "function": {
+                "arguments": "{\"handle\": \"row_023\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-h(b)(2) (2015)\", \"justification\": \"Each bi-monthly report lists the client by whom or on whose behalf the lobbyist is retained, employed, or designated.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_iVQ12H4IG1Vf75C2Yto4uDzX",
+              "function": {
+                "arguments": "{\"handle\": \"row_024\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-h(b)(3)(ii) (2015)\", \"justification\": \"The bi-monthly report must include the legislative bill numbers of any bills on which the lobbyist has lobbied.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_prRoELjuWTMSHONXv8NSuBDr",
+              "function": {
+                "arguments": "{\"handle\": \"row_025\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-h(b)(5)(i) (2015)\", \"justification\": \"The report requires disclosure of compensation paid or owed to the lobbyist, i.e., direct lobbying costs (compensation).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_mt2jtFI40fa6qZs3BkFLrEG3",
+              "function": {
+                "arguments": "{\"handle\": \"row_026\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-h(b)(5)(i) (2015)\", \"justification\": \"Lobbyists must report compensation paid or owed and expenses expended/received/incurred for lobbying, which provides total spending components toward lobbying for the period.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_BbWyamgxaEcdxjQiccXlWRUd",
+              "function": {
+                "arguments": "{\"handle\": \"row_027\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-h(b)(1)-(5) (2015)\", \"justification\": \"Because lobbyists file bi-monthly reports with issues/bill numbers and itemized expenses over $75 plus compensation, the regime meets the 'YES/MODERATE' criteria rather than having no such law.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_LKEPRMlw1XXeFfXgutBn8waI",
+              "function": {
+                "arguments": "{\"handle\": \"row_028\", \"axis\": \"legal\", \"reason\": \"The provided statute text does not state whether a registered lobbyist must file a bi-monthly report showing 'no activity' or 'no spending' when nothing is spent/owed during a period.\"}",
+                "name": "record_unscoreable_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_Cf4BrUBP6UJNshxuhEeQR6aO",
+              "function": {
+                "arguments": "{\"handle\": \"row_029\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-h(b)(5)(i)-(iii) (2015)\", \"justification\": \"Lobbyist spending reports require reporting of lobbying compensation/expenses but do not specifically require reporting spending on household members of public officials.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_tCbRkxxLcoX97yuFG1tRPiVB",
+              "function": {
+                "arguments": "{\"handle\": \"row_030\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-h(b)(5)(ii) (2015)\", \"justification\": \"Expenses over $75 must be detailed by amount, payee, and purpose (and sometimes beneficiary name), requiring itemized rather than purely lump-sum disclosure.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1780694283,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 2420,
+      "prompt_tokens": 33850,
+      "total_tokens": 36270,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 30336
+      }
+    }
+  }
+}

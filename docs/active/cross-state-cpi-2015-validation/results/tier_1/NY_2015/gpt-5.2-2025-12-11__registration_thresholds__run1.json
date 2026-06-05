@@ -1,0 +1,226 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "registration_thresholds",
+    "run_index": 1,
+    "state_abbr": "NY",
+    "vintage_year": 2015,
+    "prompt_sha256": "5b190c5f3ee4c228f8dbb4f4aef627d6bfb11f1ad2f8b10c7017df148000be6e",
+    "timestamp_utc": "2026-06-05T21:17:10+00:00"
+  },
+  "wall_clock_seconds": 8.84355945896823,
+  "usage": {
+    "completion_tokens": 561,
+    "prompt_tokens": 31370,
+    "total_tokens": 31931,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 30336
+    }
+  },
+  "cost_usd_estimate": 0.0627515,
+  "legal_roster": [
+    [
+      "lobbyist_registration_threshold_compensation_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_threshold_expenditure_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_threshold_time_percent",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_itemization_de_minimis_threshold_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_de_minimis_threshold_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_de_minimis_threshold_time_percent",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_threshold_compensation_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "5000"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "NY Legis. Law § 1-e(a)(1) (2015)",
+      "justification": "Section 1-e(a)(1) exempts a lobbyist from filing a registration statement if in any year they do not expend, incur, or receive more than $5,000 in reportable compensation and expenses for lobbying, implying registration is required above $5,000."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_threshold_expenditure_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "5000"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "NY Legis. Law § 1-e(a)(1) (2015)",
+      "justification": "Section 1-e(a)(1) sets a $5,000 threshold of reportable compensation and expenses for lobbying below which a lobbyist need not file a registration statement, so lobbyist-side expenditures above $5,000 trigger registration."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_filing_itemization_de_minimis_threshold_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "75"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "NY Legis. Law § 1-h(b)(5)(ii) (2015)",
+      "justification": "Section 1-h(b)(5)(ii) provides that expenses are listed in the aggregate if $75 or less, and detailed only if more than $75, establishing a $75 per-item itemization threshold on lobbyist bi-monthly reports."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_filing_de_minimis_threshold_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "5000"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "NY Legis. Law § 1-e(a)(1) (2015)",
+      "justification": "Section 1-e(a)(1) states that a registration statement is not required for a lobbyist who does not exceed $5,000 in reportable compensation and expenses for lobbying in a year, creating a de minimis filing exemption threshold of $5,000."
+    }
+  ],
+  "unscoreable_emissions": [
+    {
+      "handle": "row_003",
+      "axis": "legal",
+      "reason": "The bundled statute defines 'lobbyist' based on being retained/employed/designated and uses dollar thresholds, but contains no time-based (hours/days) definition of lobbyist/registration trigger.",
+      "row_id": "lobbyist_registration_threshold_time_percent"
+    },
+    {
+      "handle": "row_006",
+      "axis": "legal",
+      "reason": "No provision in the bundled text creates a filing exemption based on a percentage of compensated time devoted to lobbying.",
+      "row_id": "lobbyist_filing_de_minimis_threshold_time_percent"
+    }
+  ],
+  "errors": [],
+  "response": {
+    "id": "chatcmpl-DnWCVXeejsB2gg8Ghh993CqbAllRo",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_fXYKm5nGZULA5MBeHOaXbZMu",
+              "function": {
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"value\": 5000, \"confidence\": \"high\", \"cited_section\": \"NY Legis. Law § 1-e(a)(1) (2015)\", \"justification\": \"Section 1-e(a)(1) exempts a lobbyist from filing a registration statement if in any year they do not expend, incur, or receive more than $5,000 in reportable compensation and expenses for lobbying, implying registration is required above $5,000.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_K5XT0nf7FYZmYv6Ev4LxFBxd",
+              "function": {
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": 5000, \"confidence\": \"high\", \"cited_section\": \"NY Legis. Law § 1-e(a)(1) (2015)\", \"justification\": \"Section 1-e(a)(1) sets a $5,000 threshold of reportable compensation and expenses for lobbying below which a lobbyist need not file a registration statement, so lobbyist-side expenditures above $5,000 trigger registration.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_s49uUmXWJ5PkaQPZ04LgHNqo",
+              "function": {
+                "arguments": "{\"handle\": \"row_003\", \"axis\": \"legal\", \"reason\": \"The bundled statute defines 'lobbyist' based on being retained/employed/designated and uses dollar thresholds, but contains no time-based (hours/days) definition of lobbyist/registration trigger.\"}",
+                "name": "record_unscoreable_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_OpXmNeYc08f6EeQw9IU9pmDz",
+              "function": {
+                "arguments": "{\"handle\": \"row_004\", \"axis\": \"legal\", \"value\": 75, \"confidence\": \"high\", \"cited_section\": \"NY Legis. Law § 1-h(b)(5)(ii) (2015)\", \"justification\": \"Section 1-h(b)(5)(ii) provides that expenses are listed in the aggregate if $75 or less, and detailed only if more than $75, establishing a $75 per-item itemization threshold on lobbyist bi-monthly reports.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_rwLR4SqCxL4stpkO5dBKqfkV",
+              "function": {
+                "arguments": "{\"handle\": \"row_005\", \"axis\": \"legal\", \"value\": 5000, \"confidence\": \"high\", \"cited_section\": \"NY Legis. Law § 1-e(a)(1) (2015)\", \"justification\": \"Section 1-e(a)(1) states that a registration statement is not required for a lobbyist who does not exceed $5,000 in reportable compensation and expenses for lobbying in a year, creating a de minimis filing exemption threshold of $5,000.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_J5ki1ZC0d6anmyhf2kcnG9Si",
+              "function": {
+                "arguments": "{\"handle\": \"row_006\", \"axis\": \"legal\", \"reason\": \"No provision in the bundled text creates a filing exemption based on a percentage of compensated time devoted to lobbying.\"}",
+                "name": "record_unscoreable_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1780694223,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 561,
+      "prompt_tokens": 31370,
+      "total_tokens": 31931,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 30336
+      }
+    }
+  }
+}

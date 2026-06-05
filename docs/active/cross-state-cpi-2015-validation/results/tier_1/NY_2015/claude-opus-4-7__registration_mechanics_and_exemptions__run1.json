@@ -1,0 +1,354 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "registration_mechanics_and_exemptions",
+    "run_index": 1,
+    "state_abbr": "NY",
+    "vintage_year": 2015,
+    "prompt_sha256": "5b190c5f3ee4c228f8dbb4f4aef627d6bfb11f1ad2f8b10c7017df148000be6e",
+    "timestamp_utc": "2026-06-05T20:59:51+00:00"
+  },
+  "wall_clock_seconds": 19.444305334007367,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 45024,
+    "inference_geo": "global",
+    "input_tokens": 1413,
+    "output_tokens": 1841,
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.05309,
+  "legal_roster": [
+    [
+      "lobbyist_registration_required",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_renewal_cadence",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_amendment_deadline_days",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_deadline_days_after_first_lobbying",
+      "legal"
+    ],
+    [
+      "separate_registrations_for_lobbyists_and_clients",
+      "legal"
+    ],
+    [
+      "lobbyist_required_to_submit_photograph_with_registration",
+      "legal"
+    ],
+    [
+      "exemption_for_govt_official_capacity_exists",
+      "legal"
+    ],
+    [
+      "exemption_partial_for_govt_agencies",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-e(a)(1)",
+      "justification": "The statute requires every lobbyist who exceeds the $5,000 reportable compensation/expense threshold to file a statement of registration with the commission, so the law mandates paid lobbyists to register."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_renewal_cadence",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": 24
+      },
+      "cell_class": "IntCell",
+      "cited_section": "§1-e(a)(3)",
+      "justification": "Commencing calendar year 2005 and thereafter, every lobbyist must biennially file a statement of registration for each biennial period, which equals a 24-month renewal cycle."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_amendment_deadline_days",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": 10
+      },
+      "cell_class": "IntCell",
+      "cited_section": "§1-e(d)",
+      "justification": "Any amendment to the information filed in the original statement of registration must be submitted to the commission within ten days after such amendment."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_deadline_days_after_first_lobbying",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": 15
+      },
+      "cell_class": "IntCell",
+      "cited_section": "§1-e(a)(4)",
+      "justification": "For lobbyists retained after December 15, or who subsequently anticipate crossing the threshold, filing must be completed within fifteen days thereafter (but not later than ten days after actually incurring/receiving the compensation)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "separate_registrations_for_lobbyists_and_clients",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-e and §1-j",
+      "justification": "Only lobbyists file a statement of registration under §1-e; clients do not file a registration form but instead file semi-annual reports under §1-j, so there is no separate client registration form."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_required_to_submit_photograph_with_registration",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-e(c)",
+      "justification": "The enumerated contents of the statement of registration in §1-e(c) do not include any requirement to submit a photograph."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "exemption_for_govt_official_capacity_exists",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-c(a)",
+      "justification": "The definition of \"lobbyist\" expressly excludes any officer, director, trustee, employee, counsel or agent of the state, or any municipality or subdivision thereof of New York when discharging their official duties."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "exemption_partial_for_govt_agencies",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-e(a)(1)(ii) and §1-c(a)",
+      "justification": "Officers/directors/trustees/employees of public corporations acting in official capacity are exempt from filing statements of registration, and government officials discharging official duties are excluded from the definition of \"lobbyist,\" providing partial relief from the regulations applied to private parties."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "msg_01LgxviCLh6zqWuHNFee23QL",
+    "container": null,
+    "content": [
+      {
+        "id": "toolu_015XfFFYo9Sf64rFhNpH8qnu",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_001",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§1-e(a)(1)",
+          "justification": "The statute requires every lobbyist who exceeds the $5,000 reportable compensation/expense threshold to file a statement of registration with the commission, so the law mandates paid lobbyists to register."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_018PddNX2CQmDzQE3zJ2125r",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_002",
+          "axis": "legal",
+          "value": "24",
+          "confidence": "high",
+          "cited_section": "§1-e(a)(3)",
+          "justification": "Commencing calendar year 2005 and thereafter, every lobbyist must biennially file a statement of registration for each biennial period, which equals a 24-month renewal cycle."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_017uyR47DZrg3XBn32SfBz4T",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_003",
+          "axis": "legal",
+          "value": "10",
+          "confidence": "high",
+          "cited_section": "§1-e(d)",
+          "justification": "Any amendment to the information filed in the original statement of registration must be submitted to the commission within ten days after such amendment."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01P7SSPj2xLQ5hXdDQG4rVdU",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_004",
+          "axis": "legal",
+          "value": "15",
+          "confidence": "high",
+          "cited_section": "§1-e(a)(4)",
+          "justification": "For lobbyists retained after December 15, or who subsequently anticipate crossing the threshold, filing must be completed within fifteen days thereafter (but not later than ten days after actually incurring/receiving the compensation)."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01C8sYNoaYjtyfBa4MJG2a8v",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_005",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§1-e and §1-j",
+          "justification": "Only lobbyists file a statement of registration under §1-e; clients do not file a registration form but instead file semi-annual reports under §1-j, so there is no separate client registration form."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01B7fhcndsg3Yt8gftq5wNEk",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_006",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§1-e(c)",
+          "justification": "The enumerated contents of the statement of registration in §1-e(c) do not include any requirement to submit a photograph."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01Lq7NsTrUknqhE8QKEqcoWn",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_007",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§1-c(a)",
+          "justification": "The definition of \"lobbyist\" expressly excludes any officer, director, trustee, employee, counsel or agent of the state, or any municipality or subdivision thereof of New York when discharging their official duties."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_014AJQbbCwFeLGVgcQREZ7N6",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_008",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§1-e(a)(1)(ii) and §1-c(a)",
+          "justification": "Officers/directors/trustees/employees of public corporations acting in official capacity are exempt from filing statements of registration, and government officials discharging official duties are excluded from the definition of \"lobbyist,\" providing partial relief from the regulations applied to private parties."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 45024,
+      "inference_geo": "global",
+      "input_tokens": 1413,
+      "output_tokens": 1841,
+      "server_tool_use": null,
+      "service_tier": "standard",
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      }
+    }
+  }
+}

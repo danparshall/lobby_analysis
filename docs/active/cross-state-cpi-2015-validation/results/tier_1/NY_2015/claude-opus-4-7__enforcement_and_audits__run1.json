@@ -1,0 +1,138 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "enforcement_and_audits",
+    "run_index": 1,
+    "state_abbr": "NY",
+    "vintage_year": 2015,
+    "prompt_sha256": "5b190c5f3ee4c228f8dbb4f4aef627d6bfb11f1ad2f8b10c7017df148000be6e",
+    "timestamp_utc": "2026-06-05T21:15:42+00:00"
+  },
+  "wall_clock_seconds": 8.68664779199753,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 45024,
+    "inference_geo": "global",
+    "input_tokens": 1027,
+    "output_tokens": 549,
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.018860000000000002,
+  "legal_roster": [
+    [
+      "lobbying_violation_penalties_defined_in_law",
+      "legal"
+    ],
+    [
+      "lobbying_disclosure_audit_required_in_law",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_violation_penalties_defined_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-O(a)-(b)",
+      "justification": "Section 1-o prescribes both criminal penalties (class A misdemeanor, class E felony for repeat offenses) and civil penalties (up to $25,000 or three times the unreported amount for failure to file; up to $50,000 or five times for false filings) for lobbyists, public corporations, or clients who fail to file or file false reports."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_disclosure_audit_required_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "YES"
+      },
+      "cell_class": "EnumCell",
+      "cited_section": "§1-D(b)",
+      "justification": "Section 1-d(b) authorizes the commission to \"conduct a program of random audits\" of lobbyist/client reports, with selection monitored by an outside accounting entity to ensure impartiality — establishing regular independent auditing of lobbying disclosure records."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "msg_01NL3R1efA6Pp9JE4wdhB7jE",
+    "container": null,
+    "content": [
+      {
+        "id": "toolu_015pFUshaTRZc2p8QB6s5wui",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "axis": "legal",
+          "cited_section": "§1-O(a)-(b)",
+          "confidence": "high",
+          "handle": "row_001",
+          "justification": "Section 1-o prescribes both criminal penalties (class A misdemeanor, class E felony for repeat offenses) and civil penalties (up to $25,000 or three times the unreported amount for failure to file; up to $50,000 or five times for false filings) for lobbyists, public corporations, or clients who fail to file or file false reports.",
+          "value": true
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_014txp5MsxRu7QZnaXL2sBpU",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "axis": "legal",
+          "cited_section": "§1-D(b)",
+          "confidence": "high",
+          "handle": "row_002",
+          "justification": "Section 1-d(b) authorizes the commission to \"conduct a program of random audits\" of lobbyist/client reports, with selection monitored by an outside accounting entity to ensure impartiality — establishing regular independent auditing of lobbying disclosure records.",
+          "value": "YES"
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 45024,
+      "inference_geo": "global",
+      "input_tokens": 1027,
+      "output_tokens": 549,
+      "server_tool_use": null,
+      "service_tier": "standard",
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      }
+    }
+  }
+}

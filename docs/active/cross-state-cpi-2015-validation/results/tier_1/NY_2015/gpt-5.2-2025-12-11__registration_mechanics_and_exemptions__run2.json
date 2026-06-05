@@ -1,0 +1,292 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "registration_mechanics_and_exemptions",
+    "run_index": 2,
+    "state_abbr": "NY",
+    "vintage_year": 2015,
+    "prompt_sha256": "5b190c5f3ee4c228f8dbb4f4aef627d6bfb11f1ad2f8b10c7017df148000be6e",
+    "timestamp_utc": "2026-06-05T21:17:51+00:00"
+  },
+  "wall_clock_seconds": 11.12854404101381,
+  "usage": {
+    "completion_tokens": 719,
+    "prompt_tokens": 31197,
+    "total_tokens": 31916,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 31104
+    }
+  },
+  "cost_usd_estimate": 0.06466075,
+  "legal_roster": [
+    [
+      "lobbyist_registration_required",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_renewal_cadence",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_amendment_deadline_days",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_deadline_days_after_first_lobbying",
+      "legal"
+    ],
+    [
+      "separate_registrations_for_lobbyists_and_clients",
+      "legal"
+    ],
+    [
+      "lobbyist_required_to_submit_photograph_with_registration",
+      "legal"
+    ],
+    [
+      "exemption_for_govt_official_capacity_exists",
+      "legal"
+    ],
+    [
+      "exemption_partial_for_govt_agencies",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "NY Legis L § 1-e(a)(1) (2015)",
+      "justification": "The statute requires every lobbyist to file a registration statement, with a limited exemption for those under the monetary threshold or certain public corporation personnel, meaning paid lobbyists generally must register."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_renewal_cadence",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": 24
+      },
+      "cell_class": "IntCell",
+      "cited_section": "NY Legis L § 1-e(a)(3)-(4) (2015)",
+      "justification": "Beginning in 2005 and thereafter, lobbyists file a statement of registration for each biennial period, due January 1 of the first year of the biennial cycle."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_amendment_deadline_days",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": 10
+      },
+      "cell_class": "IntCell",
+      "cited_section": "NY Legis L § 1-e(d) (2015)",
+      "justification": "Amendments to information in the original registration must be submitted to the commission within ten days after the amendment."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "separate_registrations_for_lobbyists_and_clients",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "NY Legis L § 1-e(a)(1), (c) (2015)",
+      "justification": "The registration statement is filed by the lobbyist and includes client information, while clients have separate reporting duties (e.g., § 1-j) but are not required to file a separate registration form."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_required_to_submit_photograph_with_registration",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "NY Legis L § 1-e(c) (2015)",
+      "justification": "The statute lists required registration contents (name, address, client info, retainer, authorization, subjects, etc.) and does not require a photograph."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "exemption_for_govt_official_capacity_exists",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "NY Legis L § 1-c(a) (2015)",
+      "justification": "The definition of \"lobbyist\" excludes officers and employees of the state or municipalities discharging official duties (with a limited exception for certain colleges)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "exemption_partial_for_govt_agencies",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "NY Legis L § 1-e(a)(1) (2015)",
+      "justification": "Lobbyists who are officers, directors, trustees or employees of a public corporation acting in that official capacity are exempt from filing the lobbyist registration statement, reflecting partial relief for governmental/public entities."
+    }
+  ],
+  "unscoreable_emissions": [
+    {
+      "handle": "row_004",
+      "axis": "legal",
+      "reason": "§ 1-e(a)(4) sets deadlines keyed to being retained/employed/designated (by Dec. 15 or within 15 days thereafter, but no later than 10 days after actual incurring/receiving reportable compensation/expenses); it does not specify a single clear deadline measured in days after a lobbyist’s first lobbying activity.",
+      "row_id": "lobbyist_registration_deadline_days_after_first_lobbying"
+    }
+  ],
+  "errors": [],
+  "response": {
+    "id": "chatcmpl-DnWD7jfdaHfiMLOan9bTIPU1972cp",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_1v6N9pOxeCVvFaRXbFTZ2b5e",
+              "function": {
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-e(a)(1) (2015)\", \"justification\": \"The statute requires every lobbyist to file a registration statement, with a limited exemption for those under the monetary threshold or certain public corporation personnel, meaning paid lobbyists generally must register.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_NNCOh73woN5m5IKci4q6DLkG",
+              "function": {
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": 24, \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-e(a)(3)-(4) (2015)\", \"justification\": \"Beginning in 2005 and thereafter, lobbyists file a statement of registration for each biennial period, due January 1 of the first year of the biennial cycle.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_7jWEPhpcQLmRIf8MdAdrnLev",
+              "function": {
+                "arguments": "{\"handle\": \"row_003\", \"axis\": \"legal\", \"value\": 10, \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-e(d) (2015)\", \"justification\": \"Amendments to information in the original registration must be submitted to the commission within ten days after the amendment.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_OBiYc3lMWOE0RN1e3LHcde2p",
+              "function": {
+                "arguments": "{\"handle\": \"row_004\", \"axis\": \"legal\", \"reason\": \"§ 1-e(a)(4) sets deadlines keyed to being retained/employed/designated (by Dec. 15 or within 15 days thereafter, but no later than 10 days after actual incurring/receiving reportable compensation/expenses); it does not specify a single clear deadline measured in days after a lobbyist’s first lobbying activity.\"}",
+                "name": "record_unscoreable_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_O2jLjes56bwCrVG7T9Ifs8GI",
+              "function": {
+                "arguments": "{\"handle\": \"row_005\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-e(a)(1), (c) (2015)\", \"justification\": \"The registration statement is filed by the lobbyist and includes client information, while clients have separate reporting duties (e.g., § 1-j) but are not required to file a separate registration form.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_htysVhrLKsDkjl9zMXuJFm8z",
+              "function": {
+                "arguments": "{\"handle\": \"row_006\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-e(c) (2015)\", \"justification\": \"The statute lists required registration contents (name, address, client info, retainer, authorization, subjects, etc.) and does not require a photograph.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_YjpPVPaXa4Xgvnkhgq3tktLo",
+              "function": {
+                "arguments": "{\"handle\": \"row_007\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-c(a) (2015)\", \"justification\": \"The definition of \\\"lobbyist\\\" excludes officers and employees of the state or municipalities discharging official duties (with a limited exception for certain colleges).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_HWITxgyx8A811KPHS1X8ifIj",
+              "function": {
+                "arguments": "{\"handle\": \"row_008\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"NY Legis L § 1-e(a)(1) (2015)\", \"justification\": \"Lobbyists who are officers, directors, trustees or employees of a public corporation acting in that official capacity are exempt from filing the lobbyist registration statement, reflecting partial relief for governmental/public entities.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1780694261,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 719,
+      "prompt_tokens": 31197,
+      "total_tokens": 31916,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 31104
+      }
+    }
+  }
+}

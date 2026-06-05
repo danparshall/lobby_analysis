@@ -1,0 +1,291 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "registration_thresholds",
+    "run_index": 3,
+    "state_abbr": "NY",
+    "vintage_year": 2015,
+    "prompt_sha256": "5b190c5f3ee4c228f8dbb4f4aef627d6bfb11f1ad2f8b10c7017df148000be6e",
+    "timestamp_utc": "2026-06-05T20:59:31+00:00"
+  },
+  "wall_clock_seconds": 15.715331665996928,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 1804
+    },
+    "cache_creation_input_tokens": 1804,
+    "cache_read_input_tokens": 45024,
+    "inference_geo": "global",
+    "input_tokens": 6,
+    "output_tokens": 1555,
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.038905,
+  "legal_roster": [
+    [
+      "lobbyist_registration_threshold_compensation_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_threshold_expenditure_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_threshold_time_percent",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_itemization_de_minimis_threshold_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_de_minimis_threshold_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_de_minimis_threshold_time_percent",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_threshold_compensation_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "5000"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "§1-e(a)(1)",
+      "justification": "Section 1-e(a)(1) exempts from registration any lobbyist who in any year does not expend, incur or receive an amount in excess of $5,000 (for years 2006 and after) in reportable compensation and expenses for lobbying purposes."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_threshold_expenditure_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "5000"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "§1-e(a)(1)",
+      "justification": "The same $5,000 threshold in §1-e(a)(1) covers expenditures — registration is not required if the lobbyist does not \"expend, incur or receive\" more than $5,000 in combined reportable compensation and expenses for lobbying."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_threshold_time_percent",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "magnitude": null,
+        "unit": null
+      },
+      "cell_class": "TimeThresholdCell",
+      "cited_section": "§1-c(a), §1-e(a)",
+      "justification": "The definition of \"lobbyist\" in §1-c(a) and the registration threshold in §1-e(a) are based solely on compensation/expenses, with no time-devoted threshold for lobbyist status."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_filing_itemization_de_minimis_threshold_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "75"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "§1-h(b)(5)(ii)",
+      "justification": "Section 1-h(b)(5)(ii) provides that expenses of $75 or less may be listed in the aggregate, while expenses over $75 must be itemized as to amount, payee, and purpose."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_filing_de_minimis_threshold_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "5000"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "§1-e(a)(1); §1-h(a); §1-j(a)",
+      "justification": "The $5,000 de minimis threshold in §1-e(a)(1) exempts entities from registration entirely, and §1-h(a) and §1-j(a) likewise tie bi-monthly and semi-annual reporting obligations to the same $5,000 threshold of reportable compensation and expenses."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_filing_de_minimis_threshold_time_percent",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": null
+      },
+      "cell_class": "FloatCell",
+      "cited_section": "§1-e(a), §1-h(a)",
+      "justification": "The statute's filing thresholds are based exclusively on dollar amounts of compensation and expenses; no provision exempts a lobbyist from filing based on the percentage of compensated time devoted to lobbying."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "msg_01SRMuDuuDdLNe4Fm2CwpK4W",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "I'll analyze the New York Lobbying Act provisions to answer each question.",
+        "type": "text"
+      },
+      {
+        "id": "toolu_01EvxLdZmWtrBCah6YvGx3fm",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_001",
+          "axis": "legal",
+          "value": "5000",
+          "confidence": "high",
+          "cited_section": "§1-e(a)(1)",
+          "justification": "Section 1-e(a)(1) exempts from registration any lobbyist who in any year does not expend, incur or receive an amount in excess of $5,000 (for years 2006 and after) in reportable compensation and expenses for lobbying purposes."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_019TFxX2AqWRHm4ar1XyGr6y",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_002",
+          "axis": "legal",
+          "value": "5000",
+          "confidence": "high",
+          "cited_section": "§1-e(a)(1)",
+          "justification": "The same $5,000 threshold in §1-e(a)(1) covers expenditures — registration is not required if the lobbyist does not \"expend, incur or receive\" more than $5,000 in combined reportable compensation and expenses for lobbying."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01GSNhXDs7GS7ec16sqYyRNn",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_003",
+          "axis": "legal",
+          "value": {
+            "magnitude": null,
+            "unit": null
+          },
+          "confidence": "high",
+          "cited_section": "§1-c(a), §1-e(a)",
+          "justification": "The definition of \"lobbyist\" in §1-c(a) and the registration threshold in §1-e(a) are based solely on compensation/expenses, with no time-devoted threshold for lobbyist status."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01MUCSDJ9JPNzXgBMPeMqcsj",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_004",
+          "axis": "legal",
+          "value": "75",
+          "confidence": "high",
+          "cited_section": "§1-h(b)(5)(ii)",
+          "justification": "Section 1-h(b)(5)(ii) provides that expenses of $75 or less may be listed in the aggregate, while expenses over $75 must be itemized as to amount, payee, and purpose."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01Qb65EEPagtbG8kfkgk6vuw",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_005",
+          "axis": "legal",
+          "value": "5000",
+          "confidence": "high",
+          "cited_section": "§1-e(a)(1); §1-h(a); §1-j(a)",
+          "justification": "The $5,000 de minimis threshold in §1-e(a)(1) exempts entities from registration entirely, and §1-h(a) and §1-j(a) likewise tie bi-monthly and semi-annual reporting obligations to the same $5,000 threshold of reportable compensation and expenses."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01RMfrz8Vw1Uf81EA4ymmV1X",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_006",
+          "axis": "legal",
+          "value": null,
+          "confidence": "high",
+          "cited_section": "§1-e(a), §1-h(a)",
+          "justification": "The statute's filing thresholds are based exclusively on dollar amounts of compensation and expenses; no provision exempts a lobbyist from filing based on the percentage of compensated time devoted to lobbying."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 1804
+      },
+      "cache_creation_input_tokens": 1804,
+      "cache_read_input_tokens": 45024,
+      "inference_geo": "global",
+      "input_tokens": 6,
+      "output_tokens": 1555,
+      "server_tool_use": null,
+      "service_tier": "standard",
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      }
+    }
+  }
+}

@@ -1,0 +1,625 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "lobbying_definitions",
+    "run_index": 1,
+    "state_abbr": "NY",
+    "vintage_year": 2015,
+    "prompt_sha256": "5b190c5f3ee4c228f8dbb4f4aef627d6bfb11f1ad2f8b10c7017df148000be6e",
+    "timestamp_utc": "2026-06-05T20:57:29+00:00"
+  },
+  "wall_clock_seconds": 37.46006229199702,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 45024
+    },
+    "cache_creation_input_tokens": 45024,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2187,
+    "output_tokens": 3696,
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.103335,
+  "legal_roster": [
+    [
+      "def_lobbying_activity_types",
+      "legal"
+    ],
+    [
+      "def_lobbyist_actor_types",
+      "legal"
+    ],
+    [
+      "law_defines_public_entity",
+      "legal"
+    ],
+    [
+      "law_includes_materiality_test",
+      "legal"
+    ],
+    [
+      "def_target_executive_agency",
+      "legal"
+    ],
+    [
+      "def_target_executive_staff",
+      "legal"
+    ],
+    [
+      "def_target_governors_office",
+      "legal"
+    ],
+    [
+      "def_target_independent_agency",
+      "legal"
+    ],
+    [
+      "def_target_legislative_branch",
+      "legal"
+    ],
+    [
+      "def_target_legislative_staff",
+      "legal"
+    ],
+    [
+      "def_actor_class_elected_officials",
+      "legal"
+    ],
+    [
+      "def_actor_class_public_employees",
+      "legal"
+    ],
+    [
+      "public_entity_def_relies_on_charter",
+      "legal"
+    ],
+    [
+      "public_entity_def_relies_on_ownership",
+      "legal"
+    ],
+    [
+      "public_entity_def_relies_on_revenue_structure",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "def_lobbying_activity_types",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": []
+      },
+      "cell_class": "EnumSetCell",
+      "cited_section": "§1-c(c)",
+      "justification": "The statute defines lobbying by reference to \"any attempt to influence\" specified governmental actions/decisions, without enumerating channels or modes of communication (oral, written, electronic, etc.)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_lobbyist_actor_types",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": [
+          "professional_lobbyist",
+          "public_entity",
+          "professional_consultancy",
+          "law_firm",
+          "in_house_organisation",
+          "in_house_company"
+        ]
+      },
+      "cell_class": "EnumSetCell",
+      "cited_section": "§1-c(a), (d); §1-e(a)(1)(ii)",
+      "justification": "\"Lobbyist\" includes every person or organization retained, employed, or designated by any client to engage in lobbying; \"organization\" expressly includes corporations, firms, partnerships, labor organizations, and public corporations, and §1-e(a)(1)(ii) specifically obligates public corporations to register, sweeping in professional lobbyists, in-house lobbyists, consultancies, law firms, and public entities; the statute does not separately enumerate think tanks or research institutions, and government employees acting in official duties are excluded."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "law_defines_public_entity",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-c",
+      "justification": "The definitions section defines \"public corporation,\" \"public official,\" \"state agency,\" and \"municipal agency,\" but does not define the term \"public entity.\""
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "law_includes_materiality_test",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-e(a)(1)",
+      "justification": "The statute exempts from registration any lobbyist who does not expend, incur, or receive reportable compensation and expenses in excess of $5,000 (a monetary materiality threshold for coverage)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_executive_agency",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-c(c)(i)",
+      "justification": "Lobbying includes attempts to influence the passage/defeat of legislation by either house of the state legislature and approval or disapproval of legislation by the governor."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_executive_staff",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-c(c) and §1-c(l)",
+      "justification": "Lobbying targets include the state legislature, governor, state agencies, and \"public officials\"; §1-c(l) defines \"public official\" broadly to include statewide elected officials, legislators, agency heads, officers/employees of state departments, and municipal officers and employees, covering legislative, executive, and administrative branches."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_governors_office",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-c(c)(i)-(ii)",
+      "justification": "The definition of lobbying expressly covers attempts to influence legislation by either house of the legislature, gubernatorial approval/veto, and gubernatorial executive orders."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_independent_agency",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-c(c)(i)-(ii)",
+      "justification": "Lobbying expressly includes communications attempting to influence state legislators and the governor (legislative passage/defeat and gubernatorial action)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_legislative_branch",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-c(c)(i)-(ii)",
+      "justification": "The lobbying definition encompasses attempts to influence both legislative action (either house of the legislature) and executive action by the governor."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_legislative_staff",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-c(l)",
+      "justification": "\"Public official\" includes the governor, legislators, heads of state departments and their deputies/assistants, officers and employees of state agencies, legislative officers and employees, and municipal officers and employees — covering legislative, executive, senior officials, staff, and bureaucracy."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_actor_class_elected_officials",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-c(a)",
+      "justification": "The definition of \"lobbyist\" expressly excludes any officer, director, trustee, employee, counsel, or agent of the state or any municipality/subdivision when discharging their official duties, so elected officials and public appointees are not required to register for official-capacity activity."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_actor_class_public_employees",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-c(a)",
+      "justification": "Public employees acting in official duties are categorically excluded from the \"lobbyist\" definition; the statute does not subject them to compensation, expenditure, or time-based thresholds as lobbyists (the $5,000 threshold in §1-e applies to lobbyists generally, not to public employees as a separate class)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "public_entity_def_relies_on_charter",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-c(a), (b), (c)",
+      "justification": "The definitions of lobbyist, client, and lobbying turn on retention/employment/designation and attempts to influence governmental action — not on any public charter or special government protection."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "public_entity_def_relies_on_ownership",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-c(a), (b), (c)",
+      "justification": "The lobbying definitions do not turn on ownership; they turn on whether one is retained/employed/designated to engage in attempts to influence specified governmental actions."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "public_entity_def_relies_on_revenue_structure",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-c(a), (b), (c)",
+      "justification": "The statutory definitions of lobbyist, client, and lobbying do not rely on the structure or composition of revenue of the regulated entity."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "msg_016TkhuntcSKg4mZVkk6BUn4",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "I'll analyze each row against the New York Lobbying Act statute text provided.",
+        "type": "text"
+      },
+      {
+        "id": "toolu_01BMLsM7GAHJc252CvRBsNLX",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_001",
+          "axis": "legal",
+          "value": [],
+          "confidence": "high",
+          "cited_section": "§1-c(c)",
+          "justification": "The statute defines lobbying by reference to \"any attempt to influence\" specified governmental actions/decisions, without enumerating channels or modes of communication (oral, written, electronic, etc.)."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01ExUgTNLobHcQYPVcVbrfjN",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_002",
+          "axis": "legal",
+          "value": [
+            "professional_lobbyist",
+            "in_house_company",
+            "in_house_organisation",
+            "professional_consultancy",
+            "law_firm",
+            "public_entity"
+          ],
+          "confidence": "medium",
+          "cited_section": "§1-c(a), (d); §1-e(a)(1)(ii)",
+          "justification": "\"Lobbyist\" includes every person or organization retained, employed, or designated by any client to engage in lobbying; \"organization\" expressly includes corporations, firms, partnerships, labor organizations, and public corporations, and §1-e(a)(1)(ii) specifically obligates public corporations to register, sweeping in professional lobbyists, in-house lobbyists, consultancies, law firms, and public entities; the statute does not separately enumerate think tanks or research institutions, and government employees acting in official duties are excluded."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_019pzvyTAwPvKL1QgDauKv1t",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_003",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§1-c",
+          "justification": "The definitions section defines \"public corporation,\" \"public official,\" \"state agency,\" and \"municipal agency,\" but does not define the term \"public entity.\""
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01FJHmPrH4Tvvxu55qo6G35L",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_004",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§1-e(a)(1)",
+          "justification": "The statute exempts from registration any lobbyist who does not expend, incur, or receive reportable compensation and expenses in excess of $5,000 (a monetary materiality threshold for coverage)."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01F27Pb8oFjbh8A2XUkTwfvF",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_005",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§1-c(c)(i)",
+          "justification": "Lobbying includes attempts to influence the passage/defeat of legislation by either house of the state legislature and approval or disapproval of legislation by the governor."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01D48CMjXdK9gHX6zPUwL6FF",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_006",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§1-c(c) and §1-c(l)",
+          "justification": "Lobbying targets include the state legislature, governor, state agencies, and \"public officials\"; §1-c(l) defines \"public official\" broadly to include statewide elected officials, legislators, agency heads, officers/employees of state departments, and municipal officers and employees, covering legislative, executive, and administrative branches."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01XLAWzudTs4tbCjCbRPSz6w",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_007",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§1-c(c)(i)-(ii)",
+          "justification": "The definition of lobbying expressly covers attempts to influence legislation by either house of the legislature, gubernatorial approval/veto, and gubernatorial executive orders."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_015aV7eE7fVDVrmHSNT8fcES",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_008",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§1-c(c)(i)-(ii)",
+          "justification": "Lobbying expressly includes communications attempting to influence state legislators and the governor (legislative passage/defeat and gubernatorial action)."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01V7C5dEsk4AEsYQtFuT33g5",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_009",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§1-c(c)(i)-(ii)",
+          "justification": "The lobbying definition encompasses attempts to influence both legislative action (either house of the legislature) and executive action by the governor."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01P5ZK9jxNmGqDrweQ2bp2Xc",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_010",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§1-c(l)",
+          "justification": "\"Public official\" includes the governor, legislators, heads of state departments and their deputies/assistants, officers and employees of state agencies, legislative officers and employees, and municipal officers and employees — covering legislative, executive, senior officials, staff, and bureaucracy."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01GKSNqUsR35R1RzA9o8BJFq",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_011",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§1-c(a)",
+          "justification": "The definition of \"lobbyist\" expressly excludes any officer, director, trustee, employee, counsel, or agent of the state or any municipality/subdivision when discharging their official duties, so elected officials and public appointees are not required to register for official-capacity activity."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01FqEShuoxuD9TmD85fZB1xA",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_012",
+          "axis": "legal",
+          "value": false,
+          "confidence": "medium",
+          "cited_section": "§1-c(a)",
+          "justification": "Public employees acting in official duties are categorically excluded from the \"lobbyist\" definition; the statute does not subject them to compensation, expenditure, or time-based thresholds as lobbyists (the $5,000 threshold in §1-e applies to lobbyists generally, not to public employees as a separate class)."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01LarN58ebwthhE5ym2HUi8i",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_013",
+          "axis": "legal",
+          "value": false,
+          "confidence": "medium",
+          "cited_section": "§1-c(a), (b), (c)",
+          "justification": "The definitions of lobbyist, client, and lobbying turn on retention/employment/designation and attempts to influence governmental action — not on any public charter or special government protection."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01JppNSWgDVnEcJh2nQP5ta2",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_014",
+          "axis": "legal",
+          "value": false,
+          "confidence": "medium",
+          "cited_section": "§1-c(a), (b), (c)",
+          "justification": "The lobbying definitions do not turn on ownership; they turn on whether one is retained/employed/designated to engage in attempts to influence specified governmental actions."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01NHVXLAmRk761PMjd6vCXqR",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_015",
+          "axis": "legal",
+          "value": false,
+          "confidence": "medium",
+          "cited_section": "§1-c(a), (b), (c)",
+          "justification": "The statutory definitions of lobbyist, client, and lobbying do not rely on the structure or composition of revenue of the regulated entity."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 45024
+      },
+      "cache_creation_input_tokens": 45024,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 2187,
+      "output_tokens": 3696,
+      "server_tool_use": null,
+      "service_tier": "standard",
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      }
+    }
+  }
+}

@@ -1,0 +1,899 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "principal_spending_report",
+    "run_index": 1,
+    "state_abbr": "NY",
+    "vintage_year": 2015,
+    "prompt_sha256": "5b190c5f3ee4c228f8dbb4f4aef627d6bfb11f1ad2f8b10c7017df148000be6e",
+    "timestamp_utc": "2026-06-05T21:14:09+00:00"
+  },
+  "wall_clock_seconds": 42.88850166701013,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 45024,
+    "inference_geo": "global",
+    "input_tokens": 2157,
+    "output_tokens": 4748,
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.129485,
+  "legal_roster": [
+    [
+      "principal_spending_report_cadence_includes_annual",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_includes_monthly",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_includes_other",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_includes_quarterly",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_includes_semiannual",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_includes_triannual",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_other_specification",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_business_nature",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_compensation_paid_to_lobbyists",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_contacts_made",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_general_issues",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_gifts_entertainment_transport_lodging",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_indirect_costs",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_lobbyist_contact_info",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_lobbyist_names",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_major_financial_contributors",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_principal_contact_info",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_specific_bill_number",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_total_expenditures",
+      "legal"
+    ],
+    [
+      "principal_spending_report_required",
+      "legal"
+    ],
+    [
+      "principal_spending_report_uses_itemized_format",
+      "legal"
+    ],
+    [
+      "lobbyist_or_principal_reg_form_includes_member_or_sponsor_names",
+      "legal"
+    ],
+    [
+      "principal_spending_report_lists_lobbyists_employed",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_annual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-j(b)",
+      "justification": "Section 1-j requires client reports to be filed semi-annually (July 15 and January 15), not annually."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_monthly",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-j(b)",
+      "justification": "Section 1-j requires semi-annual filing, not monthly."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_other",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-j(b)",
+      "justification": "The frequency is specified as semi-annual; no \"other\" frequency applies."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_quarterly",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-j(b)",
+      "justification": "Section 1-j requires semi-annual filing, not quarterly."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_semiannual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-j(b)",
+      "justification": "Client reports must be filed by July 15 and January 15 — i.e., semi-annually."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_triannual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-j(b)",
+      "justification": "Reports are semi-annual, not tri-annual tied to legislative calendar."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_other_specification",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "N/A"
+      },
+      "cell_class": "FreeTextCell",
+      "cited_section": "§1-j(b)",
+      "justification": "The frequency is statutorily specified as semi-annual, so no \"other\" free-text applies."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_business_nature",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-j(b)",
+      "justification": "Section 1-j lists required contents of the client's semi-annual report; no requirement to disclose whether business is public or private appears."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_compensation_paid_to_lobbyists",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-j(b)(5)(i)",
+      "justification": "The semi-annual report must include \"the compensation paid or owed to each such lobbyist.\""
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_contacts_made",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-j(b)(4)",
+      "justification": "The report must include \"the name of the person, organization, or legislative body before which such client has lobbied.\""
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_general_issues",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-j(b)(3)(i)",
+      "justification": "The report must include \"a description of the general subject or subjects\" lobbied."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_gifts_entertainment_transport_lodging",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-j(b)(5)(i)-(ii)",
+      "justification": "Report must include \"any other expenses paid or incurred by such client for the purpose of lobbying,\" itemized if over $75, which covers gifts/entertainment/transportation/lodging."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_indirect_costs",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-j(b)(5)(i)",
+      "justification": "\"Any other expenses paid or incurred by such client for the purpose of lobbying\" must be reported, covering non-compensation indirect costs."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_lobbyist_contact_info",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-j(b)(2)",
+      "justification": "Report must include \"the name, address and telephone number of each lobbyist retained, employed or designated by such client.\""
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_lobbyist_names",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-j(b)(2)",
+      "justification": "Report must include name of each lobbyist retained, employed or designated by such client."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_major_financial_contributors",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-j(c)(4)",
+      "justification": "Clients spending over $50,000 (with 3%+ devoted to NY lobbying) must report names of each source of funding over $5,000 used to fund lobbying."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_principal_contact_info",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-j(b)(1)",
+      "justification": "Report must include \"the name, address and telephone number of the client.\""
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_specific_bill_number",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-j(b)(3)(ii)",
+      "justification": "Report must include \"the legislative bill numbers of any bills\" lobbied."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_total_expenditures",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-j(b)(5)(i)",
+      "justification": "Report must include compensation paid to each lobbyist and any other expenses paid or incurred by the client for lobbying purposes, capturing total expenditure."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-j(b)(5)(i)",
+      "justification": "Clients must report \"the compensation paid or owed to each such lobbyist,\" satisfying the YES standard."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_uses_itemized_format",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-j(b)(5)(ii)",
+      "justification": "Expenses over $75 must be \"detailed as to amount, to whom paid, and for what purpose,\" requiring itemization."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_or_principal_reg_form_includes_member_or_sponsor_names",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-j(b)",
+      "justification": "Section 1-j does not require disclosure of names of sponsors/members of associations or representative groups (only sources of funding over $5,000 under §1-j(c)(4) for larger spenders)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_lists_lobbyists_employed",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§1-j(b)(2)",
+      "justification": "Clients must list \"each lobbyist retained, employed or designated by such client,\" providing a list of lobbyists employed."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "msg_013N3UGVTWKPfCwNg8M98Hgs",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "I'll analyze the NY Lobbying Act statute to answer these questions about the principal's (client's) periodic spending report, which is the semi-annual report under §1-J.",
+        "type": "text"
+      },
+      {
+        "id": "toolu_01S7JJSsQNxtJaNQ6e1sPANs",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_001",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§1-j(b)",
+          "justification": "Section 1-j requires client reports to be filed semi-annually (July 15 and January 15), not annually."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_0196Si6TJ492p53dVtBxVRCt",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_002",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§1-j(b)",
+          "justification": "Section 1-j requires semi-annual filing, not monthly."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01TTb5AWzc7UUUKwdN2QBqUM",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_003",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§1-j(b)",
+          "justification": "The frequency is specified as semi-annual; no \"other\" frequency applies."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01HmYE89eTvrC6s7H2BAuY1N",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_004",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§1-j(b)",
+          "justification": "Section 1-j requires semi-annual filing, not quarterly."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01SAxhgacdtLuxgNsH21nTdu",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_005",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§1-j(b)",
+          "justification": "Client reports must be filed by July 15 and January 15 — i.e., semi-annually."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01CLSMatPYuyGKpJ7zA5ZFsq",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_006",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§1-j(b)",
+          "justification": "Reports are semi-annual, not tri-annual tied to legislative calendar."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_019tJd68hUq4DFBk8uL22qat",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_007",
+          "axis": "legal",
+          "value": "N/A",
+          "confidence": "high",
+          "cited_section": "§1-j(b)",
+          "justification": "The frequency is statutorily specified as semi-annual, so no \"other\" free-text applies."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01F5SFJhEs6Y6ZntSZRs5NN2",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_008",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§1-j(b)",
+          "justification": "Section 1-j lists required contents of the client's semi-annual report; no requirement to disclose whether business is public or private appears."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01MwKpz1kA62qarzmZXUk6X5",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_009",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§1-j(b)(5)(i)",
+          "justification": "The semi-annual report must include \"the compensation paid or owed to each such lobbyist.\""
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01RZfCGiC2cSskK2dgcFndMh",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_010",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§1-j(b)(4)",
+          "justification": "The report must include \"the name of the person, organization, or legislative body before which such client has lobbied.\""
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01Pk9euEocHgrAaGEjHk2HoK",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_011",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§1-j(b)(3)(i)",
+          "justification": "The report must include \"a description of the general subject or subjects\" lobbied."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01Hb2gn6pvGzgd9v2dWjgKiZ",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_012",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§1-j(b)(5)(i)-(ii)",
+          "justification": "Report must include \"any other expenses paid or incurred by such client for the purpose of lobbying,\" itemized if over $75, which covers gifts/entertainment/transportation/lodging."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_0127owtjbybMtda4FG4r3mx7",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_013",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§1-j(b)(5)(i)",
+          "justification": "\"Any other expenses paid or incurred by such client for the purpose of lobbying\" must be reported, covering non-compensation indirect costs."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01BAyo4yHaf3hP3o7rJzERaP",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_014",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§1-j(b)(2)",
+          "justification": "Report must include \"the name, address and telephone number of each lobbyist retained, employed or designated by such client.\""
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01YM6NKYrzUE55PX4P8zbVQg",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_015",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§1-j(b)(2)",
+          "justification": "Report must include name of each lobbyist retained, employed or designated by such client."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01JhFJZ69dhaK3P1FESXkWnN",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_016",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§1-j(c)(4)",
+          "justification": "Clients spending over $50,000 (with 3%+ devoted to NY lobbying) must report names of each source of funding over $5,000 used to fund lobbying."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_015YJxvuBqGUjg4vgpWb7pZA",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_017",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§1-j(b)(1)",
+          "justification": "Report must include \"the name, address and telephone number of the client.\""
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01XrFCy2YQ7d7PqxuRtQ1fn5",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_018",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§1-j(b)(3)(ii)",
+          "justification": "Report must include \"the legislative bill numbers of any bills\" lobbied."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01J6YwZK2JfGcM47CFFpHPfD",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_019",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§1-j(b)(5)(i)",
+          "justification": "Report must include compensation paid to each lobbyist and any other expenses paid or incurred by the client for lobbying purposes, capturing total expenditure."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_012juKykN6JpH7z4wrZGqDKB",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_020",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§1-j(b)(5)(i)",
+          "justification": "Clients must report \"the compensation paid or owed to each such lobbyist,\" satisfying the YES standard."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01ARy8SWii1RhE2MS9HKGAAH",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_021",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§1-j(b)(5)(ii)",
+          "justification": "Expenses over $75 must be \"detailed as to amount, to whom paid, and for what purpose,\" requiring itemization."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01QvubTAnst55QLs4zSZwrxc",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_022",
+          "axis": "legal",
+          "value": false,
+          "confidence": "medium",
+          "cited_section": "§1-j(b)",
+          "justification": "Section 1-j does not require disclosure of names of sponsors/members of associations or representative groups (only sources of funding over $5,000 under §1-j(c)(4) for larger spenders)."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01NFaM2js8x2e2A4GwQk36te",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_023",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§1-j(b)(2)",
+          "justification": "Clients must list \"each lobbyist retained, employed or designated by such client,\" providing a list of lobbyists employed."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 45024,
+      "inference_geo": "global",
+      "input_tokens": 2157,
+      "output_tokens": 4748,
+      "server_tool_use": null,
+      "service_tier": "standard",
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      }
+    }
+  }
+}
