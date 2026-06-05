@@ -44,6 +44,10 @@ All files are tab-separated (`.tsv`) with a single header row. Total size: **~2.
 
 Field semantics come from the Pydantic models at [`src/lobby_analysis/models/`](../../src/lobby_analysis/models/) (entity-side follows [Popolo](http://www.popoloproject.com/) / Open Civic Data conventions; filing-side uses a complementary OCD-style `Disclosures` schema). `contact_details_json` is a JSON-encoded list of Popolo-style `ContactDetail` objects (`{type, value, note}` with `type ∈ {phone, email, address}`).
 
+### Derived datasets
+
+- **[`chain/`](chain/)** — modeled per-(semester, principal, lobbyist, bill, sponsor) chain joining these source TSVs to bill sponsorship from the WI Legislature (via Plural Policy / OpenStates), with per-lobbyist effort hours inferred via IPF and per-sponsor effort hours normalized by primary-sponsor count. See [`chain/README.md`](chain/README.md) for schema, methodology, and limitations. 115,229 rows / ~38 MB.
+
 ---
 
 ## Headline aggregates
