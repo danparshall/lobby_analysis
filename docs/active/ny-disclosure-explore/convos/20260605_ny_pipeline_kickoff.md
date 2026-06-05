@@ -103,3 +103,7 @@ Ran the gating Phase 0 live against `data.ny.gov` (scripts `scripts/ny_*.py`; ve
 - **a2 — bill-id suffix.** Web-confirmed: `S550-A` = Senate Bill 550, first amended print (`-B` second, …); base number is the bill identity, Open States keys by base. **Strip `-A/-B` for the OS join, preserve original as `bill_print_version`, measure OS match rate both ways in Phase 4.** Sources cited in the findings doc.
 
 **Session outcome:** Phase 0 closed; plan + RESEARCH_LOG updated with both refinements and both decisions; ready for Phase 1 (bulk-CSV acquisition) whenever Dan greenlights the build. Commits: `2a6d32b` (kickoff plan), `b11f15b` (Phase 0), `74c3c21` (a1/a2 decisions).
+
+## Captured Tasks
+
+- [#37: NY: verify no dollar double-count across client_semiannual + lobbyist_bimonthly](https://github.com/danparshall/lobby_analysis/issues/37) — captured 2026-06-05

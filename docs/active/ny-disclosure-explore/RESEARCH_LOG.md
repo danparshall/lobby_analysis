@@ -5,6 +5,8 @@ Purpose: Build a New York state lobbying-disclosure pull pipeline — `releases/
 
 Newest entries first.
 
+> **HANDOFF (next session):** Phase 0 is done and the architecture is locked — pick up at **Phase 1 (bulk-CSV acquisition)** in [`plans/ny_disclosure_pipeline.md`](plans/ny_disclosure_pipeline.md), starting with a full `pytest` baseline; build 2025 first via the `client_semiannual` (qym9-xzj6) spine, and close out GH issue [#37](https://github.com/danparshall/lobby_analysis/issues/37) (semiannual-vs-bimonthly double-count check) before merge.
+
 ---
 
 ## 2026-06-05 — Phase 0 schema verification EXECUTED (live Open NY, 2025)
