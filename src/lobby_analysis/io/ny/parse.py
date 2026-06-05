@@ -151,6 +151,30 @@ def parse_individual_lobbyists(raw) -> list[Person]:
 # ---------------------------------------------------------------------------
 
 
+def even_split(total: Decimal, n: int) -> list[Decimal]:
+    """Split ``total`` into ``n`` parts summing exactly to ``total``.
+
+    Uses integer-cent arithmetic so the parts sum to the original with no
+    rounding loss: the first ``remainder`` parts get one extra cent. For totals
+    that divide evenly this is just ``total / n`` repeated ``n`` times. ``n <= 0``
+    yields ``[]``.
+
+    Shared conservation primitive for both the Phase-2 per-bill split
+    (``materialize``) and the Phase-4 per-cell split (``allocation.ny.chain``).
+    The multiplicative beneficiary x bill split is a single ``even_split(C, M*N)``
+    so remainders never compound across the two axes.
+    """
+    if n <= 0:
+        return []
+    cents = int((total * 100).to_integral_value())
+    base, rem = divmod(cents, n)
+    parts: list[Decimal] = []
+    for i in range(n):
+        c = base + (1 if i < rem else 0)
+        parts.append(Decimal(c) / Decimal(100))
+    return parts
+
+
 def coerce_money(raw) -> Decimal | None:
     """Coerce a NY money string to ``Decimal``, or ``None`` if not reported.
 

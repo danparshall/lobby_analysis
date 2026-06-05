@@ -48,7 +48,6 @@ from __future__ import annotations
 
 import csv
 import json
-from decimal import Decimal
 from pathlib import Path
 from typing import Sequence
 
@@ -57,6 +56,7 @@ import pandas as pd
 from lobby_analysis.io.ny.parse import (
     STATE,
     coerce_money,
+    even_split,
     parse_client,
     parse_principal_lobbyist,
 )
@@ -145,24 +145,6 @@ def _org_row(org: Organization) -> dict:
         "sector": _cell(org.sector),
         "contact_details_json": _contact_details_json(org),
     }
-
-
-def _even_split(total: Decimal, n: int) -> list[Decimal]:
-    """Split ``total`` into ``n`` parts summing exactly to ``total``.
-
-    Uses integer-cent arithmetic so the parts sum to the original with no
-    rounding loss: the first ``remainder`` parts get one extra cent. For totals
-    that divide evenly this is just ``total / n`` repeated ``n`` times.
-    """
-    if n <= 0:
-        return []
-    cents = int((total * 100).to_integral_value())
-    base, rem = divmod(cents, n)
-    parts = []
-    for i in range(n):
-        c = base + (1 if i < rem else 0)
-        parts.append(Decimal(c) / Decimal(100))
-    return parts
 
 
 # ---------------------------------------------------------------------------
@@ -257,7 +239,7 @@ def materialize_ny(grain: pd.DataFrame, *, output_dir: Path) -> dict[str, int]:
             for link in group:
                 link["comp_per_bill"] = ""
         else:
-            parts = _even_split(comp, len(group))
+            parts = even_split(comp, len(group))
             for link, part in zip(group, parts):
                 link["comp_per_bill"] = str(part)
     for link in bill_links:
