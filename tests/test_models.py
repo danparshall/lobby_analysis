@@ -199,6 +199,59 @@ class TestLobbyingFiling:
         assert filing.filing_action == "original"
         assert filing.positions == []
 
+    def test_employer_defaults_none_and_accepts_org(self):
+        """OH AERs are filed by a person-agent on behalf of an employer/principal
+        that is NOT the filer. `employer` is the dedicated slot; it defaults to
+        None and accepts an Organization without colliding with the filer slots."""
+        minimal = LobbyingFiling(
+            id="f-001",
+            state="OH",
+            filing_type="activity_report",
+            filer_person=_make_person(),
+            filer_role="lobbyist",
+        )
+        assert minimal.employer is None
+
+        with_employer = LobbyingFiling(
+            id="f-002",
+            state="OH",
+            filing_type="activity_report",
+            filer_person=_make_person(),
+            filer_role="lobbyist",
+            employer=_make_org(name="ARC Gaming & Technologies"),
+        )
+        assert with_employer.employer is not None
+        assert with_employer.employer.name == "ARC Gaming & Technologies"
+        # The employer must NOT be conflated with the filer slots.
+        assert with_employer.filer_organization is None
+
+    def test_extraction_warnings_default_empty_and_collect_notes(self):
+        """The 'flag what you can't represent' channel defaults to an empty list
+        and collects free-text notes the extractor emits when source content has
+        no schema slot (turns silent data-loss into a visible signal)."""
+        minimal = LobbyingFiling(
+            id="f-001",
+            state="OH",
+            filing_type="activity_report",
+            filer_person=_make_person(),
+            filer_role="lobbyist",
+        )
+        assert minimal.extraction_warnings == []
+
+        flagged = LobbyingFiling(
+            id="f-002",
+            state="OH",
+            filing_type="activity_report",
+            filer_person=_make_person(),
+            filer_role="lobbyist",
+            extraction_warnings=[
+                "Section II.D sub-breakdown collapsed to one row",
+            ],
+        )
+        assert flagged.extraction_warnings == [
+            "Section II.D sub-breakdown collapsed to one row",
+        ]
+
     def test_full_filing(self):
         filing = LobbyingFiling(
             id="f-001",
