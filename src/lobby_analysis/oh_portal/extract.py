@@ -21,6 +21,35 @@ TOOL_NAME = "emit_lobbying_filing"
 MAX_TOKENS = 8192
 
 
+def build_tool_schema() -> dict:
+    """The LobbyingFiling JSON schema with `raw_text` removed.
+
+    `raw_text` is the full source-text audit field; the pipeline populates it
+    deterministically from the fetched source (see `assemble_filing`), so the
+    model must not be asked to re-transcribe it. Dropping it also trims output
+    tokens on every call. It is optional on the model, so removing it from
+    `properties` leaves a valid schema with no `required` cleanup needed."""
+    schema = LobbyingFiling.model_json_schema()
+    schema.get("properties", {}).pop("raw_text", None)
+    return schema
+
+
+def assemble_filing(
+    tool_input: dict,
+    aer_text: str,
+    provenance: Provenance,
+) -> LobbyingFiling:
+    """Validate a model tool_input into a LobbyingFiling, then stamp the
+    code-authoritative `raw_text` (= the fetched source text) and provenance.
+
+    `raw_text` is always set to `aer_text` regardless of any value the model
+    emitted — the persisted audit text is source-of-truth, not model output."""
+    filing = LobbyingFiling.model_validate(tool_input)
+    filing.raw_text = aer_text
+    filing.provenance = provenance
+    return filing
+
+
 def html_to_aer_text(html_path: Path) -> str:
     """Strip nav/footer/script/style chrome from an OLAC view page and return
     the visible text content. Keeps line breaks so the LLM sees structure."""
@@ -47,7 +76,6 @@ def extract_oh_legislative_filing(
     aer_text = html_to_aer_text(html_path)
 
     client = anthropic.Anthropic()
-    schema = LobbyingFiling.model_json_schema()
 
     response = client.messages.create(
         model=MODEL_ID,
@@ -59,7 +87,7 @@ def extract_oh_legislative_filing(
                     "Emit a populated LobbyingFiling record matching the "
                     "supplied AER source text per the extraction brief."
                 ),
-                "input_schema": schema,
+                "input_schema": build_tool_schema(),
             }
         ],
         tool_choice={"type": "tool", "name": TOOL_NAME},
@@ -83,9 +111,7 @@ def extract_oh_legislative_filing(
         )
 
     tool_input = tool_blocks[0].input
-    filing = LobbyingFiling.model_validate(tool_input)
-    filing.provenance = provenance
-    return filing
+    return assemble_filing(tool_input, aer_text, provenance)
 
 
 def dump_error(out_dir: Path, response: object, exc: Exception) -> Path:
