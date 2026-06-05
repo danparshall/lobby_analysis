@@ -11,6 +11,18 @@ Overview of the project's three prongs, the four components inside Prong 1, and 
 
 ---
 
+## Status: Prong 1 paused 2026-05-24
+
+The first-state pilot (OH 2025) on `extraction-harness-brainstorm` produced empirical evidence that frontier LLMs *can* read state lobbying statutes (high cross-vintage stability, low cost, no hallucinated citations) but the v2.1 typed-cell schema *cannot yet faithfully represent what statutes actually say* — most visibly on qualitative-trigger states like OH (`def_lobbyist` uses "main purpose," no dollar floor; `TimeThresholdCell` and the three numeric `threshold_*` cells force a lossy encoding).
+
+Pivot: **gather-first** — collect per-(state, vintage, question) answers in a flexible intermediate JSON (freeform answer + statute citation + confidence), then design the **v2.2** typed schema from observed reality. v2.1 (the current frozen 181-row TSV with column-rename refinements) remains the immediate reference contract.
+
+All three in-flight Prong 1 branches merged + archived to `docs/historical/` on this date — see the README "Research question" section for the project-level framing, the archived `extraction-harness-brainstorm/` for Tier-1/Tier-2 evidence (especially `results/tier_1/20260520_tier_1_legal_axis_writeup.md` and the Tier-2 Step D writeup), and the archived `phase-c-projection-tdd/` for the 5 shipped rubric projections + 2 FOCAL plans (still useful as formal specifications of each rubric's substantive judgment — re-adaptable to v2.2 cells).
+
+The Ralph loop framing, Goodhart risk, σ_noise methodology, and locked rubric order described below remain accurate as designs — they describe the *resumption* of Prong 1 after v2.2 lands.
+
+---
+
 ## Three prongs
 
 **The product is Prong 2 + Prong 3** — public-facing infrastructure for state lobbying disclosure data, served via GraphQL + MCP, queried by journalists, activists, and researchers who want to see *what's actually being disclosed* and *who is trying to influence whom*.

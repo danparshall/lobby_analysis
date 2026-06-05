@@ -1,0 +1,153 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260518_tier_0_execution_pivot_to_direct_read.md",
+    "script": "scripts/tier_0_direct_read_smoke.py",
+    "model": "claude-opus-4-7",
+    "chunk_id": "enforcement_and_audits",
+    "state_abbr": "OH",
+    "vintage_year": 2025,
+    "prompt_sha256": "6da027def2b2b6249d65c063ad22ec06133a3f648c1f8a58b3d6a1b8c37036b1",
+    "timestamp_utc": "2026-05-20T23:59:24+00:00"
+  },
+  "wall_clock_seconds": 17.48314962501172,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 49614
+    },
+    "cache_creation_input_tokens": 49614,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 730,
+    "output_tokens": 1339,
+    "server_tool_use": null,
+    "service_tier": "standard"
+  },
+  "cost_usd_estimate": 0.037125,
+  "statute_filenames": [
+    "title1-chapter101-101_70.txt",
+    "title1-chapter101-101_71.txt",
+    "title1-chapter101-101_72.txt",
+    "title1-chapter101-101_73.txt",
+    "title1-chapter101-101_74.txt",
+    "title1-chapter101-101_75.txt",
+    "title1-chapter101-101_76.txt",
+    "title1-chapter101-101_77.txt",
+    "title1-chapter101-101_78.txt",
+    "title1-chapter101-101_79.txt",
+    "title1-chapter101-101_90.txt",
+    "title1-chapter101-101_91.txt",
+    "title1-chapter101-101_92.txt",
+    "title1-chapter101-101_93.txt",
+    "title1-chapter101-101_94.txt",
+    "title1-chapter101-101_95.txt",
+    "title1-chapter101-101_96.txt",
+    "title1-chapter101-101_97.txt",
+    "title1-chapter101-101_98.txt",
+    "title1-chapter101-101_99.txt",
+    "title1-chapter121-121_60.txt",
+    "title1-chapter121-121_61.txt",
+    "title1-chapter121-121_62.txt",
+    "title1-chapter121-121_63.txt",
+    "title1-chapter121-121_64.txt",
+    "title1-chapter121-121_65.txt",
+    "title1-chapter121-121_66.txt",
+    "title1-chapter121-121_67.txt",
+    "title1-chapter121-121_68.txt",
+    "title1-chapter121-121_69.txt"
+  ],
+  "response": {
+    "id": "msg_01EcgZWNoVrsoxTdzpLJm8KJ",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "I'll analyze the statute text to answer these four cells about enforcement and audits in Ohio's lobbying disclosure regime.",
+        "type": "text"
+      },
+      {
+        "id": "toolu_01HLdhNp2nM5mQqZz972of2S",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "lobbying_violation_penalties_imposed_in_practice",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.99; §101.71; §101.72(G); §101.77",
+          "justification": "Section 101.99 establishes criminal penalties (fourth-degree misdemeanor for failure-to-register/record/file violations under 101.71(A)-(C), 101.77, 101.97; first-degree misdemeanor for knowingly filing a false statement under 101.71(D)), and §101.72(G) authorizes a $12.50/day late filing fee up to $100 — so the law on its face provides penalties for lobbying violations."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01YPEVahV7d9W6vaM3zZaaNe",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "lobbying_violation_penalties_imposed_in_practice",
+          "axis": "practical",
+          "value": "2",
+          "confidence": "medium",
+          "cited_section": "§101.79; §101.99; §101.72(G)",
+          "justification": "The statute creates a concrete enforcement pathway — the Attorney General investigates and refers apparent violations to the Franklin County prosecutor (§101.79), criminal misdemeanor penalties are specified (§101.99), and the Joint Legislative Ethics Committee assesses automatic late fees (§101.72(G)) — indicating a functioning penalty regime, though the bundle does not show enforcement statistics to confirm frequency in practice."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01Cn1gKJScNB9pPmgETNjrpJ",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "lobbying_disclosure_audit_required_in_law",
+          "axis": "legal",
+          "value": "review_only",
+          "confidence": "high",
+          "cited_section": "§101.72(G); §101.79",
+          "justification": "Section 101.72(G) directs the executive director of the Joint Legislative Ethics Committee to \"review each registration statement\" for completeness and issue deficiency notices, and §101.79 permits the Attorney General to investigate compliance — but no provision mandates systematic financial audits of lobbyist filings, so the regime is review/investigation only rather than a required audit."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01QKwhBQWxvendrr28hjrK29",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "lobbying_disclosure_audit_required_in_law",
+          "axis": "practical",
+          "value": "1",
+          "confidence": "medium",
+          "cited_section": "§101.72(G); §101.73(E); §101.79",
+          "justification": "The statute provides only a facial review of filings by the executive director (§101.72(G)) and discretionary AG investigations (§101.79), with recordkeeping retention required for two years (§101.73(E)), but no mandated audit program — indicating weak practical audit oversight beyond completeness review."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 49614
+      },
+      "cache_creation_input_tokens": 49614,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 730,
+      "output_tokens": 1339,
+      "server_tool_use": null,
+      "service_tier": "standard"
+    }
+  }
+}

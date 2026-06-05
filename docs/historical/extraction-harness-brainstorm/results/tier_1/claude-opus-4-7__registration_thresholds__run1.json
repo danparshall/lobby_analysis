@@ -1,0 +1,288 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "registration_thresholds",
+    "run_index": 1,
+    "state_abbr": "OH",
+    "vintage_year": 2025,
+    "prompt_sha256": "f1f90342e807976476f79eb5321867e09f82a3f005caa9f17279c46e8d79cb43",
+    "timestamp_utc": "2026-05-21T17:21:10+00:00"
+  },
+  "wall_clock_seconds": 23.027598208049312,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 49735
+    },
+    "cache_creation_input_tokens": 49735,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 887,
+    "output_tokens": 1924,
+    "server_tool_use": null,
+    "service_tier": "standard"
+  },
+  "cost_usd_estimate": 0.052535,
+  "legal_roster": [
+    [
+      "lobbyist_registration_threshold_compensation_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_threshold_expenditure_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_threshold_time_percent",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_itemization_de_minimis_threshold_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_de_minimis_threshold_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_de_minimis_threshold_time_percent",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_threshold_compensation_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "0"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "ORC §101.70(F) and §101.72(A)",
+      "justification": "The definition of \"legislative agent\" turns on being \"engaged ... to actively advocate as one of the individual's main purposes\" with no monetary compensation threshold; registration is required within ten days of engagement regardless of compensation amount."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_threshold_expenditure_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "0"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "ORC §101.72(A)",
+      "justification": "Registration is triggered by engagement of a legislative agent within ten days, not by any expenditure dollar threshold — the statute imposes no minimum expenditure amount for registration."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_filing_itemization_de_minimis_threshold_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "50"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "ORC §101.73(B)(3)",
+      "justification": "Itemization of meals/food/beverage expenditures per public officer is required only when cumulative payments by the legislative agent during a calendar year exceed $50 to/for that particular official."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_filing_de_minimis_threshold_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "0"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "ORC §101.73(A), (B)(1), (D)",
+      "justification": "Each legislative agent and employer must file expenditure statements with each updated registration statement (January, May, September) showing total expenditures, with no minimum-dollar threshold below which filing is excused."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_filing_de_minimis_threshold_time_percent",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": 0.0
+      },
+      "cell_class": "FloatCell",
+      "cited_section": "ORC §101.73(A) and §101.72(B)",
+      "justification": "The statute requires filing expenditure statements with each updated registration regardless of time spent lobbying; no percentage-of-time de minimis exemption from filing exists."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [
+    {
+      "reason": "instantiation_failed",
+      "key": [
+        "lobbyist_registration_threshold_time_percent",
+        "legal"
+      ],
+      "error": "1 validation error for TimeThresholdCell\nunit\n  Input should be 'hours_per_quarter', 'hours_per_year', 'days_per_year' or 'percent_of_work_time' [type=literal_error, input_value='main_purpose_qualitative', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.13/v/literal_error",
+      "arguments": {
+        "row_id": "lobbyist_registration_threshold_time_percent",
+        "axis": "legal",
+        "value": {
+          "magnitude": null,
+          "unit": "main_purpose_qualitative"
+        },
+        "confidence": "high",
+        "cited_section": "ORC §101.70(F)",
+        "justification": "The statute uses a qualitative \"main purposes\" standard — \"engaged during at least a portion of the individual's time to actively advocate as one of the individual's main purposes\" — rather than any numeric percentage of time."
+      }
+    }
+  ],
+  "response": {
+    "id": "msg_019vidTm4RuK96mb14KTyz5d",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "I'll analyze the Ohio statute for each threshold question.\n\n**Compensation threshold**: §101.70(F) defines \"legislative agent\" as one engaged to \"actively advocate as one of the individual's main purposes\" — no dollar threshold for compensation.\n\n**Expenditure threshold for registration**: Registration is triggered by engagement, not by expenditure amount. §101.72(A) requires filing within 10 days of engagement — no dollar threshold.\n\n**Time percent threshold**: §101.70(F) says \"engaged during at least a portion of the individual's time to actively advocate as one of the individual's main purposes\" — qualitative \"main purpose\" standard, not a numeric percentage.\n\n**Itemization de minimis**: §101.73(B)(3) sets a $50 cumulative annual threshold for itemizing meals/food/beverages per official.\n\n**Filing de minimis dollars**: No dollar threshold to trigger filing itself — statements are required with each updated registration regardless of amount.\n\n**Filing de minimis time percent**: No percentage time threshold in the statute.",
+        "type": "text"
+      },
+      {
+        "id": "toolu_01B2PryuUFbHsyEuN2oKqddj",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "lobbyist_registration_threshold_compensation_dollars",
+          "axis": "legal",
+          "value": "0",
+          "confidence": "high",
+          "cited_section": "ORC §101.70(F) and §101.72(A)",
+          "justification": "The definition of \"legislative agent\" turns on being \"engaged ... to actively advocate as one of the individual's main purposes\" with no monetary compensation threshold; registration is required within ten days of engagement regardless of compensation amount."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01Qb2g4Fy3h1omioCAWbS9m8",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "lobbyist_registration_threshold_expenditure_dollars",
+          "axis": "legal",
+          "value": "0",
+          "confidence": "high",
+          "cited_section": "ORC §101.72(A)",
+          "justification": "Registration is triggered by engagement of a legislative agent within ten days, not by any expenditure dollar threshold — the statute imposes no minimum expenditure amount for registration."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_014jg4mMZJ2mn4ksFv1EtwCM",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "lobbyist_registration_threshold_time_percent",
+          "axis": "legal",
+          "value": {
+            "magnitude": null,
+            "unit": "main_purpose_qualitative"
+          },
+          "confidence": "high",
+          "cited_section": "ORC §101.70(F)",
+          "justification": "The statute uses a qualitative \"main purposes\" standard — \"engaged during at least a portion of the individual's time to actively advocate as one of the individual's main purposes\" — rather than any numeric percentage of time."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01AtVmN1VfWBWTFv14F4nLqY",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "lobbyist_filing_itemization_de_minimis_threshold_dollars",
+          "axis": "legal",
+          "value": "50",
+          "confidence": "high",
+          "cited_section": "ORC §101.73(B)(3)",
+          "justification": "Itemization of meals/food/beverage expenditures per public officer is required only when cumulative payments by the legislative agent during a calendar year exceed $50 to/for that particular official."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01YMKx5TdQmDAAwMNQiTGrez",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "lobbyist_filing_de_minimis_threshold_dollars",
+          "axis": "legal",
+          "value": "0",
+          "confidence": "high",
+          "cited_section": "ORC §101.73(A), (B)(1), (D)",
+          "justification": "Each legislative agent and employer must file expenditure statements with each updated registration statement (January, May, September) showing total expenditures, with no minimum-dollar threshold below which filing is excused."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01QB7zYnAov278dH8wNM6Bd7",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "row_id": "lobbyist_filing_de_minimis_threshold_time_percent",
+          "axis": "legal",
+          "value": "0",
+          "confidence": "high",
+          "cited_section": "ORC §101.73(A) and §101.72(B)",
+          "justification": "The statute requires filing expenditure statements with each updated registration regardless of time spent lobbying; no percentage-of-time de minimis exemption from filing exists."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 49735
+      },
+      "cache_creation_input_tokens": 49735,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 887,
+      "output_tokens": 1924,
+      "server_tool_use": null,
+      "service_tier": "standard"
+    }
+  }
+}

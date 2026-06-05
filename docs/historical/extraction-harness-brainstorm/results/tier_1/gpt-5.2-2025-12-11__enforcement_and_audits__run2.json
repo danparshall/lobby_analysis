@@ -1,0 +1,123 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "enforcement_and_audits",
+    "run_index": 2,
+    "state_abbr": "OH",
+    "vintage_year": 2025,
+    "prompt_sha256": "f1f90342e807976476f79eb5321867e09f82a3f005caa9f17279c46e8d79cb43",
+    "timestamp_utc": "2026-05-21T14:07:05+00:00"
+  },
+  "wall_clock_seconds": 3.4688478750176728,
+  "usage": {
+    "completion_tokens": 193,
+    "prompt_tokens": 31325,
+    "total_tokens": 31518,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 31232
+    }
+  },
+  "cost_usd_estimate": 0.05752075,
+  "legal_roster": [
+    [
+      "lobbying_violation_penalties_imposed_in_practice",
+      "legal"
+    ],
+    [
+      "lobbying_disclosure_audit_required_in_law",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_violation_penalties_imposed_in_practice",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code § 101.99(A)-(B) (2025)",
+      "justification": "Section 101.99 specifies that violations of specified lobbying provisions are criminal misdemeanors (fourth or first degree), establishing statutory penalties for lobbying-law violations."
+    }
+  ],
+  "unscoreable_emissions": [
+    {
+      "row_id": "lobbying_disclosure_audit_required_in_law",
+      "axis": "legal",
+      "reason": "The provided sections describe investigations by the attorney general (§101.79; §121.69) but do not require any routine or periodic audit of lobbying disclosure filings, and no audit provision appears in the bundled text."
+    }
+  ],
+  "errors": [],
+  "response": {
+    "id": "chatcmpl-DhyL8AJ12odxB0xpL63VQux5ZUUCa",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_5z2vC2SBA719t6erWY38aarG",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbying_violation_penalties_imposed_in_practice\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code § 101.99(A)-(B) (2025)\", \"justification\": \"Section 101.99 specifies that violations of specified lobbying provisions are criminal misdemeanors (fourth or first degree), establishing statutory penalties for lobbying-law violations.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_q7bTytpSnh1BZGiNseBuqMIF",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbying_disclosure_audit_required_in_law\", \"axis\": \"legal\", \"reason\": \"The provided sections describe investigations by the attorney general (§101.79; §121.69) but do not require any routine or periodic audit of lobbying disclosure filings, and no audit provision appears in the bundled text.\"}",
+                "name": "record_unscoreable_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1779372422,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 193,
+      "prompt_tokens": 31325,
+      "total_tokens": 31518,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 31232
+      }
+    }
+  }
+}

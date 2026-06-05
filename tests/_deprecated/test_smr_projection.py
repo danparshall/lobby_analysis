@@ -1,4 +1,23 @@
-"""Tests for the PRI-data → StateMasterRecord projection (Stage B).
+"""SUPERSEDED — tests for the v1 PRI-MVP SMR projection (retired 2026-05-14).
+
+Status: retired by ``phase-c-projection-tdd`` Phase 3 alongside the source
+module at ``src/scoring/_deprecated/smr_projection.py``. Kept here for
+recoverability of the v1 PRI-MVP pipeline; excluded from default pytest
+collection via ``pyproject.toml`` ``collect_ignore``-equivalent (testpaths
+scope is just ``tests/`` at the top level; this subdir is no longer auto-
+discovered).
+
+To re-run these tests, point pytest at the file directly:
+
+    uv run pytest tests/_deprecated/test_smr_projection.py
+
+The successor projection lives at
+``src/lobby_analysis/projections/pri_2010.py`` (tested in
+``tests/projections/test_pri_2010_*.py``).
+
+----- Original docstring -----
+
+Tests for the PRI-data → StateMasterRecord projection (Stage B).
 
 Plan: docs/active/statute-retrieval/plans/20260430_compendium_population_and_smr_fill.md
 
@@ -20,7 +39,7 @@ from lobby_analysis.models import (
     FrameworkReference,
     StateMasterRecord,
 )
-from scoring.smr_projection import project_pri_scores_to_smr
+from scoring._deprecated.smr_projection import project_pri_scores_to_smr
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]

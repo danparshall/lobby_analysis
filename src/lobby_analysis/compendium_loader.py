@@ -128,3 +128,23 @@ def load_v2_compendium(
     with p.open() as f:
         reader = csv.DictReader(f, delimiter="\t")
         return list(reader)
+
+
+def load_v2_compendium_typed() -> "list":
+    """Return the v2 compendium as a list of `CompendiumCellSpec` entries.
+
+    Thin wrapper around `build_cell_spec_registry()` for callers who want a
+    sequence rather than a dict. Length is 186 (181 TSV rows + 5
+    legal+practical doublings).
+
+    Phase C projection functions and the extraction harness adopt this at
+    their own pace; the raw-dict `load_v2_compendium` stays available for
+    callers that don't want types yet.
+    """
+    # Local import: pulled inside the function so cycles never trip at
+    # module-import time when other modules import compendium_loader before
+    # models_v2 is fully constructed.
+    from lobby_analysis.models_v2.cell_spec import build_cell_spec_registry
+
+    registry = build_cell_spec_registry()
+    return list(registry.values())

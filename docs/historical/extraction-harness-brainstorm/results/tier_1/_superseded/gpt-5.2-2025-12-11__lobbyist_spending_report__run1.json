@@ -1,0 +1,894 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "lobbyist_spending_report",
+    "run_index": 1,
+    "state_abbr": "OH",
+    "vintage_year": 2025,
+    "prompt_sha256": "f1f90342e807976476f79eb5321867e09f82a3f005caa9f17279c46e8d79cb43",
+    "timestamp_utc": "2026-05-21T14:04:10+00:00"
+  },
+  "wall_clock_seconds": 36.0349673749879,
+  "usage": {
+    "completion_tokens": 2657,
+    "prompt_tokens": 32122,
+    "total_tokens": 34779,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 30208
+    }
+  },
+  "cost_usd_estimate": 0.09341150000000001,
+  "legal_roster": [
+    [
+      "lobbyist_spending_report_cadence_includes_annual",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_includes_monthly",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_includes_other",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_includes_quarterly",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_includes_semiannual",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_includes_triannual",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_other_specification",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_categorizes_expenses_by_type",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_filing_cadence",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_bill_or_action_identifier",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_compensation_broken_down_by_payer",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_contacts_made",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_expenditure_per_issue",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_general_issues",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_general_subject_matter",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_gifts_entertainment_transport_lodging",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_indirect_costs",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_itemized_expenses",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_lobbyist_contact_info",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_position_on_bill",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_principal_business_nature",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_principal_contact_info",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_principal_names",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_specific_bill_number",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_total_compensation",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_total_expenditures",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_required",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_required_when_no_activity",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_scope_includes_household_members_of_officials",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_uses_itemized_format",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev. Code § 101.73(A) (2025)",
+      "justification": "Section 101.73(A) requires each legislative agent to file a statement of expenditures with the updated registration statement."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_triannual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev. Code § 101.72(B) (2025); § 101.73(D)",
+      "justification": "Updated registration statements (with expenditure statements) are due by the last day of January, May, and September—three times per year."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_filing_cadence",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "triannual"
+      },
+      "cell_class": "EnumCell",
+      "cited_section": "OH Rev. Code § 101.72(B) (2025); § 101.73(D)",
+      "justification": "Expenditure statements are filed with the updated registration statement, which is due three times per year (Jan/May/Sep)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_annual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev. Code § 101.72(B) (2025)",
+      "justification": "The statute specifies updated filings in January, May, and September rather than a single annual filing cadence."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_quarterly",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev. Code § 101.72(B) (2025)",
+      "justification": "The filing months are January, May, and September, which is not quarterly (four times per year)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_semiannual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev. Code § 101.72(B) (2025)",
+      "justification": "The statute mandates three filings per year, not two."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_monthly",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev. Code § 101.72(B) (2025)",
+      "justification": "No monthly filing is described; instead filings occur three times per year."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_other",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev. Code § 101.72(B) (2025)",
+      "justification": "The statute specifies a triannual schedule and does not provide an alternative 'other' cadence."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_total_expenditures",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev. Code § 101.73(B)(1) (2025)",
+      "justification": "A legislative agent’s statement must show the total amount of expenditures made during the reporting period."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_itemized_expenses",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev. Code § 101.73(B)(2), (B)(3) (2025)",
+      "justification": "When expenditures are made for/benefit specified officials (and for meals over the annual threshold), the statement must include the recipient name, total amount, description, approximate date, and related legislation/client."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_uses_itemized_format",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev. Code § 101.73(B)(2), (B)(3) (2025)",
+      "justification": "The required disclosures for particular officials require itemization elements (recipient, amount, description, date, and legislation/client) rather than only aggregate totals."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_categorizes_expenses_by_type",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev. Code § 101.73(B)(2)(c); § 101.70(D)(1)",
+      "justification": "The statute requires a brief description of expenditures and defines expenditure types, but it does not require categorizing expenditures into statutory type categories on the report."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_gifts_entertainment_transport_lodging",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev. Code § 101.70(D)(1) (definition); § 101.73(B)(2)-(3)",
+      "justification": "Reportable 'expenditures' include gifts and items such as entertainment, lodging, and transportation, and such expenditures must be disclosed when made for the benefit of covered officials."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_bill_or_action_identifier",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev. Code § 101.73(B)(2)(e), (B)(3)(e) (2025)",
+      "justification": "For itemized expenditures, the filer must disclose the 'specific items of legislation, if any,' for which the expenditures were made."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_specific_bill_number",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev. Code § 101.72(B) (2025); § 101.73(B)(2)(e)",
+      "justification": "Updated registration statements must list the specific bills or resolutions on which the agent actively advocated, and expenditure itemizations must identify the specific items of legislation, if any."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_expenditure_per_issue",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev. Code § 101.73(B)(2) (2025)",
+      "justification": "The statute requires expenditure disclosure by recipient (and related legislation/client), not aggregated totals per issue area across recipients."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_general_issues",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev. Code § 101.72(A)(3) (2025); § 101.73(B)",
+      "justification": "General issue/type-of-legislation descriptions are required in the initial registration statement, but the expenditure statement provisions do not require reporting general issues."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_general_subject_matter",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev. Code § 101.73(B)(2)-(3) (2025)",
+      "justification": "Expenditure statements call for descriptions, dates, recipients, and specific legislation/client, but do not require reporting general subject matter categories."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_contacts_made",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev. Code § 101.73 (2025)",
+      "justification": "Section 101.73 governs expenditures and does not require disclosure of lobbying contacts made."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_position_on_bill",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev. Code § 101.73(B)(2)(e), (B)(3)(e) (2025)",
+      "justification": "The statement must identify legislation and client but does not require stating support/oppose position on the legislation."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_lobbyist_contact_info",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev. Code § 101.73(B) (2025)",
+      "justification": "The expenditure statement content requirements do not include the legislative agent’s address or other contact information."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_principal_names",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev. Code § 101.73(B)(2)(e), (B)(3)(e) (2025)",
+      "justification": "For itemized expenditures, the filer must report 'the identity of the client on whose behalf each expenditure was made,' which provides the principal/client name."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_principal_contact_info",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev. Code § 101.73(B)(2)-(3) (2025)",
+      "justification": "While client identity is required for certain expenditures, the statute does not require listing the client's address or other contact information on the expenditure statement."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_principal_business_nature",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev. Code § 101.73 (2025)",
+      "justification": "No provision in the expenditure statement requirements asks for the nature of the principal's business."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_total_compensation",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev. Code § 101.73(C) (2025)",
+      "justification": "The statute expressly excludes 'compensation paid to legislative agents' from the definition of expenditures for employer statements and does not otherwise require reporting compensation amounts in expenditure statements."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_compensation_broken_down_by_payer",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev. Code § 101.73(C) (2025)",
+      "justification": "Because compensation paid to legislative agents is excluded from reportable expenditures and no compensation reporting requirement appears, there is no requirement to break compensation down by payer."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_required_when_no_activity",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev. Code § 101.73(A) (2025); § 101.72(B)",
+      "justification": "Each legislative agent must file a statement of expenditures with each updated registration statement due triannually, and the statute does not provide an exception for zero expenditures."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_scope_includes_household_members_of_officials",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "OH Rev. Code § 101.70(D) (2025)",
+      "justification": "The expenditure definition covers expenditures made for the benefit of specified officials and staff, but does not include their household or family members."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [
+    {
+      "reason": "instantiation_failed",
+      "key": [
+        "lobbyist_spending_report_cadence_other_specification",
+        "legal"
+      ],
+      "error": "1 validation error for FreeTextCell\nvalue\n  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]\n    For further information visit https://errors.pydantic.dev/2.13/v/string_type",
+      "arguments": {
+        "row_id": "lobbyist_spending_report_cadence_other_specification",
+        "axis": "legal",
+        "value": null,
+        "confidence": "high",
+        "cited_section": "OH Rev. Code § 101.72(B) (2025)",
+        "justification": "Because the statute provides a triannual schedule and no other cadence, there is no 'other' cadence to specify."
+      }
+    }
+  ],
+  "response": {
+    "id": "chatcmpl-DhyHnugysf0UZXybBlAvn0cGc9ZUH",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_cnZP1nHp88abrJVTYmGhFt7H",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_spending_report_required\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"OH Rev. Code § 101.73(A) (2025)\", \"justification\": \"Section 101.73(A) requires each legislative agent to file a statement of expenditures with the updated registration statement.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_9ul68Bo9LX7JE3ASCJPb3Mpt",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_spending_report_cadence_includes_triannual\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"OH Rev. Code § 101.72(B) (2025); § 101.73(D)\", \"justification\": \"Updated registration statements (with expenditure statements) are due by the last day of January, May, and September—three times per year.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_Ak39MVwxIqc33fNC72ync6vv",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_spending_report_filing_cadence\", \"axis\": \"legal\", \"value\": \"triannual\", \"confidence\": \"high\", \"cited_section\": \"OH Rev. Code § 101.72(B) (2025); § 101.73(D)\", \"justification\": \"Expenditure statements are filed with the updated registration statement, which is due three times per year (Jan/May/Sep).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_WW3Y4qOJrzK8amKO6f8Nvf2d",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_spending_report_cadence_includes_annual\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"OH Rev. Code § 101.72(B) (2025)\", \"justification\": \"The statute specifies updated filings in January, May, and September rather than a single annual filing cadence.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_Ynrrtzb3EFRGjIUAArfxkb6x",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_spending_report_cadence_includes_quarterly\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"OH Rev. Code § 101.72(B) (2025)\", \"justification\": \"The filing months are January, May, and September, which is not quarterly (four times per year).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_3phM0cg39nIj5eH9xzHpp3DP",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_spending_report_cadence_includes_semiannual\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"OH Rev. Code § 101.72(B) (2025)\", \"justification\": \"The statute mandates three filings per year, not two.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_ONrqRUz77RWqN7zNF3ciJrF2",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_spending_report_cadence_includes_monthly\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"OH Rev. Code § 101.72(B) (2025)\", \"justification\": \"No monthly filing is described; instead filings occur three times per year.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_KyAfTqzNPnJy4uFiB298X4kW",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_spending_report_cadence_includes_other\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"OH Rev. Code § 101.72(B) (2025)\", \"justification\": \"The statute specifies a triannual schedule and does not provide an alternative 'other' cadence.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_LKfajyCY8Fpt6BOMZ102NnIS",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_spending_report_cadence_other_specification\", \"axis\": \"legal\", \"value\": null, \"confidence\": \"high\", \"cited_section\": \"OH Rev. Code § 101.72(B) (2025)\", \"justification\": \"Because the statute provides a triannual schedule and no other cadence, there is no 'other' cadence to specify.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_VblOz4YMdNVpaLqQpEfYf6vV",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_spending_report_includes_total_expenditures\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"OH Rev. Code § 101.73(B)(1) (2025)\", \"justification\": \"A legislative agent’s statement must show the total amount of expenditures made during the reporting period.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_6aBt9kBYzkLECCa8Zsdyux41",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_spending_report_includes_itemized_expenses\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"OH Rev. Code § 101.73(B)(2), (B)(3) (2025)\", \"justification\": \"When expenditures are made for/benefit specified officials (and for meals over the annual threshold), the statement must include the recipient name, total amount, description, approximate date, and related legislation/client.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_yD7bVbggl96u4ce3CyJHnjQk",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_spending_report_uses_itemized_format\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"OH Rev. Code § 101.73(B)(2), (B)(3) (2025)\", \"justification\": \"The required disclosures for particular officials require itemization elements (recipient, amount, description, date, and legislation/client) rather than only aggregate totals.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_asYdyFN1tU6sOZwPMhwxaaMP",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_spending_report_categorizes_expenses_by_type\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"medium\", \"cited_section\": \"OH Rev. Code § 101.73(B)(2)(c); § 101.70(D)(1)\", \"justification\": \"The statute requires a brief description of expenditures and defines expenditure types, but it does not require categorizing expenditures into statutory type categories on the report.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_dhe5clT5bsM8t12AetSwzPNk",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_spending_report_includes_gifts_entertainment_transport_lodging\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"OH Rev. Code § 101.70(D)(1) (definition); § 101.73(B)(2)-(3)\", \"justification\": \"Reportable 'expenditures' include gifts and items such as entertainment, lodging, and transportation, and such expenditures must be disclosed when made for the benefit of covered officials.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_pOsyKerkUql3qQ7MBDtAATg9",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_spending_report_includes_bill_or_action_identifier\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"OH Rev. Code § 101.73(B)(2)(e), (B)(3)(e) (2025)\", \"justification\": \"For itemized expenditures, the filer must disclose the 'specific items of legislation, if any,' for which the expenditures were made.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_3xhDQuBEKHcxqSBoauz5ugrd",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_spending_report_includes_specific_bill_number\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"OH Rev. Code § 101.72(B) (2025); § 101.73(B)(2)(e)\", \"justification\": \"Updated registration statements must list the specific bills or resolutions on which the agent actively advocated, and expenditure itemizations must identify the specific items of legislation, if any.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_Usymmwg4snfiuIWxLMm2scHz",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_spending_report_includes_expenditure_per_issue\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"OH Rev. Code § 101.73(B)(2) (2025)\", \"justification\": \"The statute requires expenditure disclosure by recipient (and related legislation/client), not aggregated totals per issue area across recipients.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_lQrbN6ZxE6pF2CDjhJiiibAa",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_spending_report_includes_general_issues\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"OH Rev. Code § 101.72(A)(3) (2025); § 101.73(B)\", \"justification\": \"General issue/type-of-legislation descriptions are required in the initial registration statement, but the expenditure statement provisions do not require reporting general issues.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_8amq1nsScLTHLaGfmEEyCTgg",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_spending_report_includes_general_subject_matter\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"OH Rev. Code § 101.73(B)(2)-(3) (2025)\", \"justification\": \"Expenditure statements call for descriptions, dates, recipients, and specific legislation/client, but do not require reporting general subject matter categories.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_Ge2WnVlFKXHrGojnM9xKR3Sb",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_spending_report_includes_contacts_made\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"OH Rev. Code § 101.73 (2025)\", \"justification\": \"Section 101.73 governs expenditures and does not require disclosure of lobbying contacts made.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_dgnKkFfuzWYrZbBlhgWp0ShP",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_spending_report_includes_position_on_bill\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"OH Rev. Code § 101.73(B)(2)(e), (B)(3)(e) (2025)\", \"justification\": \"The statement must identify legislation and client but does not require stating support/oppose position on the legislation.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_zntCYKLcWLcXKFDA25uGmwT5",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_spending_report_includes_lobbyist_contact_info\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"OH Rev. Code § 101.73(B) (2025)\", \"justification\": \"The expenditure statement content requirements do not include the legislative agent’s address or other contact information.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_ELPPikkacyVcW9m2YBf5jtng",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_spending_report_includes_principal_names\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"OH Rev. Code § 101.73(B)(2)(e), (B)(3)(e) (2025)\", \"justification\": \"For itemized expenditures, the filer must report 'the identity of the client on whose behalf each expenditure was made,' which provides the principal/client name.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_feSXxRgywb8nCfdfbCO8ypdk",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_spending_report_includes_principal_contact_info\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"OH Rev. Code § 101.73(B)(2)-(3) (2025)\", \"justification\": \"While client identity is required for certain expenditures, the statute does not require listing the client's address or other contact information on the expenditure statement.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_UNXOHPEf0IW4eXL9L596NUKh",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_spending_report_includes_principal_business_nature\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"OH Rev. Code § 101.73 (2025)\", \"justification\": \"No provision in the expenditure statement requirements asks for the nature of the principal's business.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_sxMvPhXSfNePPM2VlIHxdmHk",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_spending_report_includes_total_compensation\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"OH Rev. Code § 101.73(C) (2025)\", \"justification\": \"The statute expressly excludes 'compensation paid to legislative agents' from the definition of expenditures for employer statements and does not otherwise require reporting compensation amounts in expenditure statements.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_BJ194nSRtRSmEiWEafR8drYr",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_spending_report_includes_compensation_broken_down_by_payer\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"OH Rev. Code § 101.73(C) (2025)\", \"justification\": \"Because compensation paid to legislative agents is excluded from reportable expenditures and no compensation reporting requirement appears, there is no requirement to break compensation down by payer.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_2TOBnbxnrisN0eBABM1jS62i",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_spending_report_required_when_no_activity\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"medium\", \"cited_section\": \"OH Rev. Code § 101.73(A) (2025); § 101.72(B)\", \"justification\": \"Each legislative agent must file a statement of expenditures with each updated registration statement due triannually, and the statute does not provide an exception for zero expenditures.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_jPaAE9q2iZs0jaJl8RP7XQf5",
+              "function": {
+                "arguments": "{\"row_id\": \"lobbyist_spending_report_scope_includes_household_members_of_officials\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"OH Rev. Code § 101.70(D) (2025)\", \"justification\": \"The expenditure definition covers expenditures made for the benefit of specified officials and staff, but does not include their household or family members.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1779372215,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 2657,
+      "prompt_tokens": 32122,
+      "total_tokens": 34779,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 30208
+      }
+    }
+  }
+}
