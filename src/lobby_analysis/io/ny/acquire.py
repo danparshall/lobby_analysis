@@ -43,8 +43,73 @@ class _SessionLike(Protocol):
 
 
 def bulk_csv_url(dataset_id: str, *, base_url: str = DATA_NY_BASE) -> str:
-    """URL of the full-dataset CSV export for ``dataset_id``."""
+    """URL of the full-dataset CSV export for ``dataset_id``.
+
+    WARNING: this whole-view export returns *every* row and column with
+    *human-readable display headers* (``Form Submission ID``), not the SODA
+    field names (``form_submission_id``) the column-map and grain steps expect.
+    For a year-scoped, column-projected pull whose headers feed the pipeline,
+    use :func:`download_resource_csv` against :func:`resource_csv_url` instead.
+    """
     return f"{base_url}/api/views/{dataset_id}/rows.csv?accessType=DOWNLOAD"
+
+
+def resource_csv_url(dataset_id: str, *, base_url: str = DATA_NY_BASE) -> str:
+    """URL of the SODA ``/resource/<id>.csv`` endpoint for ``dataset_id``.
+
+    Unlike :func:`bulk_csv_url` (the whole-view export), this endpoint accepts
+    SoQL ``$select``/``$where``/``$order``/``$limit`` and returns SODA
+    *field-name* headers — so a filtered, column-projected pull lands on disk
+    with the exact column names the downstream column-map expects.
+    """
+    return f"{base_url}/resource/{dataset_id}.csv"
+
+
+def _stream_to_dest(
+    url: str,
+    dest_path: Path,
+    session: _SessionLike,
+    *,
+    params: Mapping[str, Any] | None,
+    app_token: str | None,
+    chunk_size: int,
+    timeout: float,
+    what: str,
+) -> Path:
+    """Stream a GET body to ``dest_path`` atomically.
+
+    Writes to ``<name>.part`` and renames onto ``dest_path`` only after the full
+    body is written, so an interrupted pull never leaves a file a later
+    resume-skip check would treat as complete. HTTP/transport failures surface
+    as :class:`NYAcquisitionError`.
+    """
+    headers: dict[str, str] = {}
+    if app_token:
+        headers["X-App-Token"] = app_token
+
+    get_kwargs: dict[str, Any] = {"headers": headers, "stream": True, "timeout": timeout}
+    if params is not None:
+        get_kwargs["params"] = params
+
+    response = session.get(url, **get_kwargs)
+    try:
+        response.raise_for_status()
+    except requests.HTTPError as exc:
+        raise NYAcquisitionError(f"{what} failed: {exc}") from exc
+
+    dest_path.parent.mkdir(parents=True, exist_ok=True)
+    part_path = dest_path.parent / (dest_path.name + ".part")
+    try:
+        with part_path.open("wb") as fh:
+            for chunk in response.iter_content(chunk_size=chunk_size):
+                if chunk:
+                    fh.write(chunk)
+    except Exception as exc:  # noqa: BLE001 — clean up the temp, re-raise typed
+        part_path.unlink(missing_ok=True)
+        raise NYAcquisitionError(f"{what} was interrupted: {exc}") from exc
+
+    os.replace(part_path, dest_path)
+    return dest_path
 
 
 def download_bulk_csv(
@@ -72,32 +137,71 @@ def download_bulk_csv(
     if not force and dest_path.exists() and dest_path.stat().st_size > 0:
         return dest_path
 
-    headers: dict[str, str] = {}
-    if app_token:
-        headers["X-App-Token"] = app_token
+    return _stream_to_dest(
+        bulk_csv_url(dataset_id, base_url=base_url),
+        dest_path,
+        session,
+        params=None,
+        app_token=app_token,
+        chunk_size=chunk_size,
+        timeout=timeout,
+        what=f"bulk CSV download for {dataset_id}",
+    )
 
-    url = bulk_csv_url(dataset_id, base_url=base_url)
-    response = session.get(url, headers=headers, stream=True, timeout=timeout)
-    try:
-        response.raise_for_status()
-    except requests.HTTPError as exc:
-        raise NYAcquisitionError(f"bulk CSV download for {dataset_id} failed: {exc}") from exc
 
-    dest_path.parent.mkdir(parents=True, exist_ok=True)
-    part_path = dest_path.parent / (dest_path.name + ".part")
-    try:
-        with part_path.open("wb") as fh:
-            for chunk in response.iter_content(chunk_size=chunk_size):
-                if chunk:
-                    fh.write(chunk)
-    except Exception as exc:  # noqa: BLE001 — clean up the temp, re-raise typed
-        part_path.unlink(missing_ok=True)
-        raise NYAcquisitionError(
-            f"bulk CSV download for {dataset_id} was interrupted: {exc}"
-        ) from exc
+def download_resource_csv(
+    dataset_id: str,
+    dest_path: Path | str,
+    session: _SessionLike,
+    *,
+    select: str,
+    where: str | None = None,
+    order_by: str | None = None,
+    limit: int | None = None,
+    base_url: str = DATA_NY_BASE,
+    app_token: str | None = None,
+    chunk_size: int = DEFAULT_CHUNK_SIZE,
+    timeout: float = DEFAULT_TIMEOUT,
+    force: bool = False,
+) -> Path:
+    """Stream a filtered/projected SODA ``/resource/<id>.csv`` pull to ``dest_path``.
 
-    os.replace(part_path, dest_path)
-    return dest_path
+    This is the right tool when you want *one year* and only the columns the
+    pipeline consumes, with pipeline-compatible field-name headers — as opposed
+    to :func:`download_bulk_csv`, which dumps the entire multi-year view with
+    display-name headers. ``select`` is required (always project columns
+    explicitly so the on-disk schema is intentional, not whatever the view
+    happens to expose); ``where``/``order_by``/``limit`` map to ``$where`` /
+    ``$order`` / ``$limit`` and are sent only when set.
+
+    Resume-skip, atomic temp-then-rename, and typed :class:`NYAcquisitionError`
+    behave exactly as :func:`download_bulk_csv`. Set ``limit`` above the known
+    row count for a full single-request stream; verify the on-disk row count
+    against a cheap ``count(*)`` probe afterward, since a silent server-side cap
+    would otherwise look like a complete pull.
+    """
+    dest_path = Path(dest_path)
+    if not force and dest_path.exists() and dest_path.stat().st_size > 0:
+        return dest_path
+
+    params: dict[str, Any] = {"$select": select}
+    if where is not None:
+        params["$where"] = where
+    if order_by is not None:
+        params["$order"] = order_by
+    if limit is not None:
+        params["$limit"] = limit
+
+    return _stream_to_dest(
+        resource_csv_url(dataset_id, base_url=base_url),
+        dest_path,
+        session,
+        params=params,
+        app_token=app_token,
+        chunk_size=chunk_size,
+        timeout=timeout,
+        what=f"resource CSV download for {dataset_id}",
+    )
 
 
 class SocrataProbeClient:

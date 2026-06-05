@@ -28,6 +28,8 @@ from lobby_analysis.io.ny.acquire import (
     SocrataProbeClient,
     bulk_csv_url,
     download_bulk_csv,
+    download_resource_csv,
+    resource_csv_url,
 )
 
 
@@ -167,6 +169,118 @@ def test_download_bulk_csv_sends_app_token_header(tmp_path: Path):
     session = _FakeSession([_FakeResponse(200, chunks=[b"a\n1\n"])])
 
     download_bulk_csv("qym9-xzj6", dest, session, app_token="tok-123")
+
+    assert session.calls[0]["headers"]["X-App-Token"] == "tok-123"
+
+
+# --------------------------------------------------------------------------- #
+# resource_csv_url
+# --------------------------------------------------------------------------- #
+def test_resource_csv_url_targets_soda_resource_csv_endpoint():
+    """The filtered/projected path must hit the SODA ``/resource/<id>.csv``
+    endpoint — distinct from the whole-view ``/api/views`` bulk export. This is
+    the endpoint that (a) accepts ``$select``/``$where`` so we pull one year and
+    only the columns the pipeline consumes, and (b) returns SODA field-name
+    headers (``form_submission_id``) the column-map expects, NOT the whole-view
+    export's human-readable display headers (``Form Submission ID``)."""
+    url = resource_csv_url("qym9-xzj6")
+
+    assert url == "https://data.ny.gov/resource/qym9-xzj6.csv"
+
+
+# --------------------------------------------------------------------------- #
+# download_resource_csv
+# --------------------------------------------------------------------------- #
+def test_download_resource_csv_streams_full_body_to_dest(tmp_path: Path):
+    """A multi-chunk streamed filtered response must be reassembled byte-for-byte
+    on disk — same core acquisition behavior as the bulk path, over the SODA
+    resource endpoint."""
+    dest = tmp_path / "2025" / "client_semiannual.csv"
+    session = _FakeSession(
+        [_FakeResponse(200, chunks=[b"form_submission_id,reporting_year\n", b"1,2025\n"])]
+    )
+
+    result = download_resource_csv("qym9-xzj6", dest, session, select="form_submission_id,reporting_year")
+
+    assert result == dest
+    assert dest.read_bytes() == b"form_submission_id,reporting_year\n1,2025\n"
+
+
+def test_download_resource_csv_passes_soql_params_verbatim(tmp_path: Path):
+    """``$select``/``$where``/``$order``/``$limit`` must reach Socrata exactly as
+    given — these are what scope the pull to one year + the consumed columns and
+    make the byte stream deterministic. Getting any of them wrong silently
+    changes which rows/columns land on disk."""
+    dest = tmp_path / "client_semiannual.csv"
+    session = _FakeSession([_FakeResponse(200, chunks=[b"a\n1\n"])])
+
+    download_resource_csv(
+        "qym9-xzj6",
+        dest,
+        session,
+        select="form_submission_id,reporting_year,current_period_compensation",
+        where="reporting_year='2025'",
+        order_by="form_submission_id",
+        limit=12_000_000,
+    )
+
+    params = session.calls[0]["params"]
+    assert params["$select"] == "form_submission_id,reporting_year,current_period_compensation"
+    assert params["$where"] == "reporting_year='2025'"
+    assert params["$order"] == "form_submission_id"
+    assert params["$limit"] == 12_000_000
+
+
+def test_download_resource_csv_omits_unset_soql_params(tmp_path: Path):
+    """Only the SoQL params the caller actually set are sent. A ``None`` filter
+    must not become a ``$where=None`` literal that Socrata would reject or
+    misinterpret."""
+    dest = tmp_path / "client_semiannual.csv"
+    session = _FakeSession([_FakeResponse(200, chunks=[b"a\n1\n"])])
+
+    download_resource_csv("qym9-xzj6", dest, session, select="a")
+
+    params = session.calls[0]["params"]
+    assert "$where" not in params
+    assert "$order" not in params
+    assert "$limit" not in params
+
+
+def test_download_resource_csv_skips_when_file_already_present(tmp_path: Path):
+    """Resume discipline: a non-empty file short-circuits with zero network
+    traffic — the repo rule that a re-run never re-hits the API for an already
+    pulled year."""
+    dest = tmp_path / "client_semiannual.csv"
+    dest.write_bytes(b"already,here\n9,9\n")
+
+    result = download_resource_csv("qym9-xzj6", dest, _NoNetworkSession(), select="a")
+
+    assert result == dest
+    assert dest.read_bytes() == b"already,here\n9,9\n"
+
+
+def test_download_resource_csv_http_error_is_typed_and_leaves_no_file(tmp_path: Path):
+    """An HTTP error surfaces as ``NYAcquisitionError`` and the atomic
+    temp-then-rename leaves neither the final file nor the ``.part`` behind, so a
+    failed filtered pull can never be mistaken for a complete one."""
+    dest = tmp_path / "client_semiannual.csv"
+    session = _FakeSession([_FakeResponse(500)])
+
+    with pytest.raises(NYAcquisitionError):
+        download_resource_csv("qym9-xzj6", dest, session, select="a")
+
+    assert not dest.exists()
+    assert not (tmp_path / "client_semiannual.csv.part").exists()
+
+
+def test_download_resource_csv_sends_app_token_header(tmp_path: Path):
+    """A configured app token rides on the request as ``X-App-Token`` (Socrata
+    raises the throttle ceiling for tokened requests — load-bearing for a
+    multi-million-row stream)."""
+    dest = tmp_path / "client_semiannual.csv"
+    session = _FakeSession([_FakeResponse(200, chunks=[b"a\n1\n"])])
+
+    download_resource_csv("qym9-xzj6", dest, session, select="a", app_token="tok-123")
 
     assert session.calls[0]["headers"]["X-App-Token"] == "tok-123"
 
