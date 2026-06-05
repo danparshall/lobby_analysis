@@ -105,3 +105,43 @@ The first AskUserQuestion presupposed the handoff's 15-state framing. Dan immedi
 ## Next-session handoff sentence
 
 *"Pick up the successor branch (`cross-state-cpi-2015-validation` or similar) AFTER v2.1 + Phase A YAML merge from wi-ralph-cpi-renewal-cadence to main. Read `docs/historical/wi-ralph-cpi-renewal-cadence/plans/20260605_cross_state_cpi_2015_validation.md` end-to-end (plan will live in historical once wi-ralph archives) + this convo + the Phase A execution convo for full context. Cross-state CPI 2015 C11 projection-accuracy validation: 10 states (NY/CO/WI/CA/TX/IL/WA/FL/NC/OH) × vintage 2015 × Phase A validation subset (PENDING Open Q #1 — surface the chunk swap to Dan with corrected projection-coverage counts BEFORE any dispatch). Fresh $10 cross-state envelope; ~$8.30 dispatched + $1.70 headroom; primary success metric = CPI 2015 C11 projection accuracy per state (oracle CSV at `docs/historical/compendium-source-extracts/results/cpi_2015_c11_per_state_scores.csv`); secondary = instantiation rate + cross-state value-stability matrix. v2.1 promotion to main is prerequisite P1 — pause if not yet merged."*
+
+---
+
+## Appendix — Finish-branch skill (PR to main)
+
+Dan asked to run `skills/finishing-a-development-branch/SKILL.md` after the planning + finish-convo landed. Walking through the 11 steps captured the wi-ralph → main PR work as part of this session.
+
+### What this PR contains
+
+- **wi-tier1-direct-read** (absorbed via merge `b4cc986` earlier; never PR'd separately) — WI 2025 paid run + YAML SSOT + opaque-handle renderer.
+- **v2.1 compendium schema bump** (Pattern C row split, 183 rows).
+- **Phase A YAML audit at scale** (163 additives + dispatcher refactor + 167 new tests).
+- **Cross-state expansion plan** (this session's planning artifact).
+
+PR diff: 239 files / +89k / −279. ~80k of insertions are dispatch result JSONs (per-cell API outputs), not code.
+
+### Skill-step results
+
+1. **Tests:** `uv run pytest -q` → 1851 passed, 3 skipped, 3 xfailed. Matches Phase A execution baseline.
+2-4. **Ruff format/lint:**
+   - `ruff format --check .` would reformat **112 files**, but only ~12 are in this branch's diff. The remaining ~100 are pre-existing format issues on main.
+   - `ruff check .` reports 28 lint errors on main; 6 of them in `scripts/tier_0_direct_read_smoke.py` lines 286-291 (deliberate "single-file by design" pattern per the file's own comment).
+   - **Decision:** Don't auto-fix. Touching 100+ shared files outside this branch's scope violates the multi-committer norm and bloats an already-huge PR. Surfaced in PR description as pre-existing-not-regressed state.
+5. **Type checking:** No mypy/pyright/ty configured in `pyproject.toml`. Skipped.
+6. **nori-code-reviewer self-review:** 4 findings; 3 fixed pre-PR (commit `9a22232`):
+   - **#1 ✅** Misleading "Filtered to N of M chunks" log line in default dispatch (compared against `_RESOLVED_CHUNKS` instead of "did user pass --chunks?"). Cosmetic UX fix; logic unchanged.
+   - **#2 ⏭️** 50/151 BinaryCell prompts have grammar awkwardness from bulk-script concatenation (rubric source quotes lack terminal punctuation). Deferred to follow-up Ralph pass per reviewer's own recommendation. The LLMs grok it (Phase A A2.b: 66/66 BinaryCell cell-instantiations on `actor_registration_required`).
+   - **#3 ✅** Stale docstrings/prose in `compendium_loader.py`, `models_v2/cell_spec.py`, `tests/test_models_v2_cell_spec.py` referencing v2 (181 rows) — updated to v2.1 (183 rows) with Pattern C context.
+   - **#4 ✅** "5 known combined-axis rows" prose with 3-element set fixed to "3 known combined-axis rows (down from 5 in v2)". Assertion was already correct.
+7. **Not on main:** Confirmed on `wi-ralph-cpi-renewal-cadence`.
+8. **Push + PR:** in progress.
+9-11. **Merge main, CI, review comments:** TBD post-PR-creation.
+
+### Why the PR is so large (and what to do about it next time)
+
+239 files is a single-PR scope problem. The root cause is that `wi-tier1-direct-read` was merged INTO wi-ralph (via `b4cc986`) but never PR'd to main first — wi-tier1's work then rode along with wi-ralph's Phase B + Pattern C + Phase A work. By the time finish-branch ran, the combined scope was unwieldy.
+
+**Lesson for future branches:** if a research line absorbs another via merge, PR the absorbed line to main BEFORE adding more layered work, so the eventual final PR has a clean scope. This pattern isn't pervasive — most prior branches merged to main in their own time — but the wi-tier1 case slipped through.
+
+Not retroactively splittable here (history is what it is), but worth noting for the cross-state successor branch: PR each meaningful scope-unit separately, don't let absorbed-branch debt accumulate.
