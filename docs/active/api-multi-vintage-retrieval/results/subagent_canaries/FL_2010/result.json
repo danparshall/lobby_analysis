@@ -1,0 +1,37 @@
+{
+  "state": "FL",
+  "vintage": 2010,
+  "actual_vintage_used": 2010,
+  "prompt_git_rev": "2e581f7879009a25e63b50335d3ac8509c95e561",
+  "proposed_urls": [
+    {"url": "https://law.justia.com/codes/florida/2010/TitleIII/chapter11/11_045.html",  "role": "core_chapter", "rationale": "F.S. 11.045 - Lobbying before the Legislature; registration and reporting; exemptions; penalties - the core legislative-branch lobbying-disclosure statute."},
+    {"url": "https://law.justia.com/codes/florida/2010/TitleIII/chapter11/11_0451.html", "role": "core_chapter", "rationale": "F.S. 11.0451 - Requirements for reinstitution of lobbyist registration after felony conviction - legislative-branch lobbyist registration provision."},
+    {"url": "https://law.justia.com/codes/florida/2010/TitleIII/chapter11/11_0455.html", "role": "core_chapter", "rationale": "F.S. 11.0455 - Electronic filing of compensation reports and other information - legislative-branch lobbying compensation-report filing mechanism."},
+    {"url": "https://law.justia.com/codes/florida/2010/TitleIII/chapter11/11_047.html",  "role": "core_chapter", "rationale": "F.S. 11.047 - Contingency fees; prohibitions; penalties - lobbying contingency-fee prohibition tied to the 11.045 registration regime."},
+    {"url": "https://law.justia.com/codes/florida/2010/TitleIII/chapter11/11_061.html",  "role": "core_chapter", "rationale": "F.S. 11.061 - State, state university, and community college employee lobbyists; registration; recording attendance; penalty; exemptions - public-employee lobbyist registration."},
+    {"url": "https://law.justia.com/codes/florida/2010/TitleIII/chapter11/11_062.html",  "role": "core_chapter", "rationale": "F.S. 11.062 - Use of state funds for lobbying prohibited; penalty - related lobbying-conduct restriction in the same Ch. 11 cluster."},
+    {"url": "https://law.justia.com/codes/florida/2010/TitleX/chapter112/112_3215.html",  "role": "core_chapter", "rationale": "F.S. 112.3215 - Lobbying before the executive branch or the Constitution Revision Commission; registration and reporting; investigation by commission - the core executive-branch lobbying-disclosure statute."},
+    {"url": "https://law.justia.com/codes/florida/2010/TitleX/chapter112/112_32151.html", "role": "core_chapter", "rationale": "F.S. 112.32151 - Requirements for reinstitution of lobbyist registration after felony conviction - executive-branch lobbyist registration provision."},
+    {"url": "https://law.justia.com/codes/florida/2010/TitleX/chapter112/112_32155.html", "role": "core_chapter", "rationale": "F.S. 112.32155 - Electronic filing of compensation reports and other information - executive-branch lobbying compensation-report filing mechanism."},
+    {"url": "https://law.justia.com/codes/florida/2010/TitleX/chapter112/112_3217.html",  "role": "core_chapter", "rationale": "F.S. 112.3217 - Contingency fees; prohibitions; penalties - executive-branch lobbying contingency-fee prohibition tied to the 112.3215 registration regime."},
+    {"url": "https://law.justia.com/codes/florida/2010/TitleX/chapter112/112_312.html",   "role": "support_chapter", "rationale": "F.S. 112.312 - Definitions - general Part III (Code of Ethics) definitions including 'lobbyist'; invoked by 112.3215 and related sections."},
+    {"url": "https://law.justia.com/codes/florida/2010/TitleX/chapter112/112_317.html",   "role": "support_chapter", "rationale": "F.S. 112.317 - Penalties - general Part III penalties provision invoked by Commission on Ethics enforcement of lobbying violations under 112.3215."},
+    {"url": "https://law.justia.com/codes/florida/2010/TitleX/chapter112/112_3148.html",  "role": "support_chapter", "rationale": "F.S. 112.3148 - Reporting and prohibited receipt of gifts by individuals filing full or limited public disclosure of financial interests and by procurement employees - regulates gift reporting from lobbyists, cross-referenced from lobbying regime."}
+  ],
+  "pass1_chosen_titles": [
+    "https://law.justia.com/codes/florida/2010/TitleIII/TitleIII.html",
+    "https://law.justia.com/codes/florida/2010/TitleX/TitleX.html"
+  ],
+  "pass2_chosen_chapters": [
+    "https://law.justia.com/codes/florida/2010/TitleIII/chapter11/chapter11.html",
+    "https://law.justia.com/codes/florida/2010/TitleX/chapter112/chapter112.html"
+  ],
+  "pass3_invoked_on": [
+    "https://law.justia.com/codes/florida/2010/TitleIII/chapter11/chapter11.html",
+    "https://law.justia.com/codes/florida/2010/TitleX/chapter112/chapter112.html",
+    "https://law.justia.com/codes/florida/2010/TitleX/chapter112/PARTIII.html"
+  ],
+  "tree_depth": 5,
+  "playwright_errors": [],
+  "notes": "FL 2010 vintage available on Justia natively (no substitution). Same dual-regime structure as FL 2015/2025: (a) legislative-branch lobbying in Title III Ch. 11 (six sections 11.045-11.062, identical cluster to FL 2015), and (b) executive-branch lobbying in Title X Ch. 112 Part III (Code of Ethics), administered by the Commission on Ethics. URL CONVENTION (2010): CamelCase titles (TitleIII/TitleIII.html, TitleX/TitleX.html), lowercase chapters (chapter11/chapter11.html, chapter112/chapter112.html), and UNDERSCORE-DOT-FLAT section leaves (11_045.html, 112_3215.html) - differs from FL 2015's hyphenated path-based convention (title-iii/chapter-11/section-11.045/). The Title X path required pass-3 on chapter112/ to reach the Part-level index (PARTI-PARTVIII), then a second pass-3 on PARTIII.html. CRITICAL HELPER FINDING: the helper's _build_justia_link_tsv returned an EMPTY TSV for PARTIII.html. Root cause: FL 2010 uses a FLAT convention where Part III section leaves are SIBLINGS in chapter112/ (chapter112/112_3215.html), not children of a PARTIII/ subdirectory. The helper's .html-parent logic computed namespace chapter112/PARTIII/ (Pattern 3), which matched zero links. The page fetched fine (no Cloudflare). I recovered the 37-section Part III snapshot directly from the saved pass3_PARTIII.html (siblings 112_XXXX.html, range 112.311-112.326) WITHOUT a new fetch, and wrote the corrected snapshot to pass3_PARTIII.tsv. This is a genuine 2010-vintage layout the helper's four namespace patterns do not cover; downstream Method-A automation will need a fifth pattern (flat-sibling Part page) for FL 2010. Tree depth = 5 segments (florida/2010/TitleX/chapter112/112_3215.html), one shallower than FL 2015's depth 6 because the flat convention collapses the Part level into the section filename rather than a separate path segment. Executive-branch cluster = FL 2015's Part III selections MINUS 112.3261 (water management district lobbying), confirmed absent in FL 2010 (highest 32xx is 112.326; 112.3261 postdates 2010). FL 2010 cluster = 13 URLs (6 legislative + 4 executive core + 3 executive support) vs. FL 2015's 14."
+}

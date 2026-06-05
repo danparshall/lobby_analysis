@@ -10,6 +10,40 @@
 
 ## Session log (newest first)
 
+### 2026-06-05 — Top-10 priority-list update → 3-vintage statute gap-fill (5 cells; 30/30 now covered)
+
+- **Convo:** [`convos/20260605_top10_vintage_gapfill.md`](convos/20260605_top10_vintage_gapfill.md)
+- **Results:** [`results/20260605_top10_statute_coverage.md`](results/20260605_top10_statute_coverage.md)
+- **Machine:** Dans-MacBook-Pro
+
+#### Context
+
+Priority states updated. New top-10 (NY, CO, WI, CA, TX, IL, WA, FL, NC, OH), chosen *because of* the `docs/reports/state_bulk_data_availability/` chain-closure research. Ask: confirm **statute text** (not bulk filings) for 2010/2015/2025 across all 10. User resumed **this** branch rather than cutting a duplicate (it already owns the pipeline + inventory).
+
+#### Scope correction
+
+"30 items / several passes" reconciled against the 2026-05-27 inventory → **5 genuine gap cells**, not 30. The other 25 already complete. Apparent stubs TX 2010/2015 (1 file) and IL 2010 (3) are **legitimate inline single-page codifications**, not incomplete fetches. Real gaps: **NY 2010 (lossy stub), NY 2015, NY 2025, FL 2010, NC 2010** — 4 of 5 in the top-priority states; no fetchable URL bundles existed for any.
+
+#### Execution (one pass — CF clear on Pro)
+
+- CF probe (user-chosen): direct `subagent_fetch_save.py pass1` on FL 2010 → clean, CF open.
+- Discovery: 5 Method-B subagents (2 batches of ≤3) per the committed dispatch template, regime-seeded. All CF-clean. Bundles at `results/subagent_canaries/{FL_2010,NC_2010,NY_2010,NY_2015,NY_2025}/`.
+- Section-fetch: `scripts/fetch_gap_cells_sections.py` → 111 section bodies to `data/statutes/<S>/<V>/sections/` (PlaywrightClient 2.5s). CF held through all 111; sizes clean (medians 2.7–4.3 KB, zero <500B).
+- **30/30 top-10 × 3-vintage cells now have statute text.**
+
+#### Findings
+
+- **NY Lobbying Act (Leg. Law Art. 1-A §§1-A…1-V) structurally stable 2010→2025** — same 22 leaves all 3 vintages; JCOPE→COELIG (2022) = substance change, not structure. NY captured **non-lossy** this time (supersedes the 5/15 `rla/`-stub).
+- **NC 2010 = NC 2015** (32-section Ch.120C; §120C-215/-404 removed only by 2025).
+- **FL 2010 Method-A helper gap:** flat-sibling Part-page convention not in `_build_justia_link_tsv`'s 4 patterns (empty TSV on `PARTIII.html`, recovered from HTML). Needs a 5th pattern.
+
+#### Next steps
+
+- Cross-machine sync of the 5 new cells to Air/tarragon.
+- CO substitution-validity review (2010→2016 outside ±5) before calibration use; OH 52→30 delta still open.
+- FL 2010 5th helper pattern for Method-A automation.
+- Clean CF window on Pro is **not** a retirement of the stealth-Playwright recommendation.
+
 ### 2026-05-27 — 2025 cohort expansion (3→15 states), NC+FL added at 2015+2025, CO 2025 TOC-page bug found and fixed
 
 - **Convo:** [`convos/20260527_2025_cohort_expansion_and_co_fix.md`](convos/20260527_2025_cohort_expansion_and_co_fix.md)
