@@ -158,6 +158,20 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
             f"chunk_ids: {', '.join(_RESOLVED_CHUNKS)}."
         ),
     )
+    parser.add_argument(
+        "--results-base",
+        type=Path,
+        default=None,
+        help=(
+            "Optional override for the results-base directory. When omitted, "
+            "results land under the legacy `_DEFAULT_RESULTS_BASE` "
+            "(docs/active/wi-tier1-direct-read/results/tier_1/). Passed "
+            "through to `resolve_results_dir(..., results_base=...)`; the "
+            "<STATE>_<VINTAGE> per-run subdir is appended automatically. "
+            "Added for cross-state-cpi-2015-validation (2026-06-05) so "
+            "results land under that branch's docs/active/ path."
+        ),
+    )
     return parser.parse_args(argv)
 
 
@@ -788,7 +802,7 @@ def main(argv: list[str] | None = None) -> int:
     state = args.state
     vintage = args.vintage
     bundle_dir = resolve_bundle_dir(state, vintage)
-    results_dir = resolve_results_dir(state, vintage)
+    results_dir = resolve_results_dir(state, vintage, results_base=args.results_base)
 
     _preflight(bundle_dir)
 
