@@ -26,7 +26,8 @@ Newest entries first.
 - [x] 10. Finish-convo: convo at [`convos/20260605_cross_state_cpi_2015_validation_execution.md`](convos/20260605_cross_state_cpi_2015_validation_execution.md); STATUS updated; this RESEARCH_LOG updated; doc-link-graph walked.
 
 **Execution session convo:** [`convos/20260605_cross_state_cpi_2015_validation_execution.md`](convos/20260605_cross_state_cpi_2015_validation_execution.md)
-**Audit results:** [`results/20260605_cross_state_cpi_2015_validation.md`](results/20260605_cross_state_cpi_2015_validation.md)
+**Audit results (data):** [`results/20260605_cross_state_cpi_2015_validation.md`](results/20260605_cross_state_cpi_2015_validation.md)
+**Failure-mode trends + paths forward (analysis):** [`results/20260606_failure_mode_trends_and_paths_forward.md`](results/20260606_failure_mode_trends_and_paths_forward.md)
 
 **Headline:** 15 of 30 (50%) match per-(state, indicator) exact-match. **60% of the 15 misses are systematic projection-helper-vs-YAML-extraction vocabulary mismatches** on IND_199 (IntCell months vs string enum) + IND_207 (CPI's YES/MODERATE/NO vs internal structural enum), not extraction failures.
 

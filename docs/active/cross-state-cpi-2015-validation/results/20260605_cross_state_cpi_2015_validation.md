@@ -1,3 +1,6 @@
+<!-- Generated during: convos/20260605_cross_state_cpi_2015_validation_execution.md -->
+<!-- Reproduce: uv run python scripts/cross_state_cpi_2015_audit.py -->
+
 # Cross-state CPI 2015 C11 de-jure projection-accuracy audit
 
 **States audited:** NY, WI, OH, CA, TX (vintage 2015)

@@ -5,7 +5,8 @@
 - [`../../../historical/wi-ralph-cpi-renewal-cadence/convos/20260605_cross_state_planning.md`](../../../historical/wi-ralph-cpi-renewal-cadence/convos/20260605_cross_state_planning.md) — original 10-state planning
 - [`../../../historical/wi-ralph-cpi-renewal-cadence/convos/20260605_pr40_pressure_test.md`](../../../historical/wi-ralph-cpi-renewal-cadence/convos/20260605_pr40_pressure_test.md) — amendment to 5-state × default-6 × per-cell-exact-match
 - [`../../../historical/wi-ralph-cpi-renewal-cadence/convos/20260605_phase_a_execution.md`](../../../historical/wi-ralph-cpi-renewal-cadence/convos/20260605_phase_a_execution.md) — Phase A execution baseline
-**Audit results:** [`../results/20260605_cross_state_cpi_2015_validation.md`](../results/20260605_cross_state_cpi_2015_validation.md)
+**Audit results (data):** [`../results/20260605_cross_state_cpi_2015_validation.md`](../results/20260605_cross_state_cpi_2015_validation.md)
+**Failure-mode trends + paths forward (analysis):** [`../results/20260606_failure_mode_trends_and_paths_forward.md`](../results/20260606_failure_mode_trends_and_paths_forward.md) — six trends synthesized from the audit; two contrasting paths forward (remediate first vs broaden first); my recommendation is Path 2 modified (dispatch the 5 deferred states at vintage 2015 before remediating).
 **Audit script:** [`/scripts/cross_state_cpi_2015_audit.py`](../../../../scripts/cross_state_cpi_2015_audit.py)
 
 ## Pre-flight
