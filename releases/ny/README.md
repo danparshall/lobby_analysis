@@ -45,7 +45,7 @@ All files are tab-separated (`.tsv`) with a single header row. Total size: **~11
 
 | File | Rows | What it is |
 |---|---:|---|
-| **`NY_filing_parties_lobbied.tsv`** | 170,328 | One row per `(firm-filing, distinct party lobbied)` — NY's **disclosed** "who was lobbied" field, resolved to Open States `ocd-person` ids where it names a state legislator. Columns: `reporting_year`, `reporting_period`, `filing_id`, `lobbyist_id`, `client_id`, `party_lobbied_raw` (the verbatim disclosed string), `party_lobbied_name` (title/noise-stripped legislator name, when resolved), `party_lobbied_person_id` (`ocd-person/…`, when resolved), `resolved` (`True`/`False`). |
+| **`NY_filing_parties_lobbied.tsv`** | 169,813 | One row per `(firm-filing, distinct party lobbied)` — NY's **disclosed** "who was lobbied" field, resolved to Open States `ocd-person` ids where it names a state legislator. Columns: `reporting_year`, `reporting_period`, `filing_id`, `lobbyist_id`, `client_id`, `party_lobbied_raw` (the verbatim disclosed string), `party_lobbied_name` (title/noise-stripped legislator name, when resolved), `party_lobbied_person_id` (`ocd-person/…`, when resolved), `resolved` (`True`/`False`). |
 
 **Disclosed, not inferred — this is a different edge from the sponsor chain.** The
 chain's lawmaker edge (Phase 4) is the bill *primary sponsor*, *inferred* via Open
@@ -54,17 +54,19 @@ leadership, committee chairs, executive offices, and municipal officials a spons
 join never could. **Unweighted** — it carries no compensation (no conservation
 invariant); the metric is the resolution rate.
 
-**Resolution (2025):** of 100,250 edges that name a **state legislator**
-(`Senator` / `Assembly member`), **90.4% resolved** to a specific `ocd-person`
-(**195 distinct legislators**). The other 41% of all edges name parties that are
+**Resolution (2025):** of 99,735 edges that name a **state legislator**
+(`Senator` / `Assembly member`), **92.6% resolved** to a specific `ocd-person`
+(**198 distinct legislators**). The other ~41% of all edges name parties that are
 **not** state legislators — NYC municipal officials (Council members, the Mayor's
 office), state executive offices / agencies, chamber program/counsel staff, and
 "entire-legislature" broadcasts — kept verbatim with `resolved=False`, never
-coerced into a legislator id. Overall **53.2%** of edges resolve. Matching is a
-deterministic first-name+last-name key (zero collisions on the NY roster; see
-[Phase 0](../../docs/active/ny-disclosure-explore/results/20260606_ny_parties_lobbied_grain.md));
-the residual ~10% of legislator edges miss on accents (`José Serrano`), nicknames
-(`Liz`/`Elizabeth Krueger`), or non-sponsoring members absent from the roster.
+coerced into a legislator id. Overall **54.4%** of edges resolve. Matching is a
+deterministic first-name+last-name key, **accent-folded** (NFKD diacritic strip,
+so the disclosure's `Jose Serrano` and the roster's `José Serrano` agree); zero
+collisions on the NY roster; see
+[Phase 0](../../docs/active/ny-disclosure-explore/results/20260606_ny_parties_lobbied_grain.md).
+The residual ~7% of legislator edges miss on nicknames
+(`Liz`/`Elizabeth Krueger`) or non-sponsoring members absent from the roster.
 **Caveat 10** has the full discipline. Aggregates:
 [`results/20260606_ny_parties_lobbied_release.md`](../../docs/active/ny-disclosure-explore/results/20260606_ny_parties_lobbied_release.md).
 

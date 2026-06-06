@@ -133,6 +133,18 @@ def test_resolve_legislator_absent_from_roster_unresolved():
     assert raw == "Senator Elizabeth Krueger"
 
 
+def test_resolve_accent_folded_disclosure_matches_plain_roster():
+    # The OS roster carries the plain ASCII key ("jose serrano"); the disclosure
+    # carries the diacritic ("José"). Accent-folding the first+last key recovers
+    # the match. The preserved raw/name keeps the accent — only the KEY folds.
+    roster = {"jose serrano": "ocd-person/serr"}
+    raw, name, pid, resolved = resolve_party_lobbied("Senator José M. Serrano", roster)
+    assert resolved is True
+    assert pid == "ocd-person/serr"
+    assert name == "José M. Serrano"
+    assert raw == "Senator José M. Serrano"
+
+
 # ---------------------------------------------------------------------------
 # build_legislator_roster — first+last -> ocd-person, from sponsorships CSV
 # ---------------------------------------------------------------------------
@@ -172,6 +184,20 @@ def test_build_roster_resolves_a_real_disclosure_value(tmp_path):
     _, _, pid, resolved = resolve_party_lobbied("Assembly member Amy R. Paulin, staff member", roster)
     assert resolved is True
     assert pid == "ocd-person/aaa"
+
+
+def test_build_roster_folds_accents_so_plain_disclosure_matches(tmp_path):
+    # The OS sponsorship roster carries the diacritic ("Emérita"); a disclosure
+    # value spelled plainly ("Emerita") must still match. Folding inside the
+    # shared first+last key keeps both sides symmetric, so the direction of the
+    # accent (roster-side vs disclosure-side) does not matter.
+    _write_sponsorships(tmp_path, [
+        {"name": "Emérita Torres", "entity_type": "person", "person_id": "ocd-person/torr"},
+    ])
+    roster = build_legislator_roster(tmp_path)
+    _, _, pid, resolved = resolve_party_lobbied("Senator Emerita Torres", roster)
+    assert resolved is True
+    assert pid == "ocd-person/torr"
 
 
 # ---------------------------------------------------------------------------

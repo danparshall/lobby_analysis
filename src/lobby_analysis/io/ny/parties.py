@@ -29,6 +29,7 @@ from __future__ import annotations
 
 import csv
 import re
+import unicodedata
 from pathlib import Path
 
 import pandas as pd
@@ -99,18 +100,34 @@ def _strip_noise(name: str) -> str:
     return _WS.sub(" ", name).strip()
 
 
+def _fold_accents(text: str) -> str:
+    """Strip diacritics via NFKD decomposition (``José`` -> ``Jose``).
+
+    Applied to the *match key* only — the displayed name keeps its accents. The
+    disclosure text and the OS roster disagree on diacritics for several real NY
+    legislators (``José Serrano``, ``Emérita Torres``); folding both sides of the
+    first+last key symmetrically recovers the match. This is a deterministic
+    canonicalization, not similarity-fuzzing — the same class of move as dropping
+    the middle initial.
+    """
+    decomposed = unicodedata.normalize("NFKD", text)
+    return "".join(ch for ch in decomposed if not unicodedata.combining(ch))
+
+
 def _first_last_key(name: str) -> str:
-    """The Phase-0 match key: first token + last token, casefolded.
+    """The Phase-0 match key: first token + last token, accent-folded + casefolded.
 
     Drops the middle initial (the disclosure carries it, many roster names do
-    not) and any Jr/Sr/III suffix. Phase 0 verified ZERO first+last collisions on
-    the real NY legislator roster, so this permissive key adds no ambiguity.
+    not) and any Jr/Sr/III suffix, and folds diacritics (the disclosure and the
+    OS roster disagree on accents for names like ``José Serrano``). Phase 0
+    verified ZERO first+last collisions on the real NY legislator roster, so this
+    permissive key adds no ambiguity.
     """
     name = _SUFFIX.sub("", name).strip()
     tokens = name.split()
     if len(tokens) < 2:
-        return name.casefold()
-    return f"{tokens[0]} {tokens[-1]}".casefold()
+        return _fold_accents(name).casefold()
+    return _fold_accents(f"{tokens[0]} {tokens[-1]}").casefold()
 
 
 def resolve_party_lobbied(raw, roster: dict[str, str]) -> tuple[str, str, str | None, bool]:
