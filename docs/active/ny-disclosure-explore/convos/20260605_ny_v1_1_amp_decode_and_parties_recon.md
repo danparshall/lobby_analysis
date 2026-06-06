@@ -84,8 +84,12 @@ design implications: `results/20260605_ny_parties_lobbied_recon.md`.
 ## Next session (for Dan)
 
 - **`parties_lobbied` resolution** (the deferred top item): re-pull 2025 with the
-  field in `$select`; build normalizer + `target_kind` router; resolve
-  `legislator` rows to `ocd-person`; decide routing for non-individuals.
+  field in `$select`; resolve named-legislator rows to `ocd-person`; flag the
+  ~17% non-individuals (`resolved=False`, raw preserved). **Plan written:**
+  [`plans/ny_parties_lobbied_mvp.md`](../plans/ny_parties_lobbied_mvp.md) — Phase 0
+  grain/name-format probe (gating), re-pull, TDD extract+resolve, ship
+  `NY_filing_parties_lobbied.tsv`; chain integration + `target_kind` taxonomy are
+  post-MVP.
 - Cosponsors edge (OS bundle already staged; carries the same
   comp-replication-across-edges discipline as sponsors).
 - Multi-year backfill (2019→).
