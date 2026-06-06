@@ -89,3 +89,45 @@ design implications: `results/20260605_ny_parties_lobbied_recon.md`.
 - Cosponsors edge (OS bundle already staged; carries the same
   comp-replication-across-edges discipline as sponsors).
 - Multi-year backfill (2019→).
+
+## Addendum (2026-06-06) — release-artifact git-tracking decision
+
+Follow-on discussion after I flagged that the `&amp;` fix meant re-committing the
+53 MB chain TSV (a published, version-controlled artifact). Dan proposed purging
+the chain TSV from branch history (`git filter-repo`) and re-adding it only at
+merge.
+
+**Investigated, then abandoned the history rewrite — two evidence-based reasons:**
+
+1. **The reclaim is ~3.3 MB, not ~100 MB.** The chain TSV is 53 MB on disk but
+   only **3.47 MB packed** (TSV deltifies/compresses extremely well across its
+   two near-identical versions). A throwaway-clone purge measured pack
+   95.43 → 92.10 MiB. My original "~100 MB smaller" estimate reasoned about file
+   size instead of packed size and was wrong.
+2. **`filter-repo` on the full reachable history was unsafe.** Run in an isolated
+   throwaway clone (nothing pushed), it **dropped 118 commits** (598 → 480) and
+   **destroyed the merge-base with `main`** by collapsing degenerate merges
+   across shared ancestry (merge commits 64 → 45, plus the side-branch commits
+   that became unreachable). The HEAD *tree* was clean (only the chain TSV
+   removed) but the commit *DAG* was mangled — force-pushing it would have made
+   the eventual merge-to-`main` a tangle. The verify gate (tree-diff +
+   commit-count parity check) caught it before any force-push. A safe scoped form
+   (`--refs <merge-base>..HEAD`) exists but still needs a force-push for a
+   ~3.3 MB gain.
+
+**Decision (Dan):** don't rewrite history; **untrack the regenerable release data
+TSVs going forward** instead. Committed (`10adc78`, normal push, no force):
+`git rm --cached` on all 5 NY release data TSVs (chain + clients + lobbyists +
+filings + links) and a `.gitignore` pattern `releases/ny/**/*.tsv`. Working
+copies stay on disk; the hand-written READMEs stay tracked; the already-committed
+chain blob rides along in history at ~3.3 MB packed (negligible). The 5 TSVs are
+deterministically regenerable (`materialize_cli` + `cli chain`, ~60 s).
+
+**Two carry-forward notes:** (1) at merge, the release TSVs are gitignored —
+re-add the final set with `git add -f releases/ny/...`. (2) a branch checkout now
+has the `releases/ny/` READMEs but not the data they describe until regenerated;
+acceptable since scripts + raw inputs are preserved.
+
+**Process note (honesty):** I initially argued *purge-now* over the simpler
+`rm --cached`; the evidence (packed size + the DAG damage the verify gate
+surfaced) reversed that. Recorded here so the reasoning isn't lost.
