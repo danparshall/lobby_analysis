@@ -1,0 +1,623 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "lobbying_definitions",
+    "run_index": 3,
+    "state_abbr": "OH",
+    "vintage_year": 2015,
+    "prompt_sha256": "a5b2e6db592c11a03109db6b6ec3c341399426322dcf183d33de108e1a552f10",
+    "timestamp_utc": "2026-06-06T00:19:28+00:00"
+  },
+  "wall_clock_seconds": 36.43064587499248,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 2181
+    },
+    "cache_creation_input_tokens": 2181,
+    "cache_read_input_tokens": 92795,
+    "inference_geo": "global",
+    "input_tokens": 6,
+    "output_tokens": 3635,
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.09090500000000001,
+  "legal_roster": [
+    [
+      "def_lobbying_activity_types",
+      "legal"
+    ],
+    [
+      "def_lobbyist_actor_types",
+      "legal"
+    ],
+    [
+      "law_defines_public_entity",
+      "legal"
+    ],
+    [
+      "law_includes_materiality_test",
+      "legal"
+    ],
+    [
+      "def_target_executive_agency",
+      "legal"
+    ],
+    [
+      "def_target_executive_staff",
+      "legal"
+    ],
+    [
+      "def_target_governors_office",
+      "legal"
+    ],
+    [
+      "def_target_independent_agency",
+      "legal"
+    ],
+    [
+      "def_target_legislative_branch",
+      "legal"
+    ],
+    [
+      "def_target_legislative_staff",
+      "legal"
+    ],
+    [
+      "def_actor_class_elected_officials",
+      "legal"
+    ],
+    [
+      "def_actor_class_public_employees",
+      "legal"
+    ],
+    [
+      "public_entity_def_relies_on_charter",
+      "legal"
+    ],
+    [
+      "public_entity_def_relies_on_ownership",
+      "legal"
+    ],
+    [
+      "public_entity_def_relies_on_revenue_structure",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "def_lobbying_activity_types",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": []
+      },
+      "cell_class": "EnumSetCell",
+      "cited_section": "§101.70(E)",
+      "justification": "The statute defines \"actively advocate\" as promotion/advocacy \"by direct communication\" without enumerating specific activity types (oral, written, electronic, etc.), so none of the listed activity types are specifically called out."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_lobbyist_actor_types",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": [
+          "in_house_company",
+          "public_entity",
+          "professional_lobbyist",
+          "in_house_organisation",
+          "government_agency"
+        ]
+      },
+      "cell_class": "EnumSetCell",
+      "cited_section": "§101.70(A), (F), (G); §101.72(E)",
+      "justification": "\"Person\" (who can be an employer) includes individuals, partnerships, corporations, labor organizations, manufacturer associations, state instrumentalities, and political subdivisions; §101.72(E) expressly contemplates state agency officers/employees who actively advocate in a fiduciary capacity, covering professional lobbyists, in-house corporate and organizational lobbyists, public entities, and government agencies."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "law_defines_public_entity",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.70",
+      "justification": "The definitions section §101.70 defines \"person,\" \"employer,\" \"legislative agent,\" etc., but does not contain a defined term \"public entity.\""
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "law_includes_materiality_test",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.70(F)",
+      "justification": "The definition of \"legislative agent\" requires that active advocacy be \"one of the individual's main purposes,\" and §101.70(E) excludes incidental petitioning activity—both function as materiality thresholds that exempt minor or non-substantial activity from coverage."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_executive_agency",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.70(E); §121.60(I), (L)",
+      "justification": "\"Actively advocate\" covers direct communication with members of the general assembly, the governor, and department directors; §121.60 separately covers executive agency lobbying including communication with the governor and other elected executive officials."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_executive_staff",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.70(E), (J); §121.60(I), (L), (M)",
+      "justification": "Targets of lobbying include members of the general assembly (legislative), the governor and elected executive officials, department directors (senior officials), and \"staff\" defined as state employees who formulate policy or exercise administrative authority—covering the legislative and executive branches and bureaucracy."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_governors_office",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.70(E); §121.60(I), (L)",
+      "justification": "\"Actively advocate\" covers direct communication with members of the general assembly, the governor, and department directors; executive agency lobbying separately covers elected executive officials including the governor."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_independent_agency",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.70(E); §121.60(I), (L)",
+      "justification": "Same as above: the statutory definitions explicitly include direct communication with state legislators, the governor, and other executive officials."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_legislative_branch",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.70(E); §121.60(I), (L)",
+      "justification": "Same as above: legislative agent and executive agency lobbyist definitions cover direct communication with both legislators and executive officials including the governor."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_legislative_staff",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.70(E), (J); §121.60(I), (L), (M)",
+      "justification": "Targets include members of the general assembly (legislators), the governor and elected executives (executive branch officials), department directors (senior officials), and policy-formulating staff (bureaucracy)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_actor_class_elected_officials",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(E)",
+      "justification": "§101.72(E) expressly contemplates that \"an officer or employee who actively advocates in a fiduciary capacity as a representative of that state agency\" must register, with the state agency paying the registration fee, showing that public officials/employees can be required to register."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_actor_class_public_employees",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.70(F), (H); §101.72(E)",
+      "justification": "Public employees can be lobbyists (§101.72(E)); the statute establishes a compensation standard (engagement \"for compensation\" per §101.70(H)) and a time/purpose standard (\"during at least a portion of the individual's time to actively advocate as one of the individual's main purposes\" per §101.70(F))."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "public_entity_def_relies_on_charter",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.70",
+      "justification": "The statutory definitions of legislative agent and employer do not rely on any concept of public charter or special government protection."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "public_entity_def_relies_on_ownership",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.70",
+      "justification": "The definitions of legislative agent, employer, and engagement focus on compensated active advocacy, not on ownership structure."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "public_entity_def_relies_on_revenue_structure",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.70",
+      "justification": "The statutory definitions do not rely on the structure or composition of revenue; they rely on the existence of a compensated engagement to actively advocate."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "msg_01XexKmREhdUb7uXcBAV2woD",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "I'll analyze the Ohio statute text and answer each cell based on what the law actually defines.",
+        "type": "text"
+      },
+      {
+        "id": "toolu_01FnUdFnqBjv9kmt9DvbVzJj",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_001",
+          "axis": "legal",
+          "value": [],
+          "confidence": "medium",
+          "cited_section": "§101.70(E)",
+          "justification": "The statute defines \"actively advocate\" as promotion/advocacy \"by direct communication\" without enumerating specific activity types (oral, written, electronic, etc.), so none of the listed activity types are specifically called out."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01FcgNhuS8zWc6u1aLLyQhwW",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_002",
+          "axis": "legal",
+          "value": [
+            "professional_lobbyist",
+            "in_house_company",
+            "in_house_organisation",
+            "public_entity",
+            "government_agency"
+          ],
+          "confidence": "medium",
+          "cited_section": "§101.70(A), (F), (G); §101.72(E)",
+          "justification": "\"Person\" (who can be an employer) includes individuals, partnerships, corporations, labor organizations, manufacturer associations, state instrumentalities, and political subdivisions; §101.72(E) expressly contemplates state agency officers/employees who actively advocate in a fiduciary capacity, covering professional lobbyists, in-house corporate and organizational lobbyists, public entities, and government agencies."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01YLq2JPLfGFUQkSkmU28X5d",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_003",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§101.70",
+          "justification": "The definitions section §101.70 defines \"person,\" \"employer,\" \"legislative agent,\" etc., but does not contain a defined term \"public entity.\""
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01VypXicNEtXP48WKxs4wVdL",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_004",
+          "axis": "legal",
+          "value": true,
+          "confidence": "medium",
+          "cited_section": "§101.70(F)",
+          "justification": "The definition of \"legislative agent\" requires that active advocacy be \"one of the individual's main purposes,\" and §101.70(E) excludes incidental petitioning activity—both function as materiality thresholds that exempt minor or non-substantial activity from coverage."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_013hG2dSujEX8M8APyR3wa1j",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_005",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.70(E); §121.60(I), (L)",
+          "justification": "\"Actively advocate\" covers direct communication with members of the general assembly, the governor, and department directors; §121.60 separately covers executive agency lobbying including communication with the governor and other elected executive officials."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_013xBukCkV4YB7pyf7G835nW",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_006",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.70(E), (J); §121.60(I), (L), (M)",
+          "justification": "Targets of lobbying include members of the general assembly (legislative), the governor and elected executive officials, department directors (senior officials), and \"staff\" defined as state employees who formulate policy or exercise administrative authority—covering the legislative and executive branches and bureaucracy."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01U4dLozUX1w5VmC3QBep9nb",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_007",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.70(E); §121.60(I), (L)",
+          "justification": "\"Actively advocate\" covers direct communication with members of the general assembly, the governor, and department directors; executive agency lobbying separately covers elected executive officials including the governor."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01UXGjVhytNLL6ZCLmLMV8ea",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_008",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.70(E); §121.60(I), (L)",
+          "justification": "Same as above: the statutory definitions explicitly include direct communication with state legislators, the governor, and other executive officials."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01Kyo5wJbX4oQrGEm4yYFUX7",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_009",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.70(E); §121.60(I), (L)",
+          "justification": "Same as above: legislative agent and executive agency lobbyist definitions cover direct communication with both legislators and executive officials including the governor."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01Mtu8wzFPPe2ntfFYVfNjPa",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_010",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.70(E), (J); §121.60(I), (L), (M)",
+          "justification": "Targets include members of the general assembly (legislators), the governor and elected executives (executive branch officials), department directors (senior officials), and policy-formulating staff (bureaucracy)."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01HKuGJnPD1zY5uofBAeTBso",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_011",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.72(E)",
+          "justification": "§101.72(E) expressly contemplates that \"an officer or employee who actively advocates in a fiduciary capacity as a representative of that state agency\" must register, with the state agency paying the registration fee, showing that public officials/employees can be required to register."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01NCcAjUrBniLtrfoGusEX1P",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_012",
+          "axis": "legal",
+          "value": true,
+          "confidence": "medium",
+          "cited_section": "§101.70(F), (H); §101.72(E)",
+          "justification": "Public employees can be lobbyists (§101.72(E)); the statute establishes a compensation standard (engagement \"for compensation\" per §101.70(H)) and a time/purpose standard (\"during at least a portion of the individual's time to actively advocate as one of the individual's main purposes\" per §101.70(F))."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_016eRdYo2HPHKJfjV8aTm8Lf",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_013",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§101.70",
+          "justification": "The statutory definitions of legislative agent and employer do not rely on any concept of public charter or special government protection."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01CwSFgNG4eGtc3tNkPccWQF",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_014",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§101.70",
+          "justification": "The definitions of legislative agent, employer, and engagement focus on compensated active advocacy, not on ownership structure."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01CaTWDU5AsCfSs7zwx4aQZe",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_015",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§101.70",
+          "justification": "The statutory definitions do not rely on the structure or composition of revenue; they rely on the existence of a compensated engagement to actively advocate."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 2181
+      },
+      "cache_creation_input_tokens": 2181,
+      "cache_read_input_tokens": 92795,
+      "inference_geo": "global",
+      "input_tokens": 6,
+      "output_tokens": 3635,
+      "server_tool_use": null,
+      "service_tier": "standard",
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      }
+    }
+  }
+}

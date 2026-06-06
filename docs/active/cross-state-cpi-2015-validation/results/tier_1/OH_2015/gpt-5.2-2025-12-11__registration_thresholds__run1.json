@@ -1,0 +1,246 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "registration_thresholds",
+    "run_index": 1,
+    "state_abbr": "OH",
+    "vintage_year": 2015,
+    "prompt_sha256": "a5b2e6db592c11a03109db6b6ec3c341399426322dcf183d33de108e1a552f10",
+    "timestamp_utc": "2026-06-06T01:54:27+00:00"
+  },
+  "wall_clock_seconds": 10.098348165978678,
+  "usage": {
+    "completion_tokens": 597,
+    "prompt_tokens": 60443,
+    "total_tokens": 61040,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 58880
+    }
+  },
+  "cost_usd_estimate": 0.11413324999999999,
+  "legal_roster": [
+    [
+      "lobbyist_registration_threshold_compensation_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_threshold_expenditure_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_threshold_time_percent",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_itemization_de_minimis_threshold_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_de_minimis_threshold_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_de_minimis_threshold_time_percent",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_threshold_compensation_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": null
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "Ohio Rev. Code §101.70(F), (H) (2015)",
+      "justification": "The definition of 'legislative agent' hinges on being 'engaged' to actively advocate as one of the individual's main purposes, and 'engage' requires being employed or retained 'for compensation,' but the statute sets no dollar-amount compensation threshold."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_threshold_expenditure_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": null
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "Ohio Rev. Code §§101.70(F)–(H), 101.72(A) (2015)",
+      "justification": "Registration is triggered by an 'engagement' to lobby rather than by spending a specified dollar amount on lobbying, and no lobbyist-definition expenditure threshold is stated."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_threshold_time_percent",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "magnitude": null,
+        "unit": null
+      },
+      "cell_class": "TimeThresholdCell",
+      "cited_section": "Ohio Rev. Code §101.70(F) (2015)",
+      "justification": "The statute defines a legislative agent by lobbying as 'one of the individual's main purposes' but provides no quantitative time standard (hours, days, or percentage) that would create a time threshold."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_filing_itemization_de_minimis_threshold_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "0"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "Ohio Rev. Code §101.73(B)(2), (B)(3) (2015)",
+      "justification": "Expenditures (other than meals/food) must be reported when made for a particular official with no dollar de minimis, while meals/food have a $50 annual aggregation trigger; because the question asks per-item itemization de minimis generally, the statute sets none for itemization and thus requires itemization regardless of amount."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_filing_de_minimis_threshold_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "0"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "Ohio Rev. Code §101.72(A) (2015)",
+      "justification": "Each legislative agent and employer must file an initial registration statement within ten days following an engagement, with no exemption based on low total expenditures."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_filing_de_minimis_threshold_time_percent",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": null
+      },
+      "cell_class": "FloatCell",
+      "cited_section": "Ohio Rev. Code §§101.70(F), 101.72(A) (2015)",
+      "justification": "Ohio’s legislative lobbying provisions contain no percentage-of-time de minimis exemption from registration or disclosure filings for legislative agents."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "chatcmpl-DnaWnPP2PQf1TlDZmSevi0M8SIBvS",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_l0PnPnb31hof3QiDviuEMLms",
+              "function": {
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"value\": null, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.70(F), (H) (2015)\", \"justification\": \"The definition of 'legislative agent' hinges on being 'engaged' to actively advocate as one of the individual's main purposes, and 'engage' requires being employed or retained 'for compensation,' but the statute sets no dollar-amount compensation threshold.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_EwDdS2kBsitMEdqNnlfXdsHG",
+              "function": {
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": null, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §§101.70(F)–(H), 101.72(A) (2015)\", \"justification\": \"Registration is triggered by an 'engagement' to lobby rather than by spending a specified dollar amount on lobbying, and no lobbyist-definition expenditure threshold is stated.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_l0zMUv4ZVubWihcHrSXKmHpi",
+              "function": {
+                "arguments": "{\"handle\": \"row_003\", \"axis\": \"legal\", \"value\": {\"magnitude\": null, \"unit\": null}, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.70(F) (2015)\", \"justification\": \"The statute defines a legislative agent by lobbying as 'one of the individual's main purposes' but provides no quantitative time standard (hours, days, or percentage) that would create a time threshold.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_kK0lOU612psWqpJImWjse05T",
+              "function": {
+                "arguments": "{\"handle\": \"row_004\", \"axis\": \"legal\", \"value\": 0, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.73(B)(2), (B)(3) (2015)\", \"justification\": \"Expenditures (other than meals/food) must be reported when made for a particular official with no dollar de minimis, while meals/food have a $50 annual aggregation trigger; because the question asks per-item itemization de minimis generally, the statute sets none for itemization and thus requires itemization regardless of amount.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_CkoEYdFxcjjIs3plcAidBwU0",
+              "function": {
+                "arguments": "{\"handle\": \"row_005\", \"axis\": \"legal\", \"value\": 0, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(A) (2015)\", \"justification\": \"Each legislative agent and employer must file an initial registration statement within ten days following an engagement, with no exemption based on low total expenditures.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_oEyoiUkIk7blSU1opkqTV1Ln",
+              "function": {
+                "arguments": "{\"handle\": \"row_006\", \"axis\": \"legal\", \"value\": null, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §§101.70(F), 101.72(A) (2015)\", \"justification\": \"Ohio’s legislative lobbying provisions contain no percentage-of-time de minimis exemption from registration or disclosure filings for legislative agents.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1780710857,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 597,
+      "prompt_tokens": 60443,
+      "total_tokens": 61040,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 58880
+      }
+    }
+  }
+}

@@ -1,0 +1,291 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "registration_thresholds",
+    "run_index": 3,
+    "state_abbr": "TX",
+    "vintage_year": 2015,
+    "prompt_sha256": "37c66c4d81d755e65fe909ea7a58321ab13e1f35efec6b146b9c80a136f430d6",
+    "timestamp_utc": "2026-06-06T00:20:35+00:00"
+  },
+  "wall_clock_seconds": 15.427213458984625,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 1804
+    },
+    "cache_creation_input_tokens": 1804,
+    "cache_read_input_tokens": 25724,
+    "inference_geo": "global",
+    "input_tokens": 6,
+    "output_tokens": 1525,
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.038155,
+  "legal_roster": [
+    [
+      "lobbyist_registration_threshold_compensation_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_threshold_expenditure_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_threshold_time_percent",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_itemization_de_minimis_threshold_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_de_minimis_threshold_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_de_minimis_threshold_time_percent",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_threshold_compensation_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "200"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "§305.003(a)(2)",
+      "justification": "The statute requires registration when a person receives or is entitled to receive compensation/reimbursement of more than an amount determined by commission rule but not less than $200 in a calendar quarter to communicate directly with members of the legislative or executive branch."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_threshold_expenditure_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "200"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "§305.003(a)(1)",
+      "justification": "The statute requires registration when a person makes a total expenditure of an amount determined by commission rule but not less than $200 in a calendar quarter on activities to communicate directly with members of the legislative or executive branch."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_threshold_time_percent",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "magnitude": "26",
+        "unit": "hours_per_quarter"
+      },
+      "cell_class": "TimeThresholdCell",
+      "cited_section": "§305.003(b-3)",
+      "justification": "Section 305.003(b-3) exempts a person from registering under (a)(2) if the person spends not more than 26 hours (or another amount determined by the commission) for which the person is compensated or reimbursed during the calendar quarter engaging in lobbying activity."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_filing_itemization_de_minimis_threshold_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": "50"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "§305.0061(c)",
+      "justification": "Detailed itemized reporting (naming the recipient member, description, and amount category) for gifts, awards, or mementos is only required when the value exceeds $50 per item; items at or below $50 do not trigger the detailed per-item disclosure."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_filing_de_minimis_threshold_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "200"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "§305.003(a)(1)",
+      "justification": "A person whose total lobbying expenditures do not exceed the threshold (not less than $200 per calendar quarter set by commission rule) is not required to register, so below that amount the entity is exempt from filing disclosure."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_filing_de_minimis_threshold_time_percent",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": null
+      },
+      "cell_class": "FloatCell",
+      "cited_section": "§305.003(b-3)",
+      "justification": "Texas's time-based de minimis exemption is expressed in absolute hours (not more than 26 hours per calendar quarter), not as a percentage of an individual's compensated time, so no percentage-of-time threshold exists in the statute."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "msg_019tFAi92KsVBoC7YGgL8BYa",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "I'll analyze each cell based on the Texas statute text provided.",
+        "type": "text"
+      },
+      {
+        "id": "toolu_01Mi53Lz2xYsMNB6hN9gjKFD",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_001",
+          "axis": "legal",
+          "value": "200",
+          "confidence": "high",
+          "cited_section": "§305.003(a)(2)",
+          "justification": "The statute requires registration when a person receives or is entitled to receive compensation/reimbursement of more than an amount determined by commission rule but not less than $200 in a calendar quarter to communicate directly with members of the legislative or executive branch."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_0151AXznZrFU5f55XmQq4cG4",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_002",
+          "axis": "legal",
+          "value": "200",
+          "confidence": "high",
+          "cited_section": "§305.003(a)(1)",
+          "justification": "The statute requires registration when a person makes a total expenditure of an amount determined by commission rule but not less than $200 in a calendar quarter on activities to communicate directly with members of the legislative or executive branch."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_019YEd1HRgmJBPWg6R5vkiX8",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_003",
+          "axis": "legal",
+          "value": {
+            "magnitude": 26,
+            "unit": "hours_per_quarter"
+          },
+          "confidence": "high",
+          "cited_section": "§305.003(b-3)",
+          "justification": "Section 305.003(b-3) exempts a person from registering under (a)(2) if the person spends not more than 26 hours (or another amount determined by the commission) for which the person is compensated or reimbursed during the calendar quarter engaging in lobbying activity."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01EPjpFmgeYKbWch1wyP5iCp",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_004",
+          "axis": "legal",
+          "value": "50",
+          "confidence": "medium",
+          "cited_section": "§305.0061(c)",
+          "justification": "Detailed itemized reporting (naming the recipient member, description, and amount category) for gifts, awards, or mementos is only required when the value exceeds $50 per item; items at or below $50 do not trigger the detailed per-item disclosure."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01JfB72ru1DPgZqDTfAcA423",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_005",
+          "axis": "legal",
+          "value": "200",
+          "confidence": "high",
+          "cited_section": "§305.003(a)(1)",
+          "justification": "A person whose total lobbying expenditures do not exceed the threshold (not less than $200 per calendar quarter set by commission rule) is not required to register, so below that amount the entity is exempt from filing disclosure."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_015aetotzzYU4FyogWKLLRsv",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_006",
+          "axis": "legal",
+          "value": null,
+          "confidence": "high",
+          "cited_section": "§305.003(b-3)",
+          "justification": "Texas's time-based de minimis exemption is expressed in absolute hours (not more than 26 hours per calendar quarter), not as a percentage of an individual's compensated time, so no percentage-of-time threshold exists in the statute."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 1804
+      },
+      "cache_creation_input_tokens": 1804,
+      "cache_read_input_tokens": 25724,
+      "inference_geo": "global",
+      "input_tokens": 6,
+      "output_tokens": 1525,
+      "server_tool_use": null,
+      "service_tier": "standard",
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      }
+    }
+  }
+}

@@ -1,0 +1,1151 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "lobbyist_spending_report",
+    "run_index": 3,
+    "state_abbr": "OH",
+    "vintage_year": 2015,
+    "prompt_sha256": "a5b2e6db592c11a03109db6b6ec3c341399426322dcf183d33de108e1a552f10",
+    "timestamp_utc": "2026-06-06T00:24:50+00:00"
+  },
+  "wall_clock_seconds": 68.86020512500545,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5772
+    },
+    "cache_creation_input_tokens": 5772,
+    "cache_read_input_tokens": 92795,
+    "inference_geo": "global",
+    "input_tokens": 6,
+    "output_tokens": 7123,
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.178105,
+  "legal_roster": [
+    [
+      "lobbyist_spending_report_cadence_includes_annual",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_includes_monthly",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_includes_other",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_includes_quarterly",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_includes_semiannual",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_includes_triannual",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_other_specification",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_categorizes_expenses_by_type",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_filing_cadence",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_bill_or_action_identifier",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_compensation_broken_down_by_payer",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_contacts_made",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_expenditure_per_issue",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_general_issues",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_general_subject_matter",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_gifts_entertainment_transport_lodging",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_indirect_costs",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_itemized_expenses",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_lobbyist_contact_info",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_position_on_bill",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_principal_business_nature",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_principal_contact_info",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_principal_names",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_specific_bill_number",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_total_compensation",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_total_expenditures",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_required",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_required_when_no_activity",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_scope_includes_household_members_of_officials",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_uses_itemized_format",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_annual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(B)",
+      "justification": "Statute requires filings three times per year (January, May, September), not annually."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_monthly",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(B)",
+      "justification": "Filing cadence is tri-annual (Jan/May/Sept), not monthly."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_other",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(B)",
+      "justification": "The cadence is three times yearly (last day of January, May, and September) covering four-calendar-month periods — fits 'Other'."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_quarterly",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(B)",
+      "justification": "Statute requires filings three times per year on 4-month cycles, not quarterly."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_semiannual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(B)",
+      "justification": "Filings are tri-annual (Jan/May/Sept), not semi-annual; lobbyist IS the filer per §101.73(A), but cadence is not semi-annual."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_triannual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(B)",
+      "justification": "Updated registration statements (with expenditure reports) must be filed three times a year — by last day of January, May, and September — aligning with the legislative calendar."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_other_specification",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "Three times per year: by the last day of January, May, and September, each covering the preceding four-calendar-month period."
+      },
+      "cell_class": "FreeTextCell",
+      "cited_section": "§101.72(B); §101.73(D)",
+      "justification": "§101.72(B) sets filing deadlines as the last day of January, May, and September; §101.73(D) confirms each statement covers the prior four-calendar-month period."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_categorizes_expenses_by_type",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.73(A), (B)(2), (B)(3)",
+      "justification": "§101.73(A) names the legislative agent as the filer of the expenditure statement; (B)(2) and (B)(3) require itemized expenditures with descriptions and approximate dates for expenditures to specific public officials."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_filing_cadence",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "triannual"
+      },
+      "cell_class": "EnumCell",
+      "cited_section": "§101.72(B); §101.73(A)",
+      "justification": "Lobbyists file expenditure statements three times per year (Jan/May/Sept) per §101.72(B), with each lobbyist filing a separate statement per §101.73(A)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_bill_or_action_identifier",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(B); §101.73(B)(2)(e)",
+      "justification": "§101.72(B) requires the updated statement to list specific bills/resolutions on which the agent actively advocated, and §101.73(B)(2)(e) requires identifying specific items of legislation for which expenditures were made — lobbyist is the filer."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_compensation_broken_down_by_payer",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.73(C)",
+      "justification": "§101.73(C) explicitly excludes 'the compensation paid to legislative agents engaged by an employer' from required expenditure reporting; no provision requires lobbyists to disclose compensation received from clients/employers."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_contacts_made",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.73(B)(2)(a), (d)",
+      "justification": "Lobbyist must report the name of the public officer/employee to whom expenditures were made and the approximate date, effectively disclosing contacts associated with expenditures."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_expenditure_per_issue",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.73(B)(2)(e)",
+      "justification": "Expenditures must be tied to 'the specific items of legislation, if any, for which the expenditures were made,' linking expenditure to issue/bill."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_general_issues",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(A)(3), (B)",
+      "justification": "Legislative agent (lobbyist) is the filer per §101.72(A); §101.72(A)(3) requires 'a brief description of the type of legislation to which the engagement relates' (general issue), and (B) requires listing specific bills on the updated statement."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_general_subject_matter",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(A)(3), (B)",
+      "justification": "Lobbyist (legislative agent) is the named filer per §101.72(A); statute requires both general legislation description and specific bill/resolution lists."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_gifts_entertainment_transport_lodging",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.70(D)(1); §101.73(B)",
+      "justification": "'Expenditure' is defined in §101.70(D)(1) to include food/beverages, entertainment, lodging, transportation, and gifts; lobbyists file expenditure statements per §101.73(B) covering these items."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_indirect_costs",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.73(B)(1); §101.70(D)",
+      "justification": "Lobbyist must report total expenditures, defined broadly in §101.70(D) to include any payments/gifts of value (excluding office maintenance and compensation to agents) — covers non-compensation indirect lobbying costs."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_itemized_expenses",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.73(C)",
+      "justification": "While itemized spending reports including employer name and bills are required, §101.73(C) excludes compensation paid to legislative agents from reporting — so the 'compensation/payments received' element of YES is not satisfied; this is a MODERATE regime, not YES."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_lobbyist_contact_info",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(A)(1)",
+      "justification": "Lobbyist is the filer per §101.72(A) and must disclose 'name, business address, and occupation of the legislative agent' on the registration statement which accompanies the spending report; statute requires business address (phone not specified)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_position_on_bill",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(B); §101.73(B)(2)(e)",
+      "justification": "Updated registration must list 'specific bills or resolutions on which the agent actively advocated' and expenditures must be tied to specific items of legislation; position not required, so this is Tier 1."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_principal_business_nature",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(A)(2)",
+      "justification": "§101.72(A)(2) requires only name and business address of the employer/real party in interest; no requirement to disclose public/private nature of the principal's business."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_principal_contact_info",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(A)(2)",
+      "justification": "Initial registration requires 'name and business address of the employer and the real party in interest on whose behalf the legislative agent is actively advocating'; phone number is not required but address is."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_principal_names",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(A)(2), (C)",
+      "justification": "Lobbyist must name the employer and real party in interest; §101.72(C) requires a separate registration statement for each engagement if engaged by more than one employer — all principals named."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_specific_bill_number",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(B); §101.73(B)(2)(e)",
+      "justification": "§101.72(B) requires listing 'specific bills or resolutions on which the agent actively advocated'; §101.73(B)(2)(e) requires identifying 'specific items of legislation' for which expenditures were made."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_total_compensation",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.73(C)",
+      "justification": "§101.73(C) explicitly excludes 'compensation paid to legislative agents engaged by an employer' from required reporting — direct lobbying compensation is NOT a required component."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_total_expenditures",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.73(B)(1)",
+      "justification": "Lobbyist's statement 'shall show the total amount of expenditures made by the legislative agent during the reporting period.'"
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.73(A), (B); §101.72(B)",
+      "justification": "Lobbyist IS the named filer of a separate spending report — §101.73(A) states 'Each legislative agent...shall file...a statement of expenditures' and §101.73(A) requires separate statement per employer."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_required_when_no_activity",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(B); §101.73(A)",
+      "justification": "§101.72(B) requires updated statement confirming continuing engagement be filed each Jan/May/Sept 'with it any statement of expenditures required to be filed by section 101.73'; the filing is mandatory regardless of whether expenditures occurred, so a no-activity report is required while engaged."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_scope_includes_household_members_of_officials",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.70(D); §101.73(B)(2)",
+      "justification": "§101.70(D) defines reportable 'expenditure' as made to/for benefit of specified public officials and their staff; household members of public officials are not enumerated as covered recipients."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_uses_itemized_format",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.73(B)(2), (B)(3)",
+      "justification": "Expenditures benefiting specific officials must be itemized with name of recipient, amount, brief description, approximate date, and the legislation involved — itemized format required."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "msg_01JHkijjBAwp68AULKj8oXx4",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "I'll analyze the Ohio statute to answer these questions about lobbyist spending reports. Key findings:\n\n- §101.72(B) requires legislative agents AND employers to file updated registration statements three times per year (last day of January, May, September) — covering 4-calendar-month periods\n- §101.73 requires lobbyists to file expenditure statements with these updates\n- §101.74 covers financial transaction statements\n- Lobbyists ARE named filers (§101.73(A): \"Each legislative agent and each employer shall file...\")",
+        "type": "text"
+      },
+      {
+        "id": "toolu_015W9SuqQaPYDjxDYGhmzZo6",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_001",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§101.72(B)",
+          "justification": "Statute requires filings three times per year (January, May, September), not annually."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01Um3fVBY9kifLaTJeR3itoy",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_002",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§101.72(B)",
+          "justification": "Filing cadence is tri-annual (Jan/May/Sept), not monthly."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01MKGrKAroyMhMnUdQwerhvQ",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_003",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.72(B)",
+          "justification": "The cadence is three times yearly (last day of January, May, and September) covering four-calendar-month periods — fits 'Other'."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_013pUr5ZgDquCFRaDQbstv1u",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_004",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§101.72(B)",
+          "justification": "Statute requires filings three times per year on 4-month cycles, not quarterly."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01PxuKM5d9Q23PNeFY4pdoMz",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_005",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§101.72(B)",
+          "justification": "Filings are tri-annual (Jan/May/Sept), not semi-annual; lobbyist IS the filer per §101.73(A), but cadence is not semi-annual."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01S7hP37sY66knvPU8GWaL7t",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_006",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.72(B)",
+          "justification": "Updated registration statements (with expenditure reports) must be filed three times a year — by last day of January, May, and September — aligning with the legislative calendar."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01MJ6iFLGGCSaDwmEynZ1XET",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_007",
+          "axis": "legal",
+          "value": "Three times per year: by the last day of January, May, and September, each covering the preceding four-calendar-month period.",
+          "confidence": "high",
+          "cited_section": "§101.72(B); §101.73(D)",
+          "justification": "§101.72(B) sets filing deadlines as the last day of January, May, and September; §101.73(D) confirms each statement covers the prior four-calendar-month period."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_013SFjNKLcDADL7vnWPYnV2i",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_008",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.73(A), (B)(2), (B)(3)",
+          "justification": "§101.73(A) names the legislative agent as the filer of the expenditure statement; (B)(2) and (B)(3) require itemized expenditures with descriptions and approximate dates for expenditures to specific public officials."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01B9Spy2r3CWJt77EudZEsq7",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_009",
+          "axis": "legal",
+          "value": "triannual",
+          "confidence": "high",
+          "cited_section": "§101.72(B); §101.73(A)",
+          "justification": "Lobbyists file expenditure statements three times per year (Jan/May/Sept) per §101.72(B), with each lobbyist filing a separate statement per §101.73(A)."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01Ezv6evwwBwFia6boqT5ghd",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_010",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.72(B); §101.73(B)(2)(e)",
+          "justification": "§101.72(B) requires the updated statement to list specific bills/resolutions on which the agent actively advocated, and §101.73(B)(2)(e) requires identifying specific items of legislation for which expenditures were made — lobbyist is the filer."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_019erreoK9mMRJ4d3Y1AJn4s",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_011",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§101.73(C)",
+          "justification": "§101.73(C) explicitly excludes 'the compensation paid to legislative agents engaged by an employer' from required expenditure reporting; no provision requires lobbyists to disclose compensation received from clients/employers."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01PgcP5LbgTBvpbk2eNTUi1P",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_012",
+          "axis": "legal",
+          "value": true,
+          "confidence": "medium",
+          "cited_section": "§101.73(B)(2)(a), (d)",
+          "justification": "Lobbyist must report the name of the public officer/employee to whom expenditures were made and the approximate date, effectively disclosing contacts associated with expenditures."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_015gvFXT7UG38qcbPxVtXxCs",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_013",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.73(B)(2)(e)",
+          "justification": "Expenditures must be tied to 'the specific items of legislation, if any, for which the expenditures were made,' linking expenditure to issue/bill."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01AAyNYBCXUeg9XkDzjdyAQr",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_014",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.72(A)(3), (B)",
+          "justification": "Legislative agent (lobbyist) is the filer per §101.72(A); §101.72(A)(3) requires 'a brief description of the type of legislation to which the engagement relates' (general issue), and (B) requires listing specific bills on the updated statement."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01LH2BozuufhFCRUrp9UNh9o",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_015",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.72(A)(3), (B)",
+          "justification": "Lobbyist (legislative agent) is the named filer per §101.72(A); statute requires both general legislation description and specific bill/resolution lists."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_011A2666ak6Acpi6GycRjyec",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_016",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.70(D)(1); §101.73(B)",
+          "justification": "'Expenditure' is defined in §101.70(D)(1) to include food/beverages, entertainment, lodging, transportation, and gifts; lobbyists file expenditure statements per §101.73(B) covering these items."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01HaokdCTar3KSQ4dKwahwtH",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_017",
+          "axis": "legal",
+          "value": true,
+          "confidence": "medium",
+          "cited_section": "§101.73(B)(1); §101.70(D)",
+          "justification": "Lobbyist must report total expenditures, defined broadly in §101.70(D) to include any payments/gifts of value (excluding office maintenance and compensation to agents) — covers non-compensation indirect lobbying costs."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01XVgX9kcfEWjFbXAum7iQB7",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_018",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§101.73(C)",
+          "justification": "While itemized spending reports including employer name and bills are required, §101.73(C) excludes compensation paid to legislative agents from reporting — so the 'compensation/payments received' element of YES is not satisfied; this is a MODERATE regime, not YES."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01AZVbx4N5DdFESmyPS8sJ1w",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_019",
+          "axis": "legal",
+          "value": true,
+          "confidence": "medium",
+          "cited_section": "§101.72(A)(1)",
+          "justification": "Lobbyist is the filer per §101.72(A) and must disclose 'name, business address, and occupation of the legislative agent' on the registration statement which accompanies the spending report; statute requires business address (phone not specified)."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01BdxTu9hep2RTenQxtq4g5A",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_020",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.72(B); §101.73(B)(2)(e)",
+          "justification": "Updated registration must list 'specific bills or resolutions on which the agent actively advocated' and expenditures must be tied to specific items of legislation; position not required, so this is Tier 1."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01PVQ2VdZJaq7rARpqwT2N6V",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_021",
+          "axis": "legal",
+          "value": false,
+          "confidence": "medium",
+          "cited_section": "§101.72(A)(2)",
+          "justification": "§101.72(A)(2) requires only name and business address of the employer/real party in interest; no requirement to disclose public/private nature of the principal's business."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_012GJ96exbB9Reh1qMd3T3RA",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_022",
+          "axis": "legal",
+          "value": true,
+          "confidence": "medium",
+          "cited_section": "§101.72(A)(2)",
+          "justification": "Initial registration requires 'name and business address of the employer and the real party in interest on whose behalf the legislative agent is actively advocating'; phone number is not required but address is."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_014sojtdz2XMhrpHfmGaQhg7",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_023",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.72(A)(2), (C)",
+          "justification": "Lobbyist must name the employer and real party in interest; §101.72(C) requires a separate registration statement for each engagement if engaged by more than one employer — all principals named."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_0173DSbcT4T1wTJ7q3C8xVAE",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_024",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.72(B); §101.73(B)(2)(e)",
+          "justification": "§101.72(B) requires listing 'specific bills or resolutions on which the agent actively advocated'; §101.73(B)(2)(e) requires identifying 'specific items of legislation' for which expenditures were made."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01DVCHojC5uiEiSPps7Y7xWw",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_025",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§101.73(C)",
+          "justification": "§101.73(C) explicitly excludes 'compensation paid to legislative agents engaged by an employer' from required reporting — direct lobbying compensation is NOT a required component."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01AmcLWtwCa1XEt1M7MMCUPi",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_026",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.73(B)(1)",
+          "justification": "Lobbyist's statement 'shall show the total amount of expenditures made by the legislative agent during the reporting period.'"
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01U5viP27dfwfzaDZA6zQwyq",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_027",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.73(A), (B); §101.72(B)",
+          "justification": "Lobbyist IS the named filer of a separate spending report — §101.73(A) states 'Each legislative agent...shall file...a statement of expenditures' and §101.73(A) requires separate statement per employer."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_016ze8v5wwRCbAYBymVXsXXZ",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_028",
+          "axis": "legal",
+          "value": true,
+          "confidence": "medium",
+          "cited_section": "§101.72(B); §101.73(A)",
+          "justification": "§101.72(B) requires updated statement confirming continuing engagement be filed each Jan/May/Sept 'with it any statement of expenditures required to be filed by section 101.73'; the filing is mandatory regardless of whether expenditures occurred, so a no-activity report is required while engaged."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01PCWmPh8pGFJ47ZTrwbVTC7",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_029",
+          "axis": "legal",
+          "value": false,
+          "confidence": "medium",
+          "cited_section": "§101.70(D); §101.73(B)(2)",
+          "justification": "§101.70(D) defines reportable 'expenditure' as made to/for benefit of specified public officials and their staff; household members of public officials are not enumerated as covered recipients."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01HXdXUqdnMnmn5g1FqEXAmv",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_030",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.73(B)(2), (B)(3)",
+          "justification": "Expenditures benefiting specific officials must be itemized with name of recipient, amount, brief description, approximate date, and the legislation involved — itemized format required."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 5772
+      },
+      "cache_creation_input_tokens": 5772,
+      "cache_read_input_tokens": 92795,
+      "inference_geo": "global",
+      "input_tokens": 6,
+      "output_tokens": 7123,
+      "server_tool_use": null,
+      "service_tier": "standard",
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      }
+    }
+  }
+}

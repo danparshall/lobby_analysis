@@ -1,0 +1,635 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "lobbying_definitions",
+    "run_index": 2,
+    "state_abbr": "TX",
+    "vintage_year": 2015,
+    "prompt_sha256": "37c66c4d81d755e65fe909ea7a58321ab13e1f35efec6b146b9c80a136f430d6",
+    "timestamp_utc": "2026-06-06T00:18:57+00:00"
+  },
+  "wall_clock_seconds": 37.15542287501739,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 2181
+    },
+    "cache_creation_input_tokens": 2181,
+    "cache_read_input_tokens": 25724,
+    "inference_geo": "global",
+    "input_tokens": 6,
+    "output_tokens": 3733,
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.09335500000000001,
+  "legal_roster": [
+    [
+      "def_lobbying_activity_types",
+      "legal"
+    ],
+    [
+      "def_lobbyist_actor_types",
+      "legal"
+    ],
+    [
+      "law_defines_public_entity",
+      "legal"
+    ],
+    [
+      "law_includes_materiality_test",
+      "legal"
+    ],
+    [
+      "def_target_executive_agency",
+      "legal"
+    ],
+    [
+      "def_target_executive_staff",
+      "legal"
+    ],
+    [
+      "def_target_governors_office",
+      "legal"
+    ],
+    [
+      "def_target_independent_agency",
+      "legal"
+    ],
+    [
+      "def_target_legislative_branch",
+      "legal"
+    ],
+    [
+      "def_target_legislative_staff",
+      "legal"
+    ],
+    [
+      "def_actor_class_elected_officials",
+      "legal"
+    ],
+    [
+      "def_actor_class_public_employees",
+      "legal"
+    ],
+    [
+      "public_entity_def_relies_on_charter",
+      "legal"
+    ],
+    [
+      "public_entity_def_relies_on_ownership",
+      "legal"
+    ],
+    [
+      "public_entity_def_relies_on_revenue_structure",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "def_lobbying_activity_types",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": [
+          "written",
+          "oral",
+          "phone_calls",
+          "emails",
+          "electronic"
+        ]
+      },
+      "cell_class": "EnumSetCell",
+      "cited_section": "§305.002(2)",
+      "justification": "The definition of \"communicates directly with\" enumerates contact \"in person or by telephone, telegraph, letter, facsimile, electronic mail, or other electronic means of communication,\" covering oral, written, electronic, phone, and email modes but not organizing meetings or events."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_lobbyist_actor_types",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": [
+          "professional_lobbyist",
+          "law_firm",
+          "in_house_company",
+          "in_house_organisation",
+          "professional_consultancy"
+        ]
+      },
+      "cell_class": "EnumSetCell",
+      "cited_section": "§305.003(a)-(b); §305.002(8)",
+      "justification": "Section 305.003 requires registration of any \"person\" (defined in §305.002(8) to include individuals, corporations, associations, firms, partnerships, etc.) who makes expenditures or receives compensation to lobby, including those who lobby as part of regular employment; §305.003(b-1) expressly excludes state/local government officers and employees from registration."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "law_defines_public_entity",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.002",
+      "justification": "The definitions section of Chapter 305 does not define \"public entity\"; it defines terms like \"person,\" \"client,\" \"member of the executive branch,\" and \"member of the legislative branch\" but not \"public entity.\""
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "law_includes_materiality_test",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.003(a), (b-3)",
+      "justification": "The statute sets monetary thresholds ($200/quarter expenditure or compensation) and a time threshold (not more than 26 hours per quarter) below which registration is not required, functioning as materiality/de minimis exemptions for coverage."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_executive_agency",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.003(a); §305.002(4), (7)",
+      "justification": "Registration is triggered by direct communication with \"a member of the legislative or executive branch,\" and §305.002(4) defines members of the executive branch to include officers (which encompasses the governor) and §305.002(7) defines members of the legislative branch to include legislators."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_executive_staff",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.002(4), (7)",
+      "justification": "\"Member of the executive branch\" includes any officer, officer-elect, candidate, or employee of any state agency/department/office in the executive branch, and \"member of the legislative branch\" includes members, candidates, officers, and employees of the legislature, thus covering legislators, executive officials, senior officials, and staff."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_governors_office",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.003(a); §305.002(4), (7)",
+      "justification": "The registration trigger covers direct communication with members of both the legislative and executive branches, and the executive branch definition encompasses officers including the governor."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_independent_agency",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.003(a); §305.002(4), (7)",
+      "justification": "Texas law defines lobbying as direct communication with members of the legislative or executive branch, with the executive branch officer definition encompassing the governor."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_legislative_branch",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.003(a); §305.002(4), (7)",
+      "justification": "Lobbying coverage extends to communications with legislative and executive branch members, including the governor as an executive branch officer."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_legislative_staff",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.002(4), (7)",
+      "justification": "The definitions cover the legislative branch (members, officers, employees of the legislature) and executive branch (officers and employees of any state agency, department, or office), covering senior officials, staff, and bureaucracy."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_actor_class_elected_officials",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.003(b-1)",
+      "justification": "Section 305.003(b-1) expressly states that members of the judicial, legislative, or executive branch of state government and officers/employees of political subdivisions are NOT required to register under §305.003(a)(2), so elected officials and public appointees are exempt rather than required to register."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_actor_class_public_employees",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.003(b-1)",
+      "justification": "Public employees (state branch officers/employees and political subdivision officers/employees) are exempt from registration under §305.003(a)(2); thus no compensation, expenditure, or time standards are applied to them as lobbyists (except for quasi-governmental agency officers)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "public_entity_def_relies_on_charter",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.002",
+      "justification": "The Chapter 305 definitions do not rely on any concept of a public charter or special government protection in defining lobbying or lobbyists; definitions are based on communication activity and compensation/expenditure thresholds."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "public_entity_def_relies_on_ownership",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.002; §305.003",
+      "justification": "The definition of who must register does not depend on ownership; it depends on the activity of communicating directly with members of the legislative/executive branch to influence legislation or administrative action above monetary thresholds."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "public_entity_def_relies_on_revenue_structure",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.002; §305.003",
+      "justification": "The statutory definitions do not rely on the structure or composition of revenue; registration is triggered by compensation/expenditure thresholds and direct communication activity, not by the revenue structure of the entity."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "msg_01FW1UqyfBQYNVwq17MayqWQ",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "I'll analyze each row against the Texas statute text provided.",
+        "type": "text"
+      },
+      {
+        "id": "toolu_012Ub5rHFZpMDWBj1EQE1ETt",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_001",
+          "axis": "legal",
+          "value": [
+            "oral",
+            "written",
+            "electronic",
+            "phone_calls",
+            "emails"
+          ],
+          "confidence": "high",
+          "cited_section": "§305.002(2)",
+          "justification": "The definition of \"communicates directly with\" enumerates contact \"in person or by telephone, telegraph, letter, facsimile, electronic mail, or other electronic means of communication,\" covering oral, written, electronic, phone, and email modes but not organizing meetings or events."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01R4xDVkmdBFTqvkcW9Uarji",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_002",
+          "axis": "legal",
+          "value": [
+            "professional_lobbyist",
+            "in_house_company",
+            "in_house_organisation",
+            "professional_consultancy",
+            "law_firm"
+          ],
+          "confidence": "medium",
+          "cited_section": "§305.003(a)-(b); §305.002(8)",
+          "justification": "Section 305.003 requires registration of any \"person\" (defined in §305.002(8) to include individuals, corporations, associations, firms, partnerships, etc.) who makes expenditures or receives compensation to lobby, including those who lobby as part of regular employment; §305.003(b-1) expressly excludes state/local government officers and employees from registration."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01G7LJUcUofAbHQyLukbgPrV",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_003",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§305.002",
+          "justification": "The definitions section of Chapter 305 does not define \"public entity\"; it defines terms like \"person,\" \"client,\" \"member of the executive branch,\" and \"member of the legislative branch\" but not \"public entity.\""
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01JBtKxCeSyXhFMSy4eYxcjg",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_004",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§305.003(a), (b-3)",
+          "justification": "The statute sets monetary thresholds ($200/quarter expenditure or compensation) and a time threshold (not more than 26 hours per quarter) below which registration is not required, functioning as materiality/de minimis exemptions for coverage."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_015hxwi4uEK1C7Zb75DdPjWY",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_005",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§305.003(a); §305.002(4), (7)",
+          "justification": "Registration is triggered by direct communication with \"a member of the legislative or executive branch,\" and §305.002(4) defines members of the executive branch to include officers (which encompasses the governor) and §305.002(7) defines members of the legislative branch to include legislators."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01N3mmWjDcuzUfsYVa9vwhDR",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_006",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§305.002(4), (7)",
+          "justification": "\"Member of the executive branch\" includes any officer, officer-elect, candidate, or employee of any state agency/department/office in the executive branch, and \"member of the legislative branch\" includes members, candidates, officers, and employees of the legislature, thus covering legislators, executive officials, senior officials, and staff."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01PeWU9VrowdthZdgSgu9cCr",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_007",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§305.003(a); §305.002(4), (7)",
+          "justification": "The registration trigger covers direct communication with members of both the legislative and executive branches, and the executive branch definition encompasses officers including the governor."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_019udHXyzP8T1taTzHGY74jf",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_008",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§305.003(a); §305.002(4), (7)",
+          "justification": "Texas law defines lobbying as direct communication with members of the legislative or executive branch, with the executive branch officer definition encompassing the governor."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01Wd67N4o7nA4bmskkm2C2BC",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_009",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§305.003(a); §305.002(4), (7)",
+          "justification": "Lobbying coverage extends to communications with legislative and executive branch members, including the governor as an executive branch officer."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01V24zo6NbNMkEG93ZNcrXmg",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_010",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§305.002(4), (7)",
+          "justification": "The definitions cover the legislative branch (members, officers, employees of the legislature) and executive branch (officers and employees of any state agency, department, or office), covering senior officials, staff, and bureaucracy."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01KFKPyKM9g3bNu1LUvM39Gk",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_011",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§305.003(b-1)",
+          "justification": "Section 305.003(b-1) expressly states that members of the judicial, legislative, or executive branch of state government and officers/employees of political subdivisions are NOT required to register under §305.003(a)(2), so elected officials and public appointees are exempt rather than required to register."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01UmZM9SPLmThv9xxKM2bt8v",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_012",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§305.003(b-1)",
+          "justification": "Public employees (state branch officers/employees and political subdivision officers/employees) are exempt from registration under §305.003(a)(2); thus no compensation, expenditure, or time standards are applied to them as lobbyists (except for quasi-governmental agency officers)."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01CoU1LQCgwqF5BFBhkUnBFK",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_013",
+          "axis": "legal",
+          "value": false,
+          "confidence": "medium",
+          "cited_section": "§305.002",
+          "justification": "The Chapter 305 definitions do not rely on any concept of a public charter or special government protection in defining lobbying or lobbyists; definitions are based on communication activity and compensation/expenditure thresholds."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01L3w78eyqURtYCPWDJYkTYe",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_014",
+          "axis": "legal",
+          "value": false,
+          "confidence": "medium",
+          "cited_section": "§305.002; §305.003",
+          "justification": "The definition of who must register does not depend on ownership; it depends on the activity of communicating directly with members of the legislative/executive branch to influence legislation or administrative action above monetary thresholds."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_013Gt1t1xXhNCdJDbYpCthej",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_015",
+          "axis": "legal",
+          "value": false,
+          "confidence": "medium",
+          "cited_section": "§305.002; §305.003",
+          "justification": "The statutory definitions do not rely on the structure or composition of revenue; registration is triggered by compensation/expenditure thresholds and direct communication activity, not by the revenue structure of the entity."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 2181
+      },
+      "cache_creation_input_tokens": 2181,
+      "cache_read_input_tokens": 25724,
+      "inference_geo": "global",
+      "input_tokens": 6,
+      "output_tokens": 3733,
+      "server_tool_use": null,
+      "service_tier": "standard",
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      }
+    }
+  }
+}

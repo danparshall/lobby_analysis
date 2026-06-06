@@ -1,0 +1,301 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "registration_mechanics_and_exemptions",
+    "run_index": 3,
+    "state_abbr": "OH",
+    "vintage_year": 2015,
+    "prompt_sha256": "a5b2e6db592c11a03109db6b6ec3c341399426322dcf183d33de108e1a552f10",
+    "timestamp_utc": "2026-06-06T01:55:23+00:00"
+  },
+  "wall_clock_seconds": 10.533331709040795,
+  "usage": {
+    "completion_tokens": 679,
+    "prompt_tokens": 60270,
+    "total_tokens": 60949,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 60160
+    }
+  },
+  "cost_usd_estimate": 0.1149785,
+  "legal_roster": [
+    [
+      "lobbyist_registration_required",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_renewal_cadence",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_amendment_deadline_days",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_deadline_days_after_first_lobbying",
+      "legal"
+    ],
+    [
+      "separate_registrations_for_lobbyists_and_clients",
+      "legal"
+    ],
+    [
+      "lobbyist_required_to_submit_photograph_with_registration",
+      "legal"
+    ],
+    [
+      "exemption_for_govt_official_capacity_exists",
+      "legal"
+    ],
+    [
+      "exemption_partial_for_govt_agencies",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §§101.70(F), 101.71(A), 101.72(A)",
+      "justification": "Ohio defines 'legislative agent' as an individual engaged to actively advocate as a main purpose and prohibits any legislative agent or employer from knowingly failing to register, requiring registration within ten days of engagement."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_renewal_cadence",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": 24
+      },
+      "cell_class": "IntCell",
+      "cited_section": "Ohio Rev. Code §101.72(F)",
+      "justification": "A legislative agent’s registration card and registration are valid until December 31 of an even-numbered year, implying renewal on a biennial (24-month) cycle."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_amendment_deadline_days",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": 120
+      },
+      "cell_class": "IntCell",
+      "cited_section": "Ohio Rev. Code §101.72(D)(1)",
+      "justification": "Changes in registration information are not required to be reported immediately but must be reflected in the next updated registration statement, which is filed every four months (January/May/September), i.e., within the next 4-month update cycle."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_deadline_days_after_first_lobbying",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": 10
+      },
+      "cell_class": "IntCell",
+      "cited_section": "Ohio Rev. Code §101.72(A)",
+      "justification": "Each legislative agent must file an initial registration statement within ten days following an engagement of a legislative agent."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "separate_registrations_for_lobbyists_and_clients",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.72(A)",
+      "justification": "The statute separately obligates 'each legislative agent and employer' to file an initial registration statement, making both parties independent registrants."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_required_to_submit_photograph_with_registration",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.72(A), (F)",
+      "justification": "Registration requires filing specified information and results in issuance of a registration card, but the statute does not require submission of a photograph."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "exemption_for_govt_official_capacity_exists",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.72(E)",
+      "justification": "State agency officers or employees who actively advocate in a fiduciary capacity as representatives of that state agency are treated specially, including agency payment of the registration fee and no requirement to file expenditure statements."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "exemption_partial_for_govt_agencies",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.72(E)",
+      "justification": "The statute partially relieves government actors by exempting a state agency officer/employee acting in a fiduciary representative capacity from filing expenditure statements and shifting the registration fee payment to the agency."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "chatcmpl-DnaXh1yYTcQQuj9IYz9lRdlvjJG7G",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_gyyrXnbpvF79Sh5fCEheIugp",
+              "function": {
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §§101.70(F), 101.71(A), 101.72(A)\", \"justification\": \"Ohio defines 'legislative agent' as an individual engaged to actively advocate as a main purpose and prohibits any legislative agent or employer from knowingly failing to register, requiring registration within ten days of engagement.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_KzS1PXrYKb9m2WfevIqKgQdl",
+              "function": {
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": 24, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(F)\", \"justification\": \"A legislative agent’s registration card and registration are valid until December 31 of an even-numbered year, implying renewal on a biennial (24-month) cycle.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_G5VK6AdLyh91UHzOX5i5wxfz",
+              "function": {
+                "arguments": "{\"handle\": \"row_003\", \"axis\": \"legal\", \"value\": 120, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(D)(1)\", \"justification\": \"Changes in registration information are not required to be reported immediately but must be reflected in the next updated registration statement, which is filed every four months (January/May/September), i.e., within the next 4-month update cycle.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_PawcLrh83S1C3NxsSZCYu303",
+              "function": {
+                "arguments": "{\"handle\": \"row_004\", \"axis\": \"legal\", \"value\": 10, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(A)\", \"justification\": \"Each legislative agent must file an initial registration statement within ten days following an engagement of a legislative agent.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_gDuzgAazoUXmBgkhHhArTamf",
+              "function": {
+                "arguments": "{\"handle\": \"row_005\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(A)\", \"justification\": \"The statute separately obligates 'each legislative agent and employer' to file an initial registration statement, making both parties independent registrants.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_rmv8FgKjEc7siTvmyYSrjfYz",
+              "function": {
+                "arguments": "{\"handle\": \"row_006\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(A), (F)\", \"justification\": \"Registration requires filing specified information and results in issuance of a registration card, but the statute does not require submission of a photograph.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_4OLW8IfSBNmP30lyCRh3aZCO",
+              "function": {
+                "arguments": "{\"handle\": \"row_007\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(E)\", \"justification\": \"State agency officers or employees who actively advocate in a fiduciary capacity as representatives of that state agency are treated specially, including agency payment of the registration fee and no requirement to file expenditure statements.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_qgpXLshC5ZGnJRVtoyDi14As",
+              "function": {
+                "arguments": "{\"handle\": \"row_008\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(E)\", \"justification\": \"The statute partially relieves government actors by exempting a state agency officer/employee acting in a fiduciary representative capacity from filing expenditure statements and shifting the registration fee payment to the agency.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1780710913,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 679,
+      "prompt_tokens": 60270,
+      "total_tokens": 60949,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 60160
+      }
+    }
+  }
+}

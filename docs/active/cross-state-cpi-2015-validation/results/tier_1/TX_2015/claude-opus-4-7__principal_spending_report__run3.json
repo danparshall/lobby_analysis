@@ -1,0 +1,705 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "principal_spending_report",
+    "run_index": 3,
+    "state_abbr": "TX",
+    "vintage_year": 2015,
+    "prompt_sha256": "37c66c4d81d755e65fe909ea7a58321ab13e1f35efec6b146b9c80a136f430d6",
+    "timestamp_utc": "2026-06-06T00:27:21+00:00"
+  },
+  "wall_clock_seconds": 44.60544808302075,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 2151
+    },
+    "cache_creation_input_tokens": 2151,
+    "cache_read_input_tokens": 25724,
+    "inference_geo": "global",
+    "input_tokens": 6,
+    "output_tokens": 4340,
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.10853,
+  "legal_roster": [
+    [
+      "principal_spending_report_cadence_includes_annual",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_includes_monthly",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_includes_other",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_includes_quarterly",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_includes_semiannual",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_includes_triannual",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_other_specification",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_business_nature",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_compensation_paid_to_lobbyists",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_contacts_made",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_general_issues",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_gifts_entertainment_transport_lodging",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_indirect_costs",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_lobbyist_contact_info",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_lobbyist_names",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_major_financial_contributors",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_principal_contact_info",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_specific_bill_number",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_total_expenditures",
+      "legal"
+    ],
+    [
+      "principal_spending_report_required",
+      "legal"
+    ],
+    [
+      "principal_spending_report_uses_itemized_format",
+      "legal"
+    ],
+    [
+      "lobbyist_or_principal_reg_form_includes_member_or_sponsor_names",
+      "legal"
+    ],
+    [
+      "principal_spending_report_lists_lobbyists_employed",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_annual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.006; §305.007",
+      "justification": "The statute requires registrants (not principals separately) to file monthly activity reports; no annual principal report is established (only modified-reporting registrants file annually under §305.0063)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_monthly",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.007(a)",
+      "justification": "Section 305.007(a) requires the activity report to be filed between the 1st and 10th day of each month, covering the previous month — i.e., monthly reporting."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_other",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.007(a)",
+      "justification": "The statute prescribes a monthly schedule and does not establish another frequency category beyond monthly (or annual modified reporting under §305.0063)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_quarterly",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.007(a)",
+      "justification": "Reports are required monthly, not quarterly, under §305.007(a)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_semiannual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.007(a)",
+      "justification": "Reports are required monthly, not semi-annually."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_triannual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.007(a)",
+      "justification": "Reports are required monthly without tie to a tri-annual legislative calendar."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_other_specification",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": "N/A — statute prescribes monthly filing (§305.007) with an annual modified-reporting option for low-expenditure registrants (§305.0063); no separate principal report frequency."
+      },
+      "cell_class": "FreeTextCell",
+      "cited_section": "§305.007(a); §305.0063",
+      "justification": "Texas requires monthly activity reports under §305.007 with an annual option for registrants under $1,000 in expenditures under §305.0063; no other frequencies are established."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_compensation_paid_to_lobbyists",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.005(f)(6); §305.006",
+      "justification": "Compensation/reimbursement paid to the registrant is reported by the registrant on the registration form (§305.005(f)(6)), not on a separate principal/employer spending report; Chapter 305 does not establish a principal-filed spending report disclosing direct lobbying compensation."
+    }
+  ],
+  "unscoreable_emissions": [
+    {
+      "handle": "row_008",
+      "axis": "legal",
+      "reason": "Texas Chapter 305 imposes registration and reporting obligations on registrants (lobbyists), not on principals/employers filing their own reports. The statute does not require principals to file disclosures identifying the nature of their business as public or private.",
+      "row_id": "principal_spending_report_includes_business_nature"
+    },
+    {
+      "handle": "row_010",
+      "axis": "legal",
+      "reason": "Chapter 305 does not require principals/employers to file a separate spending report disclosing contacts with public officials; the disclosure obligations are placed on registrants.",
+      "row_id": "principal_spending_report_includes_contacts_made"
+    },
+    {
+      "handle": "row_011",
+      "axis": "legal",
+      "reason": "Chapter 305 does not establish a separate principal/employer spending report; subject-matter disclosures (§305.005(f)(4), §305.006(d)) are obligations of the registrant, not the principal.",
+      "row_id": "principal_spending_report_includes_general_issues"
+    },
+    {
+      "handle": "row_012",
+      "axis": "legal",
+      "reason": "Chapter 305 places the obligation to report expenditures on gifts, entertainment, transportation, and lodging on registrants (§305.006(b)), not on principals/employers in a separate spending report.",
+      "row_id": "principal_spending_report_includes_gifts_entertainment_transport_lodging"
+    },
+    {
+      "handle": "row_013",
+      "axis": "legal",
+      "reason": "Chapter 305 does not require principals/employers to file a separate spending report covering indirect (non-compensation) lobbying costs; such reporting obligations rest on registrants.",
+      "row_id": "principal_spending_report_includes_indirect_costs"
+    },
+    {
+      "handle": "row_014",
+      "axis": "legal",
+      "reason": "Chapter 305 does not require principals/employers to file a disclosure with the address and phone number of their contracted lobbyists; registrants self-report their own contact information under §305.005(f)(1)-(2).",
+      "row_id": "principal_spending_report_includes_lobbyist_contact_info"
+    },
+    {
+      "handle": "row_015",
+      "axis": "legal",
+      "reason": "Chapter 305 does not require principals/employers to file a disclosure listing all the lobbyists representing them; reporting obligations rest on registrants identifying clients (§305.005(f)(3)).",
+      "row_id": "principal_spending_report_includes_lobbyist_names"
+    },
+    {
+      "handle": "row_016",
+      "axis": "legal",
+      "reason": "Although §305.005(h)(4) requires a registrant whose activities are on behalf of a group to list contributors above $250, this is a registrant disclosure, not a separate principal-filed spending report; Chapter 305 establishes no principal spending report at all.",
+      "row_id": "principal_spending_report_includes_major_financial_contributors"
+    },
+    {
+      "handle": "row_017",
+      "axis": "legal",
+      "reason": "Chapter 305 does not require principals/employers to file a report disclosing their own address and phone number; registrants identify the person who employs/reimburses them under §305.005(f)(3).",
+      "row_id": "principal_spending_report_includes_principal_contact_info"
+    },
+    {
+      "handle": "row_018",
+      "axis": "legal",
+      "reason": "Chapter 305 does not require principals/employers to file a separate spending report; subject-matter disclosure under §305.005(f)(4) is a registrant obligation and refers to subject matter (and docket number for administrative actions), not specific bill numbers.",
+      "row_id": "principal_spending_report_includes_specific_bill_number"
+    },
+    {
+      "handle": "row_019",
+      "axis": "legal",
+      "reason": "Chapter 305 does not require principals/employers to file a spending report disclosing total in-house and consulting lobbying expenditures; expenditure reporting under §305.006 is a registrant obligation.",
+      "row_id": "principal_spending_report_includes_total_expenditures"
+    },
+    {
+      "handle": "row_020",
+      "axis": "legal",
+      "reason": "Chapter 305 does not require employers/principals to file spending reports; the statute instead requires registrants to report compensation received from each employer/client under §305.005(f)(6).",
+      "row_id": "principal_spending_report_required"
+    },
+    {
+      "handle": "row_021",
+      "axis": "legal",
+      "reason": "No principal/employer spending report is established by Chapter 305; the question of itemized vs. aggregated disclosure on such a report cannot be answered from the bundle.",
+      "row_id": "principal_spending_report_uses_itemized_format"
+    },
+    {
+      "handle": "row_022",
+      "axis": "legal",
+      "reason": "Chapter 305 imposes group/membership disclosures on the registrant (§305.005(h)), not on a principal in a separate spending report; no principal spending report is established.",
+      "row_id": "lobbyist_or_principal_reg_form_includes_member_or_sponsor_names"
+    },
+    {
+      "handle": "row_023",
+      "axis": "legal",
+      "reason": "Chapter 305 does not require a company or lobby firm (as principal) to file a spending report listing the lobbyists it employs; registrants self-register and disclose persons assisting them under §305.005(f)(5).",
+      "row_id": "principal_spending_report_lists_lobbyists_employed"
+    }
+  ],
+  "errors": [],
+  "response": {
+    "id": "msg_01CCRArbZmaNWeKVn5RGLu39",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "I'll analyze the Texas lobbying statute to answer each cell. Note that Texas Chapter 305 primarily places reporting obligations on **registrants (lobbyists)**, not separately on **principals/employers**. The statute does not appear to require principals/employers to file their own separate spending reports — instead, registrants report compensation/reimbursement received from each client/employer. I'll answer accordingly.",
+        "type": "text"
+      },
+      {
+        "id": "toolu_01MG9V34kn4nZ3R6rADiEzfL",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_001",
+          "axis": "legal",
+          "value": false,
+          "confidence": "medium",
+          "cited_section": "§305.006; §305.007",
+          "justification": "The statute requires registrants (not principals separately) to file monthly activity reports; no annual principal report is established (only modified-reporting registrants file annually under §305.0063)."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01UXDH7P3tAZoafB7e1psL68",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_002",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§305.007(a)",
+          "justification": "Section 305.007(a) requires the activity report to be filed between the 1st and 10th day of each month, covering the previous month — i.e., monthly reporting."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01KisMWSJHHKdrhsq2cYayWf",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_003",
+          "axis": "legal",
+          "value": false,
+          "confidence": "medium",
+          "cited_section": "§305.007(a)",
+          "justification": "The statute prescribes a monthly schedule and does not establish another frequency category beyond monthly (or annual modified reporting under §305.0063)."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_017EiA1gMS98353tLSVTg63F",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_004",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§305.007(a)",
+          "justification": "Reports are required monthly, not quarterly, under §305.007(a)."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_015VyYYHzijHozgczettaF6z",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_005",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§305.007(a)",
+          "justification": "Reports are required monthly, not semi-annually."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01VnXaLvc5QrLStFMojfHZbt",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_006",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§305.007(a)",
+          "justification": "Reports are required monthly without tie to a tri-annual legislative calendar."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01Q2Dcx6ZdevyPXzrAxbNCXe",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_007",
+          "axis": "legal",
+          "value": "N/A — statute prescribes monthly filing (§305.007) with an annual modified-reporting option for low-expenditure registrants (§305.0063); no separate principal report frequency.",
+          "confidence": "medium",
+          "cited_section": "§305.007(a); §305.0063",
+          "justification": "Texas requires monthly activity reports under §305.007 with an annual option for registrants under $1,000 in expenditures under §305.0063; no other frequencies are established."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_012jj2BrTR84WQMTw9Euzvsm",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_008",
+          "axis": "legal",
+          "reason": "Texas Chapter 305 imposes registration and reporting obligations on registrants (lobbyists), not on principals/employers filing their own reports. The statute does not require principals to file disclosures identifying the nature of their business as public or private."
+        },
+        "name": "record_unscoreable_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01U9HYcqfebWenwnbGHUReqP",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_009",
+          "axis": "legal",
+          "value": false,
+          "confidence": "medium",
+          "cited_section": "§305.005(f)(6); §305.006",
+          "justification": "Compensation/reimbursement paid to the registrant is reported by the registrant on the registration form (§305.005(f)(6)), not on a separate principal/employer spending report; Chapter 305 does not establish a principal-filed spending report disclosing direct lobbying compensation."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_013CjzvKupvg8s1NMruz9nfv",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_010",
+          "axis": "legal",
+          "reason": "Chapter 305 does not require principals/employers to file a separate spending report disclosing contacts with public officials; the disclosure obligations are placed on registrants."
+        },
+        "name": "record_unscoreable_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_011MtrURyj1JJzUEqQ5zspea",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_011",
+          "axis": "legal",
+          "reason": "Chapter 305 does not establish a separate principal/employer spending report; subject-matter disclosures (§305.005(f)(4), §305.006(d)) are obligations of the registrant, not the principal."
+        },
+        "name": "record_unscoreable_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_018MQ7GXH73B6tiREg6HTdVv",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_012",
+          "axis": "legal",
+          "reason": "Chapter 305 places the obligation to report expenditures on gifts, entertainment, transportation, and lodging on registrants (§305.006(b)), not on principals/employers in a separate spending report."
+        },
+        "name": "record_unscoreable_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01LdPamcxGTYxn67gw1KKFxD",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_013",
+          "axis": "legal",
+          "reason": "Chapter 305 does not require principals/employers to file a separate spending report covering indirect (non-compensation) lobbying costs; such reporting obligations rest on registrants."
+        },
+        "name": "record_unscoreable_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_0125bDFpM19FWChxzfRQMYfx",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_014",
+          "axis": "legal",
+          "reason": "Chapter 305 does not require principals/employers to file a disclosure with the address and phone number of their contracted lobbyists; registrants self-report their own contact information under §305.005(f)(1)-(2)."
+        },
+        "name": "record_unscoreable_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_013NxAenpq1Vm3PesyBzAcM1",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_015",
+          "axis": "legal",
+          "reason": "Chapter 305 does not require principals/employers to file a disclosure listing all the lobbyists representing them; reporting obligations rest on registrants identifying clients (§305.005(f)(3))."
+        },
+        "name": "record_unscoreable_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01BBrsj8P1rPAj3wJuUfn93W",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_016",
+          "axis": "legal",
+          "reason": "Although §305.005(h)(4) requires a registrant whose activities are on behalf of a group to list contributors above $250, this is a registrant disclosure, not a separate principal-filed spending report; Chapter 305 establishes no principal spending report at all."
+        },
+        "name": "record_unscoreable_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01FF4AuaEfzbwiL4p1VabYCP",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_017",
+          "axis": "legal",
+          "reason": "Chapter 305 does not require principals/employers to file a report disclosing their own address and phone number; registrants identify the person who employs/reimburses them under §305.005(f)(3)."
+        },
+        "name": "record_unscoreable_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_012dvnZi7Mxy9Yp3HKfsqbPQ",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_018",
+          "axis": "legal",
+          "reason": "Chapter 305 does not require principals/employers to file a separate spending report; subject-matter disclosure under §305.005(f)(4) is a registrant obligation and refers to subject matter (and docket number for administrative actions), not specific bill numbers."
+        },
+        "name": "record_unscoreable_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01KufTQiySiGnoyVx7gTNMbN",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_019",
+          "axis": "legal",
+          "reason": "Chapter 305 does not require principals/employers to file a spending report disclosing total in-house and consulting lobbying expenditures; expenditure reporting under §305.006 is a registrant obligation."
+        },
+        "name": "record_unscoreable_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_011BmZwKFi3tvnJ1gZmq193E",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_020",
+          "axis": "legal",
+          "reason": "Chapter 305 does not require employers/principals to file spending reports; the statute instead requires registrants to report compensation received from each employer/client under §305.005(f)(6)."
+        },
+        "name": "record_unscoreable_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01GQ1ckQRP1pcU3ZvnAUGjWp",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_021",
+          "axis": "legal",
+          "reason": "No principal/employer spending report is established by Chapter 305; the question of itemized vs. aggregated disclosure on such a report cannot be answered from the bundle."
+        },
+        "name": "record_unscoreable_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_015xPRpnMdMVvWdwefwG5V4c",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_022",
+          "axis": "legal",
+          "reason": "Chapter 305 imposes group/membership disclosures on the registrant (§305.005(h)), not on a principal in a separate spending report; no principal spending report is established."
+        },
+        "name": "record_unscoreable_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01SKBaC67ZhNE5RgXtQgWpzU",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_023",
+          "axis": "legal",
+          "reason": "Chapter 305 does not require a company or lobby firm (as principal) to file a spending report listing the lobbyists it employs; registrants self-register and disclose persons assisting them under §305.005(f)(5)."
+        },
+        "name": "record_unscoreable_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 2151
+      },
+      "cache_creation_input_tokens": 2151,
+      "cache_read_input_tokens": 25724,
+      "inference_geo": "global",
+      "input_tokens": 6,
+      "output_tokens": 4340,
+      "server_tool_use": null,
+      "service_tier": "standard",
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      }
+    }
+  }
+}

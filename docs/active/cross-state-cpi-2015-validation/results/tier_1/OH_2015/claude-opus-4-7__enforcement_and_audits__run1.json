@@ -1,0 +1,138 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "enforcement_and_audits",
+    "run_index": 1,
+    "state_abbr": "OH",
+    "vintage_year": 2015,
+    "prompt_sha256": "a5b2e6db592c11a03109db6b6ec3c341399426322dcf183d33de108e1a552f10",
+    "timestamp_utc": "2026-06-06T00:27:20+00:00"
+  },
+  "wall_clock_seconds": 8.574318124970887,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 92795,
+    "inference_geo": "global",
+    "input_tokens": 1027,
+    "output_tokens": 643,
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.02121,
+  "legal_roster": [
+    [
+      "lobbying_violation_penalties_defined_in_law",
+      "legal"
+    ],
+    [
+      "lobbying_disclosure_audit_required_in_law",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_violation_penalties_defined_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.99; §101.72(G); §121.99; §121.62(G)",
+      "justification": "§101.99 makes violations of §101.71 (failure to register, failure to file, false filing) misdemeanors of the fourth or first degree, §121.99 imposes parallel criminal penalties for executive-agency lobbying violations, and §101.72(G)/§121.62(G) impose late filing fees of $12.50/day up to $100 — establishing statutory penalties for lobbying disclosure violations."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_disclosure_audit_required_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": "MODERATE"
+      },
+      "cell_class": "EnumCell",
+      "cited_section": "§101.72(G); §101.79; §121.69; §101.981",
+      "justification": "§101.72(G) requires the executive director of the joint legislative ethics committee to review each registration statement for completeness, and §101.79, §121.69, and §101.981 authorize the attorney general to investigate compliance and refer apparent violations for prosecution — this is a compliance-review/investigation-on-suspicion regime rather than a requirement of regular impartial third-party audits."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "msg_01VXyhqJNhP1vHUDbtarYrge",
+    "container": null,
+    "content": [
+      {
+        "id": "toolu_01ABdYnRmSVRVswqozSESgqo",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_001",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.99; §101.72(G); §121.99; §121.62(G)",
+          "justification": "§101.99 makes violations of §101.71 (failure to register, failure to file, false filing) misdemeanors of the fourth or first degree, §121.99 imposes parallel criminal penalties for executive-agency lobbying violations, and §101.72(G)/§121.62(G) impose late filing fees of $12.50/day up to $100 — establishing statutory penalties for lobbying disclosure violations."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_018kaHqfDm2ENgbjb1c6DjQq",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_002",
+          "axis": "legal",
+          "value": "MODERATE",
+          "confidence": "medium",
+          "cited_section": "§101.72(G); §101.79; §121.69; §101.981",
+          "justification": "§101.72(G) requires the executive director of the joint legislative ethics committee to review each registration statement for completeness, and §101.79, §121.69, and §101.981 authorize the attorney general to investigate compliance and refer apparent violations for prosecution — this is a compliance-review/investigation-on-suspicion regime rather than a requirement of regular impartial third-party audits."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 92795,
+      "inference_geo": "global",
+      "input_tokens": 1027,
+      "output_tokens": 643,
+      "server_tool_use": null,
+      "service_tier": "standard",
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      }
+    }
+  }
+}

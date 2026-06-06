@@ -1,0 +1,301 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "registration_mechanics_and_exemptions",
+    "run_index": 3,
+    "state_abbr": "TX",
+    "vintage_year": 2015,
+    "prompt_sha256": "37c66c4d81d755e65fe909ea7a58321ab13e1f35efec6b146b9c80a136f430d6",
+    "timestamp_utc": "2026-06-06T01:55:19+00:00"
+  },
+  "wall_clock_seconds": 11.597306500014383,
+  "usage": {
+    "completion_tokens": 765,
+    "prompt_tokens": 18379,
+    "total_tokens": 19144,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 18304
+    }
+  },
+  "cost_usd_estimate": 0.042873249999999995,
+  "legal_roster": [
+    [
+      "lobbyist_registration_required",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_renewal_cadence",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_amendment_deadline_days",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_deadline_days_after_first_lobbying",
+      "legal"
+    ],
+    [
+      "separate_registrations_for_lobbyists_and_clients",
+      "legal"
+    ],
+    [
+      "lobbyist_required_to_submit_photograph_with_registration",
+      "legal"
+    ],
+    [
+      "exemption_for_govt_official_capacity_exists",
+      "legal"
+    ],
+    [
+      "exemption_partial_for_govt_agencies",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Tex. Gov't Code §305.003(a)(2), (b)",
+      "justification": "The statute requires any person who receives or is entitled to receive more than the threshold compensation/reimbursement in a calendar quarter to communicate directly to influence legislation/administrative action to register, including as part of regular employment."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_renewal_cadence",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": 12
+      },
+      "cell_class": "IntCell",
+      "cited_section": "Tex. Gov't Code §305.005(b)",
+      "justification": "Registrations expire each December 31 unless the registrant submits a renewal form and fee, creating an annual (12-month) renewal cycle."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_amendment_deadline_days",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": 5
+      },
+      "cell_class": "IntCell",
+      "cited_section": "Tex. Gov't Code §305.0065(d); §305.005(k)",
+      "justification": "During regular session, amended registration reflecting changes in client/subject matter must be filed not later than the fifth day after the first direct communication on the new client/subject matter; otherwise §305.005(k) ties amendment timing to other deadlines rather than a fixed day-count."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_deadline_days_after_first_lobbying",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": 5
+      },
+      "cell_class": "IntCell",
+      "cited_section": "Tex. Gov't Code §305.005(e)",
+      "justification": "A person required to register must file the registration form and fee not later than the fifth day after the first direct communication that triggers registration."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "separate_registrations_for_lobbyists_and_clients",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Tex. Gov't Code §305.003(a); §305.005(f)(3)",
+      "justification": "The chapter requires the lobbyist (the person who lobbies for compensation/expenditures) to register and disclose the compensating/reimbursing persons as clients on the lobbyist’s registration, rather than requiring the client to file a separate registration as a registrant."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_required_to_submit_photograph_with_registration",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Tex. Gov't Code §305.005(f)",
+      "justification": "The required contents of the written, verified registration are enumerated and do not include any requirement to submit a photograph."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "exemption_for_govt_official_capacity_exists",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Tex. Gov't Code §305.003(b-1); §305.003(b-2)",
+      "justification": "Officers/employees of state government branches and of political subdivisions are not required to register under the compensation-based trigger (with specified exceptions), reflecting an exemption for public officials acting in their governmental roles."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "exemption_partial_for_govt_agencies",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Tex. Gov't Code §305.003(b-1); §305.0051(a)-(b); §305.026(c)",
+      "justification": "The statute provides special, reduced obligations for government actors (e.g., exemption from certain registration requirements and a separate, rule-based listing regime for political subdivision officers/employees), indicating partial relief from the rules applied to non-government lobbyists."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "chatcmpl-DnaXcFqwuNuq5rm9vioTBxz4bWKER",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_ks79pAGc2Doq0CkFMT64Sn6u",
+              "function": {
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov't Code §305.003(a)(2), (b)\", \"justification\": \"The statute requires any person who receives or is entitled to receive more than the threshold compensation/reimbursement in a calendar quarter to communicate directly to influence legislation/administrative action to register, including as part of regular employment.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_l27HOl4U4dQDnqicVgTcr54Y",
+              "function": {
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": 12, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov't Code §305.005(b)\", \"justification\": \"Registrations expire each December 31 unless the registrant submits a renewal form and fee, creating an annual (12-month) renewal cycle.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_P5jaYCJoKNCRnPWV0dkhsz8g",
+              "function": {
+                "arguments": "{\"handle\": \"row_003\", \"axis\": \"legal\", \"value\": 5, \"confidence\": \"medium\", \"cited_section\": \"Tex. Gov't Code §305.0065(d); §305.005(k)\", \"justification\": \"During regular session, amended registration reflecting changes in client/subject matter must be filed not later than the fifth day after the first direct communication on the new client/subject matter; otherwise §305.005(k) ties amendment timing to other deadlines rather than a fixed day-count.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_m3xjkJScptsJbTqyAEwqFszY",
+              "function": {
+                "arguments": "{\"handle\": \"row_004\", \"axis\": \"legal\", \"value\": 5, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov't Code §305.005(e)\", \"justification\": \"A person required to register must file the registration form and fee not later than the fifth day after the first direct communication that triggers registration.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_kpk8IelV5p1qBxprIWgKXlzo",
+              "function": {
+                "arguments": "{\"handle\": \"row_005\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov't Code §305.003(a); §305.005(f)(3)\", \"justification\": \"The chapter requires the lobbyist (the person who lobbies for compensation/expenditures) to register and disclose the compensating/reimbursing persons as clients on the lobbyist’s registration, rather than requiring the client to file a separate registration as a registrant.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_U2K6Itt9AUeSTWsnl9kLI4fg",
+              "function": {
+                "arguments": "{\"handle\": \"row_006\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov't Code §305.005(f)\", \"justification\": \"The required contents of the written, verified registration are enumerated and do not include any requirement to submit a photograph.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_WghZQkdC8tqAWXjFIC6LNu6P",
+              "function": {
+                "arguments": "{\"handle\": \"row_007\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov't Code §305.003(b-1); §305.003(b-2)\", \"justification\": \"Officers/employees of state government branches and of political subdivisions are not required to register under the compensation-based trigger (with specified exceptions), reflecting an exemption for public officials acting in their governmental roles.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_NbA3NDMOi9mNpaYzVmT0O58O",
+              "function": {
+                "arguments": "{\"handle\": \"row_008\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov't Code §305.003(b-1); §305.0051(a)-(b); §305.026(c)\", \"justification\": \"The statute provides special, reduced obligations for government actors (e.g., exemption from certain registration requirements and a separate, rule-based listing regime for political subdivision officers/employees), indicating partial relief from the rules applied to non-government lobbyists.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1780710908,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 765,
+      "prompt_tokens": 18379,
+      "total_tokens": 19144,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 18304
+      }
+    }
+  }
+}

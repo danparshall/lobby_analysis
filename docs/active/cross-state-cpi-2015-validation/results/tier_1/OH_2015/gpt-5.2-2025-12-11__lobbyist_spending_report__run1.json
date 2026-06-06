@@ -1,0 +1,917 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "lobbyist_spending_report",
+    "run_index": 1,
+    "state_abbr": "OH",
+    "vintage_year": 2015,
+    "prompt_sha256": "a5b2e6db592c11a03109db6b6ec3c341399426322dcf183d33de108e1a552f10",
+    "timestamp_utc": "2026-06-06T01:55:55+00:00"
+  },
+  "wall_clock_seconds": 31.940087374998257,
+  "usage": {
+    "completion_tokens": 2583,
+    "prompt_tokens": 62923,
+    "total_tokens": 65506,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 58880
+    }
+  },
+  "cost_usd_estimate": 0.14627725000000003,
+  "legal_roster": [
+    [
+      "lobbyist_spending_report_cadence_includes_annual",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_includes_monthly",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_includes_other",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_includes_quarterly",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_includes_semiannual",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_includes_triannual",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_other_specification",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_categorizes_expenses_by_type",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_filing_cadence",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_bill_or_action_identifier",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_compensation_broken_down_by_payer",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_contacts_made",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_expenditure_per_issue",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_general_issues",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_general_subject_matter",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_gifts_entertainment_transport_lodging",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_indirect_costs",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_itemized_expenses",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_lobbyist_contact_info",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_position_on_bill",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_principal_business_nature",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_principal_contact_info",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_principal_names",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_specific_bill_number",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_total_compensation",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_total_expenditures",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_required",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_required_when_no_activity",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_scope_includes_household_members_of_officials",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_uses_itemized_format",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_annual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.72(B); §101.73(A); §101.73(D)",
+      "justification": "Legislative agents must file expenditure statements with updated registration statements due the last day of January, May, and September (every four months), not annually."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_monthly",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.72(B)",
+      "justification": "Updated registration statements (with expenditure statements) are due January, May, and September, not monthly."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_other",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.72(B)",
+      "justification": "The required cadence is three times per year (last day of January, May, and September), which is an 'other' frequency (triannual) rather than annual/quarterly/monthly."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_quarterly",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.72(B); §101.73(D)",
+      "justification": "Reports are tied to three filing dates per year and cover four-calendar-month periods, which is not quarterly."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_semiannual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.72(B); §101.73(A)",
+      "justification": "Legislative agents file expenditure statements with updated registrations due three times per year, not semi-annually."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_triannual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.72(B); §101.73(A)",
+      "justification": "Legislative agents must file updated registration statements with expenditure statements by the last day of January, May, and September—three times per year (triannual)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_other_specification",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "Last day of January, May, and September of each year (covers preceding four-calendar-month period)."
+      },
+      "cell_class": "FreeTextCell",
+      "cited_section": "Ohio Rev. Code §101.72(B); §101.73(D)",
+      "justification": "Section 101.72(B) sets filing dates (Jan/May/Sep), and §101.73(D) specifies each statement covers the preceding four-calendar-month period."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_categorizes_expenses_by_type",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.73(B)(2)-(3)",
+      "justification": "A legislative agent's expenditure statement must itemize reportable expenditures by recipient with total amount, description, approximate date, and related legislation/client (and similarly for meals once over $50), which is itemized reporting."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_filing_cadence",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "triannual"
+      },
+      "cell_class": "EnumCell",
+      "cited_section": "Ohio Rev. Code §101.72(B); §101.73(A)",
+      "justification": "Legislative agents must file expenditure statements with updated registration statements due the last day of January, May, and September each year (three times annually), i.e., triannual."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_bill_or_action_identifier",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.72(B); §101.73(B)(2)(e); §101.73(B)(3)(e)",
+      "justification": "Legislative agents must list specific bills or resolutions advocated in the updated registration statement and must report specific items of legislation associated with certain expenditures."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_compensation_broken_down_by_payer",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.73(C)",
+      "justification": "The expenditure-report definition expressly excludes 'the compensation paid to legislative agents,' and no provision shown requires legislative agents to disclose amounts of compensation received from employers."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_contacts_made",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.70(E) (definition of actively advocate); §101.72(B)",
+      "justification": "The statute requires reporting bills/resolutions advocated but does not require disclosure of specific lobbying contacts or communications."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_expenditure_per_issue",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.73(B)(2)(e); §101.73(B)(3)(e)",
+      "justification": "Expenditures are linked to specific items of legislation 'if any,' but the statement does not require expenditures to be reported per issue/legislation as a mandatory categorization for all spending."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_general_issues",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.72(A)(3)",
+      "justification": "The initial registration statement must include 'a brief description of the type of legislation to which the engagement relates,' which is issue/subject-level disclosure."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_general_subject_matter",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.72(A)(3)",
+      "justification": "Legislative agents must disclose a brief description of the type of legislation to which the engagement relates, which constitutes reporting general subjects of lobbying."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_gifts_entertainment_transport_lodging",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.70(D); §101.73(B)(2)",
+      "justification": "Expenditures include gifts, entertainment, lodging, and transportation, and when such expenditures are made for covered officials they must be reported with amount/description/date under §101.73(B)(2)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_indirect_costs",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.73(C)",
+      "justification": "The statute does not require legislative agents to report indirect lobbying costs generally; employer office overhead is excluded and only defined 'expenditures' to/for covered officials are reportable."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_itemized_expenses",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.72(A)(2); §101.73(B)(2)-(3)",
+      "justification": "Legislative agents file itemized expenditure statements and their registration identifies the employer/real party in interest, but the statute does not require disclosure of compensation received, so the regime still mandates itemized spending reports with employer identification and activity details."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_lobbyist_contact_info",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.72(A)(1)",
+      "justification": "The registration statement requires the legislative agent's name, business address, and occupation, but does not require a phone number."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_position_on_bill",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.72(B)",
+      "justification": "Updated registration statements must list the specific bills or resolutions on which the agent actively advocated during the covered period."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_principal_business_nature",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.72(A)(2)",
+      "justification": "The registration statement requires the employer's name and business address (and real party in interest if different) but does not require identifying whether the principal's business is public or private."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_principal_contact_info",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.72(A)(2)",
+      "justification": "The statute requires the employer's and real party in interest's business addresses but does not require phone numbers for principals."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_principal_names",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.72(A)(2); §101.72(C)",
+      "justification": "A legislative agent must file an initial registration statement for each engagement listing the employer (and real party in interest if different), thereby disclosing each principal represented."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_specific_bill_number",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.72(B); §101.73(B)(2)(e); §101.73(B)(3)(e)",
+      "justification": "The updated registration statement must list specific bills or resolutions, and expenditure statements must identify 'specific items of legislation, if any,' for which certain expenditures were made."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_total_compensation",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.73(C)",
+      "justification": "Compensation paid to legislative agents is expressly excluded from reportable 'expenditures' for employer statements, and the statute does not otherwise require reporting lobbying compensation as a direct cost."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_total_expenditures",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.73(B)(1)",
+      "justification": "A legislative agent's expenditure statement must show 'the total amount of expenditures made by the legislative agent during the reporting period.'"
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.73(B)(2)-(3); §101.72(A)(2); §101.72(B)",
+      "justification": "Legislative agents must file itemized expenditure statements and disclose employer and specific bills/resolutions, but no provision requires disclosure of compensation received, so the law provides itemized spending reports without compensation disclosure."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_required_when_no_activity",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.73(A)-(B)",
+      "justification": "While legislative agents must file expenditure statements with each updated registration statement, the statute does not explicitly require a 'no spending/no activity' (zero) report when no expenditures occurred."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_scope_includes_household_members_of_officials",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.70(D); §102.01(D)",
+      "justification": "Reportable lobbying 'expenditures' are defined as those made to or for listed public officers/employees, and the statute does not include household/immediate family members of those officials as reportable recipients."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_uses_itemized_format",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.73(B)(2)-(3)",
+      "justification": "When expenditures trigger reporting, the legislative agent must provide recipient name, total amount, description, and approximate date, which constitutes itemized (not merely lump-sum) disclosure."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "chatcmpl-DnaXrM0cKr2LoB24BO4qtIQAhfc0Q",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_26kIOjFKJMJxxUAaXy73XYk0",
+              "function": {
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(B); §101.73(A); §101.73(D)\", \"justification\": \"Legislative agents must file expenditure statements with updated registration statements due the last day of January, May, and September (every four months), not annually.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_rbEZ0GQEIADASF3153PvZTNH",
+              "function": {
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(B)\", \"justification\": \"Updated registration statements (with expenditure statements) are due January, May, and September, not monthly.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_lPaJGMtkubKH8QDEHwXL8e5T",
+              "function": {
+                "arguments": "{\"handle\": \"row_003\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(B)\", \"justification\": \"The required cadence is three times per year (last day of January, May, and September), which is an 'other' frequency (triannual) rather than annual/quarterly/monthly.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_UnJEAeWKE5VIJiLAvRcqw61t",
+              "function": {
+                "arguments": "{\"handle\": \"row_004\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(B); §101.73(D)\", \"justification\": \"Reports are tied to three filing dates per year and cover four-calendar-month periods, which is not quarterly.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_1CGeeUn53ohWofmfRNWQOqKN",
+              "function": {
+                "arguments": "{\"handle\": \"row_005\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(B); §101.73(A)\", \"justification\": \"Legislative agents file expenditure statements with updated registrations due three times per year, not semi-annually.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_0is2RxWuSbtqfvkIjYvslQtQ",
+              "function": {
+                "arguments": "{\"handle\": \"row_006\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(B); §101.73(A)\", \"justification\": \"Legislative agents must file updated registration statements with expenditure statements by the last day of January, May, and September—three times per year (triannual).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_M3SSAvlCJX5bZD9VootT9k20",
+              "function": {
+                "arguments": "{\"handle\": \"row_007\", \"axis\": \"legal\", \"value\": \"Last day of January, May, and September of each year (covers preceding four-calendar-month period).\", \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(B); §101.73(D)\", \"justification\": \"Section 101.72(B) sets filing dates (Jan/May/Sep), and §101.73(D) specifies each statement covers the preceding four-calendar-month period.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_lZoRtfh3SbePjBVHHWeraubP",
+              "function": {
+                "arguments": "{\"handle\": \"row_008\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.73(B)(2)-(3)\", \"justification\": \"A legislative agent's expenditure statement must itemize reportable expenditures by recipient with total amount, description, approximate date, and related legislation/client (and similarly for meals once over $50), which is itemized reporting.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_F3QvojvpKE05KSAhjQQKdCaL",
+              "function": {
+                "arguments": "{\"handle\": \"row_009\", \"axis\": \"legal\", \"value\": \"triannual\", \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(B); §101.73(A)\", \"justification\": \"Legislative agents must file expenditure statements with updated registration statements due the last day of January, May, and September each year (three times annually), i.e., triannual.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_zC3H3VlCkUrBWUbNmKSty7jB",
+              "function": {
+                "arguments": "{\"handle\": \"row_010\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(B); §101.73(B)(2)(e); §101.73(B)(3)(e)\", \"justification\": \"Legislative agents must list specific bills or resolutions advocated in the updated registration statement and must report specific items of legislation associated with certain expenditures.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_QNRYeDzgmMp3Z58v84ttdBis",
+              "function": {
+                "arguments": "{\"handle\": \"row_011\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.73(C)\", \"justification\": \"The expenditure-report definition expressly excludes 'the compensation paid to legislative agents,' and no provision shown requires legislative agents to disclose amounts of compensation received from employers.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_IEDGx0FLv9OTXaPcISLgDuU9",
+              "function": {
+                "arguments": "{\"handle\": \"row_012\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.70(E) (definition of actively advocate); §101.72(B)\", \"justification\": \"The statute requires reporting bills/resolutions advocated but does not require disclosure of specific lobbying contacts or communications.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_zm36FVPpGcvMV2LbIxpge8Iq",
+              "function": {
+                "arguments": "{\"handle\": \"row_013\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.73(B)(2)(e); §101.73(B)(3)(e)\", \"justification\": \"Expenditures are linked to specific items of legislation 'if any,' but the statement does not require expenditures to be reported per issue/legislation as a mandatory categorization for all spending.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_V5IEhJoLhbhiCvMRpQsmteKu",
+              "function": {
+                "arguments": "{\"handle\": \"row_014\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(A)(3)\", \"justification\": \"The initial registration statement must include 'a brief description of the type of legislation to which the engagement relates,' which is issue/subject-level disclosure.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_967YHDrtN84UP5f7MbTt7hVU",
+              "function": {
+                "arguments": "{\"handle\": \"row_015\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(A)(3)\", \"justification\": \"Legislative agents must disclose a brief description of the type of legislation to which the engagement relates, which constitutes reporting general subjects of lobbying.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_HhFz5igQAeudHpjvafZLL0cI",
+              "function": {
+                "arguments": "{\"handle\": \"row_016\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.70(D); §101.73(B)(2)\", \"justification\": \"Expenditures include gifts, entertainment, lodging, and transportation, and when such expenditures are made for covered officials they must be reported with amount/description/date under §101.73(B)(2).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_u5qROFRAmIM6MalcazyEC1qI",
+              "function": {
+                "arguments": "{\"handle\": \"row_017\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.73(C)\", \"justification\": \"The statute does not require legislative agents to report indirect lobbying costs generally; employer office overhead is excluded and only defined 'expenditures' to/for covered officials are reportable.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_tTFnBWKIWGUBzUzpra708BES",
+              "function": {
+                "arguments": "{\"handle\": \"row_018\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"medium\", \"cited_section\": \"Ohio Rev. Code §101.72(A)(2); §101.73(B)(2)-(3)\", \"justification\": \"Legislative agents file itemized expenditure statements and their registration identifies the employer/real party in interest, but the statute does not require disclosure of compensation received, so the regime still mandates itemized spending reports with employer identification and activity details.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_ed86AMoBAk7VIt7VNouAguNQ",
+              "function": {
+                "arguments": "{\"handle\": \"row_019\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(A)(1)\", \"justification\": \"The registration statement requires the legislative agent's name, business address, and occupation, but does not require a phone number.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_6o6WK5Oj1IFW8uMNghEzHs4x",
+              "function": {
+                "arguments": "{\"handle\": \"row_020\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(B)\", \"justification\": \"Updated registration statements must list the specific bills or resolutions on which the agent actively advocated during the covered period.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_vAOXtOzALAoXgLSVeMyZUwqe",
+              "function": {
+                "arguments": "{\"handle\": \"row_021\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(A)(2)\", \"justification\": \"The registration statement requires the employer's name and business address (and real party in interest if different) but does not require identifying whether the principal's business is public or private.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_EwjlVJcZil8E957ElFUiZmPs",
+              "function": {
+                "arguments": "{\"handle\": \"row_022\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(A)(2)\", \"justification\": \"The statute requires the employer's and real party in interest's business addresses but does not require phone numbers for principals.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_bwqZztNg85liwsXI4reJdmrA",
+              "function": {
+                "arguments": "{\"handle\": \"row_023\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(A)(2); §101.72(C)\", \"justification\": \"A legislative agent must file an initial registration statement for each engagement listing the employer (and real party in interest if different), thereby disclosing each principal represented.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_p3koG3Lb3RzBewobOft8xCwy",
+              "function": {
+                "arguments": "{\"handle\": \"row_024\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(B); §101.73(B)(2)(e); §101.73(B)(3)(e)\", \"justification\": \"The updated registration statement must list specific bills or resolutions, and expenditure statements must identify 'specific items of legislation, if any,' for which certain expenditures were made.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_MLTJbELcTNEHv1leYjaakse5",
+              "function": {
+                "arguments": "{\"handle\": \"row_025\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.73(C)\", \"justification\": \"Compensation paid to legislative agents is expressly excluded from reportable 'expenditures' for employer statements, and the statute does not otherwise require reporting lobbying compensation as a direct cost.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_vkxA55zh5rkEY2xeyr0ociwv",
+              "function": {
+                "arguments": "{\"handle\": \"row_026\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.73(B)(1)\", \"justification\": \"A legislative agent's expenditure statement must show 'the total amount of expenditures made by the legislative agent during the reporting period.'\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_3DNDWMPw9i9zC7B4scD9SVdZ",
+              "function": {
+                "arguments": "{\"handle\": \"row_027\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"medium\", \"cited_section\": \"Ohio Rev. Code §101.73(B)(2)-(3); §101.72(A)(2); §101.72(B)\", \"justification\": \"Legislative agents must file itemized expenditure statements and disclose employer and specific bills/resolutions, but no provision requires disclosure of compensation received, so the law provides itemized spending reports without compensation disclosure.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_tRLYJL2JSeuF8ga3u0aETgY0",
+              "function": {
+                "arguments": "{\"handle\": \"row_028\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"medium\", \"cited_section\": \"Ohio Rev. Code §101.73(A)-(B)\", \"justification\": \"While legislative agents must file expenditure statements with each updated registration statement, the statute does not explicitly require a 'no spending/no activity' (zero) report when no expenditures occurred.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_H6oN2nVQE8ovYeQGwiHNpzIG",
+              "function": {
+                "arguments": "{\"handle\": \"row_029\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.70(D); §102.01(D)\", \"justification\": \"Reportable lobbying 'expenditures' are defined as those made to or for listed public officers/employees, and the statute does not include household/immediate family members of those officials as reportable recipients.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_Y0CfiMyd7UkaEvKjKQlvkl9D",
+              "function": {
+                "arguments": "{\"handle\": \"row_030\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.73(B)(2)-(3)\", \"justification\": \"When expenditures trigger reporting, the legislative agent must provide recipient name, total amount, description, and approximate date, which constitutes itemized (not merely lump-sum) disclosure.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1780710923,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 2583,
+      "prompt_tokens": 62923,
+      "total_tokens": 65506,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 58880
+      }
+    }
+  }
+}

@@ -1,0 +1,133 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "enforcement_and_audits",
+    "run_index": 2,
+    "state_abbr": "TX",
+    "vintage_year": 2015,
+    "prompt_sha256": "37c66c4d81d755e65fe909ea7a58321ab13e1f35efec6b146b9c80a136f430d6",
+    "timestamp_utc": "2026-06-06T01:58:25+00:00"
+  },
+  "wall_clock_seconds": 3.9795023330370896,
+  "usage": {
+    "completion_tokens": 252,
+    "prompt_tokens": 18081,
+    "total_tokens": 18333,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 16896
+    }
+  },
+  "cost_usd_estimate": 0.03516975,
+  "legal_roster": [
+    [
+      "lobbying_violation_penalties_defined_in_law",
+      "legal"
+    ],
+    [
+      "lobbying_disclosure_audit_required_in_law",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_violation_penalties_defined_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Tex. Gov’t Code §§ 305.031 (criminal penalties for violations, incl. false statements), 305.032 (civil penalty for failure to file registration or activities report), 305.033 (civil penalty for late filing)",
+      "justification": "Chapter 305 expressly imposes criminal penalties for violations and civil penalties for failure to register/file and for late filings, satisfying the requirement that penalties be defined for lobbying disclosure violations."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_disclosure_audit_required_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "NO"
+      },
+      "cell_class": "EnumCell",
+      "cited_section": "Tex. Gov’t Code § 305.033(a) (commission determines lateness); § 305.034(a) (commission determines whether required forms/reports filed); § 305.009 (maintenance/retention)",
+      "justification": "The statute provides for commission review of timeliness and completeness of filings but contains no requirement for regular auditing of lobbying disclosure records by an impartial third party."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "chatcmpl-DnaajJZREQfrgCZSnM2B3kQnQzTp2",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_nNYwtigUtCwTwgxiqrRXGNmp",
+              "function": {
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov’t Code §§ 305.031 (criminal penalties for violations, incl. false statements), 305.032 (civil penalty for failure to file registration or activities report), 305.033 (civil penalty for late filing)\", \"justification\": \"Chapter 305 expressly imposes criminal penalties for violations and civil penalties for failure to register/file and for late filings, satisfying the requirement that penalties be defined for lobbying disclosure violations.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_7kYxO4M9RacIJF85IbX7jU8m",
+              "function": {
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": \"NO\", \"confidence\": \"high\", \"cited_section\": \"Tex. Gov’t Code § 305.033(a) (commission determines lateness); § 305.034(a) (commission determines whether required forms/reports filed); § 305.009 (maintenance/retention)\", \"justification\": \"The statute provides for commission review of timeliness and completeness of filings but contains no requirement for regular auditing of lobbying disclosure records by an impartial third party.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1780711101,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 252,
+      "prompt_tokens": 18081,
+      "total_tokens": 18333,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 16896
+      }
+    }
+  }
+}

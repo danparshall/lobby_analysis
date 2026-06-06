@@ -1,0 +1,917 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "lobbyist_spending_report",
+    "run_index": 3,
+    "state_abbr": "TX",
+    "vintage_year": 2015,
+    "prompt_sha256": "37c66c4d81d755e65fe909ea7a58321ab13e1f35efec6b146b9c80a136f430d6",
+    "timestamp_utc": "2026-06-06T01:57:00+00:00"
+  },
+  "wall_clock_seconds": 32.239005416980945,
+  "usage": {
+    "completion_tokens": 2731,
+    "prompt_tokens": 21032,
+    "total_tokens": 23763,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 20992
+    }
+  },
+  "cost_usd_estimate": 0.07504,
+  "legal_roster": [
+    [
+      "lobbyist_spending_report_cadence_includes_annual",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_includes_monthly",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_includes_other",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_includes_quarterly",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_includes_semiannual",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_includes_triannual",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_other_specification",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_categorizes_expenses_by_type",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_filing_cadence",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_bill_or_action_identifier",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_compensation_broken_down_by_payer",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_contacts_made",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_expenditure_per_issue",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_general_issues",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_general_subject_matter",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_gifts_entertainment_transport_lodging",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_indirect_costs",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_itemized_expenses",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_lobbyist_contact_info",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_position_on_bill",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_principal_business_nature",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_principal_contact_info",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_principal_names",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_specific_bill_number",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_total_compensation",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_total_expenditures",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_required",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_required_when_no_activity",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_scope_includes_household_members_of_officials",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_uses_itemized_format",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_annual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Tex. Gov’t Code §305.0063(c) (2015)",
+      "justification": "A registrant who elects modified reporting must annually file the activities report required by §305.006, due by January 10 covering the previous calendar year."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_monthly",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Tex. Gov’t Code §305.007(a) (2015)",
+      "justification": "Registrants must file the §305.006 activities report between the 1st and 10th day of each month covering the previous month (i.e., monthly filing)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_other",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Tex. Gov’t Code §§305.007(a), 305.0063(c)–(d) (2015)",
+      "justification": "The statute specifies monthly reporting as the default and an annual report for modified reporters, with no other periodic cadence required."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_quarterly",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Tex. Gov’t Code §305.007(a) (2015)",
+      "justification": "The periodic activities report is required monthly (1st–10th of each month), not quarterly."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_semiannual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Tex. Gov’t Code §§305.007(a), 305.0063(c) (2015)",
+      "justification": "No provision requires lobbyists/registrants to file semi-annual spending reports; the statute requires monthly reports with a limited annual report option."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_triannual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Tex. Gov’t Code §§305.007(a), 305.0063(c) (2015)",
+      "justification": "Reporting is not tied to the legislative calendar in a tri-annual schedule; it is monthly (or annual for modified reporters)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_other_specification",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "Modified option: registrant may elect to file under §305.0063, with an annual §305.006 report due by January 10 (and monthly reports resume if expenditures exceed $1,000)."
+      },
+      "cell_class": "FreeTextCell",
+      "cited_section": "Tex. Gov’t Code §305.0063(a)–(d) (2015)",
+      "justification": "Section 305.0063 creates a modified reporting regime based on a $1,000 annual expenditure intent threshold, requiring an annual filing and switching back to monthly upon exceeding the threshold."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_categorizes_expenses_by_type",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Tex. Gov’t Code §§305.006(b), 305.0061(a)–(d) (2015)",
+      "justification": "Registrants must report expenditures in specified categories and must provide detailed itemization (name, place/date, description/purpose, and amount category) when thresholds are exceeded, which constitutes itemized expense reporting rather than only lump sums."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_filing_cadence",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "monthly"
+      },
+      "cell_class": "EnumCell",
+      "cited_section": "Tex. Gov’t Code §305.007(a) (2015)",
+      "justification": "The statute mandates that the registrant file the §305.006 activities report each month between the 1st and 10th covering the previous month."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_bill_or_action_identifier",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Tex. Gov’t Code §305.006(d) (2015)",
+      "justification": "The activities report must include a list of specific categories of subject matters about which the registrant (or persons appearing on the registrant’s behalf) communicated directly with legislative or executive branch members."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_compensation_broken_down_by_payer",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Tex. Gov’t Code §305.006 (2015)",
+      "justification": "The periodic activities report under §305.006 requires disclosure of expenditures and subject matters but does not require reporting the amount of compensation received from clients (compensation is disclosed in registration under §305.005(f)(6), not in the spending report)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_contacts_made",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Tex. Gov’t Code §305.006 (2015)",
+      "justification": "Section 305.006 requires reporting of expenditures and subject-matter categories, but it does not require disclosure of specific lobbying contacts or communications with named officials."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_expenditure_per_issue",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Tex. Gov’t Code §§305.006(b), 305.006(d) (2015)",
+      "justification": "Expenditures are reported by expenditure category and attribution group, while issues are listed separately as subject-matter categories, not as expenditures allocated per issue."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_general_issues",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Tex. Gov’t Code §305.006(d) (2015)",
+      "justification": "The report must list specific categories of subject matters about which the registrant communicated directly, requiring disclosure of general issues/subjects lobbied."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_general_subject_matter",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Tex. Gov’t Code §305.006(d) (2015)",
+      "justification": "By requiring a list of specific categories of subject matters of communications, the statute mandates reporting of general subjects of lobbying (not necessarily bill numbers or positions)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_gifts_entertainment_transport_lodging",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Tex. Gov’t Code §305.006(b)(1)–(5) (2015)",
+      "justification": "The activities report must include total expenditures in categories including transportation and lodging, food and beverages, entertainment, and gifts/awards and mementos."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_indirect_costs",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Tex. Gov’t Code §305.006(c) (2015)",
+      "justification": "Registrants must also report total expenditures for broadcast/print advertisements, direct mailings, and other mass media communications supporting or opposing pending legislation/administrative action, which are indirect lobbying costs other than compensation."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_itemized_expenses",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Tex. Gov’t Code §§305.006(b), 305.0061(a)–(d), 305.006(d) (2015)",
+      "justification": "Texas requires a registrant’s periodic activities report disclosing categorized expenditures with detailed identification for larger expenditures and the subject-matter categories lobbied, satisfying an itemized-spending-report requirement even though compensation is not part of the periodic report."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_lobbyist_contact_info",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Tex. Gov’t Code §305.006 (2015)",
+      "justification": "The activities report requirements in §305.006 do not include disclosure of the registrant’s address or phone number (those appear in the registration requirements in §305.005)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_position_on_bill",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Tex. Gov’t Code §305.006(d) (2015)",
+      "justification": "The periodic report must identify the specific categories of subject matters of direct communications, which is a form of disclosing what legislative/executive matters are being influenced."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_principal_business_nature",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Tex. Gov’t Code §305.006 (2015)",
+      "justification": "Nothing in the periodic activities report provisions requires stating whether a principal/client is public or private or describing the nature of the principal’s business."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_principal_contact_info",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Tex. Gov’t Code §305.006 (2015)",
+      "justification": "The periodic activities report requirements do not require disclosure of principals’ addresses or phone numbers (client identity/address is part of registration under §305.005(f)(3))."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_principal_names",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Tex. Gov’t Code §305.006 (2015)",
+      "justification": "Section 305.006 governs periodic activities reports and does not require listing the names of principals represented (that is required in registration under §305.005(f)(3))."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_specific_bill_number",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Tex. Gov’t Code §305.006(d) (2015)",
+      "justification": "The periodic report requires subject-matter categories and administrative action designations if known, but it does not require specific bill numbers or legislation IDs."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_total_compensation",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Tex. Gov’t Code §305.006(b) (2015)",
+      "justification": "The activities report discloses expenditures made to communicate with officials but does not require disclosure of compensation paid to the lobbyist as a direct lobbying cost."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_total_expenditures",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Tex. Gov’t Code §305.006(b) (2015)",
+      "justification": "The report must contain the total expenditures the registrant made (and others made on the registrant’s behalf) in listed categories to communicate directly to influence legislation or administrative action."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Tex. Gov’t Code §§305.006(b), 305.0061(a)–(d), 305.006(d) (2015)",
+      "justification": "Registrants must file periodic reports with categorized expenditures and, when above thresholds, additional identifying detail, and must list subject-matter categories lobbied, meeting the rubric’s ‘moderate’ condition (itemized spending but not compensation in the spending report)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_required_when_no_activity",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Tex. Gov’t Code §305.006 (2015)",
+      "justification": "The statute requires a monthly report and specifies what must be included when there are reportable expenditures or subject matters, but it does not expressly require a ‘no activity’ (zero) report when there is no spending."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_scope_includes_household_members_of_officials",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Tex. Gov’t Code §§305.006(b), 305.0062(a)(6), (c) (2015)",
+      "justification": "Expenditures directly attributable to the immediate family of a member must be included and aggregated and reported under the ‘immediate family’ category."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_uses_itemized_format",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Tex. Gov’t Code §§305.0061(a)–(d), 305.006(d) (2015)",
+      "justification": "For certain expenditures exceeding statutory thresholds, the report must include specific details (name, place/date, purpose/description and amount category), making the disclosure itemized rather than purely aggregated."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "chatcmpl-DnaYutZs1hz4U87ynyLU5hsdnBwhY",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_7ebZonScN3Idiu2Xxr2IGXtS",
+              "function": {
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov’t Code §305.0063(c) (2015)\", \"justification\": \"A registrant who elects modified reporting must annually file the activities report required by §305.006, due by January 10 covering the previous calendar year.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_dc52kNnbwxWaxz3Nfje9bk4P",
+              "function": {
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov’t Code §305.007(a) (2015)\", \"justification\": \"Registrants must file the §305.006 activities report between the 1st and 10th day of each month covering the previous month (i.e., monthly filing).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_2KHWYv7FJPyM8ahSzDa3nuxn",
+              "function": {
+                "arguments": "{\"handle\": \"row_003\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov’t Code §§305.007(a), 305.0063(c)–(d) (2015)\", \"justification\": \"The statute specifies monthly reporting as the default and an annual report for modified reporters, with no other periodic cadence required.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_McdJf4a0nzmdhXoAJcmw3JkY",
+              "function": {
+                "arguments": "{\"handle\": \"row_004\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov’t Code §305.007(a) (2015)\", \"justification\": \"The periodic activities report is required monthly (1st–10th of each month), not quarterly.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_rpbBOLf1gyZ0pV3UTj5Sqjz7",
+              "function": {
+                "arguments": "{\"handle\": \"row_005\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov’t Code §§305.007(a), 305.0063(c) (2015)\", \"justification\": \"No provision requires lobbyists/registrants to file semi-annual spending reports; the statute requires monthly reports with a limited annual report option.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_PE9GJBRG0VzzkTNYeAY8mTHX",
+              "function": {
+                "arguments": "{\"handle\": \"row_006\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov’t Code §§305.007(a), 305.0063(c) (2015)\", \"justification\": \"Reporting is not tied to the legislative calendar in a tri-annual schedule; it is monthly (or annual for modified reporters).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_F9nt8oIYeXnl3eJ4pbXlloGO",
+              "function": {
+                "arguments": "{\"handle\": \"row_007\", \"axis\": \"legal\", \"value\": \"Modified option: registrant may elect to file under §305.0063, with an annual §305.006 report due by January 10 (and monthly reports resume if expenditures exceed $1,000).\", \"confidence\": \"high\", \"cited_section\": \"Tex. Gov’t Code §305.0063(a)–(d) (2015)\", \"justification\": \"Section 305.0063 creates a modified reporting regime based on a $1,000 annual expenditure intent threshold, requiring an annual filing and switching back to monthly upon exceeding the threshold.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_r60VcbUS8GaxUMNqWjptG98f",
+              "function": {
+                "arguments": "{\"handle\": \"row_008\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov’t Code §§305.006(b), 305.0061(a)–(d) (2015)\", \"justification\": \"Registrants must report expenditures in specified categories and must provide detailed itemization (name, place/date, description/purpose, and amount category) when thresholds are exceeded, which constitutes itemized expense reporting rather than only lump sums.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_62naHxDnumyecXJSBh1Gm8Kg",
+              "function": {
+                "arguments": "{\"handle\": \"row_009\", \"axis\": \"legal\", \"value\": \"monthly\", \"confidence\": \"high\", \"cited_section\": \"Tex. Gov’t Code §305.007(a) (2015)\", \"justification\": \"The statute mandates that the registrant file the §305.006 activities report each month between the 1st and 10th covering the previous month.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_VT7ta0sRATvtAp0bvbpZUhdx",
+              "function": {
+                "arguments": "{\"handle\": \"row_010\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov’t Code §305.006(d) (2015)\", \"justification\": \"The activities report must include a list of specific categories of subject matters about which the registrant (or persons appearing on the registrant’s behalf) communicated directly with legislative or executive branch members.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_C9WbACSH7e3TnNsrCRpEmSyZ",
+              "function": {
+                "arguments": "{\"handle\": \"row_011\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov’t Code §305.006 (2015)\", \"justification\": \"The periodic activities report under §305.006 requires disclosure of expenditures and subject matters but does not require reporting the amount of compensation received from clients (compensation is disclosed in registration under §305.005(f)(6), not in the spending report).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_8bxm9QPHamNdSbYyqNoqvJjN",
+              "function": {
+                "arguments": "{\"handle\": \"row_012\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov’t Code §305.006 (2015)\", \"justification\": \"Section 305.006 requires reporting of expenditures and subject-matter categories, but it does not require disclosure of specific lobbying contacts or communications with named officials.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_tnC7lschghLTDzlVjDx5KIF3",
+              "function": {
+                "arguments": "{\"handle\": \"row_013\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov’t Code §§305.006(b), 305.006(d) (2015)\", \"justification\": \"Expenditures are reported by expenditure category and attribution group, while issues are listed separately as subject-matter categories, not as expenditures allocated per issue.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_LbvLXGa6U30SIQxrcNo75N0K",
+              "function": {
+                "arguments": "{\"handle\": \"row_014\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov’t Code §305.006(d) (2015)\", \"justification\": \"The report must list specific categories of subject matters about which the registrant communicated directly, requiring disclosure of general issues/subjects lobbied.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_OM6EmxXrqHZvPTsputtFOq7F",
+              "function": {
+                "arguments": "{\"handle\": \"row_015\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov’t Code §305.006(d) (2015)\", \"justification\": \"By requiring a list of specific categories of subject matters of communications, the statute mandates reporting of general subjects of lobbying (not necessarily bill numbers or positions).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_1uwpjVaeULuaBw0qXxSZ262e",
+              "function": {
+                "arguments": "{\"handle\": \"row_016\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov’t Code §305.006(b)(1)–(5) (2015)\", \"justification\": \"The activities report must include total expenditures in categories including transportation and lodging, food and beverages, entertainment, and gifts/awards and mementos.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_ehfPXXiTJmpeEKgGR286boqq",
+              "function": {
+                "arguments": "{\"handle\": \"row_017\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov’t Code §305.006(c) (2015)\", \"justification\": \"Registrants must also report total expenditures for broadcast/print advertisements, direct mailings, and other mass media communications supporting or opposing pending legislation/administrative action, which are indirect lobbying costs other than compensation.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_WNkLeJqTRSi0kB2qenPwxHPN",
+              "function": {
+                "arguments": "{\"handle\": \"row_018\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov’t Code §§305.006(b), 305.0061(a)–(d), 305.006(d) (2015)\", \"justification\": \"Texas requires a registrant’s periodic activities report disclosing categorized expenditures with detailed identification for larger expenditures and the subject-matter categories lobbied, satisfying an itemized-spending-report requirement even though compensation is not part of the periodic report.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_UukPuiyVkSKVV8KidCKRam7D",
+              "function": {
+                "arguments": "{\"handle\": \"row_019\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov’t Code §305.006 (2015)\", \"justification\": \"The activities report requirements in §305.006 do not include disclosure of the registrant’s address or phone number (those appear in the registration requirements in §305.005).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_aGgTRlkdCmtHaLWFFKdBhQZd",
+              "function": {
+                "arguments": "{\"handle\": \"row_020\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov’t Code §305.006(d) (2015)\", \"justification\": \"The periodic report must identify the specific categories of subject matters of direct communications, which is a form of disclosing what legislative/executive matters are being influenced.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_4HEZgMrNOeuBiAOhEYGsxysH",
+              "function": {
+                "arguments": "{\"handle\": \"row_021\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov’t Code §305.006 (2015)\", \"justification\": \"Nothing in the periodic activities report provisions requires stating whether a principal/client is public or private or describing the nature of the principal’s business.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_yoG0EzzUkrpjBwXTpJGcKaiW",
+              "function": {
+                "arguments": "{\"handle\": \"row_022\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov’t Code §305.006 (2015)\", \"justification\": \"The periodic activities report requirements do not require disclosure of principals’ addresses or phone numbers (client identity/address is part of registration under §305.005(f)(3)).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_nMT4JFHe0YxXgnRsFOcaWQr7",
+              "function": {
+                "arguments": "{\"handle\": \"row_023\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov’t Code §305.006 (2015)\", \"justification\": \"Section 305.006 governs periodic activities reports and does not require listing the names of principals represented (that is required in registration under §305.005(f)(3)).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_UmuoVyuSH7I55Bh5JZEO0dIF",
+              "function": {
+                "arguments": "{\"handle\": \"row_024\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov’t Code §305.006(d) (2015)\", \"justification\": \"The periodic report requires subject-matter categories and administrative action designations if known, but it does not require specific bill numbers or legislation IDs.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_vWovk5tpWvaJrgTlLx3NLqRu",
+              "function": {
+                "arguments": "{\"handle\": \"row_025\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov’t Code §305.006(b) (2015)\", \"justification\": \"The activities report discloses expenditures made to communicate with officials but does not require disclosure of compensation paid to the lobbyist as a direct lobbying cost.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_gkarBGRiCSGLEnUI8uAf0Qpy",
+              "function": {
+                "arguments": "{\"handle\": \"row_026\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov’t Code §305.006(b) (2015)\", \"justification\": \"The report must contain the total expenditures the registrant made (and others made on the registrant’s behalf) in listed categories to communicate directly to influence legislation or administrative action.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_4hxs2naeGcaynbaciUSZwS6Z",
+              "function": {
+                "arguments": "{\"handle\": \"row_027\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov’t Code §§305.006(b), 305.0061(a)–(d), 305.006(d) (2015)\", \"justification\": \"Registrants must file periodic reports with categorized expenditures and, when above thresholds, additional identifying detail, and must list subject-matter categories lobbied, meeting the rubric’s ‘moderate’ condition (itemized spending but not compensation in the spending report).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_wumqrKoUEDEG5HKY2eG0a9iM",
+              "function": {
+                "arguments": "{\"handle\": \"row_028\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov’t Code §305.006 (2015)\", \"justification\": \"The statute requires a monthly report and specifies what must be included when there are reportable expenditures or subject matters, but it does not expressly require a ‘no activity’ (zero) report when there is no spending.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_c3JUf9U3DQXKqrkPeDDsrRxq",
+              "function": {
+                "arguments": "{\"handle\": \"row_029\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov’t Code §§305.006(b), 305.0062(a)(6), (c) (2015)\", \"justification\": \"Expenditures directly attributable to the immediate family of a member must be included and aggregated and reported under the ‘immediate family’ category.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_ahka16drZ0NTPh6eQkDitTRe",
+              "function": {
+                "arguments": "{\"handle\": \"row_030\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov’t Code §§305.0061(a)–(d), 305.006(d) (2015)\", \"justification\": \"For certain expenditures exceeding statutory thresholds, the report must include specific details (name, place/date, purpose/description and amount category), making the disclosure itemized rather than purely aggregated.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1780710988,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 2731,
+      "prompt_tokens": 21032,
+      "total_tokens": 23763,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 20992
+      }
+    }
+  }
+}

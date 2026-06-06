@@ -1,0 +1,291 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "registration_thresholds",
+    "run_index": 1,
+    "state_abbr": "TX",
+    "vintage_year": 2015,
+    "prompt_sha256": "37c66c4d81d755e65fe909ea7a58321ab13e1f35efec6b146b9c80a136f430d6",
+    "timestamp_utc": "2026-06-06T00:19:58+00:00"
+  },
+  "wall_clock_seconds": 22.963668665965088,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 25724,
+    "inference_geo": "global",
+    "input_tokens": 1810,
+    "output_tokens": 1964,
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.05814999999999999,
+  "legal_roster": [
+    [
+      "lobbyist_registration_threshold_compensation_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_threshold_expenditure_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_threshold_time_percent",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_itemization_de_minimis_threshold_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_de_minimis_threshold_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_de_minimis_threshold_time_percent",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_threshold_compensation_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "200"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "§305.003(a)(2)",
+      "justification": "Section 305.003(a)(2) requires registration of a person who receives compensation or reimbursement of \"more than an amount determined by commission rule but not less than $200 in a calendar quarter\" to communicate directly with members of the legislative or executive branch."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_threshold_expenditure_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "200"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "§305.003(a)(1)",
+      "justification": "Section 305.003(a)(1) requires registration of a person who \"makes a total expenditure of an amount determined by commission rule but not less than $200 in a calendar quarter\" on lobbying activities."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_threshold_time_percent",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "magnitude": "26",
+        "unit": "hours_per_quarter"
+      },
+      "cell_class": "TimeThresholdCell",
+      "cited_section": "§305.003(b-3)",
+      "justification": "Section 305.003(b-3) exempts from registration a person who \"spends not more than 26 hours, or another amount of time determined by the commission\" during a calendar quarter engaging in compensated direct-communication lobbying activity, establishing a 26-hour-per-quarter time standard."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_filing_itemization_de_minimis_threshold_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": "50"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "§305.0061(c)",
+      "justification": "Section 305.0061(c) requires detailed itemized reporting of gifts, awards, or mementos only when the value \"exceeds $50 per gift, award, or memento,\" establishing a $50 per-item itemization threshold below which detailed disclosure is not required (aggregate-only reporting under §305.006(b) applies)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_filing_de_minimis_threshold_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "200"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "§305.003(a)",
+      "justification": "Section 305.003(a) only requires registration (and therefore reporting under §305.006) when expenditures or compensation exceed the statutory floor of $200 per calendar quarter; persons below this threshold are exempt from filing disclosure entirely."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_filing_de_minimis_threshold_time_percent",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": null
+      },
+      "cell_class": "FloatCell",
+      "cited_section": "§305.003(b-3)",
+      "justification": "Section 305.003(b-3) sets the time-based exemption in absolute hours (26 hours per calendar quarter), not as a percentage of the individual's compensated time; no statute in Chapter 305 expresses a percent-of-time threshold for filing exemption."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "msg_01Ecu4CjbdPBS9fjgsLbNMKy",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "I'll analyze each cell based on the Texas statute text provided.\n\n**Row 001**: §305.003(a)(2) sets a compensation threshold of \"more than an amount determined by commission rule but not less than $200 in a calendar quarter.\"\n\n**Row 002**: §305.003(a)(1) sets an expenditure threshold of \"an amount determined by commission rule but not less than $200 in a calendar quarter.\"\n\n**Row 003**: §305.003(b-3) provides a time-based exemption: \"not more than 26 hours...during the calendar quarter.\"\n\n**Row 004**: §305.0061 has detail-reporting thresholds (60% of legislative per diem, $50 for gifts), but these are thresholds above which MORE detail is required, not itemization de minimis thresholds. However, $50 is the gift itemization threshold under §305.0061(c).\n\n**Row 005**: §305.003 sets the registration threshold ($200/quarter), which effectively functions as a filing-exemption threshold since no registration = no reports.\n\n**Row 006**: The 26-hour quarterly threshold in §305.003(b-3) is a time-based exemption, but it's expressed in hours, not as a percentage of compensated time. No percentage-based threshold exists.",
+        "type": "text"
+      },
+      {
+        "id": "toolu_017EhjkPVeVRNoYXn6Moyins",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_001",
+          "axis": "legal",
+          "value": "200",
+          "confidence": "high",
+          "cited_section": "§305.003(a)(2)",
+          "justification": "Section 305.003(a)(2) requires registration of a person who receives compensation or reimbursement of \"more than an amount determined by commission rule but not less than $200 in a calendar quarter\" to communicate directly with members of the legislative or executive branch."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01N2hn5iUBzRniDkHBKPHUcS",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_002",
+          "axis": "legal",
+          "value": "200",
+          "confidence": "high",
+          "cited_section": "§305.003(a)(1)",
+          "justification": "Section 305.003(a)(1) requires registration of a person who \"makes a total expenditure of an amount determined by commission rule but not less than $200 in a calendar quarter\" on lobbying activities."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_0143Z2gXLBaZNQmmDNPpUNad",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_003",
+          "axis": "legal",
+          "value": {
+            "magnitude": 26,
+            "unit": "hours_per_quarter"
+          },
+          "confidence": "high",
+          "cited_section": "§305.003(b-3)",
+          "justification": "Section 305.003(b-3) exempts from registration a person who \"spends not more than 26 hours, or another amount of time determined by the commission\" during a calendar quarter engaging in compensated direct-communication lobbying activity, establishing a 26-hour-per-quarter time standard."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_0196gVZEbGcToM3cMY2PqTLg",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_004",
+          "axis": "legal",
+          "value": "50",
+          "confidence": "medium",
+          "cited_section": "§305.0061(c)",
+          "justification": "Section 305.0061(c) requires detailed itemized reporting of gifts, awards, or mementos only when the value \"exceeds $50 per gift, award, or memento,\" establishing a $50 per-item itemization threshold below which detailed disclosure is not required (aggregate-only reporting under §305.006(b) applies)."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01RqJjQD8UtN7qddNybj9J9v",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_005",
+          "axis": "legal",
+          "value": "200",
+          "confidence": "high",
+          "cited_section": "§305.003(a)",
+          "justification": "Section 305.003(a) only requires registration (and therefore reporting under §305.006) when expenditures or compensation exceed the statutory floor of $200 per calendar quarter; persons below this threshold are exempt from filing disclosure entirely."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01QWLMkV1Wk3SLePeETrc6yv",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_006",
+          "axis": "legal",
+          "value": null,
+          "confidence": "high",
+          "cited_section": "§305.003(b-3)",
+          "justification": "Section 305.003(b-3) sets the time-based exemption in absolute hours (26 hours per calendar quarter), not as a percentage of the individual's compensated time; no statute in Chapter 305 expresses a percent-of-time threshold for filing exemption."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 25724,
+      "inference_geo": "global",
+      "input_tokens": 1810,
+      "output_tokens": 1964,
+      "server_tool_use": null,
+      "service_tier": "standard",
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      }
+    }
+  }
+}

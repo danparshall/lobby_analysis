@@ -1,0 +1,138 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "enforcement_and_audits",
+    "run_index": 2,
+    "state_abbr": "OH",
+    "vintage_year": 2015,
+    "prompt_sha256": "a5b2e6db592c11a03109db6b6ec3c341399426322dcf183d33de108e1a552f10",
+    "timestamp_utc": "2026-06-06T00:27:27+00:00"
+  },
+  "wall_clock_seconds": 6.869100250012707,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 1021
+    },
+    "cache_creation_input_tokens": 1021,
+    "cache_read_input_tokens": 92795,
+    "inference_geo": "global",
+    "input_tokens": 6,
+    "output_tokens": 581,
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.014555000000000002,
+  "legal_roster": [
+    [
+      "lobbying_violation_penalties_defined_in_law",
+      "legal"
+    ],
+    [
+      "lobbying_disclosure_audit_required_in_law",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_violation_penalties_defined_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.99; §101.71; §101.72(G)",
+      "justification": "§101.99 imposes misdemeanor penalties (fourth degree for failure to register/keep records/file; first degree for knowingly filing false statements) for violations of §101.71, and §101.72(G) imposes a late filing fee of $12.50/day up to $100, demonstrating statutory penalties for lobbying disclosure violations."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_disclosure_audit_required_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": "MODERATE"
+      },
+      "cell_class": "EnumCell",
+      "cited_section": "§101.72(G); §101.79",
+      "justification": "§101.72(G) requires the executive director of the joint legislative ethics committee to review each registration statement for completeness (a compliance review), and §101.79 authorizes the attorney general to investigate compliance and report apparent violations, but no statute requires regular impartial third-party auditing of lobbying disclosure records."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "msg_016V48zH6L87FTmksEjZkr9d",
+    "container": null,
+    "content": [
+      {
+        "id": "toolu_01PuVZaGUsL3HYAjwG7AmCtQ",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_001",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.99; §101.71; §101.72(G)",
+          "justification": "§101.99 imposes misdemeanor penalties (fourth degree for failure to register/keep records/file; first degree for knowingly filing false statements) for violations of §101.71, and §101.72(G) imposes a late filing fee of $12.50/day up to $100, demonstrating statutory penalties for lobbying disclosure violations."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01CpxxvfKzbwCUjk9GGBrHSt",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_002",
+          "axis": "legal",
+          "value": "MODERATE",
+          "confidence": "medium",
+          "cited_section": "§101.72(G); §101.79",
+          "justification": "§101.72(G) requires the executive director of the joint legislative ethics committee to review each registration statement for completeness (a compliance review), and §101.79 authorizes the attorney general to investigate compliance and report apparent violations, but no statute requires regular impartial third-party auditing of lobbying disclosure records."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 1021
+      },
+      "cache_creation_input_tokens": 1021,
+      "cache_read_input_tokens": 92795,
+      "inference_geo": "global",
+      "input_tokens": 6,
+      "output_tokens": 581,
+      "server_tool_use": null,
+      "service_tier": "standard",
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      }
+    }
+  }
+}

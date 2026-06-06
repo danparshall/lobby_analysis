@@ -1,0 +1,133 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "enforcement_and_audits",
+    "run_index": 2,
+    "state_abbr": "OH",
+    "vintage_year": 2015,
+    "prompt_sha256": "a5b2e6db592c11a03109db6b6ec3c341399426322dcf183d33de108e1a552f10",
+    "timestamp_utc": "2026-06-06T01:58:20+00:00"
+  },
+  "wall_clock_seconds": 4.7711203749640845,
+  "usage": {
+    "completion_tokens": 237,
+    "prompt_tokens": 59972,
+    "total_tokens": 60209,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 59904
+    }
+  },
+  "cost_usd_estimate": 0.10826899999999999,
+  "legal_roster": [
+    [
+      "lobbying_violation_penalties_defined_in_law",
+      "legal"
+    ],
+    [
+      "lobbying_disclosure_audit_required_in_law",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_violation_penalties_defined_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §§101.99(A)–(B) (penalties for violations of §101.71 and §101.77); §121.99(A)–(B) (penalties for violations of §121.61 and §121.67)",
+      "justification": "The lobbying-disclosure statutes expressly make failures to register/keep records/file required statements and filing false statements criminal misdemeanors, establishing statutory penalties for disclosure violations."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_disclosure_audit_required_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "NO"
+      },
+      "cell_class": "EnumCell",
+      "cited_section": "Ohio Rev. Code §101.79; §121.69; §101.981",
+      "justification": "The statutes authorize the attorney general to investigate compliance and refer apparent violations for prosecution, but they do not require regular or periodic auditing/compliance audits of lobbying disclosure records by an independent third party."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "chatcmpl-DnaaeyX3ITwtK9YIS5atxf62IcMap",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_cfpQ7e0avfbWWDDYGI9bzenn",
+              "function": {
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §§101.99(A)–(B) (penalties for violations of §101.71 and §101.77); §121.99(A)–(B) (penalties for violations of §121.61 and §121.67)\", \"justification\": \"The lobbying-disclosure statutes expressly make failures to register/keep records/file required statements and filing false statements criminal misdemeanors, establishing statutory penalties for disclosure violations.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_j3nWW7ySFtVOWAqNwSWJgNo1",
+              "function": {
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": \"NO\", \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.79; §121.69; §101.981\", \"justification\": \"The statutes authorize the attorney general to investigate compliance and refer apparent violations for prosecution, but they do not require regular or periodic auditing/compliance audits of lobbying disclosure records by an independent third party.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1780711096,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 237,
+      "prompt_tokens": 59972,
+      "total_tokens": 60209,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 59904
+      }
+    }
+  }
+}

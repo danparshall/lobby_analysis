@@ -1,0 +1,503 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "lobbying_definitions",
+    "run_index": 3,
+    "state_abbr": "OH",
+    "vintage_year": 2015,
+    "prompt_sha256": "a5b2e6db592c11a03109db6b6ec3c341399426322dcf183d33de108e1a552f10",
+    "timestamp_utc": "2026-06-06T01:54:16+00:00"
+  },
+  "wall_clock_seconds": 21.590842332981993,
+  "usage": {
+    "completion_tokens": 1507,
+    "prompt_tokens": 60731,
+    "total_tokens": 62238,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 60672
+    }
+  },
+  "cost_usd_estimate": 0.12737725,
+  "legal_roster": [
+    [
+      "def_lobbying_activity_types",
+      "legal"
+    ],
+    [
+      "def_lobbyist_actor_types",
+      "legal"
+    ],
+    [
+      "law_defines_public_entity",
+      "legal"
+    ],
+    [
+      "law_includes_materiality_test",
+      "legal"
+    ],
+    [
+      "def_target_executive_agency",
+      "legal"
+    ],
+    [
+      "def_target_executive_staff",
+      "legal"
+    ],
+    [
+      "def_target_governors_office",
+      "legal"
+    ],
+    [
+      "def_target_independent_agency",
+      "legal"
+    ],
+    [
+      "def_target_legislative_branch",
+      "legal"
+    ],
+    [
+      "def_target_legislative_staff",
+      "legal"
+    ],
+    [
+      "def_actor_class_elected_officials",
+      "legal"
+    ],
+    [
+      "def_actor_class_public_employees",
+      "legal"
+    ],
+    [
+      "public_entity_def_relies_on_charter",
+      "legal"
+    ],
+    [
+      "public_entity_def_relies_on_ownership",
+      "legal"
+    ],
+    [
+      "public_entity_def_relies_on_revenue_structure",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "def_lobbying_activity_types",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": []
+      },
+      "cell_class": "EnumSetCell",
+      "cited_section": "Ohio Rev. Code §101.70(E); §121.60(I); §101.90(I)",
+      "justification": "The statutory definitions of 'actively advocate' and related 'lobbying activity' are defined as direct communication but do not enumerate specific modes such as oral/written/electronic/email/phone, so no activity types from the provided list are expressly included."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_lobbyist_actor_types",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": [
+          "in_house_company",
+          "public_entity",
+          "professional_lobbyist",
+          "in_house_organisation",
+          "government_agency"
+        ]
+      },
+      "cell_class": "EnumSetCell",
+      "cited_section": "Ohio Rev. Code §101.70(F)–(H), (A); §121.60(H), (C)–(D); §101.90(H), (C)–(D)",
+      "justification": "A 'legislative agent'/'executive agency lobbyist'/'retirement system lobbyist' is any person engaged (employed or retained for compensation) to lobby as a main purpose, and 'person' includes corporations/associations and state departments and political subdivisions, capturing professional and in-house lobbyists and public/government entities that engage or employ such agents."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "law_defines_public_entity",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §§101.70; 121.60; 101.90",
+      "justification": "The bundled lobbying provisions define 'person,' 'employer,' and related terms but do not define the term 'public entity' as such."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "law_includes_materiality_test",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.70(F); §121.60(H); §101.90(H)",
+      "justification": "Coverage turns on being 'engaged' to lobby as a main purpose on a regular/substantial basis, but the statute does not set a materiality/de minimis exemption test for disclosure obligations beyond definitional scope and explicit exceptions."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_executive_agency",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.70(E)",
+      "justification": "'Actively advocate' for legislative lobbying includes direct communication with members of the general assembly and with executive officials including the governor and executive veto/approval."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_executive_staff",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.70(E)",
+      "justification": "Legislative lobbying targets include the general assembly and controlling board (legislative-related bodies) and executive officials (governor, department directors) and their staff."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_governors_office",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §121.60(I)",
+      "justification": "Executive agency lobbying activity is defined as contacts by direct communication with elected executive officials, department directors, executive agency officials, their staff, or the casino control commission."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_independent_agency",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §121.60(I)",
+      "justification": "The definition of executive agency lobbying activity expressly covers communications with executive branch officials including the governor (as an 'elected executive official') and other executive agency decisionmakers."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_legislative_branch",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.90(I)",
+      "justification": "Retirement system lobbying activity is defined as direct communication with retirement system board members/investment officials/staff, not with state legislators or executive officials such as the governor."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_legislative_staff",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §121.60(I); §101.70(E); §101.90(I)",
+      "justification": "Across Ohio’s lobbying regimes, targets include legislative officials (General Assembly/controlling board), executive officials (elected executive officials, department directors, executive agency officials), and staff or retirement system decisionmakers."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_actor_class_elected_officials",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.70(F); §121.60(H); §101.90(H)",
+      "justification": "The definitions of legislative agent/executive agency lobbyist/retirement system lobbyist expressly exclude elected or appointed officers or employees who act in a fiduciary capacity for their agency, rather than requiring them to register."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_actor_class_public_employees",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.70(F); §101.72(E); §121.60(H); §101.90(H)",
+      "justification": "The law allows government agencies/employees to be covered in certain circumstances (e.g., officers/employees acting in a fiduciary capacity for a state agency actively advocating must register, with the state agency paying the fee, though they need not file expenditure statements)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "public_entity_def_relies_on_charter",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.70(A); §121.60(F); §101.90(F)",
+      "justification": "The definitions turn on being a 'person' and being engaged to lobby/communicate with officials, not on public-charter status or special government protection."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "public_entity_def_relies_on_ownership",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.70(F)–(H); §121.60(H), (C)–(D); §101.90(H), (C)–(D)",
+      "justification": "Lobbyist status is based on being engaged/retained for compensation to lobby as a main purpose, not on ownership relationships."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "public_entity_def_relies_on_revenue_structure",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.70(F)–(H); §121.60(H), (C)–(D); §101.90(H), (C)–(D)",
+      "justification": "The definitions do not rely on an entity’s structure or revenue composition; they rely on engagement for compensation to influence legislation/executive decisions/retirement decisions."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "chatcmpl-DnaWSqfYdxgh6w7iTpMrom1GjXV6o",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_yQNJwTabAWQ4qS9TdD93D5IC",
+              "function": {
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"value\": [], \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.70(E); §121.60(I); §101.90(I)\", \"justification\": \"The statutory definitions of 'actively advocate' and related 'lobbying activity' are defined as direct communication but do not enumerate specific modes such as oral/written/electronic/email/phone, so no activity types from the provided list are expressly included.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_0BlWhIfrUGXcGaRCG66iuqzo",
+              "function": {
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": [\"professional_lobbyist\", \"in_house_company\", \"in_house_organisation\", \"public_entity\", \"government_agency\"], \"confidence\": \"medium\", \"cited_section\": \"Ohio Rev. Code §101.70(F)–(H), (A); §121.60(H), (C)–(D); §101.90(H), (C)–(D)\", \"justification\": \"A 'legislative agent'/'executive agency lobbyist'/'retirement system lobbyist' is any person engaged (employed or retained for compensation) to lobby as a main purpose, and 'person' includes corporations/associations and state departments and political subdivisions, capturing professional and in-house lobbyists and public/government entities that engage or employ such agents.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_RrNWTb4OfV9da35YMK0CzkO7",
+              "function": {
+                "arguments": "{\"handle\": \"row_003\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §§101.70; 121.60; 101.90\", \"justification\": \"The bundled lobbying provisions define 'person,' 'employer,' and related terms but do not define the term 'public entity' as such.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_r9XmOgD5ejy1xG3XlEbjZuYk",
+              "function": {
+                "arguments": "{\"handle\": \"row_004\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.70(F); §121.60(H); §101.90(H)\", \"justification\": \"Coverage turns on being 'engaged' to lobby as a main purpose on a regular/substantial basis, but the statute does not set a materiality/de minimis exemption test for disclosure obligations beyond definitional scope and explicit exceptions.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_C5Q7X9D5UxaNZY9fT1hKMr21",
+              "function": {
+                "arguments": "{\"handle\": \"row_005\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.70(E)\", \"justification\": \"'Actively advocate' for legislative lobbying includes direct communication with members of the general assembly and with executive officials including the governor and executive veto/approval.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_EyJPMJpK6gmqxiMmQ7oubkAH",
+              "function": {
+                "arguments": "{\"handle\": \"row_006\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.70(E)\", \"justification\": \"Legislative lobbying targets include the general assembly and controlling board (legislative-related bodies) and executive officials (governor, department directors) and their staff.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_aqRz8dlDv5mzbnFE8ngO5qTA",
+              "function": {
+                "arguments": "{\"handle\": \"row_007\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §121.60(I)\", \"justification\": \"Executive agency lobbying activity is defined as contacts by direct communication with elected executive officials, department directors, executive agency officials, their staff, or the casino control commission.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_Tg8G2MyyC00gwS2TWz0TaOaa",
+              "function": {
+                "arguments": "{\"handle\": \"row_008\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §121.60(I)\", \"justification\": \"The definition of executive agency lobbying activity expressly covers communications with executive branch officials including the governor (as an 'elected executive official') and other executive agency decisionmakers.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_ZJerRtIyV0BLRQ1q65wRcRlS",
+              "function": {
+                "arguments": "{\"handle\": \"row_009\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.90(I)\", \"justification\": \"Retirement system lobbying activity is defined as direct communication with retirement system board members/investment officials/staff, not with state legislators or executive officials such as the governor.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_PcFeTv6UkiFgWgYrbrJZQrw8",
+              "function": {
+                "arguments": "{\"handle\": \"row_010\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §121.60(I); §101.70(E); §101.90(I)\", \"justification\": \"Across Ohio’s lobbying regimes, targets include legislative officials (General Assembly/controlling board), executive officials (elected executive officials, department directors, executive agency officials), and staff or retirement system decisionmakers.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_AyjmBTzYsAkU2yUwKAEPjdhw",
+              "function": {
+                "arguments": "{\"handle\": \"row_011\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.70(F); §121.60(H); §101.90(H)\", \"justification\": \"The definitions of legislative agent/executive agency lobbyist/retirement system lobbyist expressly exclude elected or appointed officers or employees who act in a fiduciary capacity for their agency, rather than requiring them to register.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_bwBrLm6tRbqLo4ewMP8hX5UD",
+              "function": {
+                "arguments": "{\"handle\": \"row_012\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.70(F); §101.72(E); §121.60(H); §101.90(H)\", \"justification\": \"The law allows government agencies/employees to be covered in certain circumstances (e.g., officers/employees acting in a fiduciary capacity for a state agency actively advocating must register, with the state agency paying the fee, though they need not file expenditure statements).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_m3BV8YZBNJS45H8emcpVhKws",
+              "function": {
+                "arguments": "{\"handle\": \"row_013\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.70(A); §121.60(F); §101.90(F)\", \"justification\": \"The definitions turn on being a 'person' and being engaged to lobby/communicate with officials, not on public-charter status or special government protection.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_rwPyWUaYdei8DIyGf4jPZR2F",
+              "function": {
+                "arguments": "{\"handle\": \"row_014\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.70(F)–(H); §121.60(H), (C)–(D); §101.90(H), (C)–(D)\", \"justification\": \"Lobbyist status is based on being engaged/retained for compensation to lobby as a main purpose, not on ownership relationships.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_rrc8kk5E4EGN1iOh9sEKKJnY",
+              "function": {
+                "arguments": "{\"handle\": \"row_015\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.70(F)–(H); §121.60(H), (C)–(D); §101.90(H), (C)–(D)\", \"justification\": \"The definitions do not rely on an entity’s structure or revenue composition; they rely on engagement for compensation to influence legislation/executive decisions/retirement decisions.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1780710836,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 1507,
+      "prompt_tokens": 60731,
+      "total_tokens": 62238,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 60672
+      }
+    }
+  }
+}

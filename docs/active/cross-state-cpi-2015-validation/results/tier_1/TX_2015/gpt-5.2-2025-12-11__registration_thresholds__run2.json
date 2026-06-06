@@ -1,0 +1,240 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "registration_thresholds",
+    "run_index": 2,
+    "state_abbr": "TX",
+    "vintage_year": 2015,
+    "prompt_sha256": "37c66c4d81d755e65fe909ea7a58321ab13e1f35efec6b146b9c80a136f430d6",
+    "timestamp_utc": "2026-06-06T01:54:34+00:00"
+  },
+  "wall_clock_seconds": 9.197820834000595,
+  "usage": {
+    "completion_tokens": 643,
+    "prompt_tokens": 18552,
+    "total_tokens": 19195,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 18432
+    }
+  },
+  "cost_usd_estimate": 0.04146799999999999,
+  "legal_roster": [
+    [
+      "lobbyist_registration_threshold_compensation_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_threshold_expenditure_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_threshold_time_percent",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_itemization_de_minimis_threshold_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_de_minimis_threshold_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_de_minimis_threshold_time_percent",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_threshold_compensation_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "200"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "Tex. Gov't Code §305.003(a)(2) (2015)",
+      "justification": "Section 305.003(a)(2) requires registration if a person receives/ is entitled to receive compensation or reimbursement of more than an amount set by commission rule but not less than $200 in a calendar quarter for direct communication to influence legislation or administrative action."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_threshold_expenditure_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "200"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "Tex. Gov't Code §305.003(a)(1) (2015)",
+      "justification": "Section 305.003(a)(1) requires registration if a person makes total expenditures in a calendar quarter of an amount set by commission rule but not less than $200 on covered lobbying-communication activities."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_filing_itemization_de_minimis_threshold_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": null
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "Tex. Gov't Code §§305.006, 305.0061 (2015)",
+      "justification": "The reporting provisions require totals by category and only add detail when certain thresholds are exceeded (e.g., >$50 gifts; >60% per diem for food/entertainment/transportation), but they do not create a de minimis per-item threshold below which an expenditure need not be reported at all."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_filing_de_minimis_threshold_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "0"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "Tex. Gov't Code §305.006(a) (2015)",
+      "justification": "Once a person is a registrant, Section 305.006(a) requires each registrant to file an activities report, and the statute provides no exemption from filing based solely on having total lobbying expenditures below a stated de minimis amount."
+    }
+  ],
+  "unscoreable_emissions": [
+    {
+      "handle": "row_006",
+      "axis": "legal",
+      "reason": "The bundled text includes an hours-based time exemption (Tex. Gov't Code §305.003(b-3)) but does not define any exemption based on a percentage of an individual's compensated time, which this cell specifically asks for.",
+      "row_id": "lobbyist_filing_de_minimis_threshold_time_percent"
+    }
+  ],
+  "errors": [
+    {
+      "reason": "instantiation_failed",
+      "key": [
+        "lobbyist_registration_threshold_time_percent",
+        "legal"
+      ],
+      "error": "1 validation error for TimeThresholdCell\nunit\n  Input should be 'hours_per_quarter', 'hours_per_year', 'days_per_year' or 'percent_of_work_time' [type=literal_error, input_value='hours_per_calendar_quarter', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.13/v/literal_error",
+      "arguments": {
+        "handle": "row_003",
+        "axis": "legal",
+        "value": {
+          "magnitude": 26,
+          "unit": "hours_per_calendar_quarter"
+        },
+        "confidence": "high",
+        "cited_section": "Tex. Gov't Code §305.003(b-3), (b-4) (2015)",
+        "justification": "Section 305.003(b-3) provides that subsection (a)(2) does not require registration if the person spends not more than 26 hours (subject to commission adjustment) in the calendar quarter engaging in compensated/reimbursed lobbying activity, with a daily cap rule in (b-4)."
+      }
+    }
+  ],
+  "response": {
+    "id": "chatcmpl-DnaWwJEFAqfvsNyZrrNJWxY7MaeRT",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_FYYqFHI1xxYTHL1qpn4u4qqo",
+              "function": {
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"value\": 200, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov't Code §305.003(a)(2) (2015)\", \"justification\": \"Section 305.003(a)(2) requires registration if a person receives/ is entitled to receive compensation or reimbursement of more than an amount set by commission rule but not less than $200 in a calendar quarter for direct communication to influence legislation or administrative action.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_4mhZbOr0IA6QUPxkPEObkiOd",
+              "function": {
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": 200, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov't Code §305.003(a)(1) (2015)\", \"justification\": \"Section 305.003(a)(1) requires registration if a person makes total expenditures in a calendar quarter of an amount set by commission rule but not less than $200 on covered lobbying-communication activities.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_Q2DNUrIijGc5xBFwOLhBpi2h",
+              "function": {
+                "arguments": "{\"handle\": \"row_003\", \"axis\": \"legal\", \"value\": {\"magnitude\": 26, \"unit\": \"hours_per_calendar_quarter\"}, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov't Code §305.003(b-3), (b-4) (2015)\", \"justification\": \"Section 305.003(b-3) provides that subsection (a)(2) does not require registration if the person spends not more than 26 hours (subject to commission adjustment) in the calendar quarter engaging in compensated/reimbursed lobbying activity, with a daily cap rule in (b-4).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_OTOX4Wzf08EjyxjcOXP3bV6I",
+              "function": {
+                "arguments": "{\"handle\": \"row_004\", \"axis\": \"legal\", \"value\": null, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov't Code §§305.006, 305.0061 (2015)\", \"justification\": \"The reporting provisions require totals by category and only add detail when certain thresholds are exceeded (e.g., >$50 gifts; >60% per diem for food/entertainment/transportation), but they do not create a de minimis per-item threshold below which an expenditure need not be reported at all.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_osjeAE5TVydPTtuHonmdVOQz",
+              "function": {
+                "arguments": "{\"handle\": \"row_005\", \"axis\": \"legal\", \"value\": 0, \"confidence\": \"high\", \"cited_section\": \"Tex. Gov't Code §305.006(a) (2015)\", \"justification\": \"Once a person is a registrant, Section 305.006(a) requires each registrant to file an activities report, and the statute provides no exemption from filing based solely on having total lobbying expenditures below a stated de minimis amount.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_90r3aEVjhiJ0uF43fgzZ2ujy",
+              "function": {
+                "arguments": "{\"handle\": \"row_006\", \"axis\": \"legal\", \"reason\": \"The bundled text includes an hours-based time exemption (Tex. Gov't Code §305.003(b-3)) but does not define any exemption based on a percentage of an individual's compensated time, which this cell specifically asks for.\"}",
+                "name": "record_unscoreable_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1780710866,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 643,
+      "prompt_tokens": 18552,
+      "total_tokens": 19195,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 18432
+      }
+    }
+  }
+}

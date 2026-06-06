@@ -1,0 +1,721 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "principal_spending_report",
+    "run_index": 2,
+    "state_abbr": "OH",
+    "vintage_year": 2015,
+    "prompt_sha256": "a5b2e6db592c11a03109db6b6ec3c341399426322dcf183d33de108e1a552f10",
+    "timestamp_utc": "2026-06-06T01:57:48+00:00"
+  },
+  "wall_clock_seconds": 26.111764875007793,
+  "usage": {
+    "completion_tokens": 1870,
+    "prompt_tokens": 60690,
+    "total_tokens": 62560,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 60544
+    }
+  },
+  "cost_usd_estimate": 0.1323875,
+  "legal_roster": [
+    [
+      "principal_spending_report_cadence_includes_annual",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_includes_monthly",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_includes_other",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_includes_quarterly",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_includes_semiannual",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_includes_triannual",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_other_specification",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_business_nature",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_compensation_paid_to_lobbyists",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_contacts_made",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_general_issues",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_gifts_entertainment_transport_lodging",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_indirect_costs",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_lobbyist_contact_info",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_lobbyist_names",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_major_financial_contributors",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_principal_contact_info",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_specific_bill_number",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_total_expenditures",
+      "legal"
+    ],
+    [
+      "principal_spending_report_required",
+      "legal"
+    ],
+    [
+      "principal_spending_report_uses_itemized_format",
+      "legal"
+    ],
+    [
+      "lobbyist_or_principal_reg_form_includes_member_or_sponsor_names",
+      "legal"
+    ],
+    [
+      "principal_spending_report_lists_lobbyists_employed",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_annual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.72(B) and §101.73(D)",
+      "justification": "Employer expenditure statements are filed with the updated registration statements due the last day of January, May, and September, not annually."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_monthly",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.72(B) and §101.73(D)",
+      "justification": "Employer expenditure statements are due tri-annually with updated registrations, not monthly."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_other",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.72(B) and §101.73(D)",
+      "justification": "The statute requires an 'updated registration statement' with expenditure statement due three times per year (Jan/May/Sep), which fits an 'other' frequency option."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_quarterly",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.72(B)",
+      "justification": "The filing schedule is January/May/September rather than quarterly (four times per year)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_semiannual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.72(B)",
+      "justification": "The statute does not provide semi-annual employer expenditure reporting; it specifies three filings per year."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_triannual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.72(B) and §101.73(A),(D)",
+      "justification": "Employers must file expenditure statements with updated registration statements due the last day of January, May, and September (three times per year)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_other_specification",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "Tri-annually: filed with updated registration statements due by the last day of January, May, and September; each covers the preceding four-calendar-month period."
+      },
+      "cell_class": "FreeTextCell",
+      "cited_section": "Ohio Rev. Code §101.72(B); §101.73(A),(D)",
+      "justification": "These provisions set the employer updated-registration filing dates and specify that the expenditure statement is filed with them and covers a four-month reporting period."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_business_nature",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.72(A)(2)",
+      "justification": "The employer registration requires the employer name and business address (and real party in interest), but does not require stating whether the business is public or private or describing its nature."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_compensation_paid_to_lobbyists",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.73(C)",
+      "justification": "Employer expenditure reporting expressly excludes 'compensation paid to legislative agents engaged by an employer,' so direct lobbying compensation is not disclosed on the employer spending report."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_contacts_made",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.73(B)(2)-(3), (C)",
+      "justification": "Employer expenditure statements require expenditure information, not reporting of lobbying contacts/communications."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_general_issues",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.72(A)(3)",
+      "justification": "The initial registration statement (filed by employer) must include 'a brief description of the type of legislation to which the engagement relates,' which is general issue information."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_gifts_entertainment_transport_lodging",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.70(D); §101.73(B)(2),(C)",
+      "justification": "Expenditures reportable by employers include payments/gifts of anything of value (including food/beverages, entertainment, lodging, transportation) as defined, and employer statements must report total expenditures and, when applicable, itemized recipient expenditures."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_indirect_costs",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.73(C)",
+      "justification": "Employer statements must show the total amount of reportable expenditures (excluding office facilities and compensation), which are non-compensation lobbying-related costs."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_lobbyist_contact_info",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.72(A)(1)-(2)",
+      "justification": "The registration statement requires the legislative agent’s name, business address, and occupation, but not the agent’s phone number."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_lobbyist_names",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.72(B); §101.73(A)",
+      "justification": "Employers must file updated registration statements confirming engagements and, because the filings are engagement-based and list the agent information, the employer’s registrations identify the legislative agent(s) engaged."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_major_financial_contributors",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §§101.72-101.74",
+      "justification": "No provision in the employer spending/registration/transaction reporting requires disclosure of the employer’s major financial contributors."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_principal_contact_info",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.72(A)(2)",
+      "justification": "The statute requires the employer's 'name and business address' but does not require a phone number."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_specific_bill_number",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.72(B)",
+      "justification": "Updated registration statements must list 'the specific bills or resolutions on which the agent actively advocated' during the period, providing bill/resolution identifiers associated with the employer’s engagement."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_total_expenditures",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.73(C)",
+      "justification": "Each employer statement must show 'the total amount of expenditures made by the employer' during the reporting period (excluding office facilities and agent compensation), which is a total lobbying expenditure figure for the employer’s reportable spending."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.73(C)",
+      "justification": "Employer expenditure reporting expressly excludes 'the compensation paid to legislative agents,' so salary/fees paid to lobbyists are not included."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_uses_itemized_format",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.73(B)(2)",
+      "justification": "When expenditures are made for the benefit of a particular covered official/employee, the report must include the recipient’s name, total amount, description, and approximate date, which is itemized by recipient."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_or_principal_reg_form_includes_member_or_sponsor_names",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.72(A)(2)",
+      "justification": "Where a trade association or certain nonprofit is the employer, the statement 'need not list the names and addresses of each member' so there is no requirement to disclose sponsors/members."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_lists_lobbyists_employed",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §101.72(A)(1)-(2)",
+      "justification": "Employer registration filings must identify the legislative agent(s) engaged (name and business address/occupation), thereby listing the lobbyists employed/retained by the principal."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "chatcmpl-DnaZmpbKSECefsJ4CuiABKdQuNFoU",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_dkdPAI7CgDdFlukdrdB2alfS",
+              "function": {
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(B) and §101.73(D)\", \"justification\": \"Employer expenditure statements are filed with the updated registration statements due the last day of January, May, and September, not annually.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_DbxZcXujZhv9v4uxcbzC3LFo",
+              "function": {
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(B) and §101.73(D)\", \"justification\": \"Employer expenditure statements are due tri-annually with updated registrations, not monthly.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_fC6cPWDl2tCqAbvX4JSBXU9V",
+              "function": {
+                "arguments": "{\"handle\": \"row_003\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(B) and §101.73(D)\", \"justification\": \"The statute requires an 'updated registration statement' with expenditure statement due three times per year (Jan/May/Sep), which fits an 'other' frequency option.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_6fZ3Ga3UpDvZl3VyEP44Uza4",
+              "function": {
+                "arguments": "{\"handle\": \"row_004\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(B)\", \"justification\": \"The filing schedule is January/May/September rather than quarterly (four times per year).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_frFMwPk3TWZ027aKEKz78icY",
+              "function": {
+                "arguments": "{\"handle\": \"row_005\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(B)\", \"justification\": \"The statute does not provide semi-annual employer expenditure reporting; it specifies three filings per year.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_ZWhfWqDyJqYhJku7sHZixqBm",
+              "function": {
+                "arguments": "{\"handle\": \"row_006\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(B) and §101.73(A),(D)\", \"justification\": \"Employers must file expenditure statements with updated registration statements due the last day of January, May, and September (three times per year).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_cHpSQXcm2mdUF4n1iEKQ57wi",
+              "function": {
+                "arguments": "{\"handle\": \"row_007\", \"axis\": \"legal\", \"value\": \"Tri-annually: filed with updated registration statements due by the last day of January, May, and September; each covers the preceding four-calendar-month period.\", \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(B); §101.73(A),(D)\", \"justification\": \"These provisions set the employer updated-registration filing dates and specify that the expenditure statement is filed with them and covers a four-month reporting period.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_IIDkRPYD2lJrRWyATtIzStiJ",
+              "function": {
+                "arguments": "{\"handle\": \"row_008\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(A)(2)\", \"justification\": \"The employer registration requires the employer name and business address (and real party in interest), but does not require stating whether the business is public or private or describing its nature.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_e1uA7DYR7AFuWCCIV57ANr1P",
+              "function": {
+                "arguments": "{\"handle\": \"row_009\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.73(C)\", \"justification\": \"Employer expenditure reporting expressly excludes 'compensation paid to legislative agents engaged by an employer,' so direct lobbying compensation is not disclosed on the employer spending report.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_WGo3o4pPOASEYT6ivCCO5f6v",
+              "function": {
+                "arguments": "{\"handle\": \"row_010\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.73(B)(2)-(3), (C)\", \"justification\": \"Employer expenditure statements require expenditure information, not reporting of lobbying contacts/communications.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_nVvR3VHu6uPS77jCI7QsvBzQ",
+              "function": {
+                "arguments": "{\"handle\": \"row_011\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(A)(3)\", \"justification\": \"The initial registration statement (filed by employer) must include 'a brief description of the type of legislation to which the engagement relates,' which is general issue information.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_luMxXCqF67un1KOTgUeAGEFa",
+              "function": {
+                "arguments": "{\"handle\": \"row_012\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.70(D); §101.73(B)(2),(C)\", \"justification\": \"Expenditures reportable by employers include payments/gifts of anything of value (including food/beverages, entertainment, lodging, transportation) as defined, and employer statements must report total expenditures and, when applicable, itemized recipient expenditures.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_QNB6i5r31nt4WiEiYUNf8u1Q",
+              "function": {
+                "arguments": "{\"handle\": \"row_013\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.73(C)\", \"justification\": \"Employer statements must show the total amount of reportable expenditures (excluding office facilities and compensation), which are non-compensation lobbying-related costs.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_GCgsE9pieblMHPneysZPUTfn",
+              "function": {
+                "arguments": "{\"handle\": \"row_014\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(A)(1)-(2)\", \"justification\": \"The registration statement requires the legislative agent’s name, business address, and occupation, but not the agent’s phone number.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_ac7r58R97t31WuCu6csxFRfE",
+              "function": {
+                "arguments": "{\"handle\": \"row_015\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(B); §101.73(A)\", \"justification\": \"Employers must file updated registration statements confirming engagements and, because the filings are engagement-based and list the agent information, the employer’s registrations identify the legislative agent(s) engaged.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_ShaqCnvyiPOIVV1fW9vFqS7s",
+              "function": {
+                "arguments": "{\"handle\": \"row_016\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §§101.72-101.74\", \"justification\": \"No provision in the employer spending/registration/transaction reporting requires disclosure of the employer’s major financial contributors.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_EoD7R9DnfUxAgkCi3Ut3jHqB",
+              "function": {
+                "arguments": "{\"handle\": \"row_017\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(A)(2)\", \"justification\": \"The statute requires the employer's 'name and business address' but does not require a phone number.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_xEPSoQ2SeMMlHQKt9GqVxfZ9",
+              "function": {
+                "arguments": "{\"handle\": \"row_018\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(B)\", \"justification\": \"Updated registration statements must list 'the specific bills or resolutions on which the agent actively advocated' during the period, providing bill/resolution identifiers associated with the employer’s engagement.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_gwxszILHllPmANjy77tKnyCN",
+              "function": {
+                "arguments": "{\"handle\": \"row_019\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.73(C)\", \"justification\": \"Each employer statement must show 'the total amount of expenditures made by the employer' during the reporting period (excluding office facilities and agent compensation), which is a total lobbying expenditure figure for the employer’s reportable spending.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_Wi5rcT2rCTEsJHheNoPWXchn",
+              "function": {
+                "arguments": "{\"handle\": \"row_020\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.73(C)\", \"justification\": \"Employer expenditure reporting expressly excludes 'the compensation paid to legislative agents,' so salary/fees paid to lobbyists are not included.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_16PkL5OXfTEssbz9wAtEwZ6s",
+              "function": {
+                "arguments": "{\"handle\": \"row_021\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.73(B)(2)\", \"justification\": \"When expenditures are made for the benefit of a particular covered official/employee, the report must include the recipient’s name, total amount, description, and approximate date, which is itemized by recipient.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_zagQXaH0S4MaQM9RlnhVafjy",
+              "function": {
+                "arguments": "{\"handle\": \"row_022\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(A)(2)\", \"justification\": \"Where a trade association or certain nonprofit is the employer, the statement 'need not list the names and addresses of each member' so there is no requirement to disclose sponsors/members.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_hnIwCAs4d7ze6alDtsEc15Ok",
+              "function": {
+                "arguments": "{\"handle\": \"row_023\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §101.72(A)(1)-(2)\", \"justification\": \"Employer registration filings must identify the legislative agent(s) engaged (name and business address/occupation), thereby listing the lobbyists employed/retained by the principal.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1780711042,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 1870,
+      "prompt_tokens": 60690,
+      "total_tokens": 62560,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 60544
+      }
+    }
+  }
+}

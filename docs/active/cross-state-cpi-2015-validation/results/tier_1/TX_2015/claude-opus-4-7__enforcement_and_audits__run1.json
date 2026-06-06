@@ -1,0 +1,143 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "enforcement_and_audits",
+    "run_index": 1,
+    "state_abbr": "TX",
+    "vintage_year": 2015,
+    "prompt_sha256": "37c66c4d81d755e65fe909ea7a58321ab13e1f35efec6b146b9c80a136f430d6",
+    "timestamp_utc": "2026-06-06T00:27:31+00:00"
+  },
+  "wall_clock_seconds": 10.091269458003808,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 25724,
+    "inference_geo": "global",
+    "input_tokens": 1027,
+    "output_tokens": 772,
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.024435000000000002,
+  "legal_roster": [
+    [
+      "lobbying_violation_penalties_defined_in_law",
+      "legal"
+    ],
+    [
+      "lobbying_disclosure_audit_required_in_law",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_violation_penalties_defined_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§§305.031, 305.032, 305.033",
+      "justification": "§305.031 prescribes criminal penalties (Class A misdemeanor, third-degree felony) for violations; §305.032 imposes a civil penalty for failure to register (up to 3x the compensation/expenditure); and §305.033 imposes civil penalties for late filing ($500, up to $10,000 if more than 30 days late)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_disclosure_audit_required_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "NO"
+      },
+      "cell_class": "EnumCell",
+      "cited_section": "Chapter 305 generally; cf. §305.034",
+      "justification": "Chapter 305 contains no requirement for regular impartial third-party auditing of lobbying disclosure records; §305.034 only directs the Ethics Commission itself to check whether required forms have been filed, which is internal compliance monitoring by the regulator rather than an independent audit requirement."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "msg_01Qm788zrkk3driYA4mbELQ4",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "I'll analyze the statute for both cells.\n\nFor row_001: The statute clearly defines multiple penalties — §305.031 (criminal penalties, Class A misdemeanor and third-degree felony), §305.032 (civil penalty for failure to register), §305.033 (civil penalty for late filing).\n\nFor row_002: I see no provision requiring regular third-party auditing of lobbying disclosure records. §305.034 requires the commission to determine whether registrants filed required forms, but this is a compliance check by the regulating agency itself, not an independent audit. There's no audit requirement at all in the regular sense.",
+        "type": "text"
+      },
+      {
+        "id": "toolu_01XtC9fWRSr9RbWn4ckf4gEP",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_001",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§§305.031, 305.032, 305.033",
+          "justification": "§305.031 prescribes criminal penalties (Class A misdemeanor, third-degree felony) for violations; §305.032 imposes a civil penalty for failure to register (up to 3x the compensation/expenditure); and §305.033 imposes civil penalties for late filing ($500, up to $10,000 if more than 30 days late)."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01UsgDaLYJtXmJjqFT34TWAn",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_002",
+          "axis": "legal",
+          "value": "NO",
+          "confidence": "high",
+          "cited_section": "Chapter 305 generally; cf. §305.034",
+          "justification": "Chapter 305 contains no requirement for regular impartial third-party auditing of lobbying disclosure records; §305.034 only directs the Ethics Commission itself to check whether required forms have been filed, which is internal compliance monitoring by the regulator rather than an independent audit requirement."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 25724,
+      "inference_geo": "global",
+      "input_tokens": 1027,
+      "output_tokens": 772,
+      "server_tool_use": null,
+      "service_tier": "standard",
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      }
+    }
+  }
+}

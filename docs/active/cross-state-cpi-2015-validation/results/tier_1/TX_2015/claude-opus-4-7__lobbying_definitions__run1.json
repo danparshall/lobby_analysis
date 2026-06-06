@@ -1,0 +1,635 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "lobbying_definitions",
+    "run_index": 1,
+    "state_abbr": "TX",
+    "vintage_year": 2015,
+    "prompt_sha256": "37c66c4d81d755e65fe909ea7a58321ab13e1f35efec6b146b9c80a136f430d6",
+    "timestamp_utc": "2026-06-06T00:18:20+00:00"
+  },
+  "wall_clock_seconds": 38.04559854202671,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 25724
+    },
+    "cache_creation_input_tokens": 25724,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2187,
+    "output_tokens": 3819,
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.10641,
+  "legal_roster": [
+    [
+      "def_lobbying_activity_types",
+      "legal"
+    ],
+    [
+      "def_lobbyist_actor_types",
+      "legal"
+    ],
+    [
+      "law_defines_public_entity",
+      "legal"
+    ],
+    [
+      "law_includes_materiality_test",
+      "legal"
+    ],
+    [
+      "def_target_executive_agency",
+      "legal"
+    ],
+    [
+      "def_target_executive_staff",
+      "legal"
+    ],
+    [
+      "def_target_governors_office",
+      "legal"
+    ],
+    [
+      "def_target_independent_agency",
+      "legal"
+    ],
+    [
+      "def_target_legislative_branch",
+      "legal"
+    ],
+    [
+      "def_target_legislative_staff",
+      "legal"
+    ],
+    [
+      "def_actor_class_elected_officials",
+      "legal"
+    ],
+    [
+      "def_actor_class_public_employees",
+      "legal"
+    ],
+    [
+      "public_entity_def_relies_on_charter",
+      "legal"
+    ],
+    [
+      "public_entity_def_relies_on_ownership",
+      "legal"
+    ],
+    [
+      "public_entity_def_relies_on_revenue_structure",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "def_lobbying_activity_types",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": [
+          "written",
+          "oral",
+          "phone_calls",
+          "emails",
+          "electronic"
+        ]
+      },
+      "cell_class": "EnumSetCell",
+      "cited_section": "§305.002(2)",
+      "justification": "The statute defines \"communicates directly with\" as \"contact in person or by telephone, telegraph, letter, facsimile, electronic mail, or other electronic means of communication,\" covering oral (in person/phone), written (letter), electronic, phone calls, and emails, but does not enumerate virtual meetings, organising meetings, or events as activity types."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_lobbyist_actor_types",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": [
+          "professional_lobbyist",
+          "law_firm",
+          "in_house_company",
+          "in_house_organisation",
+          "professional_consultancy"
+        ]
+      },
+      "cell_class": "EnumSetCell",
+      "cited_section": "§305.002(8), §305.003(a), §305.003(b)",
+      "justification": "\"Person\" is defined broadly to include individuals, corporations, associations, firms, partnerships, etc., and §305.003(a)(2) and (b) require registration of those compensated/reimbursed (professional lobbyists, consultancies, law firms) as well as those who lobby as part of regular employment (in-house company/organisation lobbyists); §305.003(b-1) explicitly excludes government employees, and think tanks/research institutions are not specifically enumerated."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "law_defines_public_entity",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.002",
+      "justification": "The definitions section §305.002 does not include a definition of \"public entity\"; the statute defines \"person,\" \"member of executive/legislative branch,\" etc., but not \"public entity.\""
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "law_includes_materiality_test",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.003(a)(1), (a)(2), (b-3)",
+      "justification": "The statute contains materiality/de minimis thresholds: expenditures or compensation must exceed $200 per quarter to trigger registration, and §305.003(b-3) exempts persons spending not more than 26 hours per quarter on lobbying activity, providing exemption thresholds for coverage."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_executive_agency",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.002(4), (7), §305.003(a)",
+      "justification": "The statute defines \"member of the executive branch\" to include officers of any state agency, department, or office in the executive branch (which includes the governor), and \"member of the legislative branch\" to include legislators; §305.003 covers communications with both branches."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_executive_staff",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.002(4), (7)",
+      "justification": "\"Member of the executive branch\" includes any officer or employee of any state agency, department, or office in the executive branch, and \"member of the legislative branch\" includes members, officers, and employees of the legislature, covering legislative, executive officials, senior officials, and staff/bureaucracy."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_governors_office",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.002(4), (7), §305.003(a)",
+      "justification": "The statute covers direct communications with members of both the legislative branch (including legislators) and the executive branch (including officers of state agencies, which encompasses the governor)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_independent_agency",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.002(4), (7), §305.003(a)",
+      "justification": "Same as above—the statute's coverage of direct communications with both legislative and executive branch members (including the governor as a state executive officer) satisfies the YES criterion."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_legislative_branch",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.002(4), (7), §305.003(a)",
+      "justification": "The statute defines and covers lobbying communications with both state legislators and executive branch officials including the governor (an officer in the executive branch of state government)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_legislative_staff",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.002(4), (7)",
+      "justification": "Targets of lobbying include the legislative branch (members, officers, employees) and executive branch (officers and employees of any state agency, department, or office), covering senior officials, staff, and the administrative bureaucracy."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_actor_class_elected_officials",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.003(b-1)",
+      "justification": "The statute explicitly states that subsection (a)(2) \"does not require a member of the judicial, legislative, or executive branch of state government or an officer or employee of a political subdivision of the state to register,\" exempting elected officials and public appointees from registration requirements."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_actor_class_public_employees",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.003(b-1)",
+      "justification": "Public employees (state government members and officers/employees of political subdivisions) are exempted from the registration requirement under §305.003(b-1), so they are not treated as lobbyists subject to the compensation/expenditure/time thresholds (though quasi-governmental agency employees remain covered)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "public_entity_def_relies_on_charter",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.002",
+      "justification": "The statutory definitions in §305.002 do not rely on public charter or special government protection; definitions are based on activity (direct communication to influence legislation/administrative action), compensation, and expenditures, not on charter status."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "public_entity_def_relies_on_ownership",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.002",
+      "justification": "The statutory definitions do not rely on ownership criteria; lobbyist status is determined by activity, compensation, and expenditure thresholds rather than ownership structure."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "public_entity_def_relies_on_revenue_structure",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.002, §305.003",
+      "justification": "The statutory definitions do not rely on the structure or composition of revenue; lobbyist registration is triggered by expenditure or compensation thresholds for lobbying activity, not revenue composition."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "msg_01Sht3Cjz71mCQfk3M1dP7v7",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "I'll analyze the Texas lobbying statute (Chapter 305) to answer each cell.",
+        "type": "text"
+      },
+      {
+        "id": "toolu_01Ers58MBPvHDHFNUujS18n7",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_001",
+          "axis": "legal",
+          "value": [
+            "oral",
+            "written",
+            "electronic",
+            "phone_calls",
+            "emails"
+          ],
+          "confidence": "high",
+          "cited_section": "§305.002(2)",
+          "justification": "The statute defines \"communicates directly with\" as \"contact in person or by telephone, telegraph, letter, facsimile, electronic mail, or other electronic means of communication,\" covering oral (in person/phone), written (letter), electronic, phone calls, and emails, but does not enumerate virtual meetings, organising meetings, or events as activity types."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01DwXbXTJK4CpfwGZHhWpBnd",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_002",
+          "axis": "legal",
+          "value": [
+            "professional_lobbyist",
+            "in_house_company",
+            "in_house_organisation",
+            "professional_consultancy",
+            "law_firm"
+          ],
+          "confidence": "medium",
+          "cited_section": "§305.002(8), §305.003(a), §305.003(b)",
+          "justification": "\"Person\" is defined broadly to include individuals, corporations, associations, firms, partnerships, etc., and §305.003(a)(2) and (b) require registration of those compensated/reimbursed (professional lobbyists, consultancies, law firms) as well as those who lobby as part of regular employment (in-house company/organisation lobbyists); §305.003(b-1) explicitly excludes government employees, and think tanks/research institutions are not specifically enumerated."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01JjukhcvJAWWQsiTayHjB1L",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_003",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§305.002",
+          "justification": "The definitions section §305.002 does not include a definition of \"public entity\"; the statute defines \"person,\" \"member of executive/legislative branch,\" etc., but not \"public entity.\""
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01XUmHaok2Js9MFHPqGsjwYv",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_004",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§305.003(a)(1), (a)(2), (b-3)",
+          "justification": "The statute contains materiality/de minimis thresholds: expenditures or compensation must exceed $200 per quarter to trigger registration, and §305.003(b-3) exempts persons spending not more than 26 hours per quarter on lobbying activity, providing exemption thresholds for coverage."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01AS6qDWEvab2W5U2Z1t4oLR",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_005",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§305.002(4), (7), §305.003(a)",
+          "justification": "The statute defines \"member of the executive branch\" to include officers of any state agency, department, or office in the executive branch (which includes the governor), and \"member of the legislative branch\" to include legislators; §305.003 covers communications with both branches."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01Rwsh8yr3ZogLPfAquSaEYm",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_006",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§305.002(4), (7)",
+          "justification": "\"Member of the executive branch\" includes any officer or employee of any state agency, department, or office in the executive branch, and \"member of the legislative branch\" includes members, officers, and employees of the legislature, covering legislative, executive officials, senior officials, and staff/bureaucracy."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_015vNKAjKU1CuN9uiK55rdVq",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_007",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§305.002(4), (7), §305.003(a)",
+          "justification": "The statute covers direct communications with members of both the legislative branch (including legislators) and the executive branch (including officers of state agencies, which encompasses the governor)."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01PcofcDjgJJWvmzcHAd7cce",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_008",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§305.002(4), (7), §305.003(a)",
+          "justification": "Same as above—the statute's coverage of direct communications with both legislative and executive branch members (including the governor as a state executive officer) satisfies the YES criterion."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01YYVDp28RhMUj2wZYANtS3W",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_009",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§305.002(4), (7), §305.003(a)",
+          "justification": "The statute defines and covers lobbying communications with both state legislators and executive branch officials including the governor (an officer in the executive branch of state government)."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01VchzAgJco1uvtrzXkSMmKf",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_010",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§305.002(4), (7)",
+          "justification": "Targets of lobbying include the legislative branch (members, officers, employees) and executive branch (officers and employees of any state agency, department, or office), covering senior officials, staff, and the administrative bureaucracy."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_019WQ7XWD2B5KUGSfNRDhMJJ",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_011",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§305.003(b-1)",
+          "justification": "The statute explicitly states that subsection (a)(2) \"does not require a member of the judicial, legislative, or executive branch of state government or an officer or employee of a political subdivision of the state to register,\" exempting elected officials and public appointees from registration requirements."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01XhZ2uktYbE9jttQLfn8toX",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_012",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§305.003(b-1)",
+          "justification": "Public employees (state government members and officers/employees of political subdivisions) are exempted from the registration requirement under §305.003(b-1), so they are not treated as lobbyists subject to the compensation/expenditure/time thresholds (though quasi-governmental agency employees remain covered)."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01TjwEeerHdQGdHEk32kFD5w",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_013",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§305.002",
+          "justification": "The statutory definitions in §305.002 do not rely on public charter or special government protection; definitions are based on activity (direct communication to influence legislation/administrative action), compensation, and expenditures, not on charter status."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01YK1ByRdt4ikPoTZLRnueFA",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_014",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§305.002",
+          "justification": "The statutory definitions do not rely on ownership criteria; lobbyist status is determined by activity, compensation, and expenditure thresholds rather than ownership structure."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01Y6HYct38HguJhtcJ33Zhkx",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_015",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§305.002, §305.003",
+          "justification": "The statutory definitions do not rely on the structure or composition of revenue; lobbyist registration is triggered by expenditure or compensation thresholds for lobbying activity, not revenue composition."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 25724
+      },
+      "cache_creation_input_tokens": 25724,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 2187,
+      "output_tokens": 3819,
+      "server_tool_use": null,
+      "service_tier": "standard",
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      }
+    }
+  }
+}

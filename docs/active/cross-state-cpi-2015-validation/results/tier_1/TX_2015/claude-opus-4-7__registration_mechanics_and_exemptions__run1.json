@@ -1,0 +1,354 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "registration_mechanics_and_exemptions",
+    "run_index": 1,
+    "state_abbr": "TX",
+    "vintage_year": 2015,
+    "prompt_sha256": "37c66c4d81d755e65fe909ea7a58321ab13e1f35efec6b146b9c80a136f430d6",
+    "timestamp_utc": "2026-06-06T00:20:52+00:00"
+  },
+  "wall_clock_seconds": 17.41712841601111,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 25724,
+    "inference_geo": "global",
+    "input_tokens": 1413,
+    "output_tokens": 1795,
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.05194,
+  "legal_roster": [
+    [
+      "lobbyist_registration_required",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_renewal_cadence",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_amendment_deadline_days",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_deadline_days_after_first_lobbying",
+      "legal"
+    ],
+    [
+      "separate_registrations_for_lobbyists_and_clients",
+      "legal"
+    ],
+    [
+      "lobbyist_required_to_submit_photograph_with_registration",
+      "legal"
+    ],
+    [
+      "exemption_for_govt_official_capacity_exists",
+      "legal"
+    ],
+    [
+      "exemption_partial_for_govt_agencies",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.003(a)",
+      "justification": "Section 305.003(a) requires any person who receives compensation above the threshold to communicate directly with members of the legislative or executive branch to register with the Texas Ethics Commission."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_renewal_cadence",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": 12
+      },
+      "cell_class": "IntCell",
+      "cited_section": "§305.005(b)",
+      "justification": "Section 305.005(b) provides that a registration expires at midnight December 31 of each year unless renewed, making renewal an annual (12-month) requirement."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_amendment_deadline_days",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": 5
+      },
+      "cell_class": "IntCell",
+      "cited_section": "§305.0065(d)",
+      "justification": "Section 305.0065(d) requires the registrant to file an amended registration no later than the fifth day after the first direct communication involving the change during a legislative session."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_deadline_days_after_first_lobbying",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": 5
+      },
+      "cell_class": "IntCell",
+      "cited_section": "§305.005(e)",
+      "justification": "Section 305.005(e) requires a person who has not registered to file the registration and fee not later than the fifth day after the first direct communication that requires registration."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "separate_registrations_for_lobbyists_and_clients",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.005(f)(3)",
+      "justification": "The statute requires only the lobbyist/registrant to file registration; clients/principals are disclosed within the registrant's form under §305.005(f)(3) rather than filing a separate registration as independent registrants."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_required_to_submit_photograph_with_registration",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.005(f)",
+      "justification": "Section 305.005(f) enumerates the required contents of the registration and does not include a photograph requirement."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "exemption_for_govt_official_capacity_exists",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.003(b-1)",
+      "justification": "Section 305.003(b-1) expressly exempts members of the judicial, legislative, or executive branch of state government and officers/employees of political subdivisions from the registration requirement under (a)(2)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "exemption_partial_for_govt_agencies",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§305.003(b-1), (b-2)",
+      "justification": "Subsections (b-1) and (b-2) of §305.003 relieve government branch members, political subdivision officers/employees, and certain state agency utility employees from registration requirements that otherwise apply to non-government persons."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "msg_017iP37vCJXEb4EgM5VsziHK",
+    "container": null,
+    "content": [
+      {
+        "id": "toolu_01SN11FTyGgJSjXK9r2628Dq",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "axis": "legal",
+          "cited_section": "§305.003(a)",
+          "confidence": "high",
+          "handle": "row_001",
+          "justification": "Section 305.003(a) requires any person who receives compensation above the threshold to communicate directly with members of the legislative or executive branch to register with the Texas Ethics Commission.",
+          "value": true
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_0153woJv2xQuLEijzphApwQV",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "axis": "legal",
+          "cited_section": "§305.005(b)",
+          "confidence": "high",
+          "handle": "row_002",
+          "justification": "Section 305.005(b) provides that a registration expires at midnight December 31 of each year unless renewed, making renewal an annual (12-month) requirement.",
+          "value": "12"
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_015FT1rkAKzTx2YabhjwJHtR",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "axis": "legal",
+          "cited_section": "§305.0065(d)",
+          "confidence": "high",
+          "handle": "row_003",
+          "justification": "Section 305.0065(d) requires the registrant to file an amended registration no later than the fifth day after the first direct communication involving the change during a legislative session.",
+          "value": "5"
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01VCnknjGpiQ7AECKnTUazHj",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "axis": "legal",
+          "cited_section": "§305.005(e)",
+          "confidence": "high",
+          "handle": "row_004",
+          "justification": "Section 305.005(e) requires a person who has not registered to file the registration and fee not later than the fifth day after the first direct communication that requires registration.",
+          "value": "5"
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_018c9aS9j4XUZyy78b8PqEyi",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "axis": "legal",
+          "cited_section": "§305.005(f)(3)",
+          "confidence": "high",
+          "handle": "row_005",
+          "justification": "The statute requires only the lobbyist/registrant to file registration; clients/principals are disclosed within the registrant's form under §305.005(f)(3) rather than filing a separate registration as independent registrants.",
+          "value": false
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01GpkAfkvAXsDqXUVMhKfJf8",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "axis": "legal",
+          "cited_section": "§305.005(f)",
+          "confidence": "high",
+          "handle": "row_006",
+          "justification": "Section 305.005(f) enumerates the required contents of the registration and does not include a photograph requirement.",
+          "value": false
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01J4rDneR1uZTw8ZUgdCQM9D",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "axis": "legal",
+          "cited_section": "§305.003(b-1)",
+          "confidence": "high",
+          "handle": "row_007",
+          "justification": "Section 305.003(b-1) expressly exempts members of the judicial, legislative, or executive branch of state government and officers/employees of political subdivisions from the registration requirement under (a)(2).",
+          "value": true
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01KW5c25tQgoAoz4EXCGLyXL",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "axis": "legal",
+          "cited_section": "§305.003(b-1), (b-2)",
+          "confidence": "high",
+          "handle": "row_008",
+          "justification": "Subsections (b-1) and (b-2) of §305.003 relieve government branch members, political subdivision officers/employees, and certain state agency utility employees from registration requirements that otherwise apply to non-government persons.",
+          "value": true
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 25724,
+      "inference_geo": "global",
+      "input_tokens": 1413,
+      "output_tokens": 1795,
+      "server_tool_use": null,
+      "service_tier": "standard",
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      }
+    }
+  }
+}

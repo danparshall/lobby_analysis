@@ -1,0 +1,899 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "principal_spending_report",
+    "run_index": 3,
+    "state_abbr": "OH",
+    "vintage_year": 2015,
+    "prompt_sha256": "a5b2e6db592c11a03109db6b6ec3c341399426322dcf183d33de108e1a552f10",
+    "timestamp_utc": "2026-06-06T00:27:12+00:00"
+  },
+  "wall_clock_seconds": 45.69180700002471,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 2151
+    },
+    "cache_creation_input_tokens": 2151,
+    "cache_read_input_tokens": 92795,
+    "inference_geo": "global",
+    "input_tokens": 6,
+    "output_tokens": 4944,
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.12362999999999999,
+  "legal_roster": [
+    [
+      "principal_spending_report_cadence_includes_annual",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_includes_monthly",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_includes_other",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_includes_quarterly",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_includes_semiannual",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_includes_triannual",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_other_specification",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_business_nature",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_compensation_paid_to_lobbyists",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_contacts_made",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_general_issues",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_gifts_entertainment_transport_lodging",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_indirect_costs",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_lobbyist_contact_info",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_lobbyist_names",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_major_financial_contributors",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_principal_contact_info",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_specific_bill_number",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_total_expenditures",
+      "legal"
+    ],
+    [
+      "principal_spending_report_required",
+      "legal"
+    ],
+    [
+      "principal_spending_report_uses_itemized_format",
+      "legal"
+    ],
+    [
+      "lobbyist_or_principal_reg_form_includes_member_or_sponsor_names",
+      "legal"
+    ],
+    [
+      "principal_spending_report_lists_lobbyists_employed",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_annual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(B)",
+      "justification": "Reports are filed three times per year (last day of January, May, and September), not annually."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_monthly",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(B)",
+      "justification": "Reports are filed three times per year, not monthly."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_other",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(B)",
+      "justification": "The statute requires filing three times a year (January, May, September), which does not fit any standard option and is therefore \"other.\""
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_quarterly",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(B)",
+      "justification": "Reports are filed three times per year (every four months), not quarterly."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_semiannual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(B)",
+      "justification": "Reports are filed three times per year, not semi-annually."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_triannual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(B)",
+      "justification": "Updated registration statements with expenditure statements are filed not later than the last day of January, May, and September of each year — three times per year."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_other_specification",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "Filed three times per year: not later than the last day of January, May, and September, covering the preceding four-calendar-month period."
+      },
+      "cell_class": "FreeTextCell",
+      "cited_section": "§101.72(B); §101.73(D)",
+      "justification": "§101.72(B) sets filing deadlines of the last day of January, May, and September; §101.73(D) specifies each statement covers the prior four-calendar-month period."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_business_nature",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(A); §101.73",
+      "justification": "The required contents listed in §101.72(A) and §101.73 do not require disclosure of the nature of the employer's business as public or private."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_compensation_paid_to_lobbyists",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.73(C)",
+      "justification": "Section 101.73(C) expressly states \"expenditures\" does not include the compensation paid to legislative agents engaged by an employer, so direct compensation is not a required reporting component."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_contacts_made",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.73(B)(2)(a)",
+      "justification": "Statements must include the name of the public officer or employee to whom or on whose behalf expenditures were made, identifying the contact."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_general_issues",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(A)(3)",
+      "justification": "Initial registration statement must include \"a brief description of the type of legislation to which the engagement relates.\""
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_gifts_entertainment_transport_lodging",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.70(D)(1); §101.73(B)",
+      "justification": "\"Expenditure\" is defined to include food, beverages, entertainment, lodging, and transportation, and §101.73(B) requires reporting such expenditures."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_indirect_costs",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.73(B)(1), (C)",
+      "justification": "Statements must show the total amount of expenditures made by the lobbyist/employer during the reporting period, which includes non-compensation indirect lobbying costs (excluding only office expenses and lobbyist compensation)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_lobbyist_contact_info",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(A)(1)",
+      "justification": "Registration requires the name, business address, and occupation of the legislative agent, but not phone number; this is filed by both agents and employers."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_lobbyist_names",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(C)",
+      "justification": "If an employer engages more than one legislative agent, the employer files one updated registration statement containing information regarding all of the legislative agents engaged by the employer."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_major_financial_contributors",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(A); §101.73",
+      "justification": "Neither §101.72 nor §101.73 require disclosure of major financial contributors to the employer."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_principal_contact_info",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(A)(2)",
+      "justification": "The registration requires the name and business address of the employer, but not a phone number."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_specific_bill_number",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(B); §101.73(B)(2)(e)",
+      "justification": "Updated registration must list the specific bills or resolutions on which the agent actively advocated; expenditure statements must identify the specific items of legislation for which expenditures were made."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_total_expenditures",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.73(B)(1), (C)",
+      "justification": "Statements must show the total amount of expenditures made by the legislative agent and by the employer during the reporting period."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.73(C)",
+      "justification": "§101.73(C) expressly excludes from \"expenditures\" the compensation paid to legislative agents engaged by an employer, so salary/fees paid to lobbyists are not required to be reported."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_uses_itemized_format",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.73(B)(2)",
+      "justification": "Expenditures must be itemized per public officer with name, total amount, brief description, approximate date, and specific legislation — an itemized rather than lump-sum format."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_or_principal_reg_form_includes_member_or_sponsor_names",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(A)(2)",
+      "justification": "Section expressly states that where a trade association or charitable/fraternal 501(c) organization is the employer, the statement need not list the names and addresses of each member."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_lists_lobbyists_employed",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§101.72(C)",
+      "justification": "An employer engaging multiple legislative agents files a single updated registration statement containing information regarding all of the legislative agents engaged by the employer."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "msg_014GsFD8WXo21M6uXRVzfDMk",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "I'll analyze each cell based on the Ohio statute text, focusing on §101.73 (statements of expenditures) and §101.72 (registration), which govern employer/principal spending reports.",
+        "type": "text"
+      },
+      {
+        "id": "toolu_01YKK7HddZTmprcncYEHPwrX",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_001",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§101.72(B)",
+          "justification": "Reports are filed three times per year (last day of January, May, and September), not annually."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_013USmoP4rRTbuch2EWB79hE",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_002",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§101.72(B)",
+          "justification": "Reports are filed three times per year, not monthly."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01D7yJSUczbt8P1HZMAS8t8w",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_003",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.72(B)",
+          "justification": "The statute requires filing three times a year (January, May, September), which does not fit any standard option and is therefore \"other.\""
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01BGUpoJBMH8LMkQan5FE7VF",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_004",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§101.72(B)",
+          "justification": "Reports are filed three times per year (every four months), not quarterly."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01MFZMD8vASxKgdXADFwGBiH",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_005",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§101.72(B)",
+          "justification": "Reports are filed three times per year, not semi-annually."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01W6qJvd4637zxdf54twCuBT",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_006",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.72(B)",
+          "justification": "Updated registration statements with expenditure statements are filed not later than the last day of January, May, and September of each year — three times per year."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01BaMM4HgWCvYyJQkYReiKCE",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_007",
+          "axis": "legal",
+          "value": "Filed three times per year: not later than the last day of January, May, and September, covering the preceding four-calendar-month period.",
+          "confidence": "high",
+          "cited_section": "§101.72(B); §101.73(D)",
+          "justification": "§101.72(B) sets filing deadlines of the last day of January, May, and September; §101.73(D) specifies each statement covers the prior four-calendar-month period."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01MK1yw87JcAZHxcETXUUY64",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_008",
+          "axis": "legal",
+          "value": false,
+          "confidence": "medium",
+          "cited_section": "§101.72(A); §101.73",
+          "justification": "The required contents listed in §101.72(A) and §101.73 do not require disclosure of the nature of the employer's business as public or private."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01NbJSNR4Lhz3AnKkLux5zCJ",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_009",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§101.73(C)",
+          "justification": "Section 101.73(C) expressly states \"expenditures\" does not include the compensation paid to legislative agents engaged by an employer, so direct compensation is not a required reporting component."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01Q2RoQD1obtHZX7xcSWVXh8",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_010",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.73(B)(2)(a)",
+          "justification": "Statements must include the name of the public officer or employee to whom or on whose behalf expenditures were made, identifying the contact."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01NjQKodEQzUT5pteW5AC6RS",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_011",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.72(A)(3)",
+          "justification": "Initial registration statement must include \"a brief description of the type of legislation to which the engagement relates.\""
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01L4UBfY2TqH4Ysi8y4keQBH",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_012",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.70(D)(1); §101.73(B)",
+          "justification": "\"Expenditure\" is defined to include food, beverages, entertainment, lodging, and transportation, and §101.73(B) requires reporting such expenditures."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01YMxKBF6AB8qpATvyCNE7zP",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_013",
+          "axis": "legal",
+          "value": true,
+          "confidence": "medium",
+          "cited_section": "§101.73(B)(1), (C)",
+          "justification": "Statements must show the total amount of expenditures made by the lobbyist/employer during the reporting period, which includes non-compensation indirect lobbying costs (excluding only office expenses and lobbyist compensation)."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01WAaBRDTgBWDtuwpYSTqv8o",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_014",
+          "axis": "legal",
+          "value": false,
+          "confidence": "medium",
+          "cited_section": "§101.72(A)(1)",
+          "justification": "Registration requires the name, business address, and occupation of the legislative agent, but not phone number; this is filed by both agents and employers."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01YJ87bwxLMb7ojwDPsdBxDb",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_015",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.72(C)",
+          "justification": "If an employer engages more than one legislative agent, the employer files one updated registration statement containing information regarding all of the legislative agents engaged by the employer."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01MNMFGFUrmDPCNqYdBF9Fgg",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_016",
+          "axis": "legal",
+          "value": false,
+          "confidence": "medium",
+          "cited_section": "§101.72(A); §101.73",
+          "justification": "Neither §101.72 nor §101.73 require disclosure of major financial contributors to the employer."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01LLDnXcFgujvYbMNCYS7VjE",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_017",
+          "axis": "legal",
+          "value": false,
+          "confidence": "medium",
+          "cited_section": "§101.72(A)(2)",
+          "justification": "The registration requires the name and business address of the employer, but not a phone number."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01L4UJRsL3bKVVGgrm1SM4Se",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_018",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.72(B); §101.73(B)(2)(e)",
+          "justification": "Updated registration must list the specific bills or resolutions on which the agent actively advocated; expenditure statements must identify the specific items of legislation for which expenditures were made."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01CSJcFAUi1veAic9JPK5jzk",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_019",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.73(B)(1), (C)",
+          "justification": "Statements must show the total amount of expenditures made by the legislative agent and by the employer during the reporting period."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01HMUBTn9waRmvtbgea1BpUj",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_020",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§101.73(C)",
+          "justification": "§101.73(C) expressly excludes from \"expenditures\" the compensation paid to legislative agents engaged by an employer, so salary/fees paid to lobbyists are not required to be reported."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01RkzaKviPeA8xSzHesfoDKE",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_021",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.73(B)(2)",
+          "justification": "Expenditures must be itemized per public officer with name, total amount, brief description, approximate date, and specific legislation — an itemized rather than lump-sum format."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_0116kebhtuQJvF497Qbbji3a",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_022",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§101.72(A)(2)",
+          "justification": "Section expressly states that where a trade association or charitable/fraternal 501(c) organization is the employer, the statement need not list the names and addresses of each member."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01Y7vHL5jtVXRjCftYTYruBg",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_023",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§101.72(C)",
+          "justification": "An employer engaging multiple legislative agents files a single updated registration statement containing information regarding all of the legislative agents engaged by the employer."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 2151
+      },
+      "cache_creation_input_tokens": 2151,
+      "cache_read_input_tokens": 92795,
+      "inference_geo": "global",
+      "input_tokens": 6,
+      "output_tokens": 4944,
+      "server_tool_use": null,
+      "service_tier": "standard",
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      }
+    }
+  }
+}

@@ -1,0 +1,133 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "enforcement_and_audits",
+    "run_index": 3,
+    "state_abbr": "OH",
+    "vintage_year": 2015,
+    "prompt_sha256": "a5b2e6db592c11a03109db6b6ec3c341399426322dcf183d33de108e1a552f10",
+    "timestamp_utc": "2026-06-06T01:58:26+00:00"
+  },
+  "wall_clock_seconds": 6.455313333019149,
+  "usage": {
+    "completion_tokens": 337,
+    "prompt_tokens": 59972,
+    "total_tokens": 60309,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 59904
+    }
+  },
+  "cost_usd_estimate": 0.10966899999999999,
+  "legal_roster": [
+    [
+      "lobbying_violation_penalties_defined_in_law",
+      "legal"
+    ],
+    [
+      "lobbying_disclosure_audit_required_in_law",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_violation_penalties_defined_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Ohio Rev. Code §§ 101.99(A)-(B) (penalties for violations of §101.71 and §101.77) (2015); see also §121.99(A)-(B) (penalties for violations of §121.61) and §101.91/§101.99 for retirement system lobbying; §101.71(A)-(D) (prohibited acts include failure to register/file and filing false statements)",
+      "justification": "The statute makes failure to register, failure to file required statements, and filing false statements prohibited acts (§101.71) and expressly assigns criminal penalties for those violations (§101.99), with parallel penalty provisions for executive-agency and retirement-system lobbying (§§121.61, 121.99; §§101.91, 101.99)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_disclosure_audit_required_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "NO"
+      },
+      "cell_class": "EnumCell",
+      "cited_section": "Ohio Rev. Code §§ 101.79, 121.69, 101.981 (attorney general may investigate compliance and reports apparent violations); §101.78(A), §121.68(A), §101.98(A) (records are public)",
+      "justification": "The lobbying statutes authorize investigations of compliance by the attorney general when warranted but do not require any regular, periodic, independent audit of lobbying disclosure records."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "chatcmpl-DnaajHB58kd9HXmyDpfgupRmdp6HD",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_IgZqJv8CFwRvoCBjV8OSUf5G",
+              "function": {
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §§ 101.99(A)-(B) (penalties for violations of §101.71 and §101.77) (2015); see also §121.99(A)-(B) (penalties for violations of §121.61) and §101.91/§101.99 for retirement system lobbying; §101.71(A)-(D) (prohibited acts include failure to register/file and filing false statements)\", \"justification\": \"The statute makes failure to register, failure to file required statements, and filing false statements prohibited acts (§101.71) and expressly assigns criminal penalties for those violations (§101.99), with parallel penalty provisions for executive-agency and retirement-system lobbying (§§121.61, 121.99; §§101.91, 101.99).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_gZgSNFjmOJepZh2U6PGWq7bx",
+              "function": {
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": \"NO\", \"confidence\": \"high\", \"cited_section\": \"Ohio Rev. Code §§ 101.79, 121.69, 101.981 (attorney general may investigate compliance and reports apparent violations); §101.78(A), §121.68(A), §101.98(A) (records are public)\", \"justification\": \"The lobbying statutes authorize investigations of compliance by the attorney general when warranted but do not require any regular, periodic, independent audit of lobbying disclosure records.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1780711101,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 337,
+      "prompt_tokens": 59972,
+      "total_tokens": 60309,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 59904
+      }
+    }
+  }
+}
