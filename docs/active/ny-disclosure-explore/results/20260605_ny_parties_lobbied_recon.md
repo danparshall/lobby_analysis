@@ -111,9 +111,22 @@ set of non-individual categories that need routing, not resolution:
   (clustered front-of-year; shape reference). **Gitignored** (raw API response,
   per branch hygiene); regenerate with the probe script.
 
-## Not done (next session, with Dan)
+## Decision (Dan, 2026-06-05): MVP first — resolve the ~83%, defer the ~17%
 
-Re-pull `client_semiannual` 2025 with `parties_lobbied` in the `$select`; design
-the normalizer + `target_kind` router; resolve `legislator` rows to `ocd-person`;
-decide the routing policy for the ~17% non-individual rows; then wire it as a
-second, disclosed lawmaker edge alongside the inferred sponsor edge.
+**Do not build the full `target_kind` taxonomy now.** The MVP is the named-legislator
+edge only:
+
+1. Re-pull `client_semiannual` 2025 with `parties_lobbied` in the `$select`.
+2. Normalize + resolve the **named-legislator** rows (~83%) to `ocd-person`
+   (strip title prefix + `, staff member` / parenthetical noise; match
+   `First [Middle] Last` against the OS roster).
+3. The **~17% non-individual** rows (executive offices, agencies, committee /
+   program staff, "entire-legislature" broadcasts) are **deferred** — keep the
+   raw `parties_lobbied` string, mark them unresolved (a single catch-all flag,
+   e.g. `parties_lobbied_resolved=False`), and do **not** route them into typed
+   buckets yet. They are preserved, not dropped, so the full taxonomy can be
+   built later without re-pulling.
+
+Ship that as a second, disclosed lawmaker edge alongside the inferred sponsor
+edge. The `target_kind ∈ {executive, agency, committee_staff, chamber_broadcast}`
+discriminator is a **post-MVP** follow-up.
