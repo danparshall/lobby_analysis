@@ -40,6 +40,7 @@ COLS = [
     "current_period_compensation",
     "type_of_lobbying_focus",
     "focus_identifying_number",
+    "parties_lobbied",
 ]
 
 DEST = Path("data/raw/ny") / YEAR / "client_semiannual.csv"

@@ -63,6 +63,30 @@ _CARRIED = ("contractual_client_name", "filing_compensation")
 _REQUIRED = set(BUSINESS_KEY) | set(GRAIN) | {"filing_compensation"}
 
 
+def resolve_superseded(
+    df: pd.DataFrame,
+    *,
+    business_key: tuple[str, ...] = BUSINESS_KEY,
+) -> pd.DataFrame:
+    """Keep only the latest submission per business key (drop superseded ones).
+
+    An amendment is a NEW ``form_submission_id`` superseding the prior submission
+    for the same business key; verified against live data, amendment ids are
+    strictly greater than the superseded original's, so ``max(form_submission_id)``
+    per business key is the surviving version. ``dropna=False`` is load-bearing: a
+    NaN in any business-key column would otherwise make ``groupby`` drop the group,
+    ``transform("max")`` return NaN, and every row for that filing fall out of the
+    ``== latest`` filter — silently losing the filing.
+
+    Shared by :func:`collapse_to_filing_grain` (the dollar pipeline) and the
+    ``parties_lobbied`` extraction, so both drop superseded submissions identically.
+    """
+    work = df.copy()
+    work["__seq"] = pd.to_numeric(work["form_submission_id"], errors="raise")
+    latest_seq = work.groupby(list(business_key), dropna=False)["__seq"].transform("max")
+    return work.loc[work["__seq"] == latest_seq].drop(columns="__seq")
+
+
 def collapse_to_filing_grain(
     df: pd.DataFrame,
     *,
@@ -92,16 +116,8 @@ def collapse_to_filing_grain(
     if missing:
         raise KeyError(f"grain-collapse requires canonical columns; missing: {sorted(missing)}")
 
-    work = df.copy()
-
     # 1. Supersede resolution: keep only the latest submission per business key.
-    # dropna=False is load-bearing: a NaN in any business-key column (e.g. an
-    # absent contractual_client_name) would otherwise make groupby drop that
-    # group, transform("max") return NaN, and every row for the filing fall out
-    # of the `== latest` filter — silently losing the filing's dollars.
-    work["__seq"] = pd.to_numeric(work["form_submission_id"], errors="raise")
-    latest_seq = work.groupby(list(business_key), dropna=False)["__seq"].transform("max")
-    survivors = work.loc[work["__seq"] == latest_seq].drop(columns="__seq")
+    survivors = resolve_superseded(df, business_key=business_key)
 
     # 2. Collapse the explosion to one row per (filing, bill).
     collapsed = survivors.drop_duplicates(subset=list(GRAIN))
