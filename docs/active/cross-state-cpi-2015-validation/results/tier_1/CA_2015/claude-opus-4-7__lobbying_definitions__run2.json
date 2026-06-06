@@ -1,0 +1,639 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "lobbying_definitions",
+    "run_index": 2,
+    "state_abbr": "CA",
+    "vintage_year": 2015,
+    "prompt_sha256": "85c0b63c925c8b2146d173119549652ca28c612542439de075a09ef5a79199e1",
+    "timestamp_utc": "2026-06-06T00:18:53+00:00"
+  },
+  "wall_clock_seconds": 36.037247791013215,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 2181
+    },
+    "cache_creation_input_tokens": 2181,
+    "cache_read_input_tokens": 51065,
+    "inference_geo": "global",
+    "input_tokens": 6,
+    "output_tokens": 3703,
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.092605,
+  "legal_roster": [
+    [
+      "def_lobbying_activity_types",
+      "legal"
+    ],
+    [
+      "def_lobbyist_actor_types",
+      "legal"
+    ],
+    [
+      "law_defines_public_entity",
+      "legal"
+    ],
+    [
+      "law_includes_materiality_test",
+      "legal"
+    ],
+    [
+      "def_target_executive_agency",
+      "legal"
+    ],
+    [
+      "def_target_executive_staff",
+      "legal"
+    ],
+    [
+      "def_target_governors_office",
+      "legal"
+    ],
+    [
+      "def_target_independent_agency",
+      "legal"
+    ],
+    [
+      "def_target_legislative_branch",
+      "legal"
+    ],
+    [
+      "def_target_legislative_staff",
+      "legal"
+    ],
+    [
+      "def_actor_class_elected_officials",
+      "legal"
+    ],
+    [
+      "def_actor_class_public_employees",
+      "legal"
+    ],
+    [
+      "public_entity_def_relies_on_charter",
+      "legal"
+    ],
+    [
+      "public_entity_def_relies_on_ownership",
+      "legal"
+    ],
+    [
+      "public_entity_def_relies_on_revenue_structure",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "def_lobbying_activity_types",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "low",
+        "provenance": [],
+        "value": [
+          "written",
+          "virtual",
+          "electronic",
+          "organising_meetings",
+          "oral",
+          "emails",
+          "phone_calls",
+          "events"
+        ]
+      },
+      "cell_class": "EnumSetCell",
+      "cited_section": "§82039(a)(1) and §82045",
+      "justification": "The statute defines lobbying as communicating \"directly or through his or her agents\" with officials for the purpose of influencing legislative/administrative action without enumerating specific medium types (oral, written, electronic, etc.); it does not list specific activity types from the question's enumeration."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_lobbyist_actor_types",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": [
+          "in_house_company",
+          "professional_lobbyist",
+          "in_house_organisation",
+          "professional_consultancy"
+        ]
+      },
+      "cell_class": "EnumSetCell",
+      "cited_section": "§82038.5, §82039, §82039.5, §86100",
+      "justification": "The statute requires registration of lobbying firms (including individual contract lobbyists/professional consultancies) under §82038.5 and lobbyist employers (covering in-house company and organisation lobbyists who employ lobbyists) under §82039.5; individual lobbyists are covered under §82039; §86300(a) exempts state employees acting within scope of employment."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "law_defines_public_entity",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Chapter 2 Definitions (§§82002–82048)",
+      "justification": "The definitions chapter defines \"person\" (§82047), \"public official\" (§82048), and related terms but contains no definition of \"public entity.\""
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "law_includes_materiality_test",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§82039(a)(1) and §86115(b)",
+      "justification": "The lobbyist definition employs a materiality threshold ($2,000/month in compensation) and §86115(b) sets a $5,000/quarter threshold for payment-to-influence filers, effectively exempting those below the threshold from coverage."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_executive_agency",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§82039(a)(1)",
+      "justification": "The definition of lobbyist covers communications with \"any elective state official, agency official, or legislative official\" for purposes of influencing legislative or administrative action, encompassing both executive and legislative targets."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_executive_staff",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§82039(a)(1), §82038, §82037",
+      "justification": "Targets include elective state officials, agency officials, and legislative officials (defined in §82038 to include legislative employees/consultants whose duties are not purely clerical), and §82037 covers the Governor's approval/veto, covering legislative branch, executive officials, and staff."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_governors_office",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§82039(a)(1)",
+      "justification": "The definition covers communications with elective state officials (including the Governor), agency officials, and legislative officials for purpose of influencing legislative or administrative action."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_independent_agency",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§82039(a)(1)",
+      "justification": "Same as above: the statutory definition of lobbyist explicitly covers communications with elective state officials, agency officials, and legislative officials."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_legislative_branch",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§82039(a)(1)",
+      "justification": "The definition of lobbyist covers communications with elective state officials, agency officials, and legislative officials for the purpose of influencing legislative or administrative action."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_target_legislative_staff",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§82039(a)(1), §82038, §82037",
+      "justification": "Lobbying targets per §82039 include elective state officials, agency officials, and legislative officials (which under §82038 includes legislative employees/consultants whose duties are not purely clerical/secretarial), covering legislative, executive, and staff."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_actor_class_elected_officials",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§86300(a)",
+      "justification": "The statute exempts elected public officials acting in their official capacity and state employees acting within the scope of employment from the registration provisions of the chapter."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "def_actor_class_public_employees",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§86300(a) and §86115",
+      "justification": "Section 86300(a) addresses public employees and contemplates them potentially being lobbyists (capping their gifts at $10/month), and §86115(b) applies a $5,000 quarterly expenditure standard; §82039(a)(1) sets a $2,000/month compensation standard, so the law addresses public employees with compensation/expenditure thresholds."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "public_entity_def_relies_on_charter",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§82038.5, §82039, §82039.5, §82047",
+      "justification": "The definitions of lobbyist, lobbying firm, and lobbyist employer rely on compensation and communication activity, not on any public charter or special government protection criterion."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "public_entity_def_relies_on_ownership",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§82038.5, §82039, §82039.5",
+      "justification": "The statutory definitions of lobbyist, lobbying firm, and lobbyist employer turn on compensation and communication, not on ownership criteria."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "public_entity_def_relies_on_revenue_structure",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§82038.5, §82039, §82039.5",
+      "justification": "The statutory definitions do not rely on the structure or composition of revenue; they rely on compensation received and the purpose of communications with officials."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "msg_01Mesawxbs3s6ao1VCiNj5ja",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "I'll analyze the California statute text and answer each cell based on what the law actually defines.",
+        "type": "text"
+      },
+      {
+        "id": "toolu_01KYSjgTA2tCUMDpSHJ7BE3T",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_001",
+          "axis": "legal",
+          "value": [
+            "oral",
+            "written",
+            "electronic",
+            "virtual",
+            "organising_meetings",
+            "events",
+            "phone_calls",
+            "emails"
+          ],
+          "confidence": "low",
+          "cited_section": "§82039(a)(1) and §82045",
+          "justification": "The statute defines lobbying as communicating \"directly or through his or her agents\" with officials for the purpose of influencing legislative/administrative action without enumerating specific medium types (oral, written, electronic, etc.); it does not list specific activity types from the question's enumeration."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01VstN9RwPWyUKYrDC4sBY26",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_002",
+          "axis": "legal",
+          "value": [
+            "professional_lobbyist",
+            "in_house_company",
+            "in_house_organisation",
+            "professional_consultancy"
+          ],
+          "confidence": "high",
+          "cited_section": "§82038.5, §82039, §82039.5, §86100",
+          "justification": "The statute requires registration of lobbying firms (including individual contract lobbyists/professional consultancies) under §82038.5 and lobbyist employers (covering in-house company and organisation lobbyists who employ lobbyists) under §82039.5; individual lobbyists are covered under §82039; §86300(a) exempts state employees acting within scope of employment."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01WT9VJsXptb655eyd1LBKMj",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_003",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "Chapter 2 Definitions (§§82002–82048)",
+          "justification": "The definitions chapter defines \"person\" (§82047), \"public official\" (§82048), and related terms but contains no definition of \"public entity.\""
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01SPkaArqQcFQgVKp8W2za2b",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_004",
+          "axis": "legal",
+          "value": true,
+          "confidence": "medium",
+          "cited_section": "§82039(a)(1) and §86115(b)",
+          "justification": "The lobbyist definition employs a materiality threshold ($2,000/month in compensation) and §86115(b) sets a $5,000/quarter threshold for payment-to-influence filers, effectively exempting those below the threshold from coverage."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_014g3AczhcimuG1v1KasozQM",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_005",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§82039(a)(1)",
+          "justification": "The definition of lobbyist covers communications with \"any elective state official, agency official, or legislative official\" for purposes of influencing legislative or administrative action, encompassing both executive and legislative targets."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01QxyHY49DvZ2PAP34Tn3GK5",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_006",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§82039(a)(1), §82038, §82037",
+          "justification": "Targets include elective state officials, agency officials, and legislative officials (defined in §82038 to include legislative employees/consultants whose duties are not purely clerical), and §82037 covers the Governor's approval/veto, covering legislative branch, executive officials, and staff."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01TcL1vcjnDFB1eF66gA8ceH",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_007",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§82039(a)(1)",
+          "justification": "The definition covers communications with elective state officials (including the Governor), agency officials, and legislative officials for purpose of influencing legislative or administrative action."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01YNqCeMyLt61QAFA4e9dsVd",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_008",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§82039(a)(1)",
+          "justification": "Same as above: the statutory definition of lobbyist explicitly covers communications with elective state officials, agency officials, and legislative officials."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01FqdT9xiTEd5YYuneoEuAoE",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_009",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§82039(a)(1)",
+          "justification": "The definition of lobbyist covers communications with elective state officials, agency officials, and legislative officials for the purpose of influencing legislative or administrative action."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01GuL2BPqFTnNTKjp224wJhL",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_010",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§82039(a)(1), §82038, §82037",
+          "justification": "Lobbying targets per §82039 include elective state officials, agency officials, and legislative officials (which under §82038 includes legislative employees/consultants whose duties are not purely clerical/secretarial), covering legislative, executive, and staff."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_015eAasU5kzpJju1Nc47hJeX",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_011",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§86300(a)",
+          "justification": "The statute exempts elected public officials acting in their official capacity and state employees acting within the scope of employment from the registration provisions of the chapter."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01UzvXouVaRMaLt97C31b6pG",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_012",
+          "axis": "legal",
+          "value": true,
+          "confidence": "medium",
+          "cited_section": "§86300(a) and §86115",
+          "justification": "Section 86300(a) addresses public employees and contemplates them potentially being lobbyists (capping their gifts at $10/month), and §86115(b) applies a $5,000 quarterly expenditure standard; §82039(a)(1) sets a $2,000/month compensation standard, so the law addresses public employees with compensation/expenditure thresholds."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_015SFfFpSyjD7XFAJorcbbn2",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_013",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§82038.5, §82039, §82039.5, §82047",
+          "justification": "The definitions of lobbyist, lobbying firm, and lobbyist employer rely on compensation and communication activity, not on any public charter or special government protection criterion."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01QeLmgqJkSt6LwmzFZbkU7d",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_014",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§82038.5, §82039, §82039.5",
+          "justification": "The statutory definitions of lobbyist, lobbying firm, and lobbyist employer turn on compensation and communication, not on ownership criteria."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01Fg4LBBMpnzDVVFiBQWkd7w",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_015",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§82038.5, §82039, §82039.5",
+          "justification": "The statutory definitions do not rely on the structure or composition of revenue; they rely on compensation received and the purpose of communications with officials."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 2181
+      },
+      "cache_creation_input_tokens": 2181,
+      "cache_read_input_tokens": 51065,
+      "inference_geo": "global",
+      "input_tokens": 6,
+      "output_tokens": 3703,
+      "server_tool_use": null,
+      "service_tier": "standard",
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      }
+    }
+  }
+}

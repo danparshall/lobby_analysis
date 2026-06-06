@@ -1,0 +1,354 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "registration_mechanics_and_exemptions",
+    "run_index": 2,
+    "state_abbr": "CA",
+    "vintage_year": 2015,
+    "prompt_sha256": "85c0b63c925c8b2146d173119549652ca28c612542439de075a09ef5a79199e1",
+    "timestamp_utc": "2026-06-06T00:20:59+00:00"
+  },
+  "wall_clock_seconds": 18.73058279103134,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 1407
+    },
+    "cache_creation_input_tokens": 1407,
+    "cache_read_input_tokens": 51065,
+    "inference_geo": "global",
+    "input_tokens": 6,
+    "output_tokens": 1835,
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.045905,
+  "legal_roster": [
+    [
+      "lobbyist_registration_required",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_renewal_cadence",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_amendment_deadline_days",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_deadline_days_after_first_lobbying",
+      "legal"
+    ],
+    [
+      "separate_registrations_for_lobbyists_and_clients",
+      "legal"
+    ],
+    [
+      "lobbyist_required_to_submit_photograph_with_registration",
+      "legal"
+    ],
+    [
+      "exemption_for_govt_official_capacity_exists",
+      "legal"
+    ],
+    [
+      "exemption_partial_for_govt_agencies",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§86100; §82039(a)(1)",
+      "justification": "Section 82039 defines lobbyist as any individual receiving $2,000+/month or whose principal duties are to communicate to influence legislative/administrative action, and §86100 requires such individuals (via their firm or employer) to register with the Secretary of State."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_renewal_cadence",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": 24
+      },
+      "cell_class": "IntCell",
+      "cited_section": "§86106",
+      "justification": "Section 86106 requires registration renewal between November 1 and December 31 of each even-numbered year, i.e., biennially (every 24 months)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_amendment_deadline_days",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": 20
+      },
+      "cell_class": "IntCell",
+      "cited_section": "§86107(a)",
+      "justification": "Section 86107(a) requires an amendment to be filed within 20 days after any change in the information contained in a registration statement."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_deadline_days_after_first_lobbying",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": 10
+      },
+      "cell_class": "IntCell",
+      "cited_section": "§86101",
+      "justification": "Section 86101 requires every lobbying firm and lobbyist employer to register no later than 10 days after qualifying; lobbyists themselves register via the firm/employer registration, so the 10-day deadline governs lobbyist registration."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "separate_registrations_for_lobbyists_and_clients",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§86100(a)-(c); §86104(c); §86105(c)",
+      "justification": "Per §86100(a), individual lobbyists prepare lobbyist certifications that are filed as part of the lobbying firm's or lobbyist employer's registration (see §86104(c) and §86105(c)), not as separate independent registrations."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_required_to_submit_photograph_with_registration",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§86103(a)",
+      "justification": "Section 86103(a) requires a lobbyist certification to include a recent photograph of the lobbyist."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "exemption_for_govt_official_capacity_exists",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§86300(a)",
+      "justification": "Section 86300(a) exempts any elected public official acting in his official capacity, and any employee of the State of California acting within the scope of his employment, from the lobbyist chapter."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "exemption_partial_for_govt_agencies",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§86300(a)",
+      "justification": "Section 86300(a) exempts elected officials and state employees acting within their official capacity from the lobbyist regulation provisions, relieving government actors from registration/reporting requirements imposed on private lobbyists."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "msg_01QKDEof4J7mBRMMxe7ZV7Wp",
+    "container": null,
+    "content": [
+      {
+        "id": "toolu_014cwQaw4Y5XPqzPUpF87FkR",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_001",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§86100; §82039(a)(1)",
+          "justification": "Section 82039 defines lobbyist as any individual receiving $2,000+/month or whose principal duties are to communicate to influence legislative/administrative action, and §86100 requires such individuals (via their firm or employer) to register with the Secretary of State."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01WMbayP7rQHsuJfthNeiHKM",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_002",
+          "axis": "legal",
+          "value": "24",
+          "confidence": "high",
+          "cited_section": "§86106",
+          "justification": "Section 86106 requires registration renewal between November 1 and December 31 of each even-numbered year, i.e., biennially (every 24 months)."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_012fUUFFLyy4Vw5xtzWU8C4V",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_003",
+          "axis": "legal",
+          "value": "20",
+          "confidence": "high",
+          "cited_section": "§86107(a)",
+          "justification": "Section 86107(a) requires an amendment to be filed within 20 days after any change in the information contained in a registration statement."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_0188BPwvXdWtGffA6QK4erU4",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_004",
+          "axis": "legal",
+          "value": "10",
+          "confidence": "medium",
+          "cited_section": "§86101",
+          "justification": "Section 86101 requires every lobbying firm and lobbyist employer to register no later than 10 days after qualifying; lobbyists themselves register via the firm/employer registration, so the 10-day deadline governs lobbyist registration."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01RsY4eNkQMRQVSphryNHV6z",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_005",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§86100(a)-(c); §86104(c); §86105(c)",
+          "justification": "Per §86100(a), individual lobbyists prepare lobbyist certifications that are filed as part of the lobbying firm's or lobbyist employer's registration (see §86104(c) and §86105(c)), not as separate independent registrations."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01KZ373mH66We1CRTU6cS8D3",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_006",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§86103(a)",
+          "justification": "Section 86103(a) requires a lobbyist certification to include a recent photograph of the lobbyist."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01DzLkDBNv44C8LxrLtNuz73",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_007",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§86300(a)",
+          "justification": "Section 86300(a) exempts any elected public official acting in his official capacity, and any employee of the State of California acting within the scope of his employment, from the lobbyist chapter."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01CEZXPBZLNhUHJn88b2PAYc",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_008",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§86300(a)",
+          "justification": "Section 86300(a) exempts elected officials and state employees acting within their official capacity from the lobbyist regulation provisions, relieving government actors from registration/reporting requirements imposed on private lobbyists."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 1407
+      },
+      "cache_creation_input_tokens": 1407,
+      "cache_read_input_tokens": 51065,
+      "inference_geo": "global",
+      "input_tokens": 6,
+      "output_tokens": 1835,
+      "server_tool_use": null,
+      "service_tier": "standard",
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      }
+    }
+  }
+}

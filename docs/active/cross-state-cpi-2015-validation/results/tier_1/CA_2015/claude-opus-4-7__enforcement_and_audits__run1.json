@@ -1,0 +1,126 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "enforcement_and_audits",
+    "run_index": 1,
+    "state_abbr": "CA",
+    "vintage_year": 2015,
+    "prompt_sha256": "85c0b63c925c8b2146d173119549652ca28c612542439de075a09ef5a79199e1",
+    "timestamp_utc": "2026-06-06T00:26:51+00:00"
+  },
+  "wall_clock_seconds": 7.963000875024591,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 51065,
+    "inference_geo": "global",
+    "input_tokens": 1027,
+    "output_tokens": 533,
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.01846,
+  "legal_roster": [
+    [
+      "lobbying_violation_penalties_defined_in_law",
+      "legal"
+    ],
+    [
+      "lobbying_disclosure_audit_required_in_law",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_violation_penalties_defined_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§91000(a)-(b); §91005.5",
+      "justification": "Section 91000 makes knowing or willful violations of the title (which includes lobbying disclosure provisions in Chapter 6) a misdemeanor with fines up to $10,000 or three times the amount unreported, and §91005.5 authorizes civil penalties up to $5,000 per violation, establishing statutory penalties for lobbying disclosure violations."
+    }
+  ],
+  "unscoreable_emissions": [
+    {
+      "axis": "legal",
+      "handle": "row_002",
+      "reason": "The bundled statute text (Chapter 11 enforcement, Chapter 6 lobbyist registration/reporting, and select Chapter 2 definitions) contains no provision addressing regular audits of lobbying disclosure records; any audit authority would lie in Chapter 3 (FPPC powers, §83100 et seq.) or a separate auditing statute not included in the bundle.",
+      "row_id": "lobbying_disclosure_audit_required_in_law"
+    }
+  ],
+  "errors": [],
+  "response": {
+    "id": "msg_01NHfx6tGXZKZFZtf2aUgXSf",
+    "container": null,
+    "content": [
+      {
+        "id": "toolu_019pGkAdruUKAAnCSQK5xR8z",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "axis": "legal",
+          "cited_section": "§91000(a)-(b); §91005.5",
+          "confidence": "high",
+          "handle": "row_001",
+          "justification": "Section 91000 makes knowing or willful violations of the title (which includes lobbying disclosure provisions in Chapter 6) a misdemeanor with fines up to $10,000 or three times the amount unreported, and §91005.5 authorizes civil penalties up to $5,000 per violation, establishing statutory penalties for lobbying disclosure violations.",
+          "value": true
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01GyJitTqr1DejpCEpCwi3kJ",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "axis": "legal",
+          "handle": "row_002",
+          "reason": "The bundled statute text (Chapter 11 enforcement, Chapter 6 lobbyist registration/reporting, and select Chapter 2 definitions) contains no provision addressing regular audits of lobbying disclosure records; any audit authority would lie in Chapter 3 (FPPC powers, §83100 et seq.) or a separate auditing statute not included in the bundle."
+        },
+        "name": "record_unscoreable_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 51065,
+      "inference_geo": "global",
+      "input_tokens": 1027,
+      "output_tokens": 533,
+      "server_tool_use": null,
+      "service_tier": "standard",
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      }
+    }
+  }
+}

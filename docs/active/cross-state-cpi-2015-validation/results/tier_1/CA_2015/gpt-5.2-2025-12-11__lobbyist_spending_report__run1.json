@@ -1,0 +1,898 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "lobbyist_spending_report",
+    "run_index": 1,
+    "state_abbr": "CA",
+    "vintage_year": 2015,
+    "prompt_sha256": "85c0b63c925c8b2146d173119549652ca28c612542439de075a09ef5a79199e1",
+    "timestamp_utc": "2026-06-06T01:55:18+00:00"
+  },
+  "wall_clock_seconds": 34.373091124987695,
+  "usage": {
+    "completion_tokens": 2336,
+    "prompt_tokens": 34605,
+    "total_tokens": 36941,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 31232
+    }
+  },
+  "cost_usd_estimate": 0.09326274999999999,
+  "legal_roster": [
+    [
+      "lobbyist_spending_report_cadence_includes_annual",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_includes_monthly",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_includes_other",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_includes_quarterly",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_includes_semiannual",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_includes_triannual",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_other_specification",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_categorizes_expenses_by_type",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_filing_cadence",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_bill_or_action_identifier",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_compensation_broken_down_by_payer",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_contacts_made",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_expenditure_per_issue",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_general_issues",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_general_subject_matter",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_gifts_entertainment_transport_lodging",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_indirect_costs",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_itemized_expenses",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_lobbyist_contact_info",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_position_on_bill",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_principal_business_nature",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_principal_contact_info",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_principal_names",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_specific_bill_number",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_total_compensation",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_total_expenditures",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_required",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_required_when_no_activity",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_scope_includes_household_members_of_officials",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_uses_itemized_format",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_annual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Cal. Gov't Code § 86113(b)",
+      "justification": "Section 86113(b) requires the lobbyist to submit a periodic report within two weeks following the end of each calendar quarter, not annually."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_monthly",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Cal. Gov't Code § 86113(b)",
+      "justification": "The statute specifies quarterly reporting (within two weeks after each calendar quarter), not monthly reporting."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_other",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Cal. Gov't Code § 86113(b)",
+      "justification": "The law sets a quarterly cadence and does not provide an alternate 'other' frequency for the lobbyist periodic report."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_quarterly",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Cal. Gov't Code § 86113(b)",
+      "justification": "A lobbyist must provide the original periodic report to the employer or lobbying firm within two weeks following the end of each calendar quarter, implying quarterly reporting."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_semiannual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Cal. Gov't Code § 86113(b)",
+      "justification": "The lobbyist periodic report is due after each calendar quarter rather than on a semi-annual schedule."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_triannual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Cal. Gov't Code § 86113(b)",
+      "justification": "The lobbyist periodic report is tied to calendar quarters, not tri-annual legislative-calendar deadlines."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_categorizes_expenses_by_type",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Cal. Gov't Code §§ 86113(a)(1), 86112(a)-(c)",
+      "justification": "Lobbyists must report all activity expenses during the reporting period, and when activity expenses are reported the law requires the date, amount, beneficiary, and description of the benefit (itemization)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_filing_cadence",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "quarterly"
+      },
+      "cell_class": "EnumCell",
+      "cited_section": "Cal. Gov't Code § 86113(b)",
+      "justification": "Section 86113(b) makes the lobbyist periodic report due within two weeks following the end of each calendar quarter, i.e., quarterly."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_bill_or_action_identifier",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Cal. Gov't Code § 86113(a)",
+      "justification": "The lobbyist periodic report must contain activity expenses and certain contributions, but the statute does not require identifying specific bills, executive actions, or positions."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_compensation_broken_down_by_payer",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Cal. Gov't Code § 86113(a); § 86114(a)(2)",
+      "justification": "Section 86113 requires a lobbyist to report activity expenses and certain contributions, while client payments are reported by lobbying firms under § 86114(a)(2), not by the lobbyist."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_contacts_made",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Cal. Gov't Code § 86113(a)",
+      "justification": "The lobbyist periodic report requirements listed in § 86113 do not include disclosing lobbying contacts or communications."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_expenditure_per_issue",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Cal. Gov't Code §§ 86113(a)(1), 86112",
+      "justification": "The lobbyist report requires itemized activity expenses but does not require allocating expenditures by issue or bill."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_general_issues",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Cal. Gov't Code § 86113; § 86112",
+      "justification": "Neither § 86113 nor § 86112 requires the lobbyist to disclose general issues or subjects lobbied as part of the lobbyist periodic report."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_general_subject_matter",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Cal. Gov't Code § 86113(a)",
+      "justification": "The lobbyist periodic report is limited to activity expenses and specified contributions and does not require reporting general subjects of lobbying."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_gifts_entertainment_transport_lodging",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Cal. Gov't Code § 86111(a)",
+      "justification": "Activity expenses, which lobbyists must report under § 86113(a)(1), include gifts and other forms of compensation benefiting officials, capturing items such as gifts and entertainment."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_indirect_costs",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Cal. Gov't Code §§ 86113(a)(1), 86111(a)",
+      "justification": "The lobbyist periodic report covers 'activity expenses' benefiting specified officials, but it does not require reporting the lobbyist’s other indirect lobbying costs not fitting the 'activity expense' definition."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_itemized_expenses",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Cal. Gov't Code §§ 86113(a)(1), 86112(a)-(c)",
+      "justification": "Lobbyists must file a periodic report of all activity expenses and those expenses must be itemized with date, amount, beneficiary, payee, and description."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_lobbyist_contact_info",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Cal. Gov't Code § 86113",
+      "justification": "Section 86113 does not require the lobbyist periodic report to include the lobbyist’s address or phone number (those appear in certification/registration requirements, not the periodic report)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_position_on_bill",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Cal. Gov't Code § 86113(a)",
+      "justification": "The lobbyist periodic report does not require disclosure of bills/actions discussed or positions taken—only activity expenses and certain contributions."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_principal_business_nature",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Cal. Gov't Code § 86113",
+      "justification": "The lobbyist periodic report requirements do not include disclosure of the principal’s business nature; those details are in registration statements for firms/employers, not the lobbyist periodic report."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_principal_contact_info",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Cal. Gov't Code § 86113",
+      "justification": "Section 86113 does not require a lobbyist periodic report to list the address/phone number of principals represented."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_principal_names",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Cal. Gov't Code § 86113",
+      "justification": "The lobbyist periodic report described in § 86113 contains activity expenses and certain contributions and does not require listing all principals represented."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_specific_bill_number",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Cal. Gov't Code § 86113",
+      "justification": "No provision in § 86113 requires a lobbyist to identify bills or legislation IDs in the periodic report."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_total_compensation",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Cal. Gov't Code § 86113(a)",
+      "justification": "The lobbyist periodic report requires reporting activity expenses and certain contributions but does not require reporting compensation received by the lobbyist as a direct lobbying cost."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_total_expenditures",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Cal. Gov't Code § 86113(a)(1)",
+      "justification": "Section 86113 requires a report of activity expenses rather than a report of the lobbyist’s total expenditures toward lobbying overall."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Cal. Gov't Code §§ 86113(a)(1), 86112(a)-(c)",
+      "justification": "Lobbyists must file itemized activity expense information (date, amount, beneficiary, description), even though compensation is not required, meeting at least the 'itemized spending reports' component."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_scope_includes_household_members_of_officials",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Cal. Gov't Code §§ 86111(a), 86113(a)(1)",
+      "justification": "Because 'activity expense' includes expenses benefiting an official or a member of the official’s immediate family, and lobbyists must report all activity expenses, spending benefiting household/immediate family members is reportable."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_uses_itemized_format",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Cal. Gov't Code § 86112(a)-(c)",
+      "justification": "When activity expenses are reported, the statute requires the date and amount of each expense and a description and beneficiary, which is itemized rather than lump-sum."
+    }
+  ],
+  "unscoreable_emissions": [
+    {
+      "handle": "row_007",
+      "axis": "legal",
+      "reason": "No 'other' reporting frequency for lobbyist periodic reports is specified in the provided statute text beyond quarterly; this free-text cell is not applicable.",
+      "row_id": "lobbyist_spending_report_cadence_other_specification"
+    },
+    {
+      "handle": "row_028",
+      "axis": "legal",
+      "reason": "The provided text does not state whether a lobbyist must file a periodic report when there is no activity/spending (no explicit 'no activity' report requirement in § 86113).",
+      "row_id": "lobbyist_spending_report_required_when_no_activity"
+    }
+  ],
+  "errors": [],
+  "response": {
+    "id": "chatcmpl-DnaXE1sdvLovLFGbuX7L6sdOUbpVn",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_6vIx8vPLN4PNqFgtD9XDRn15",
+              "function": {
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code § 86113(b)\", \"justification\": \"Section 86113(b) requires the lobbyist to submit a periodic report within two weeks following the end of each calendar quarter, not annually.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_Lts8gIalRRqDJ3DhIZsG6xor",
+              "function": {
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code § 86113(b)\", \"justification\": \"The statute specifies quarterly reporting (within two weeks after each calendar quarter), not monthly reporting.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_YRPRzW6G2DeXKogK8Jrq4J7y",
+              "function": {
+                "arguments": "{\"handle\": \"row_003\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code § 86113(b)\", \"justification\": \"The law sets a quarterly cadence and does not provide an alternate 'other' frequency for the lobbyist periodic report.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_nL20cyrI6KceHaSx4ed5ekdE",
+              "function": {
+                "arguments": "{\"handle\": \"row_004\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code § 86113(b)\", \"justification\": \"A lobbyist must provide the original periodic report to the employer or lobbying firm within two weeks following the end of each calendar quarter, implying quarterly reporting.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_FpM5QwGdMFTNEyN06WhZwV3d",
+              "function": {
+                "arguments": "{\"handle\": \"row_005\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code § 86113(b)\", \"justification\": \"The lobbyist periodic report is due after each calendar quarter rather than on a semi-annual schedule.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_EnfM4uLzD0CtAg8B467D2wbV",
+              "function": {
+                "arguments": "{\"handle\": \"row_006\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code § 86113(b)\", \"justification\": \"The lobbyist periodic report is tied to calendar quarters, not tri-annual legislative-calendar deadlines.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_elbjaqHn8hghToRJSMIfaslT",
+              "function": {
+                "arguments": "{\"handle\": \"row_007\", \"axis\": \"legal\", \"reason\": \"No 'other' reporting frequency for lobbyist periodic reports is specified in the provided statute text beyond quarterly; this free-text cell is not applicable.\"}",
+                "name": "record_unscoreable_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_ImT8qVsnuYYnZ4EWg0rSeYMq",
+              "function": {
+                "arguments": "{\"handle\": \"row_008\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code §§ 86113(a)(1), 86112(a)-(c)\", \"justification\": \"Lobbyists must report all activity expenses during the reporting period, and when activity expenses are reported the law requires the date, amount, beneficiary, and description of the benefit (itemization).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_KhnhM5YJhH8uyQJGIQrldRFe",
+              "function": {
+                "arguments": "{\"handle\": \"row_009\", \"axis\": \"legal\", \"value\": \"quarterly\", \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code § 86113(b)\", \"justification\": \"Section 86113(b) makes the lobbyist periodic report due within two weeks following the end of each calendar quarter, i.e., quarterly.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_4CbUN3R65c5WR3YNuHvreugL",
+              "function": {
+                "arguments": "{\"handle\": \"row_010\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code § 86113(a)\", \"justification\": \"The lobbyist periodic report must contain activity expenses and certain contributions, but the statute does not require identifying specific bills, executive actions, or positions.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_Dw1mNXSc4xokWBzK9GLPb6f2",
+              "function": {
+                "arguments": "{\"handle\": \"row_011\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code § 86113(a); § 86114(a)(2)\", \"justification\": \"Section 86113 requires a lobbyist to report activity expenses and certain contributions, while client payments are reported by lobbying firms under § 86114(a)(2), not by the lobbyist.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_gZL362xPaymmvww1q7kM6Ken",
+              "function": {
+                "arguments": "{\"handle\": \"row_012\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code § 86113(a)\", \"justification\": \"The lobbyist periodic report requirements listed in § 86113 do not include disclosing lobbying contacts or communications.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_qYOvqKjaIagU5wWOod2GAo8a",
+              "function": {
+                "arguments": "{\"handle\": \"row_013\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code §§ 86113(a)(1), 86112\", \"justification\": \"The lobbyist report requires itemized activity expenses but does not require allocating expenditures by issue or bill.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_175ymUlHYWeO7g5CfUCGRLgR",
+              "function": {
+                "arguments": "{\"handle\": \"row_014\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code § 86113; § 86112\", \"justification\": \"Neither § 86113 nor § 86112 requires the lobbyist to disclose general issues or subjects lobbied as part of the lobbyist periodic report.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_l2SIallUxWAmMfnyJI7SpLtA",
+              "function": {
+                "arguments": "{\"handle\": \"row_015\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code § 86113(a)\", \"justification\": \"The lobbyist periodic report is limited to activity expenses and specified contributions and does not require reporting general subjects of lobbying.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_cghW8CTREHCqkjiZ9GzMM73U",
+              "function": {
+                "arguments": "{\"handle\": \"row_016\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code § 86111(a)\", \"justification\": \"Activity expenses, which lobbyists must report under § 86113(a)(1), include gifts and other forms of compensation benefiting officials, capturing items such as gifts and entertainment.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_dToxq3qbMGJ5edtw5ZJ37aFp",
+              "function": {
+                "arguments": "{\"handle\": \"row_017\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code §§ 86113(a)(1), 86111(a)\", \"justification\": \"The lobbyist periodic report covers 'activity expenses' benefiting specified officials, but it does not require reporting the lobbyist’s other indirect lobbying costs not fitting the 'activity expense' definition.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_swMNrCeA5A9guZ6COvzG5PJS",
+              "function": {
+                "arguments": "{\"handle\": \"row_018\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code §§ 86113(a)(1), 86112(a)-(c)\", \"justification\": \"Lobbyists must file a periodic report of all activity expenses and those expenses must be itemized with date, amount, beneficiary, payee, and description.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_iYtKyqipa5y2s9oV4EKx8bzs",
+              "function": {
+                "arguments": "{\"handle\": \"row_019\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code § 86113\", \"justification\": \"Section 86113 does not require the lobbyist periodic report to include the lobbyist’s address or phone number (those appear in certification/registration requirements, not the periodic report).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_TdcwYbV1Z2Qe0X8S7Z1u3OOt",
+              "function": {
+                "arguments": "{\"handle\": \"row_020\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code § 86113(a)\", \"justification\": \"The lobbyist periodic report does not require disclosure of bills/actions discussed or positions taken—only activity expenses and certain contributions.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_D5RCCVb1CFNX3VxCfZsD4zOz",
+              "function": {
+                "arguments": "{\"handle\": \"row_021\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code § 86113\", \"justification\": \"The lobbyist periodic report requirements do not include disclosure of the principal’s business nature; those details are in registration statements for firms/employers, not the lobbyist periodic report.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_vnGwHkHxZGKQkcE08hLOJKxX",
+              "function": {
+                "arguments": "{\"handle\": \"row_022\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code § 86113\", \"justification\": \"Section 86113 does not require a lobbyist periodic report to list the address/phone number of principals represented.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_VdZyJNxOc1rv3XuoFnbs0OJP",
+              "function": {
+                "arguments": "{\"handle\": \"row_023\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code § 86113\", \"justification\": \"The lobbyist periodic report described in § 86113 contains activity expenses and certain contributions and does not require listing all principals represented.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_R1dulMPtiq2Vyk433tYtDOkF",
+              "function": {
+                "arguments": "{\"handle\": \"row_024\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code § 86113\", \"justification\": \"No provision in § 86113 requires a lobbyist to identify bills or legislation IDs in the periodic report.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_cUevNAMVfJslmwQewExO2TeL",
+              "function": {
+                "arguments": "{\"handle\": \"row_025\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code § 86113(a)\", \"justification\": \"The lobbyist periodic report requires reporting activity expenses and certain contributions but does not require reporting compensation received by the lobbyist as a direct lobbying cost.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_DioEqP7rcmh1bOfjqAdb8gEX",
+              "function": {
+                "arguments": "{\"handle\": \"row_026\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code § 86113(a)(1)\", \"justification\": \"Section 86113 requires a report of activity expenses rather than a report of the lobbyist’s total expenditures toward lobbying overall.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_QF0kgfPezXSVYHlrCUsrLi15",
+              "function": {
+                "arguments": "{\"handle\": \"row_027\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code §§ 86113(a)(1), 86112(a)-(c)\", \"justification\": \"Lobbyists must file itemized activity expense information (date, amount, beneficiary, description), even though compensation is not required, meeting at least the 'itemized spending reports' component.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_gFnUDCjd4gLBLQMXXntF8XJg",
+              "function": {
+                "arguments": "{\"handle\": \"row_028\", \"axis\": \"legal\", \"reason\": \"The provided text does not state whether a lobbyist must file a periodic report when there is no activity/spending (no explicit 'no activity' report requirement in § 86113).\"}",
+                "name": "record_unscoreable_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_EVaLLWzzG4ov9srGG5pk58fK",
+              "function": {
+                "arguments": "{\"handle\": \"row_029\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code §§ 86111(a), 86113(a)(1)\", \"justification\": \"Because 'activity expense' includes expenses benefiting an official or a member of the official’s immediate family, and lobbyists must report all activity expenses, spending benefiting household/immediate family members is reportable.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_BLHfKW7yKXYknuLsqitCiGCc",
+              "function": {
+                "arguments": "{\"handle\": \"row_030\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code § 86112(a)-(c)\", \"justification\": \"When activity expenses are reported, the statute requires the date and amount of each expense and a description and beneficiary, which is itemized rather than lump-sum.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1780710884,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 2336,
+      "prompt_tokens": 34605,
+      "total_tokens": 36941,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 31232
+      }
+    }
+  }
+}

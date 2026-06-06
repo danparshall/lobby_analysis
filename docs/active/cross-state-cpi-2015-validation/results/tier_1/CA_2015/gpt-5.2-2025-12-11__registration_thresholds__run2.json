@@ -1,0 +1,216 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "registration_thresholds",
+    "run_index": 2,
+    "state_abbr": "CA",
+    "vintage_year": 2015,
+    "prompt_sha256": "85c0b63c925c8b2146d173119549652ca28c612542439de075a09ef5a79199e1",
+    "timestamp_utc": "2026-06-06T01:54:03+00:00"
+  },
+  "wall_clock_seconds": 8.175468957982957,
+  "usage": {
+    "completion_tokens": 531,
+    "prompt_tokens": 32125,
+    "total_tokens": 32656,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 32000
+    }
+  },
+  "cost_usd_estimate": 0.06365275,
+  "legal_roster": [
+    [
+      "lobbyist_registration_threshold_compensation_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_threshold_expenditure_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_threshold_time_percent",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_itemization_de_minimis_threshold_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_de_minimis_threshold_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_de_minimis_threshold_time_percent",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_threshold_compensation_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "2000"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "Cal. Gov. Code § 82039(a)(1) (2015)",
+      "justification": "The statute defines a 'lobbyist' as an individual who receives $2,000 or more in economic consideration in a calendar month (excluding reasonable travel reimbursements), establishing the compensation threshold for lobbyist status/registration."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_filing_de_minimis_threshold_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "5000"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "Cal. Gov. Code § 86115(b) (2015)",
+      "justification": "Persons who make payments to influence legislative or administrative action must file if the payments total $5,000 or more in a calendar quarter, implying those below $5,000 (and not otherwise a lobbyist employer) are not required to file under this trigger."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_filing_de_minimis_threshold_time_percent",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": 10.0
+      },
+      "cell_class": "FloatCell",
+      "cited_section": "Cal. Gov. Code § 86116(h)(1) (2015)",
+      "justification": "The statute references a 10% of compensated time threshold for employees' time being included in reported payments, providing the only explicit percent-of-compensated-time threshold in the bundle relevant to time-based de minimis treatment."
+    }
+  ],
+  "unscoreable_emissions": [
+    {
+      "handle": "row_002",
+      "axis": "legal",
+      "reason": "The bundled provisions defining 'lobbyist' (§82039) include a compensation threshold and a 'principal duties' standard, but do not set any lobbyist-definition expenditure threshold for registration.",
+      "row_id": "lobbyist_registration_threshold_expenditure_dollars"
+    },
+    {
+      "handle": "row_003",
+      "axis": "legal",
+      "reason": "The bundled text provides only a qualitative 'principal duties' standard in the lobbyist definition (§82039(a)(1)) and no quantifiable time threshold (hours/days/percent) that can be encoded as a TimeThresholdCell with magnitude and unit.",
+      "row_id": "lobbyist_registration_threshold_time_percent"
+    },
+    {
+      "handle": "row_004",
+      "axis": "legal",
+      "reason": "The reporting sections included (§§86112-86116) specify required information but do not state any per-item dollar de minimis threshold for itemizing lobbyist/lobbying-firm activity expenses.",
+      "row_id": "lobbyist_filing_itemization_de_minimis_threshold_dollars"
+    }
+  ],
+  "errors": [],
+  "response": {
+    "id": "chatcmpl-DnaWRXcTes2gki3b3Ir5QPRDoT5v2",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_kTCxEjJYt5XK1ejJQglL1mpx",
+              "function": {
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"value\": 2000, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov. Code § 82039(a)(1) (2015)\", \"justification\": \"The statute defines a 'lobbyist' as an individual who receives $2,000 or more in economic consideration in a calendar month (excluding reasonable travel reimbursements), establishing the compensation threshold for lobbyist status/registration.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_rrDFogYxCXc7UygyZI1yYpeg",
+              "function": {
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"reason\": \"The bundled provisions defining 'lobbyist' (§82039) include a compensation threshold and a 'principal duties' standard, but do not set any lobbyist-definition expenditure threshold for registration.\"}",
+                "name": "record_unscoreable_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_PXZFQmO4egspOE1FTngrdxhC",
+              "function": {
+                "arguments": "{\"handle\": \"row_003\", \"axis\": \"legal\", \"reason\": \"The bundled text provides only a qualitative 'principal duties' standard in the lobbyist definition (§82039(a)(1)) and no quantifiable time threshold (hours/days/percent) that can be encoded as a TimeThresholdCell with magnitude and unit.\"}",
+                "name": "record_unscoreable_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_f7r8lBmpLDZi1lcHFV4ngw1t",
+              "function": {
+                "arguments": "{\"handle\": \"row_004\", \"axis\": \"legal\", \"reason\": \"The reporting sections included (§§86112-86116) specify required information but do not state any per-item dollar de minimis threshold for itemizing lobbyist/lobbying-firm activity expenses.\"}",
+                "name": "record_unscoreable_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_moeRQcJQrI9G72wG9jNgcINX",
+              "function": {
+                "arguments": "{\"handle\": \"row_005\", \"axis\": \"legal\", \"value\": 5000, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov. Code § 86115(b) (2015)\", \"justification\": \"Persons who make payments to influence legislative or administrative action must file if the payments total $5,000 or more in a calendar quarter, implying those below $5,000 (and not otherwise a lobbyist employer) are not required to file under this trigger.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_m50yNQHZn15WZhrl97fM9AjJ",
+              "function": {
+                "arguments": "{\"handle\": \"row_006\", \"axis\": \"legal\", \"value\": 10.0, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov. Code § 86116(h)(1) (2015)\", \"justification\": \"The statute references a 10% of compensated time threshold for employees' time being included in reported payments, providing the only explicit percent-of-compensated-time threshold in the bundle relevant to time-based de minimis treatment.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1780710835,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 531,
+      "prompt_tokens": 32125,
+      "total_tokens": 32656,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 32000
+      }
+    }
+  }
+}

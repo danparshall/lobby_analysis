@@ -1,0 +1,133 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "enforcement_and_audits",
+    "run_index": 2,
+    "state_abbr": "CA",
+    "vintage_year": 2015,
+    "prompt_sha256": "85c0b63c925c8b2146d173119549652ca28c612542439de075a09ef5a79199e1",
+    "timestamp_utc": "2026-06-06T01:57:43+00:00"
+  },
+  "wall_clock_seconds": 6.4317605829564855,
+  "usage": {
+    "completion_tokens": 244,
+    "prompt_tokens": 31654,
+    "total_tokens": 31898,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 31232
+    }
+  },
+  "cost_usd_estimate": 0.0588105,
+  "legal_roster": [
+    [
+      "lobbying_violation_penalties_defined_in_law",
+      "legal"
+    ],
+    [
+      "lobbying_disclosure_audit_required_in_law",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_violation_penalties_defined_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Cal. Gov't Code §§ 91000(a)-(c), 91005.5; 91013(a)-(c)",
+      "justification": "The statute provides criminal misdemeanor liability and fines for knowing or willful violations (§91000), civil penalties up to $5,000 per violation where no specific penalty exists (§91005.5), and late-filing monetary liability of $10 per day up to specified caps (§91013)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_disclosure_audit_required_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "NO"
+      },
+      "cell_class": "EnumCell",
+      "cited_section": "(No provision in provided Title 9, Ch. 6 (commencing §86100) or Ch. 11 (§91000 et seq.) requiring regular audits)",
+      "justification": "The included provisions cover registration, reporting, recordkeeping, and enforcement actions/penalties but do not mandate any regular or third-party auditing of lobbying disclosure records."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "chatcmpl-Dnaa14LNpahVgjrQn8FiskADGR7Y9",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_ni3oCMyUIfe9Q7RePLMmlDQa",
+              "function": {
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code §§ 91000(a)-(c), 91005.5; 91013(a)-(c)\", \"justification\": \"The statute provides criminal misdemeanor liability and fines for knowing or willful violations (§91000), civil penalties up to $5,000 per violation where no specific penalty exists (§91005.5), and late-filing monetary liability of $10 per day up to specified caps (§91013).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_ZUFdP1LaxUSLOgmUGvuldBup",
+              "function": {
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": \"NO\", \"confidence\": \"high\", \"cited_section\": \"(No provision in provided Title 9, Ch. 6 (commencing §86100) or Ch. 11 (§91000 et seq.) requiring regular audits)\", \"justification\": \"The included provisions cover registration, reporting, recordkeeping, and enforcement actions/penalties but do not mandate any regular or third-party auditing of lobbying disclosure records.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1780711057,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 244,
+      "prompt_tokens": 31654,
+      "total_tokens": 31898,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 31232
+      }
+    }
+  }
+}

@@ -1,0 +1,206 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "registration_thresholds",
+    "run_index": 1,
+    "state_abbr": "CA",
+    "vintage_year": 2015,
+    "prompt_sha256": "85c0b63c925c8b2146d173119549652ca28c612542439de075a09ef5a79199e1",
+    "timestamp_utc": "2026-06-06T01:53:55+00:00"
+  },
+  "wall_clock_seconds": 7.930953000031877,
+  "usage": {
+    "completion_tokens": 492,
+    "prompt_tokens": 32125,
+    "total_tokens": 32617,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 31232
+    }
+  },
+  "cost_usd_estimate": 0.06310675,
+  "legal_roster": [
+    [
+      "lobbyist_registration_threshold_compensation_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_threshold_expenditure_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_threshold_time_percent",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_itemization_de_minimis_threshold_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_de_minimis_threshold_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_de_minimis_threshold_time_percent",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_threshold_compensation_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "2000"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "Gov. Code § 82039(a)(1)",
+      "justification": "The statute defines a 'lobbyist' as an individual who receives $2,000 or more in economic consideration in a calendar month (excluding reasonable travel expense reimbursement) to influence legislative or administrative action."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_filing_de_minimis_threshold_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "5000"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "Gov. Code § 86115(b)",
+      "justification": "A person (other than a lobbyist employer) must file statements only if it makes payments to influence legislative or administrative action of $5,000 or more in any calendar quarter, implying no filing duty below that threshold."
+    }
+  ],
+  "unscoreable_emissions": [
+    {
+      "handle": "row_002",
+      "axis": "legal",
+      "reason": "The bundled text defines 'lobbyist' by compensation and job-duty criteria (§ 82039) but does not include any lobbyist-definition expenditure-spending threshold triggering lobbyist registration.",
+      "row_id": "lobbyist_registration_threshold_expenditure_dollars"
+    },
+    {
+      "handle": "row_003",
+      "axis": "legal",
+      "reason": "The bundled text contains no quantitative time standard in the definition of 'lobbyist' (only 'principal duties' in § 82039(a)(1) without a measurable magnitude/unit), so a TimeThresholdCell value cannot be derived.",
+      "row_id": "lobbyist_registration_threshold_time_percent"
+    },
+    {
+      "handle": "row_004",
+      "axis": "legal",
+      "reason": "The bundled text requires reporting of 'each activity expense' (§§ 86112, 86114(a)(5), 86116(f)) but contains no per-item dollar de minimis for itemization; if any exists it would be in commission regulations not included here.",
+      "row_id": "lobbyist_filing_itemization_de_minimis_threshold_dollars"
+    },
+    {
+      "handle": "row_006",
+      "axis": "legal",
+      "reason": "The bundled text includes a 10% employee-time threshold for what payments a filer must report (§ 86116(h)(1)) but does not provide a time-percent de minimis exemption from lobbyist registration or from filing lobbyist disclosure.",
+      "row_id": "lobbyist_filing_de_minimis_threshold_time_percent"
+    }
+  ],
+  "errors": [],
+  "response": {
+    "id": "chatcmpl-DnaWJ6qisS5Oo34FyZ8VOmdstiLOS",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_068irAEKZStcQ4k9mYXUa4gj",
+              "function": {
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"value\": 2000, \"confidence\": \"high\", \"cited_section\": \"Gov. Code § 82039(a)(1)\", \"justification\": \"The statute defines a 'lobbyist' as an individual who receives $2,000 or more in economic consideration in a calendar month (excluding reasonable travel expense reimbursement) to influence legislative or administrative action.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_SscXpFooEhLh8c9RUCzjhtU5",
+              "function": {
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"reason\": \"The bundled text defines 'lobbyist' by compensation and job-duty criteria (§ 82039) but does not include any lobbyist-definition expenditure-spending threshold triggering lobbyist registration.\"}",
+                "name": "record_unscoreable_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_0QDlHR2WqrCeHojgM1lHoUmJ",
+              "function": {
+                "arguments": "{\"handle\": \"row_003\", \"axis\": \"legal\", \"reason\": \"The bundled text contains no quantitative time standard in the definition of 'lobbyist' (only 'principal duties' in § 82039(a)(1) without a measurable magnitude/unit), so a TimeThresholdCell value cannot be derived.\"}",
+                "name": "record_unscoreable_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_3xhj65Bsv0RJDy7jgAM8hpj8",
+              "function": {
+                "arguments": "{\"handle\": \"row_004\", \"axis\": \"legal\", \"reason\": \"The bundled text requires reporting of 'each activity expense' (§§ 86112, 86114(a)(5), 86116(f)) but contains no per-item dollar de minimis for itemization; if any exists it would be in commission regulations not included here.\"}",
+                "name": "record_unscoreable_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_5T3Xkn6uJcdGU2vhI6vvX6eK",
+              "function": {
+                "arguments": "{\"handle\": \"row_005\", \"axis\": \"legal\", \"value\": 5000, \"confidence\": \"high\", \"cited_section\": \"Gov. Code § 86115(b)\", \"justification\": \"A person (other than a lobbyist employer) must file statements only if it makes payments to influence legislative or administrative action of $5,000 or more in any calendar quarter, implying no filing duty below that threshold.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_ENXDe8syP5MywbRzmtgfcwum",
+              "function": {
+                "arguments": "{\"handle\": \"row_006\", \"axis\": \"legal\", \"reason\": \"The bundled text includes a 10% employee-time threshold for what payments a filer must report (§ 86116(h)(1)) but does not provide a time-percent de minimis exemption from lobbyist registration or from filing lobbyist disclosure.\"}",
+                "name": "record_unscoreable_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1780710827,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 492,
+      "prompt_tokens": 32125,
+      "total_tokens": 32617,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 31232
+      }
+    }
+  }
+}

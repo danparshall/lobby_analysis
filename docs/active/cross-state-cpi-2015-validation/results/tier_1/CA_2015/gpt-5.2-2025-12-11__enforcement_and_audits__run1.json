@@ -1,0 +1,133 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "enforcement_and_audits",
+    "run_index": 1,
+    "state_abbr": "CA",
+    "vintage_year": 2015,
+    "prompt_sha256": "85c0b63c925c8b2146d173119549652ca28c612542439de075a09ef5a79199e1",
+    "timestamp_utc": "2026-06-06T01:57:37+00:00"
+  },
+  "wall_clock_seconds": 5.283102333953138,
+  "usage": {
+    "completion_tokens": 281,
+    "prompt_tokens": 31654,
+    "total_tokens": 31935,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 31232
+    }
+  },
+  "cost_usd_estimate": 0.0593285,
+  "legal_roster": [
+    [
+      "lobbying_violation_penalties_defined_in_law",
+      "legal"
+    ],
+    [
+      "lobbying_disclosure_audit_required_in_law",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_violation_penalties_defined_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Cal. Gov't Code §§ 91000(a)-(c) (misdemeanor for knowing/willful violations; fine up to greater of $10,000 or 3x amount; 4-year prosecution limit); 91005.5 (civil penalty up to $5,000 per violation where no specific civil penalty provided); 91013(a),(c) ($10/day late-filing liability, capped).",
+      "justification": "The statute provides criminal sanctions and fines for violations of the Political Reform Act (which includes lobbying registration/reporting), plus civil penalties and late-filing monetary liability for delinquent or improper filings."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_disclosure_audit_required_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "NO"
+      },
+      "cell_class": "EnumCell",
+      "cited_section": "Cal. Gov't Code § 86110 (recordkeeping required by regulations); §§ 91000-91014 (enforcement/penalties) (no audit requirement stated).",
+      "justification": "The provided lobbying and enforcement provisions impose recordkeeping and penalties but contain no requirement for regular or triggered independent auditing or compliance reviews of lobbying disclosure records."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "chatcmpl-DnaZwonGTgGisRQ60bjRQkTmOP66J",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_EmyXwGnCZJXHvw94NDYsuxef",
+              "function": {
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code §§ 91000(a)-(c) (misdemeanor for knowing/willful violations; fine up to greater of $10,000 or 3x amount; 4-year prosecution limit); 91005.5 (civil penalty up to $5,000 per violation where no specific civil penalty provided); 91013(a),(c) ($10/day late-filing liability, capped).\", \"justification\": \"The statute provides criminal sanctions and fines for violations of the Political Reform Act (which includes lobbying registration/reporting), plus civil penalties and late-filing monetary liability for delinquent or improper filings.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_2G177JmZOk24a35QGk9wgaSU",
+              "function": {
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": \"NO\", \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code § 86110 (recordkeeping required by regulations); §§ 91000-91014 (enforcement/penalties) (no audit requirement stated).\", \"justification\": \"The provided lobbying and enforcement provisions impose recordkeeping and penalties but contain no requirement for regular or triggered independent auditing or compliance reviews of lobbying disclosure records.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1780711052,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 281,
+      "prompt_tokens": 31654,
+      "total_tokens": 31935,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 31232
+      }
+    }
+  }
+}

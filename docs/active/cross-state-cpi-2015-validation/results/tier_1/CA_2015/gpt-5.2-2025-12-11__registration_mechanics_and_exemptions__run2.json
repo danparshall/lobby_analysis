@@ -1,0 +1,292 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "registration_mechanics_and_exemptions",
+    "run_index": 2,
+    "state_abbr": "CA",
+    "vintage_year": 2015,
+    "prompt_sha256": "85c0b63c925c8b2146d173119549652ca28c612542439de075a09ef5a79199e1",
+    "timestamp_utc": "2026-06-06T01:54:32+00:00"
+  },
+  "wall_clock_seconds": 11.044509250030387,
+  "usage": {
+    "completion_tokens": 793,
+    "prompt_tokens": 31952,
+    "total_tokens": 32745,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 31872
+    }
+  },
+  "cost_usd_estimate": 0.067018,
+  "legal_roster": [
+    [
+      "lobbyist_registration_required",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_renewal_cadence",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_amendment_deadline_days",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_deadline_days_after_first_lobbying",
+      "legal"
+    ],
+    [
+      "separate_registrations_for_lobbyists_and_clients",
+      "legal"
+    ],
+    [
+      "lobbyist_required_to_submit_photograph_with_registration",
+      "legal"
+    ],
+    [
+      "exemption_for_govt_official_capacity_exists",
+      "legal"
+    ],
+    [
+      "exemption_partial_for_govt_agencies",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Cal. Gov't Code §§ 82039(a)(1), 86100(a)-(c) (2015)",
+      "justification": "Individuals who meet the definition of 'lobbyist' (including being paid $2,000+ in a month to influence legislative/administrative action) must file a lobbyist certification as part of a lobbying firm or lobbyist employer registration, and lobbying firms and qualifying lobbyist employers must register with the Secretary of State."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_renewal_cadence",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": 24
+      },
+      "cell_class": "IntCell",
+      "cited_section": "Cal. Gov't Code § 86106 (2015)",
+      "justification": "Registered lobbying firms and lobbyist employers must renew registration between Nov. 1 and Dec. 31 of each even-numbered year, and each lobbyist renews certification in connection with that renewal, implying a biennial (24-month) renewal cadence."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_amendment_deadline_days",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": 20
+      },
+      "cell_class": "IntCell",
+      "cited_section": "Cal. Gov't Code § 86107(a)-(b) (2015)",
+      "justification": "Amendments to registration statements and changes to lobbyist certifications must be filed within 20 days after the change (subject to a special earlier rule for new clients)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "separate_registrations_for_lobbyists_and_clients",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Cal. Gov't Code §§ 86100(a)-(c), 86104, 86105 (2015)",
+      "justification": "The statute requires lobbying firms and qualifying lobbyist employers to register via their own registration statements, and individual lobbyists to file separate lobbyist certifications that are filed as part of the firm/employer registration package."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_required_to_submit_photograph_with_registration",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Cal. Gov't Code §§ 86103(a), 86106 (2015)",
+      "justification": "A lobbyist certification must include a recent photograph, and renewal requires filing photographs of lobbyists."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "exemption_for_govt_official_capacity_exists",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Cal. Gov't Code § 86300(a) (2015)",
+      "justification": "Chapter 6 does not apply to elected public officials acting in their official capacity or state employees acting within the scope of employment (with a limited gift restriction exception)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "exemption_partial_for_govt_agencies",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Cal. Gov't Code §§ 86300(a); 86116.5(a) (2015)",
+      "justification": "Government officials/employees acting officially are exempt from Chapter 6, and state/local agencies that file reports have distinct disclosure requirements (e.g., payments of $250+), reflecting partial relief/different regulation for government entities."
+    }
+  ],
+  "unscoreable_emissions": [
+    {
+      "handle": "row_004",
+      "axis": "legal",
+      "reason": "The bundled text sets a 10-day registration deadline for lobbying firms and lobbyist employers (§ 86101) but does not state a standalone deadline by which an individual lobbyist must register/certify after first lobbying activity; § 86100(a) ties lobbyist certification to firm/employer registration without a specific day count for the lobbyist.",
+      "row_id": "lobbyist_registration_deadline_days_after_first_lobbying"
+    }
+  ],
+  "errors": [],
+  "response": {
+    "id": "chatcmpl-DnaWs02EGPDnCW7A2YFqQUGjxiXUj",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_i3uRgUEzT1XKWOeDJJV6X67S",
+              "function": {
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code §§ 82039(a)(1), 86100(a)-(c) (2015)\", \"justification\": \"Individuals who meet the definition of 'lobbyist' (including being paid $2,000+ in a month to influence legislative/administrative action) must file a lobbyist certification as part of a lobbying firm or lobbyist employer registration, and lobbying firms and qualifying lobbyist employers must register with the Secretary of State.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_4VaW6yBz00M0TAj3fZSBLWgX",
+              "function": {
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": 24, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code § 86106 (2015)\", \"justification\": \"Registered lobbying firms and lobbyist employers must renew registration between Nov. 1 and Dec. 31 of each even-numbered year, and each lobbyist renews certification in connection with that renewal, implying a biennial (24-month) renewal cadence.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_5342bkcLcxyYzmZrYJRYcwet",
+              "function": {
+                "arguments": "{\"handle\": \"row_003\", \"axis\": \"legal\", \"value\": 20, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code § 86107(a)-(b) (2015)\", \"justification\": \"Amendments to registration statements and changes to lobbyist certifications must be filed within 20 days after the change (subject to a special earlier rule for new clients).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_kHwxlca0GZAZIzCoytCoAoL2",
+              "function": {
+                "arguments": "{\"handle\": \"row_004\", \"axis\": \"legal\", \"reason\": \"The bundled text sets a 10-day registration deadline for lobbying firms and lobbyist employers (§ 86101) but does not state a standalone deadline by which an individual lobbyist must register/certify after first lobbying activity; § 86100(a) ties lobbyist certification to firm/employer registration without a specific day count for the lobbyist.\"}",
+                "name": "record_unscoreable_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_arMTBD3lzbxliHJRl7GydF1l",
+              "function": {
+                "arguments": "{\"handle\": \"row_005\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code §§ 86100(a)-(c), 86104, 86105 (2015)\", \"justification\": \"The statute requires lobbying firms and qualifying lobbyist employers to register via their own registration statements, and individual lobbyists to file separate lobbyist certifications that are filed as part of the firm/employer registration package.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_LT3gNdZhJJR4nqKpKZOgeHD2",
+              "function": {
+                "arguments": "{\"handle\": \"row_006\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code §§ 86103(a), 86106 (2015)\", \"justification\": \"A lobbyist certification must include a recent photograph, and renewal requires filing photographs of lobbyists.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_GQb7vAy7WT1zo4IOU7YTv3dr",
+              "function": {
+                "arguments": "{\"handle\": \"row_007\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code § 86300(a) (2015)\", \"justification\": \"Chapter 6 does not apply to elected public officials acting in their official capacity or state employees acting within the scope of employment (with a limited gift restriction exception).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_3GpVWPECOddARxtElPXaS9yi",
+              "function": {
+                "arguments": "{\"handle\": \"row_008\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Cal. Gov't Code §§ 86300(a); 86116.5(a) (2015)\", \"justification\": \"Government officials/employees acting officially are exempt from Chapter 6, and state/local agencies that file reports have distinct disclosure requirements (e.g., payments of $250+), reflecting partial relief/different regulation for government entities.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1780710862,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 793,
+      "prompt_tokens": 31952,
+      "total_tokens": 32745,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 31872
+      }
+    }
+  }
+}

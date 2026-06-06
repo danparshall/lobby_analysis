@@ -1,0 +1,286 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "registration_thresholds",
+    "run_index": 2,
+    "state_abbr": "CA",
+    "vintage_year": 2015,
+    "prompt_sha256": "85c0b63c925c8b2146d173119549652ca28c612542439de075a09ef5a79199e1",
+    "timestamp_utc": "2026-06-06T00:20:07+00:00"
+  },
+  "wall_clock_seconds": 14.864677083969582,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 1804
+    },
+    "cache_creation_input_tokens": 1804,
+    "cache_read_input_tokens": 51065,
+    "inference_geo": "global",
+    "input_tokens": 6,
+    "output_tokens": 1460,
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.03653,
+  "legal_roster": [
+    [
+      "lobbyist_registration_threshold_compensation_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_threshold_expenditure_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_threshold_time_percent",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_itemization_de_minimis_threshold_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_de_minimis_threshold_dollars",
+      "legal"
+    ],
+    [
+      "lobbyist_filing_de_minimis_threshold_time_percent",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_threshold_compensation_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "2000"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "§82039(a)(1)",
+      "justification": "Section 82039(a)(1) defines a lobbyist as any individual who receives $2,000 or more in economic consideration in a calendar month (other than reasonable travel reimbursement) to communicate directly with covered officials for the purpose of influencing legislative or administrative action."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_threshold_expenditure_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": null
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "§82039",
+      "justification": "Section 82039's definition of \"lobbyist\" is based solely on compensation received or principal duties, not on the amount the lobbyist personally spends; no expenditure-based lobbyist-definition threshold appears in the statute."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_threshold_time_percent",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "magnitude": null,
+        "unit": null
+      },
+      "cell_class": "TimeThresholdCell",
+      "cited_section": "§82039(a)(1)",
+      "justification": "Section 82039(a)(1) defines lobbyist by compensation amount or by having lobbying as \"principal duties\" of employment, but does not set any specific quantitative time-spent threshold for lobbyist status."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_filing_itemization_de_minimis_threshold_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": "0"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "§86112",
+      "justification": "Section 86112 requires reporting of \"the date and amount of each activity expense\" with no dollar de minimis threshold for itemization on the lobbyist/firm report."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_filing_de_minimis_threshold_dollars",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": "5000"
+      },
+      "cell_class": "DecimalCell",
+      "cited_section": "§86115(b)",
+      "justification": "Section 86115(b) requires non-lobbyist-employer persons to file periodic statements only if they make payments to influence legislative or administrative action of $5,000 or more in a calendar quarter, exempting smaller spenders from the filing duty."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_filing_de_minimis_threshold_time_percent",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": null
+      },
+      "cell_class": "FloatCell",
+      "cited_section": "§82039",
+      "justification": "No provision in the bundled statute exempts a lobbyist from filing disclosure based on a percentage-of-compensated-time threshold; §82039 uses compensation and \"principal duties\" tests rather than a time-percent de minimis."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "msg_017qTbMdZ5vB4etTYxiAyKpw",
+    "container": null,
+    "content": [
+      {
+        "id": "toolu_01P2thQD8tkpaLrgcaxPub95",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_001",
+          "axis": "legal",
+          "value": "2000",
+          "confidence": "high",
+          "cited_section": "§82039(a)(1)",
+          "justification": "Section 82039(a)(1) defines a lobbyist as any individual who receives $2,000 or more in economic consideration in a calendar month (other than reasonable travel reimbursement) to communicate directly with covered officials for the purpose of influencing legislative or administrative action."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01YA4xEfbdCYabXzPZzat4HX",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_002",
+          "axis": "legal",
+          "value": null,
+          "confidence": "high",
+          "cited_section": "§82039",
+          "justification": "Section 82039's definition of \"lobbyist\" is based solely on compensation received or principal duties, not on the amount the lobbyist personally spends; no expenditure-based lobbyist-definition threshold appears in the statute."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01PnUkL6J8ceKsR8G2tDQGLj",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_003",
+          "axis": "legal",
+          "value": {
+            "magnitude": null,
+            "unit": null
+          },
+          "confidence": "high",
+          "cited_section": "§82039(a)(1)",
+          "justification": "Section 82039(a)(1) defines lobbyist by compensation amount or by having lobbying as \"principal duties\" of employment, but does not set any specific quantitative time-spent threshold for lobbyist status."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01PVGbZQruNngDgPDwbokEqu",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_004",
+          "axis": "legal",
+          "value": "0",
+          "confidence": "medium",
+          "cited_section": "§86112",
+          "justification": "Section 86112 requires reporting of \"the date and amount of each activity expense\" with no dollar de minimis threshold for itemization on the lobbyist/firm report."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_019U3Q2TVroupxPNJCJT2QgU",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_005",
+          "axis": "legal",
+          "value": "5000",
+          "confidence": "medium",
+          "cited_section": "§86115(b)",
+          "justification": "Section 86115(b) requires non-lobbyist-employer persons to file periodic statements only if they make payments to influence legislative or administrative action of $5,000 or more in a calendar quarter, exempting smaller spenders from the filing duty."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01UvmRUJMqWftqq4afTcDXfm",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_006",
+          "axis": "legal",
+          "value": null,
+          "confidence": "high",
+          "cited_section": "§82039",
+          "justification": "No provision in the bundled statute exempts a lobbyist from filing disclosure based on a percentage-of-compensated-time threshold; §82039 uses compensation and \"principal duties\" tests rather than a time-percent de minimis."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 1804
+      },
+      "cache_creation_input_tokens": 1804,
+      "cache_read_input_tokens": 51065,
+      "inference_geo": "global",
+      "input_tokens": 6,
+      "output_tokens": 1460,
+      "server_tool_use": null,
+      "service_tier": "standard",
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      }
+    }
+  }
+}
