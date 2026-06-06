@@ -4,6 +4,18 @@ Newest entries first.
 
 ---
 
+## 2026-06-06 — Pre-dispatch review + hygiene plan
+
+**Session shape:** review-and-plan, no dispatch. Triggered by Dan's "step back and review" pause before Day-2 5-state extension dispatch (per leave-behind-prep convo's 5-day plan). Two artifacts produced:
+
+**Inventory report:** [`results/20260606_cpi_2015_c11_chunk_inventory.md`](results/20260606_cpi_2015_c11_chunk_inventory.md) — structural breakdown of the 6 default chunks. 93 cells: 84 de-jure / 9 de-facto; 78.5% BinaryCell, 21.5% structured (the structured-22% is where Round 1 vocab schism lived). Audited all 93 prompts; 11 (12%) lack explicit response-format clarification — listed in §4 with full text.
+
+**Plan:** [`plans/20260606_pre_dispatch_hygiene.md`](plans/20260606_pre_dispatch_hygiene.md) — combined Paths (b) + (c) from the failure-mode doc: Phase 1 helper-side vocab fix for IND_199 + IND_207 ($0, ~30 min, expected Round 1 re-audit lift 50% → ~63%); Phase 2 prompt hygiene cleanup of the 11 underspecified prompts ($0, ~45 min, semantics-preserving); Phase 3 Round 1 re-audit checkpoint; Phase 4 Round 2 dispatch CO/IL/WA/FL/NC at vintage 2015 (~$15); Phase 5 N=10 writeup. Each phase has TDD discipline + acceptance gates; pre-execution checklist gates Phase 1 start.
+
+**Convo:** [`convos/20260606_pre_dispatch_review.md`](convos/20260606_pre_dispatch_review.md).
+
+---
+
 ## 2026-06-05 — Branch cut off main; execution session opens
 
 **Plan (inherited):** [`docs/historical/wi-ralph-cpi-renewal-cadence/plans/20260605_cross_state_cpi_2015_validation.md`](../../historical/wi-ralph-cpi-renewal-cadence/plans/20260605_cross_state_cpi_2015_validation.md) (amended 2026-06-05 — 5 states × default-6-chunks × per-(state, indicator) de-jure exact-match).
