@@ -1,0 +1,138 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "enforcement_and_audits",
+    "run_index": 2,
+    "state_abbr": "WI",
+    "vintage_year": 2015,
+    "prompt_sha256": "a2cb32e5d75e8c0a8b97643e53faafe9bf4813538dfffceee0eca52226272e9f",
+    "timestamp_utc": "2026-06-06T00:27:07+00:00"
+  },
+  "wall_clock_seconds": 7.425494625000283,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 1021
+    },
+    "cache_creation_input_tokens": 1021,
+    "cache_read_input_tokens": 28852,
+    "inference_geo": "global",
+    "input_tokens": 6,
+    "output_tokens": 571,
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.014305,
+  "legal_roster": [
+    [
+      "lobbying_violation_penalties_defined_in_law",
+      "legal"
+    ],
+    [
+      "lobbying_disclosure_audit_required_in_law",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_violation_penalties_defined_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.69",
+      "justification": "Section 13.69 prescribes forfeitures and criminal penalties for principals and lobbyists who violate §§13.61–13.68, including forfeitures up to $5,000 for principals, $1,000 for lobbyists, a Class H felony for filing knowingly false statements under §13.68, and penalties for acting as a lobbyist without a license."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_disclosure_audit_required_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": "MODERATE"
+      },
+      "cell_class": "EnumCell",
+      "cited_section": "§13.74(1); §13.685(3)",
+      "justification": "Section 13.685(3) requires the board to examine each statement filed under §13.68, and §13.74(1) requires the board to cause an examination of all statements filed and to investigate discrepancies; this constitutes a mandatory compliance review by the government accountability board rather than regular independent third-party auditing."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "msg_01VZChBtbCC6VHtZoUuC39LW",
+    "container": null,
+    "content": [
+      {
+        "id": "toolu_01CGk4aVX6UJ7xbJfz3muCrT",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_001",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.69",
+          "justification": "Section 13.69 prescribes forfeitures and criminal penalties for principals and lobbyists who violate §§13.61–13.68, including forfeitures up to $5,000 for principals, $1,000 for lobbyists, a Class H felony for filing knowingly false statements under §13.68, and penalties for acting as a lobbyist without a license."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01G9H8Th459shauUuiMScVMn",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_002",
+          "axis": "legal",
+          "value": "MODERATE",
+          "confidence": "medium",
+          "cited_section": "§13.74(1); §13.685(3)",
+          "justification": "Section 13.685(3) requires the board to examine each statement filed under §13.68, and §13.74(1) requires the board to cause an examination of all statements filed and to investigate discrepancies; this constitutes a mandatory compliance review by the government accountability board rather than regular independent third-party auditing."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 1021
+      },
+      "cache_creation_input_tokens": 1021,
+      "cache_read_input_tokens": 28852,
+      "inference_geo": "global",
+      "input_tokens": 6,
+      "output_tokens": 571,
+      "server_tool_use": null,
+      "service_tier": "standard",
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      }
+    }
+  }
+}

@@ -1,0 +1,133 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "enforcement_and_audits",
+    "run_index": 1,
+    "state_abbr": "WI",
+    "vintage_year": 2015,
+    "prompt_sha256": "a2cb32e5d75e8c0a8b97643e53faafe9bf4813538dfffceee0eca52226272e9f",
+    "timestamp_utc": "2026-06-06T01:57:31+00:00"
+  },
+  "wall_clock_seconds": 3.718822958995588,
+  "usage": {
+    "completion_tokens": 218,
+    "prompt_tokens": 19040,
+    "total_tokens": 19258,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 17920
+    }
+  },
+  "cost_usd_estimate": 0.036372,
+  "legal_roster": [
+    [
+      "lobbying_violation_penalties_defined_in_law",
+      "legal"
+    ],
+    [
+      "lobbying_disclosure_audit_required_in_law",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_violation_penalties_defined_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.69(1)–(4), (6m) (2015)",
+      "justification": "Section 13.69 prescribes forfeitures and criminal penalties for principals or lobbyists who violate ss. 13.61–13.68, including acting as a lobbyist without being licensed and filing falsified statements."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_disclosure_audit_required_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "MODERATE"
+      },
+      "cell_class": "EnumCell",
+      "cited_section": "Wis. Stat. § 13.74(1)–(2) (2015)",
+      "justification": "Section 13.74 requires the board to examine all required statements and allows subpoena-based investigations, constituting a compliance review rather than mandatory regular independent third-party financial auditing."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "chatcmpl-DnaZsVuMQUEScZs3Y4dXb6Jr3tK53",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_VqxBBBqUTrgU0idBG7C0vmjQ",
+              "function": {
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.69(1)–(4), (6m) (2015)\", \"justification\": \"Section 13.69 prescribes forfeitures and criminal penalties for principals or lobbyists who violate ss. 13.61–13.68, including acting as a lobbyist without being licensed and filing falsified statements.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_5yHqy9kwPWogr6gM7PL6tlWk",
+              "function": {
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": \"MODERATE\", \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.74(1)–(2) (2015)\", \"justification\": \"Section 13.74 requires the board to examine all required statements and allows subpoena-based investigations, constituting a compliance review rather than mandatory regular independent third-party financial auditing.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1780711048,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 218,
+      "prompt_tokens": 19040,
+      "total_tokens": 19258,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 17920
+      }
+    }
+  }
+}

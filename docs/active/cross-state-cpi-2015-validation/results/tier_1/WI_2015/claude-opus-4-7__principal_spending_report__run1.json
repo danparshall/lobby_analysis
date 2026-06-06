@@ -1,0 +1,894 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "principal_spending_report",
+    "run_index": 1,
+    "state_abbr": "WI",
+    "vintage_year": 2015,
+    "prompt_sha256": "a2cb32e5d75e8c0a8b97643e53faafe9bf4813538dfffceee0eca52226272e9f",
+    "timestamp_utc": "2026-06-06T00:25:24+00:00"
+  },
+  "wall_clock_seconds": 46.426854874996934,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 28852,
+    "inference_geo": "global",
+    "input_tokens": 2157,
+    "output_tokens": 4992,
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.13558499999999998,
+  "legal_roster": [
+    [
+      "principal_spending_report_cadence_includes_annual",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_includes_monthly",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_includes_other",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_includes_quarterly",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_includes_semiannual",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_includes_triannual",
+      "legal"
+    ],
+    [
+      "principal_spending_report_cadence_other_specification",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_business_nature",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_compensation_paid_to_lobbyists",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_contacts_made",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_general_issues",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_gifts_entertainment_transport_lodging",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_indirect_costs",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_lobbyist_contact_info",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_lobbyist_names",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_major_financial_contributors",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_principal_contact_info",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_specific_bill_number",
+      "legal"
+    ],
+    [
+      "principal_spending_report_includes_total_expenditures",
+      "legal"
+    ],
+    [
+      "principal_spending_report_required",
+      "legal"
+    ],
+    [
+      "principal_spending_report_uses_itemized_format",
+      "legal"
+    ],
+    [
+      "lobbyist_or_principal_reg_form_includes_member_or_sponsor_names",
+      "legal"
+    ],
+    [
+      "principal_spending_report_lists_lobbyists_employed",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_annual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.68(1)",
+      "justification": "The statute requires filing on or before July 31 and January 31 covering the preceding reporting period, not annually."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_monthly",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.68(1)",
+      "justification": "Filings are due semi-annually (July 31 and January 31), not monthly."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_other",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.68(1)",
+      "justification": "The statute specifies a semi-annual reporting period (§13.62(12r)); no \"other\" frequency applies."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_quarterly",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.68(1)",
+      "justification": "Filings are semi-annual (July 31 and January 31), not quarterly."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_semiannual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.68(1) and §13.62(12r)",
+      "justification": "Section 13.68(1) requires filing on or before July 31 and January 31, with \"reporting period\" defined as any 6-month period in §13.62(12r), i.e., semi-annual."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_includes_triannual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.68(1)",
+      "justification": "Filing frequency is semi-annual and not linked to the legislative calendar."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_cadence_other_specification",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "N/A - statute specifies semi-annual reporting (July 31 and January 31 covering 6-month reporting periods)"
+      },
+      "cell_class": "FreeTextCell",
+      "cited_section": "§13.68(1)",
+      "justification": "No \"other\" frequency applies; statute clearly mandates twice-yearly filing."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_business_nature",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.64(1)(b)-(d)",
+      "justification": "Registration requires a description of the business activity, industry/trade/profession, or nature and purposes of the principal, depending on its type."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_compensation_paid_to_lobbyists",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.68(1)(a)1.",
+      "justification": "Lobbying expenditures reported must include compensation to lobbyists for lobbying, whether in cash or in-kind."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_contacts_made",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.68(1)(c)1.",
+      "justification": "The record must include daily itemization of time spent meeting with elective state officials, agency officials, legislative employees, and other decision-making state employees."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_general_issues",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.67(1) and §13.68(1)(bn)",
+      "justification": "Principals must report each legislative proposal, budget bill subject, proposed administrative rule, or topic lobbied, and estimate time spent for each topic constituting 10%+ of lobbying time."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_gifts_entertainment_transport_lodging",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.68(1)(d) and (e)",
+      "justification": "The statement must report reimbursements authorized under §13.625(7) (e.g., travel-related expenses) and total expenditures for personal travel and living expenses."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_indirect_costs",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.68(1)(b)",
+      "justification": "Principal must report expenditures for office space, utilities, supplies, and compensation of employees used in preparing lobbying communications — i.e., indirect/non-compensation lobbying overhead."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_lobbyist_contact_info",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.68(1)(a)6.",
+      "justification": "Only the name and address (not phone number) of a lobbyist must be listed, and only if expenditures to that lobbyist exceed $200."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_lobbyist_names",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.68(1)(a)6.",
+      "justification": "The principal must list the lobbyist's name only if expenditures/obligations to that lobbyist exceed $200 in the reporting period, not all lobbyists unconditionally."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_major_financial_contributors",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.68(1)",
+      "justification": "The expense statement requirements in §13.68(1) do not require disclosure of major financial contributors to the principal."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_principal_contact_info",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.64(1)",
+      "justification": "Registration requires the principal's name and business address (phone number is not specified, but address is required)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_specific_bill_number",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.67(1)",
+      "justification": "Principal must report each legislative proposal and proposed administrative rule number for which it makes a lobbying communication."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_includes_total_expenditures",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.68(1)(a)",
+      "justification": "The statement must report the aggregate total of lobbying expenditures and obligations by the principal and all lobbyists for the principal."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.68(1)(a)1. and (a)6.",
+      "justification": "The expense statement must include compensation to lobbyists, and must itemize amounts paid to any lobbyist exceeding $200 in the reporting period."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_uses_itemized_format",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.68(1)(a)6., (1)(c), (1)(d)",
+      "justification": "The statute requires itemization (e.g., lobbyist-by-lobbyist amounts over $200, daily itemization of time, and identification of each reimbursee with date and amount), in addition to aggregate totals."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_or_principal_reg_form_includes_member_or_sponsor_names",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.64(1)(c)-(d)",
+      "justification": "For associations/trade groups, only the approximate number of members must be disclosed, not the names of sponsors or members."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "principal_spending_report_lists_lobbyists_employed",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.65 and §13.68(1)(a)6.",
+      "justification": "Each principal must file a separate authorization for each lobbyist it employs (§13.65), and must list each lobbyist paid more than $200 in the reporting period (§13.68(1)(a)6.), effectively requiring disclosure of lobbyists employed by the principal."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "msg_0164cvkbobjJTtypBsuiPsZV",
+    "container": null,
+    "content": [
+      {
+        "id": "toolu_01PZWLG4sgxDn7x2hWrp6P4f",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_001",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§13.68(1)",
+          "justification": "The statute requires filing on or before July 31 and January 31 covering the preceding reporting period, not annually."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01TeQZ2rbrkJEzzNbbw2SmHx",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_002",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§13.68(1)",
+          "justification": "Filings are due semi-annually (July 31 and January 31), not monthly."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_018aaS2KeFdBL9ckr9XivA2Y",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_003",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§13.68(1)",
+          "justification": "The statute specifies a semi-annual reporting period (§13.62(12r)); no \"other\" frequency applies."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01Nxn2uS64mZHNqtkD4TjWkM",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_004",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§13.68(1)",
+          "justification": "Filings are semi-annual (July 31 and January 31), not quarterly."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_013EJ762jHAc57SFo4aSoeUk",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_005",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.68(1) and §13.62(12r)",
+          "justification": "Section 13.68(1) requires filing on or before July 31 and January 31, with \"reporting period\" defined as any 6-month period in §13.62(12r), i.e., semi-annual."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_011BeocBV39qVCAmnqhz7qUk",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_006",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§13.68(1)",
+          "justification": "Filing frequency is semi-annual and not linked to the legislative calendar."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01K863Dexu8jKt912RSYPpg4",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_007",
+          "axis": "legal",
+          "value": "N/A - statute specifies semi-annual reporting (July 31 and January 31 covering 6-month reporting periods)",
+          "confidence": "high",
+          "cited_section": "§13.68(1)",
+          "justification": "No \"other\" frequency applies; statute clearly mandates twice-yearly filing."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01AHzAf2DXmKkQ7EED7B98sP",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_008",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.64(1)(b)-(d)",
+          "justification": "Registration requires a description of the business activity, industry/trade/profession, or nature and purposes of the principal, depending on its type."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01543VDjPjT5DUKE7cjSbvG2",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_009",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.68(1)(a)1.",
+          "justification": "Lobbying expenditures reported must include compensation to lobbyists for lobbying, whether in cash or in-kind."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01RUHMpfo1hxnYqyzhK6GGCZ",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_010",
+          "axis": "legal",
+          "value": true,
+          "confidence": "medium",
+          "cited_section": "§13.68(1)(c)1.",
+          "justification": "The record must include daily itemization of time spent meeting with elective state officials, agency officials, legislative employees, and other decision-making state employees."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_018HP2i3tSuZKs7mapSDtVLb",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_011",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.67(1) and §13.68(1)(bn)",
+          "justification": "Principals must report each legislative proposal, budget bill subject, proposed administrative rule, or topic lobbied, and estimate time spent for each topic constituting 10%+ of lobbying time."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01Ep3Sr7Y1RdsRkWFRZwqKpc",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_012",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.68(1)(d) and (e)",
+          "justification": "The statement must report reimbursements authorized under §13.625(7) (e.g., travel-related expenses) and total expenditures for personal travel and living expenses."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01K1giKZu1UE2L1dVj4goXns",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_013",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.68(1)(b)",
+          "justification": "Principal must report expenditures for office space, utilities, supplies, and compensation of employees used in preparing lobbying communications — i.e., indirect/non-compensation lobbying overhead."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01C2TP1XB42kxWhPjfW6sBAn",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_014",
+          "axis": "legal",
+          "value": false,
+          "confidence": "medium",
+          "cited_section": "§13.68(1)(a)6.",
+          "justification": "Only the name and address (not phone number) of a lobbyist must be listed, and only if expenditures to that lobbyist exceed $200."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01JGeWhBotGxgtyEpmWEvcKS",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_015",
+          "axis": "legal",
+          "value": false,
+          "confidence": "medium",
+          "cited_section": "§13.68(1)(a)6.",
+          "justification": "The principal must list the lobbyist's name only if expenditures/obligations to that lobbyist exceed $200 in the reporting period, not all lobbyists unconditionally."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01W3ZXhdDD7C9Wi8rc3f1uAL",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_016",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§13.68(1)",
+          "justification": "The expense statement requirements in §13.68(1) do not require disclosure of major financial contributors to the principal."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01DNBw5CyX5sRribr7ekTpCj",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_017",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.64(1)",
+          "justification": "Registration requires the principal's name and business address (phone number is not specified, but address is required)."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01G3MYZBZWptmpmL7oDkESFd",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_018",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.67(1)",
+          "justification": "Principal must report each legislative proposal and proposed administrative rule number for which it makes a lobbying communication."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01VPCacYDk6L8iaFG4EGAzoZ",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_019",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.68(1)(a)",
+          "justification": "The statement must report the aggregate total of lobbying expenditures and obligations by the principal and all lobbyists for the principal."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01U69Eu3xEvLLPGA1BeawKUT",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_020",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.68(1)(a)1. and (a)6.",
+          "justification": "The expense statement must include compensation to lobbyists, and must itemize amounts paid to any lobbyist exceeding $200 in the reporting period."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01Ss5kMzkeZd9ivguCbJpzU4",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_021",
+          "axis": "legal",
+          "value": true,
+          "confidence": "medium",
+          "cited_section": "§13.68(1)(a)6., (1)(c), (1)(d)",
+          "justification": "The statute requires itemization (e.g., lobbyist-by-lobbyist amounts over $200, daily itemization of time, and identification of each reimbursee with date and amount), in addition to aggregate totals."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_015rtcRS8jNFz5TqVcQ6C2ve",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_022",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§13.64(1)(c)-(d)",
+          "justification": "For associations/trade groups, only the approximate number of members must be disclosed, not the names of sponsors or members."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_016ZamfExnXn9Svi6KgxQWaT",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_023",
+          "axis": "legal",
+          "value": true,
+          "confidence": "medium",
+          "cited_section": "§13.65 and §13.68(1)(a)6.",
+          "justification": "Each principal must file a separate authorization for each lobbyist it employs (§13.65), and must list each lobbyist paid more than $200 in the reporting period (§13.68(1)(a)6.), effectively requiring disclosure of lobbyists employed by the principal."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 28852,
+      "inference_geo": "global",
+      "input_tokens": 2157,
+      "output_tokens": 4992,
+      "server_tool_use": null,
+      "service_tier": "standard",
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      }
+    }
+  }
+}
