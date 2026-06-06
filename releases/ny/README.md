@@ -41,6 +41,33 @@ All files are tab-separated (`.tsv`) with a single header row. Total size: **~11
 | **`NY_filings.tsv`** | 10,870 | One row per firm-filing — a `(reporting_year, reporting_period, form_submission_id, lobbyist firm, client)` tuple. Columns: `filing_id` (= `form_submission_id`, the **client's** report id), `id` (`NY-filing-{submission}-{firm}-{client}`, unique), `state`, `filing_type` (= `expenditure_report`), `filer_role` (= `firm`), `reporting_year`, `reporting_period`, `lobbyist_id`, `client_id`, `total_compensation`. |
 | **`NY_filing_bill_links.tsv`** | 47,204 | One row per `(firm-filing, real state bill)`. Columns: `filing_id`, `lobbyist_id`, `client_id`, `bill_id` (canonical, amendment suffix preserved), `bill_print_version`, `comp_per_bill` (even-split), `filing_compensation`, `n_bills_in_filing`, `reporting_year`, `reporting_period`. A filing with no real bill appears in `NY_filings.tsv` (its dollars are preserved) but contributes **zero** link rows. |
 
+### Disclosed lawmaker contacts (`parties_lobbied`)
+
+| File | Rows | What it is |
+|---|---:|---|
+| **`NY_filing_parties_lobbied.tsv`** | 170,328 | One row per `(firm-filing, distinct party lobbied)` — NY's **disclosed** "who was lobbied" field, resolved to Open States `ocd-person` ids where it names a state legislator. Columns: `reporting_year`, `reporting_period`, `filing_id`, `lobbyist_id`, `client_id`, `party_lobbied_raw` (the verbatim disclosed string), `party_lobbied_name` (title/noise-stripped legislator name, when resolved), `party_lobbied_person_id` (`ocd-person/…`, when resolved), `resolved` (`True`/`False`). |
+
+**Disclosed, not inferred — this is a different edge from the sponsor chain.** The
+chain's lawmaker edge (Phase 4) is the bill *primary sponsor*, *inferred* via Open
+States. `parties_lobbied` is the genuinely *disclosed* contact, and it surfaces
+leadership, committee chairs, executive offices, and municipal officials a sponsor
+join never could. **Unweighted** — it carries no compensation (no conservation
+invariant); the metric is the resolution rate.
+
+**Resolution (2025):** of 100,250 edges that name a **state legislator**
+(`Senator` / `Assembly member`), **90.4% resolved** to a specific `ocd-person`
+(**195 distinct legislators**). The other 41% of all edges name parties that are
+**not** state legislators — NYC municipal officials (Council members, the Mayor's
+office), state executive offices / agencies, chamber program/counsel staff, and
+"entire-legislature" broadcasts — kept verbatim with `resolved=False`, never
+coerced into a legislator id. Overall **53.2%** of edges resolve. Matching is a
+deterministic first-name+last-name key (zero collisions on the NY roster; see
+[Phase 0](../../docs/active/ny-disclosure-explore/results/20260606_ny_parties_lobbied_grain.md));
+the residual ~10% of legislator edges miss on accents (`José Serrano`), nicknames
+(`Liz`/`Elizabeth Krueger`), or non-sponsoring members absent from the roster.
+**Caveat 10** has the full discipline. Aggregates:
+[`results/20260606_ny_parties_lobbied_release.md`](../../docs/active/ny-disclosure-explore/results/20260606_ny_parties_lobbied_release.md).
+
 ### Schema reference
 
 Field semantics come from the Pydantic models at [`src/lobby_analysis/models/`](../../src/lobby_analysis/models/) (entity-side follows [Popolo](http://www.popoloproject.com/) / Open Civic Data; filing-side an OCD-style disclosure schema). `contact_details_json` is a JSON list of Popolo `ContactDetail` objects — empty (`[]`) for every NY client/firm, since `client_semiannual` carries no contact info.
@@ -97,6 +124,8 @@ These are New York's recognized top-tier lobbying firms, a strong face-validity 
 8. **No stance/position.** NY discloses *which* bills were lobbied, not *for or against*. There is no support/oppose signal in this data (confirmed in Phase 0).
 
 9. **`LobbyingFiling.total_compensation` is typed `float`.** The materializer writes the exact `Decimal` straight from the grain (TSVs are exact), but the Pydantic model field would coerce to `float`; a `Decimal`-typing pass is an open follow-up. Trust the TSV, not a round-trip through the model field.
+
+10. **`parties_lobbied` resolution is non-uniform — do NOT read `resolved=False` density as "less lobbied."** Only legislator-titled values that matched the state legislator roster are resolved (`resolved=True` ⟺ a specific named *state* legislator). The unresolved rows are biased two ways: (a) by design, parties that aren't state legislators (NYC municipal officials, executive offices, agencies, broadcasts — 41% of edges); and (b) a known gap — state legislators missed on accents, nicknames, or absence from the *sponsorship* roster (non-sponsoring members). A naive "times each legislator was lobbied" count will undercount exactly the harder-to-match members. The edge is also reported per-firm: NY discloses `parties_lobbied` at the client-submission level and it replicates onto each co-retained firm's filing, so a party attaches to every firm on the client's filing, not to a specific firm's contact.
 
 ---
 
