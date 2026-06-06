@@ -211,16 +211,43 @@ def extract_filing_parties(df: pd.DataFrame, roster: dict[str, str]) -> pd.DataF
         return pd.DataFrame(columns=list(_FIELDS))
 
     survivors = resolve_superseded(df)
+
+    # Memoize the expensive per-value work (regex resolution + entity-id slugging)
+    # over the DISTINCT values — the source is denormalized ~1,300x, so the same
+    # party / firm / client string recurs across millions of rows. This turns
+    # ~11M regex+slug calls into a few tens of thousands.
+    party_cache: dict[object, tuple[str, str, str | None, bool]] = {}
+    firm_cache: dict[object, str] = {}
+    client_cache: dict[object, str] = {}
+
     seen: dict[tuple, dict] = {}
-    for rec in survivors.to_dict(orient="records"):
-        party_raw, party_name, person_id, resolved = resolve_party_lobbied(
-            rec.get("parties_lobbied"), roster
-        )
+    cols = (
+        survivors["parties_lobbied"],
+        survivors["principal_lobbyist"],
+        survivors["beneficial_client"],
+        survivors["form_submission_id"],
+        survivors["reporting_year"],
+        survivors["reporting_period"],
+    )
+    for raw_party, firm_raw, client_raw, sub, year, period in zip(*cols):
+        cached = party_cache.get(raw_party)
+        if cached is None:
+            cached = resolve_party_lobbied(raw_party, roster)
+            party_cache[raw_party] = cached
+        party_raw, party_name, person_id, resolved = cached
         if not party_raw:
             continue
-        lobbyist_id = parse_principal_lobbyist(rec["principal_lobbyist"]).id
-        client_id = parse_client(rec["beneficial_client"]).id
-        filing_id = str(rec["form_submission_id"])
+
+        lobbyist_id = firm_cache.get(firm_raw)
+        if lobbyist_id is None:
+            lobbyist_id = parse_principal_lobbyist(firm_raw).id
+            firm_cache[firm_raw] = lobbyist_id
+        client_id = client_cache.get(client_raw)
+        if client_id is None:
+            client_id = parse_client(client_raw).id
+            client_cache[client_raw] = client_id
+
+        filing_id = str(sub)
         dedup = person_id if resolved else party_raw.casefold()
         key = (filing_id, lobbyist_id, client_id, dedup)
         if key in seen:
@@ -228,8 +255,8 @@ def extract_filing_parties(df: pd.DataFrame, roster: dict[str, str]) -> pd.DataF
                 seen[key]["party_lobbied_raw"] = party_raw
             continue
         seen[key] = {
-            "reporting_year": str(rec.get("reporting_year", "")),
-            "reporting_period": str(rec.get("reporting_period", "")),
+            "reporting_year": str(year),
+            "reporting_period": str(period),
             "filing_id": filing_id,
             "lobbyist_id": lobbyist_id,
             "client_id": client_id,
