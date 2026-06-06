@@ -60,12 +60,17 @@ pipeline, not just this edge: the single-request bulk pull silently truncates.
 
 ## Decisions Made
 
-- **⚠️ OWED TO DAN — matching strategy (gate tripped).** The plan said "exact-match
+- **✅ RATIFIED BY DAN (2026-06-06) — first+last match key.** The plan said "exact-match
   only; if fuzzy matching is needed to hit target, stop and consult Dan." Exact match
-  only hits 63%. I proceeded on the **first+last key** (deterministic, zero-collision)
-  on the judgment that it is an *extended exact-match key*, not similarity-fuzzy. This
-  is the #1 item for Dan to ratify. Fully reversible (un-merged, release gitignored).
-  If rejected → revert to exact-only (63%) or source a fuller official people roster.
+  only hits 63%; I proceeded on the **first+last key** (deterministic, zero-collision)
+  as an *extended exact-match key* (not similarity-fuzzy) and flagged it. **Dan ratified
+  it** — confirmed it's the lever from 63% (exact) to 90.4% (edge-grain). Settled.
+- **✅ Acquisition library hardening — Dan chose "harden + paginate in the library,"
+  to be run by a separate TDD agent.** Plan written: [`plans/ny_acquire_paginate_verify.md`](../plans/ny_acquire_paginate_verify.md).
+  Sub-decisions resolved (Dan): guard is **opt-in** (`expected_count`), the partitioned
+  function **self-probes `count(*)`**, and **no separate synthetic integration smoke**
+  (mocked tests + the live re-run cover it). Verified the **old 9-col pull was complete
+  (11,200,080 == live)**, so no shipped artifact was affected — the fix is forward-looking.
 - **Roster source:** `NY_*_bill_sponsorships.csv` (`entity_type=person`), first+last
   key; `vote_people` rejected.
 - **Non-legislators (~41% of edges):** kept `resolved=False`, raw preserved; no
@@ -79,14 +84,19 @@ pipeline, not just this edge: the single-request bulk pull silently truncates.
 - [`results/20260606_ny_parties_lobbied_release.md`](../results/20260606_ny_parties_lobbied_release.md) — release aggregates + caveats.
 - `releases/ny/NY_filing_parties_lobbied.tsv` (gitignored) + a new section in `releases/ny/README.md`.
 
+## Plan produced
+
+- [`plans/ny_acquire_paginate_verify.md`](../plans/ny_acquire_paginate_verify.md) — ready-to-run TDD plan to lift the paginate-and-verify pull into `io/ny/acquire` + add the opt-in `expected_count` guard (Dan: a separate agent runs it). Originates from this convo's "Acquisition bug" thread.
+
 ## Open Questions
 
-- **Does Dan accept first+last** as within-MVP, or is it "fuzzy" → revert?
+- ~~Does Dan accept first+last?~~ **Resolved — ratified (see Decisions).**
+- ~~Should `download_resource_csv` itself paginate?~~ **Resolved — yes; plan written
+  ([`plans/ny_acquire_paginate_verify.md`](../plans/ny_acquire_paginate_verify.md)),
+  a separate agent runs it TDD.**
 - **Accent folding** (unicode-normalize the key) would cheaply recover Serrano,
-  Torres, … — do it now or post-MVP?
+  Torres, … — do it now or post-MVP? (Dan: important, but *after* the truncation fix.)
 - **Fuller OS people roster** (canonical OS people CSV, not sponsorships) for
   non-sponsoring members + nicknames — worth it for MVP?
 - **`target_kind` taxonomy** incl. a `municipal` bucket — when?
 - **Chain integration** of the disclosed edge alongside the inferred sponsor edge.
-- Should `download_resource_csv` itself be made paginating (the bug lives in the
-  library; only the script is fixed)?

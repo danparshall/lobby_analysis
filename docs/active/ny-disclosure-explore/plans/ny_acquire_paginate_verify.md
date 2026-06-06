@@ -102,9 +102,9 @@ NOTE: I will write *all* tests before I add any implementation behavior.
 - If a future dataset has a single partition-key value approaching the truncation threshold (~1.6 GB / a few M rows), that one bucket could itself truncate; per-bucket verify+retry will catch it (loud), but a sub-split (e.g. by `reporting_period`) may then be needed. Not required for `client_semiannual` (the 2.22M mega-id streamed fine).
 - Generalizing `partition_key` to other NY datasets (`lobbyist_bimonthly`, …) may need a different key; document the contract (numeric/orderable, low-cardinality enough to group in one aggregate request) rather than over-generalize now (YAGNI).
 
-**Questions:**
-1. Guard scope: keep `expected_count` **opt-in** (recommended — preserves existing behavior/tests), or make verification mandatory for every `download_resource_csv` call (would require passing an expected count everywhere + updating the 10 tests)?
-2. Should `download_resource_csv_partitioned` probe `count(*)` itself (current assumption) or accept an injected expected total for callers that already have it? (Self-probing is simpler and matches the script; injection is one fewer request.)
-3. Worth a tiny integration smoke that runs the partitioned pull against a 2-bucket *synthetic* fixture server, beyond the mocked tests? (Probably no — the mocked behavior tests + the live script re-run in step 12 cover it.)
+**Resolved decisions (Dan, 2026-06-06 — implement exactly these, not open):**
+1. **Guard is opt-in.** Keep `expected_count: int | None = None` on `download_resource_csv`; verification fires only when a caller passes it. The 10 existing acquire tests and any small-pull callers stay untouched. (The partitioned function always verifies internally regardless.)
+2. **`download_resource_csv_partitioned` self-probes `count(*)`** — it issues its own count query (matches the proven script); do not add an injected-total parameter.
+3. **No separate synthetic integration smoke.** The mocked behavior tests plus the step-12 live re-run are the coverage — and we will re-run the real pull regularly, so the live path stays exercised.
 
 ---
