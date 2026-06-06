@@ -72,14 +72,14 @@ Per (edge, attribute), we mark **quality** and **source**.
 
 |                       | Money | Time | Stance |
 |-----------------------|-------|------|--------|
-| principal ↔ lobbyist  | ✗¹    | —    | —      |
+| principal ↔ lobbyist  | ✗!¹   | —    | —      |
 | principal ↔ lawmaker  | ~²    | —    | —      |
 | principal ↔ bill      | ~³    | —    | ✗!⁴    |
 | lobbyist ↔ lawmaker   | ✓⁵    | ✓⁶   | —      |
 | lobbyist ↔ bill       | ~³    | —    | ✗!⁴    |
 | lawmaker ↔ bill       | —     | —    | ✗⁷     |
 
-¹ AER header may include filing-level totals — needs verification against `LobbyingFiling` schema fields
+¹ OH AER form does NOT disclose compensation paid by employer to agent — verified 2026-06-06 against `src/lobby_analysis/oh_portal/extraction_brief.py` + raw HTML form 1472130. `LobbyingFiling.total_compensation` field exists on the schema (intended as PRI E1f_i/E2f_i federal concept) but is `null` on all OH extractions. Same structural shape as WI on this edge.
 ² Back-projectable through lobbyist (gift to lawmaker via principal's agent)
 ³ Itemized expenditures (Section II.A-D) allocate to lawmakers and aggregates; bill allocation would be by-period imputation
 ⁴ OH AER form does not collect stance per Section I (per `src/lobby_analysis/oh_portal/extraction_brief.py`)
