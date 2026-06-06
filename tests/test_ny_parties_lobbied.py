@@ -28,6 +28,7 @@ import pandas as pd
 
 from lobby_analysis.io.ny.parties import (
     build_legislator_roster,
+    build_nickname_index,
     extract_filing_parties,
     materialize_parties_lobbied,
     resolve_party_lobbied,
@@ -331,3 +332,159 @@ def test_materialize_empty_input_header_only(tmp_path):
     content = (tmp_path / "NY_filing_parties_lobbied.tsv").read_text(encoding="utf-8")
     assert content == "\t".join(_EXPECTED_COLUMNS) + "\n"
     assert counts["filing_parties_lobbied"] == 0
+
+
+# ---------------------------------------------------------------------------
+# nickname fallback — build_nickname_index + resolve_party_lobbied(nickname_index=)
+#
+# After accent-folding, 91% of the unresolved legislator residual is
+# nickname/formal first-name mismatches on surnames already in the roster
+# (results/20260606_ny_parties_residual_decomposition.md). The nickname index
+# canonicalizes first names through the `nicknames` dictionary (both directions),
+# keyed by (last, canonical-root), with a collision guard so distinct people who
+# share a surname are never falsely merged. Tests exercise the real dictionary and
+# a real-shaped roster — genuine recovery AND genuine refusal, no mocks.
+# ---------------------------------------------------------------------------
+
+
+def test_nickname_formal_disclosure_informal_roster_resolves(tmp_path):
+    # Roster carries the informal "Liz Krueger"; disclosure is formal "Elizabeth".
+    _write_sponsorships(tmp_path, [
+        {"name": "Liz Krueger", "entity_type": "person", "person_id": "ocd-person/krue"},
+    ])
+    roster = build_legislator_roster(tmp_path)
+    nick = build_nickname_index(tmp_path)
+    _, name, pid, resolved = resolve_party_lobbied(
+        "Senator Elizabeth Krueger", roster, nickname_index=nick
+    )
+    assert resolved is True
+    assert pid == "ocd-person/krue"
+    assert name == "Elizabeth Krueger"
+
+
+def test_nickname_informal_disclosure_formal_roster_resolves(tmp_path):
+    # Reverse direction: roster carries formal "Christopher"; disclosure is "Chris".
+    _write_sponsorships(tmp_path, [
+        {"name": "Christopher Eachus", "entity_type": "person", "person_id": "ocd-person/each"},
+    ])
+    roster = build_legislator_roster(tmp_path)
+    nick = build_nickname_index(tmp_path)
+    _, _, pid, resolved = resolve_party_lobbied(
+        "Assembly member Chris Eachus", roster, nickname_index=nick
+    )
+    assert resolved is True
+    assert pid == "ocd-person/each"
+
+
+def test_nickname_with_middle_initial_and_staff_tag_resolves(tmp_path):
+    # Composes with the existing noise-strip + middle-initial drop: roster "Ron Kim",
+    # disclosure "Assembly member Ronald T. Kim, staff member".
+    _write_sponsorships(tmp_path, [
+        {"name": "Ron Kim", "entity_type": "person", "person_id": "ocd-person/kim"},
+    ])
+    roster = build_legislator_roster(tmp_path)
+    nick = build_nickname_index(tmp_path)
+    _, _, pid, resolved = resolve_party_lobbied(
+        "Assembly member Ronald T. Kim, staff member", roster, nickname_index=nick
+    )
+    assert resolved is True
+    assert pid == "ocd-person/kim"
+
+
+def test_nickname_ambiguity_guard_refuses(tmp_path):
+    # Two DISTINCT people share a surname and both canonicalize to "elizabeth smith"
+    # (Liz Smith and Beth Smith). The collision guard must refuse a formal
+    # "Elizabeth Smith" rather than pick one.
+    _write_sponsorships(tmp_path, [
+        {"name": "Liz Smith", "entity_type": "person", "person_id": "ocd-person/liz1"},
+        {"name": "Beth Smith", "entity_type": "person", "person_id": "ocd-person/beth2"},
+    ])
+    roster = build_legislator_roster(tmp_path)
+    nick = build_nickname_index(tmp_path)
+    _, _, pid, resolved = resolve_party_lobbied(
+        "Senator Elizabeth Smith", roster, nickname_index=nick
+    )
+    assert resolved is False
+    assert pid is None
+
+
+def test_nickname_same_surname_different_person_refuses(tmp_path):
+    # Keith vs Jordan Wright are different people (father/son, same surname & seat);
+    # keith and jordan are NOT nickname-equivalent, so a Keith disclosure must not
+    # resolve to the in-roster Jordan.
+    _write_sponsorships(tmp_path, [
+        {"name": "Jordan Wright", "entity_type": "person", "person_id": "ocd-person/jord"},
+    ])
+    roster = build_legislator_roster(tmp_path)
+    nick = build_nickname_index(tmp_path)
+    _, _, pid, resolved = resolve_party_lobbied(
+        "Assembly member Keith Wright", roster, nickname_index=nick
+    )
+    assert resolved is False
+    assert pid is None
+
+
+def test_nickname_gender_form_trap_refuses(tmp_path):
+    # Paul and Paula are not a nickname pair; the curated dictionary keeps them
+    # distinct. Guards against a future dictionary update that merges them.
+    _write_sponsorships(tmp_path, [
+        {"name": "Paula Bologna", "entity_type": "person", "person_id": "ocd-person/pau"},
+    ])
+    roster = build_legislator_roster(tmp_path)
+    nick = build_nickname_index(tmp_path)
+    _, _, pid, resolved = resolve_party_lobbied(
+        "Assembly member Paul Bologna", roster, nickname_index=nick
+    )
+    assert resolved is False
+    assert pid is None
+
+
+def test_nickname_no_index_keeps_exact_only_behavior(tmp_path):
+    # Regression: without a nickname index, a nickname-only disclosure stays
+    # unresolved (the exact/accent-folded fast path is byte-for-byte unchanged).
+    _write_sponsorships(tmp_path, [
+        {"name": "Liz Krueger", "entity_type": "person", "person_id": "ocd-person/krue"},
+    ])
+    roster = build_legislator_roster(tmp_path)
+    # exact informal disclosure still resolves via the fast path...
+    _, _, pid_exact, resolved_exact = resolve_party_lobbied("Senator Liz Krueger", roster)
+    assert resolved_exact is True
+    assert pid_exact == "ocd-person/krue"
+    # ...but the formal nickname variant does NOT, with no index supplied.
+    _, _, pid, resolved = resolve_party_lobbied("Senator Elizabeth Krueger", roster)
+    assert resolved is False
+    assert pid is None
+
+
+def test_nickname_executive_title_never_coerces(tmp_path):
+    # The legislator-title gate runs BEFORE any nickname logic: an executive title
+    # never resolves, even if a nickname-equivalent person is in the index.
+    _write_sponsorships(tmp_path, [
+        {"name": "Kathy Hochul", "entity_type": "person", "person_id": "ocd-person/hoc"},
+    ])
+    roster = build_legislator_roster(tmp_path)
+    nick = build_nickname_index(tmp_path)
+    _, _, pid, resolved = resolve_party_lobbied(
+        "Governor Katherine Hochul", roster, nickname_index=nick
+    )
+    assert resolved is False
+    assert pid is None
+
+
+def test_extract_threads_nickname_index(tmp_path):
+    # End-to-end: extract_filing_parties accepts an optional nickname_index and
+    # resolves a formal-disclosure legislator that the exact roster alone misses.
+    _write_sponsorships(tmp_path, [
+        {"name": "Liz Krueger", "entity_type": "person", "person_id": "ocd-person/krue"},
+    ])
+    roster = build_legislator_roster(tmp_path)
+    nick = build_nickname_index(tmp_path)
+    rows = [_norm_row(sub="100", parties="Senator Elizabeth Krueger")]
+    df = pd.DataFrame(rows)
+    # without the index: unresolved
+    out_no = extract_filing_parties(df, roster)
+    assert bool(out_no["resolved"].iloc[0]) is False
+    # with the index: resolved to Krueger
+    out_yes = extract_filing_parties(df, roster, nickname_index=nick)
+    assert bool(out_yes["resolved"].iloc[0]) is True
+    assert out_yes["party_lobbied_person_id"].iloc[0] == "ocd-person/krue"

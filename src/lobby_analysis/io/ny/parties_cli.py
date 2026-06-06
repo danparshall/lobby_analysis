@@ -5,11 +5,12 @@ must include the ``parties_lobbied`` column — see ``scripts/ny_pull_2025.py``)
 
     read_csv (only the columns the edge needs)
       -> columns.normalize_columns(dataset)
-      -> parties.extract_filing_parties(df, roster)
+      -> parties.extract_filing_parties(df, roster, nickname_index)
       -> parties.materialize_parties_lobbied(output_dir)
 
-The roster is built from the Open States NY sponsorship file
-(``--os-dir``). Prints a JSON summary plus the resolution metrics (total party
+The roster and the nickname index are both built from the Open States NY
+sponsorship file (``--os-dir``); the nickname index recovers formal<->informal
+first-name mismatches (``Elizabeth``<->``Liz``) that the exact roster misses. Prints a JSON summary plus the resolution metrics (total party
 rows, distinct resolved ``ocd-person``s, resolution rate, top unresolved values)
 so the release doc's aggregates come straight from the run. No new behavior tests
 — ``parties.py``'s suite covers the steps (mirrors ``materialize_cli``'s
@@ -39,6 +40,7 @@ import pandas as pd
 from lobby_analysis.io.ny.columns import COLUMN_MAPS, normalize_columns
 from lobby_analysis.io.ny.parties import (
     build_legislator_roster,
+    build_nickname_index,
     extract_filing_parties,
     materialize_parties_lobbied,
 )
@@ -85,11 +87,13 @@ def main(argv: list[str] | None = None) -> int:
     t0 = time.time()
     roster = build_legislator_roster(args.os_dir)
     print(f"[ny-parties] roster legislators: {len(roster)}", flush=True)
+    nickname_index = build_nickname_index(args.os_dir)
+    print(f"[ny-parties] nickname index keys: {len(nickname_index)}", flush=True)
 
     df = pd.read_csv(args.input, dtype=str, keep_default_na=False, usecols=_USECOLS)
     print(f"[ny-parties] raw rows: {len(df):,}", flush=True)
     df = normalize_columns(df, args.dataset)
-    parties = extract_filing_parties(df, roster)
+    parties = extract_filing_parties(df, roster, nickname_index)
     counts = materialize_parties_lobbied(parties, output_dir=args.output_dir)
     elapsed = time.time() - t0
 

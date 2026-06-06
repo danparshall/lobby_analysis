@@ -33,6 +33,7 @@ import unicodedata
 from pathlib import Path
 
 import pandas as pd
+from nicknames import NickNamer
 
 from lobby_analysis.io.ny.grain import resolve_superseded
 from lobby_analysis.io.ny.materialize import _cell, _write_tsv
@@ -40,6 +41,8 @@ from lobby_analysis.io.ny.parse import _clean_name, parse_client, parse_principa
 
 __all__ = [
     "build_legislator_roster",
+    "build_nickname_index",
+    "NicknameIndex",
     "resolve_party_lobbied",
     "extract_filing_parties",
     "materialize_parties_lobbied",
@@ -65,6 +68,16 @@ _PAREN = re.compile(r"\s*\([^)]*\)")
 #: name suffix dropped before the first+last key.
 _SUFFIX = re.compile(r",?\s*(jr|sr|ii|iii|iv)\.?\s*$", re.IGNORECASE)
 _WS = re.compile(r"\s+")
+
+#: One shared nickname dictionary (the maintained carltonnorthern dataset via the
+#: ``nicknames`` PyPI package). Built once at import; ``canonicals_of`` maps an
+#: informal name to its formal roots (``liz`` -> ``{elizabeth, lisa, lizzie}``).
+_NICKNAMER = NickNamer()
+
+#: Sentinel marking a ``(last, root)`` nickname key reachable by 2+ distinct
+#: people — resolving through it would risk a false legislator attribution, so it
+#: blocks resolution (the collision guard).
+_AMBIGUOUS = object()
 
 _FIELDS = (
     "reporting_year",
@@ -130,7 +143,72 @@ def _first_last_key(name: str) -> str:
     return _fold_accents(f"{tokens[0]} {tokens[-1]}").casefold()
 
 
-def resolve_party_lobbied(raw, roster: dict[str, str]) -> tuple[str, str, str | None, bool]:
+def _first_last_tokens(name: str) -> tuple[str, str] | None:
+    """Return ``(first_token, last_token)`` from a name, or ``None`` if it has < 2.
+
+    Mirrors :func:`_first_last_key`'s tokenization (suffix dropped, middle initial
+    ignored by taking only the first and last tokens) but returns the raw tokens so
+    the nickname index can canonicalize the first name. Folding/casefolding happens
+    inside the index probe, not here.
+    """
+    name = _SUFFIX.sub("", name).strip()
+    tokens = name.split()
+    if len(tokens) < 2:
+        return None
+    return tokens[0], tokens[-1]
+
+
+def _canonical_first_roots(first_token: str) -> frozenset[str]:
+    """Expand a first name to its canonical roots (accent-folded + casefolded).
+
+    Always includes the name itself, so already-formal names and names the
+    dictionary doesn't know still match exactly. Unions in the dictionary's
+    ``canonicals_of`` (informal -> formal roots). Because both the roster side and
+    the disclosure side expand the same way, a nickname and its formal name share
+    the formal root and so resolve to the same ``(last, root)`` key in either
+    direction (``Liz``/``Elizabeth``, ``Chris``/``Christopher``).
+    """
+    folded = _fold_accents(first_token).casefold()
+    roots = {folded}
+    for canonical in _NICKNAMER.canonicals_of(folded):
+        roots.add(_fold_accents(canonical).casefold())
+    return frozenset(roots)
+
+
+class NicknameIndex:
+    """A ``(last_folded, canonical_first_root) -> person_id`` lookup with a guard.
+
+    A key reached by two or more distinct ``person_id``s is collapsed to the
+    :data:`_AMBIGUOUS` sentinel at build time. At lookup, the disclosure first name
+    is expanded to its canonical roots and every ``(last, root)`` is probed: if any
+    probe hits an ambiguous key the lookup refuses outright, and otherwise it
+    resolves only when the probes yield exactly one distinct person. This is the
+    false-merge defense for distinct people who share a surname.
+    """
+
+    def __init__(self, mapping: dict[tuple[str, str], object]) -> None:
+        self._mapping = mapping
+
+    def __len__(self) -> int:
+        return len(self._mapping)
+
+    def lookup(self, first_token: str, last_token: str) -> str | None:
+        last = _fold_accents(last_token).casefold()
+        found: set[str] = set()
+        for root in _canonical_first_roots(first_token):
+            value = self._mapping.get((last, root))
+            if value is _AMBIGUOUS:
+                return None
+            if value is not None:
+                found.add(value)  # type: ignore[arg-type]
+        return next(iter(found)) if len(found) == 1 else None
+
+
+def resolve_party_lobbied(
+    raw,
+    roster: dict[str, str],
+    nickname_index: NicknameIndex | None = None,
+) -> tuple[str, str, str | None, bool]:
     """Resolve one ``parties_lobbied`` value against the legislator roster.
 
     Returns ``(party_raw, party_name, person_id, resolved)``:
@@ -147,6 +225,13 @@ def resolve_party_lobbied(raw, roster: dict[str, str]) -> tuple[str, str, str | 
     "entire legislature" broadcast) is never resolved — it is kept unresolved with
     the raw preserved, so the disclosed edge is never over-claimed as a specific
     legislator.
+
+    When ``nickname_index`` is supplied, an exact-key miss falls back to nickname
+    canonicalization (``Elizabeth``<->``Liz``): the title-stripped, noise-stripped
+    first+last is probed against the index, which resolves only on a single
+    non-ambiguous person. The fast path (exact/accent-folded key) and the
+    legislator-title gate run first and unchanged, so passing no index reproduces
+    the prior behavior byte-for-byte.
     """
     cleaned = _clean_name(raw)
     if not cleaned:
@@ -158,6 +243,12 @@ def resolve_party_lobbied(raw, roster: dict[str, str]) -> tuple[str, str, str | 
     person_id = roster.get(_first_last_key(name))
     if person_id:
         return (cleaned, name, person_id, True)
+    if nickname_index is not None:
+        tokens = _first_last_tokens(name)
+        if tokens is not None:
+            nick_id = nickname_index.lookup(*tokens)
+            if nick_id:
+                return (cleaned, name, nick_id, True)
     return (cleaned, "", None, False)
 
 
@@ -202,12 +293,54 @@ def build_legislator_roster(csv_dir: Path) -> dict[str, str]:
     return roster
 
 
+def build_nickname_index(csv_dir: Path) -> NicknameIndex:
+    """Build a :class:`NicknameIndex` from the OS sponsorship file.
+
+    Reads the same ``entity_type == 'person'`` rows as
+    :func:`build_legislator_roster` (the widest legislator name set) and, for each
+    person, registers a ``(last_folded, root)`` key for every canonical root of the
+    first name. A key reached by two distinct ``person_id``s is marked
+    :data:`_AMBIGUOUS` (the collision guard); a key re-seen by the same person is a
+    no-op. :func:`build_legislator_roster` is left untouched — this is a sibling
+    builder over the same source.
+    """
+    csv.field_size_limit(10**7)
+    mapping: dict[tuple[str, str], object] = {}
+    with _os_sponsorships_csv(csv_dir).open(encoding="utf-8") as fh:
+        for row in csv.DictReader(fh):
+            if row.get("entity_type") != "person":
+                continue
+            person_id = (row.get("person_id") or "").strip()
+            name = (row.get("name") or "").strip()
+            if not person_id or not name:
+                continue
+            tokens = _first_last_tokens(_clean_name(name))
+            if tokens is None:
+                continue
+            first, last = tokens
+            last_folded = _fold_accents(last).casefold()
+            for root in _canonical_first_roots(first):
+                key = (last_folded, root)
+                existing = mapping.get(key)
+                if existing is None:
+                    mapping[key] = person_id
+                elif existing is _AMBIGUOUS or existing == person_id:
+                    continue
+                else:
+                    mapping[key] = _AMBIGUOUS
+    return NicknameIndex(mapping)
+
+
 # ---------------------------------------------------------------------------
 # extraction
 # ---------------------------------------------------------------------------
 
 
-def extract_filing_parties(df: pd.DataFrame, roster: dict[str, str]) -> pd.DataFrame:
+def extract_filing_parties(
+    df: pd.DataFrame,
+    roster: dict[str, str],
+    nickname_index: NicknameIndex | None = None,
+) -> pd.DataFrame:
     """Extract the ``FILING_KEY -> {distinct resolved parties}`` edge.
 
     ``df`` is a column-normalized ``client_semiannual`` frame (the output of
@@ -249,7 +382,7 @@ def extract_filing_parties(df: pd.DataFrame, roster: dict[str, str]) -> pd.DataF
     for raw_party, firm_raw, client_raw, sub, year, period in zip(*cols):
         cached = party_cache.get(raw_party)
         if cached is None:
-            cached = resolve_party_lobbied(raw_party, roster)
+            cached = resolve_party_lobbied(raw_party, roster, nickname_index)
             party_cache[raw_party] = cached
         party_raw, party_name, person_id, resolved = cached
         if not party_raw:

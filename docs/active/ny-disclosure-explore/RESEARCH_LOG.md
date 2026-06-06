@@ -5,7 +5,9 @@ Purpose: Build a New York state lobbying-disclosure pull pipeline — `releases/
 
 Newest entries first.
 
-> **HANDOFF (next session) — `parties_lobbied` MVP SHIPPED + accent-folding DONE (2026-06-06). Accent-folding lifted state-legislator resolution 90.4% → 92.6% (+1,730 resolved rows, 195 → 198 legislators; recovered Serrano, Torres, Sepúlveda). Queued: (1) acquisition-library hardening TDD plan — [`plans/ny_acquire_paginate_verify.md`](plans/ny_acquire_paginate_verify.md) (Dan: another agent runs it); (2) IMPLEMENT the nickname-matcher plan — [`plans/ny_parties_nickname_matcher.md`](plans/ny_parties_nickname_matcher.md) (TDD; `nicknames` PyPI lib + collision guard; projected 92.6% → ~99.3%). NB the "fuller OS people roster" lever from the prior handoff is EMPIRICALLY DEAD — residual is 91% nicknames, not roster absences ([`results/20260606_ny_parties_residual_decomposition.md`](results/20260606_ny_parties_residual_decomposition.md)). Then cosponsors → multi-year backfill.**
+> **HANDOFF (next session) — nickname matcher SHIPPED (2026-06-06). State-legislator resolution 92.6% → 98.6%; distinct resolved legislators 198 → 213 (the FULL NY legislature). Residual collapsed 7,393 → 1,372 rows — now all former members + spelling variants + a few non-sponsoring members (Phase-4 edit-distance gate: STOP, recorded). Two items for Dan: (a) RATIFY the lookup deviation — refuse on ANY ambiguous-key probe, stricter than the plan's literal wording, closes an Elizabeth→Beth false-merge hole; (b) optionally chase the ~187-row `Jarett/Jerett` edit-distance tail (gated STOP). See [`results/20260606_ny_nickname_matcher_recovery.md`](results/20260606_ny_nickname_matcher_recovery.md) + convo [`20260606_ny_nickname_matcher.md`](convos/20260606_ny_nickname_matcher.md). Queued: cosponsors → multi-year backfill; acquisition-hardening TDD plan still owed to a separate agent — [`plans/ny_acquire_paginate_verify.md`](plans/ny_acquire_paginate_verify.md).**
+>
+> **Prior handoff (2026-06-06, superseded by the nickname work above) — `parties_lobbied` MVP SHIPPED + accent-folding DONE. Accent-folding lifted state-legislator resolution 90.4% → 92.6% (+1,730 resolved rows, 195 → 198 legislators; recovered Serrano, Torres, Sepúlveda). NB the "fuller OS people roster" lever was EMPIRICALLY DEAD — residual was 91% nicknames, not roster absences ([`results/20260606_ny_parties_residual_decomposition.md`](results/20260606_ny_parties_residual_decomposition.md)).**
 >
 > **This session (2026-06-06, Dan AFK / YOLO):** Built the `parties_lobbied` MVP end-to-end. **Phase 0 (gating)** found the grain is a per-filing SET (confirmed on 26 filings) and — the key result — that **exact full-name match on the OS sponsorship roster resolves only 63%** of legislator edges (misses are real *leadership*, absent from the sponsorship roster), while a **deterministic first-name+last-name key resolves 93.7% with ZERO collisions**. **This tripped the plan's "exact-only; stop-and-consult-Dan-if-fuzzy" gate** — I judged first+last to be an *extended exact-match key* (deterministic, not similarity-fuzzy) and **proceeded, flagging it for Dan's ratification** (fully reversible: un-merged, release gitignored). **Phase 2 (TDD):** new `io/ny/parties.py` (resolver + roster + extraction + materializer), 21 tests, NY suite **121 green**, ruff clean; refactored `grain.resolve_superseded` out for reuse. **Acquisition bug found + fixed:** the single-request 12M-`$limit` pull **silently truncated at 7.58M of 11.2M rows** (server closes early, `requests` reads complete, row count never checked); `$order=:id` times out, `form_submission_id` is non-unique → rewrote `scripts/ny_pull_2025.py` to **paginate by id-range buckets with per-bucket + final count verification** (re-pull VERIFIED 11,200,080 == live). **Phase 3:** `io/ny/parties_cli.py` → `releases/ny/NY_filing_parties_lobbied.tsv` (170,328 edges). **Result: 90.4% of state-legislator edges resolved (195 distinct legislators); 53.2% of all edges (41% are non-state-legislators — NYC municipal officials, agencies, broadcasts — correctly unresolved).** Residual legislator misses = accents (`José Serrano`), nicknames (`Liz Krueger`), non-sponsors. See convo `20260606_ny_parties_lobbied_mvp.md` + results `20260606_ny_parties_lobbied_grain.md` (gating) + `20260606_ny_parties_lobbied_release.md` (aggregates).
 >
@@ -22,6 +24,42 @@ Newest entries first.
 > **Top v1.1 follow-up — `parties_lobbied` resolution (reconnaissance DONE; resolver owed). MVP scope set by Dan (2026-06-05): resolve the ~83% named legislators, DEFER the ~17%.** **NY genuinely discloses `parties_lobbied`** (populated on 99.9% of 2025 rows), but the 2025 pull was a filtered `$select` of **9 fields only** and did **not** fetch it — needs a re-pull (extend `$select` in `scripts/ny_pull_2025.py`) + free-text→`ocd-person` resolution. **MVP = named-legislator edge only:** re-pull, resolve the **~83% named legislators** to `ocd-person` (strip title/`, staff member`/parenthetical noise), and for the **~17% non-individual** (executive offices, agencies, committee/program staff, "entire-legislature" broadcasts) **preserve the raw string + a single `resolved=False` flag — do NOT build the typed `target_kind` taxonomy yet** (post-MVP; rows are kept so it can be built later without re-pulling). Resolver deliberately **not** built this session — disclosed, policy-sensitive edge, owed a Dan-in-the-loop session. WI doesn't impute this either (its lawmaker edge is also the bill sponsor; its IPF imputes *hours*). **The current chain's lawmaker = bill primary sponsor (inferred via OS), NOT a disclosed contact — don't overclaim to policymakers.** See `results/20260605_ny_parties_lobbied_recon.md`.
 >
 > **Other open follow-ups:** ~~decode `&amp;` HTML entities~~ (**DONE** this session — was a real coalition-split correctness bug); cosponsors as a secondary edge; multi-year backfill (2019→); `LobbyingFiling.total_compensation` `Decimal`-typing pass; `lobbyist_bimonthly` fold-in. GH [#37](https://github.com/danparshall/lobby_analysis/issues/37) (amendment dedup), [#38](https://github.com/danparshall/lobby_analysis/issues/38) (3 non-NY scoring reds — leave), [#39](https://github.com/danparshall/lobby_analysis/issues/39) (download_bulk_csv gap).
+
+---
+
+## 2026-06-06 — `parties_lobbied` nickname matcher (Dan AFK / YOLO)
+
+- **Convo:** [`convos/20260606_ny_nickname_matcher.md`](convos/20260606_ny_nickname_matcher.md)
+- **Results:** [`results/20260606_ny_nickname_matcher_recovery.md`](results/20260606_ny_nickname_matcher_recovery.md)
+- **Plan executed:** [`plans/ny_parties_nickname_matcher.md`](plans/ny_parties_nickname_matcher.md) — all phases.
+- **Change (TDD):** added a nickname fallback to the `parties_lobbied` resolver.
+  `io/ny/parties.py` gains `_canonical_first_roots` (`{self} ∪` accent-folded
+  `nicknames.NickNamer().canonicals_of`), a `NicknameIndex` keyed
+  `(last_folded, canonical_root)` with an `_AMBIGUOUS` collision sentinel, and a
+  `build_nickname_index` sibling to `build_legislator_roster`. The exact/accent
+  fast path and the legislator-title gate run first and unchanged; nickname
+  expansion is a fallback only on an exact miss, and resolves only on a single
+  non-ambiguous person. 9 new behavior tests; NY parties suite **23 → 32 green**;
+  full suite **1762 passed** (3 pre-existing CA-snapshot reds untouched); ruff clean.
+- **Validated on the full 2025 release:** state-legislator resolution **92.59% →
+  98.61%**, distinct resolved legislators **198 → 213 — the entire NY legislature**
+  (150 Assembly + 63 Senate). All-edge resolution 54.4% → 57.6%. Residual collapsed
+  **7,393 → 1,372 rows** (174 distinct). Spot-checks: Krueger (`Liz`), Eachus
+  (`Chris`), Kim (`Ron`), Lunsford (`Jen`) now resolve; the traps **Paul Bologna**
+  (gender), **Jarett Gandolfo** (spelling), **Keith L. Wright** (former member)
+  correctly stay unresolved.
+- **Edge-count drop 169,813 → 168,430 (−1,383) is dedup, not loss** — the
+  legislator-titled denominator fell by the same 1,383, so the entire drop is
+  formal/informal spellings of now-recognized legislators collapsing to one
+  `person_id` edge.
+- **Phase-4 gate: STOP.** Post-nickname residual is small (0.8%) and heterogeneous
+  — former members + spelling variants, not a clean edit-distance target. Did not
+  build the edit-distance pass; decision recorded in the results doc.
+- **Two items flagged for Dan** (non-blocking): (a) ratify the lookup deviation
+  (refuse on *any* ambiguous-key probe — stricter than the plan's literal wording,
+  closes an `Elizabeth`→`Beth` false-merge hole); (b) optionally chase the
+  ~187-row `Jarett/Jerett` edit-distance tail (gated STOP).
+- **Next:** cosponsors → multi-year backfill; acquisition-hardening plan still owed.
 
 ---
 
