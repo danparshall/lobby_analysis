@@ -153,6 +153,48 @@ def test_ind_199_no_when_no_registration_required():
     assert project_ind_199(cells) == 0
 
 
+# IND_199 - IntCell months path (Phase 1 helper vocab fix, 2026-06-06).
+# Phase A YAML extracts `lobbyist_registration_renewal_cadence` as a
+# statute-literal IntCell (number of months between required renewals).
+# The helper must accept that vocabulary in addition to the legacy
+# string-enum domain above.
+# Round 1 cross-state validation: NY/WI/OH/CA all extracted 24 months
+# (biennial); the helper was returning 0 (NO) instead of 50 (MODERATE)
+# because the IntCell value didn't match either string-enum bucket.
+# See docs/active/cross-state-cpi-2015-validation/plans/20260606_pre_dispatch_hygiene.md
+# §Phase 1 for the failure analysis.
+
+
+def test_ind_199_moderate_when_renewal_cadence_is_24_months():
+    # The Round 1 NY/WI/OH/CA case: 24-month renewal cadence -> MODERATE.
+    cells = {"lobbyist_registration_renewal_cadence": {"legal_availability": 24}}
+    assert project_ind_199(cells) == 50
+
+
+def test_ind_199_yes_when_renewal_cadence_is_12_months():
+    cells = {"lobbyist_registration_renewal_cadence": {"legal_availability": 12}}
+    assert project_ind_199(cells) == 100
+
+
+def test_ind_199_yes_when_renewal_cadence_is_six_months():
+    # More frequent than annual still maps to YES per CPI rubric.
+    cells = {"lobbyist_registration_renewal_cadence": {"legal_availability": 6}}
+    assert project_ind_199(cells) == 100
+
+
+def test_ind_199_no_when_renewal_cadence_is_zero_months():
+    # IntCell 0 = "no renewal required" per Phase A YAML conventions.
+    cells = {"lobbyist_registration_renewal_cadence": {"legal_availability": 0}}
+    assert project_ind_199(cells) == 0
+
+
+def test_ind_199_moderate_when_renewal_cadence_exceeds_24_months():
+    # Less frequent than biennial stays MODERATE per CPI rubric -- the
+    # rubric collapses "biennial or less frequent" into a single tier.
+    cells = {"lobbyist_registration_renewal_cadence": {"legal_availability": 36}}
+    assert project_ind_199(cells) == 50
+
+
 # ---------------------------------------------------------------------------
 # IND_200 - de facto 5-tier passthrough:
 # lobbyist_registration_deadline_days_after_first_lobbying (practical axis)
@@ -373,6 +415,40 @@ def test_ind_207_no_when_no_audit_requirement():
         "lobbying_disclosure_audit_required_in_law": {
             "legal_availability": "no_audit_requirement"
         }
+    }
+    assert project_ind_207(cells) == 0
+
+
+# IND_207 - CPI-published-vocab EnumCell path (Phase 1 helper vocab fix,
+# 2026-06-06). Phase A YAML extracts
+# `lobbying_disclosure_audit_required_in_law` against CPI's published
+# 3-tier vocabulary ("YES" / "MODERATE" / "NO"). The helper must accept
+# both that vocabulary and the legacy structural enum above.
+# Round 1 cross-state validation: NY extracted "YES" (matching the
+# oracle), but the helper returned 0 instead of 100. All 5 Round 1
+# states missed this indicator due to the schism.
+# See docs/active/cross-state-cpi-2015-validation/plans/20260606_pre_dispatch_hygiene.md
+# §Phase 1 for the failure analysis.
+
+
+def test_ind_207_yes_when_audit_required_cpi_yes():
+    # The Round 1 NY case: "YES" -> 100.
+    cells = {
+        "lobbying_disclosure_audit_required_in_law": {"legal_availability": "YES"}
+    }
+    assert project_ind_207(cells) == 100
+
+
+def test_ind_207_moderate_when_audit_required_cpi_moderate():
+    cells = {
+        "lobbying_disclosure_audit_required_in_law": {"legal_availability": "MODERATE"}
+    }
+    assert project_ind_207(cells) == 50
+
+
+def test_ind_207_no_when_audit_required_cpi_no():
+    cells = {
+        "lobbying_disclosure_audit_required_in_law": {"legal_availability": "NO"}
     }
     assert project_ind_207(cells) == 0
 

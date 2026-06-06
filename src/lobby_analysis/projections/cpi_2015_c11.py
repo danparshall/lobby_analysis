@@ -167,10 +167,26 @@ def project_ind_198(cells: dict[str, Any]) -> int:
 def project_ind_199(cells: dict[str, Any]) -> int:
     """IND_199: registration form filed at least annually in law. 3-tier enum.
 
-    annual (or more frequent) -> YES; biennial / less_frequent -> MODERATE;
-    no registration required -> NO.
+    Accepts two input shapes:
+
+    * IntCell months (Phase A YAML extraction shape, statute-literal):
+      0 -> NO (no renewal required); 1..12 -> YES (annual or more frequent);
+      13..24 -> MODERATE (biennial); >24 -> MODERATE (CPI rubric collapses
+      "biennial or less frequent" into one tier).
+    * Legacy string-enum domain (kept for existing fixtures and any pre-
+      Phase-A extraction paths): "annual" / "more_frequent_than_annual" ->
+      YES; "biennial" / "less_frequent_than_biennial" -> MODERATE; anything
+      else (including "no_registration_required") -> NO.
     """
     cadence = _legal(cells, "lobbyist_registration_renewal_cadence")
+    if cadence is None:
+        return 0
+    if isinstance(cadence, int) and not isinstance(cadence, bool):
+        if cadence == 0:
+            return 0
+        if cadence <= 12:
+            return 100
+        return 50
     if cadence in ("annual", "more_frequent_than_annual"):
         return 100
     if cadence in ("biennial", "less_frequent_than_biennial"):
@@ -273,11 +289,23 @@ def project_ind_206(cells: dict[str, Any]) -> int:
 
 
 def project_ind_207(cells: dict[str, Any]) -> int:
-    """IND_207: regular auditing of lobbying disclosure records in law. 3-tier enum."""
+    """IND_207: regular auditing of lobbying disclosure records in law. 3-tier enum.
+
+    Accepts two input shapes:
+
+    * CPI-published vocabulary (Phase A YAML extraction shape): "YES" /
+      "MODERATE" / "NO". This matches the published rubric tier names
+      directly.
+    * Legacy structural enum (kept for existing fixtures): the
+      "regular_third_party_audit_required" / "audit_only_when_*" strings.
+    """
     rule = _legal(cells, "lobbying_disclosure_audit_required_in_law")
-    if rule == "regular_third_party_audit_required":
+    if rule in ("YES", "regular_third_party_audit_required"):
         return 100
-    if rule == "audit_only_when_irregularities_suspected_or_compliance_review":
+    if rule in (
+        "MODERATE",
+        "audit_only_when_irregularities_suspected_or_compliance_review",
+    ):
         return 50
     return 0
 
