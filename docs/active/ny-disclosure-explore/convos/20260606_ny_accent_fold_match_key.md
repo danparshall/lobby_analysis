@@ -62,9 +62,28 @@ ratified.
 
 ## Open Questions
 
-- **Residual ~7% of legislator edges** miss on nicknames (`Liz`/`Elizabeth
-  Krueger`) and non-sponsoring members absent from the sponsorship roster. The
-  handoff's next lever is a fuller OS people roster (beyond sponsorships) — would
-  pick up leadership/non-sponsors. Nicknames need an alias map, a separate (and
-  more judgment-heavy) step.
 - Then: cosponsors as a secondary edge → multi-year backfill.
+
+## Addendum — residual decomposition + nickname-matcher plan
+
+Investigated the residual to scope the next lever. **The handoff's "fuller OS
+people roster" premise is empirically wrong:** the sponsorship roster already holds
+219/213 of the legislature, `vote_people` recovers 0 of the residual, and every
+residual surname is already in the roster. The residual is **91% nicknames** (6,705
+of 7,393 rows) — formal↔informal first-name mismatches (`Elizabeth`↔`Liz`,
+`Chris`↔`Christopher`), bidirectional. The 9% "absent" tail is mostly *former*
+members (correctly unresolved). Recovering nicknames would lift state-legislator
+resolution 92.6% → ~99.3%.
+
+Three false-match traps in the data justify a **curated nickname dictionary +
+collision guard** over any surname-based matching: `Keith Wright` vs roster
+`Jordan Wright` (different people, same seat — father/son), `Paul` vs `Paula`
+Bologna, and `Jarett`/`Jerett` (a spelling typo, not a nickname).
+
+**Decisions (with Dan):** use the `nicknames` PyPI library (he approved the dep);
+build nicknames now, **defer** an edit-distance second pass for the typo tail
+behind a measurement gate (only build if the post-nickname residual proves it's
+needed).
+
+- **Plan:** [`plans/ny_parties_nickname_matcher.md`](../plans/ny_parties_nickname_matcher.md)
+- **Evidence:** [`results/20260606_ny_parties_residual_decomposition.md`](../results/20260606_ny_parties_residual_decomposition.md)
