@@ -89,29 +89,34 @@ Per (edge, attribute), we mark **quality** and **source**.
 
 ---
 
-## NY — New York *(skeleton — to be validated by next NY-branch session)*
+## NY — New York
 
-**Status:** `ny-disclosure-explore` branch active. `parties_lobbied` edge MVP shipped 2026-06-06. Client semiannual 2025 pull shipped with paginate+verify. Bill data downloaded at `data/bills/NY/`. Chain composer + `releases/ny/` not yet built.
+**Status:** `ny-disclosure-explore` branch active. **Chain shipped** (`releases/ny/chain/NY_chain_2025.tsv`, 83,786 rows, $153,064,191 conserved exactly; bill-match 99.9%; 213 distinct sponsors = full NY legislature). **`parties_lobbied` disclosed-lawmaker edge MVP shipped + nickname-matched** (`releases/ny/NY_filing_parties_lobbied.tsv`, 168,430 edges, **98.61%** of state-legislator-titled rows resolve to `ocd-person`, all 213 NY legislators covered). Chain integration of `parties_lobbied` deferred — per Phase-0 gating, the edge grain is a per-filing set, NOT a per-(lawmaker, bill) tuple. Plan sketch for chain completion lives on the `ny-disclosure-explore` branch at `docs/active/ny-disclosure-explore/plans/ny_chain_completion_sketch.md` (cross-branch link — will resolve on main once both branches merge).
 
 |                       | Money | Time | Stance |
 |-----------------------|-------|------|--------|
-| principal ↔ lobbyist  | ?     | ?    | —      |
-| principal ↔ lawmaker  | ?     | —    | —      |
-| principal ↔ bill      | ?     | ?    | ?      |
-| lobbyist ↔ lawmaker   | ?     | ✓?¹  | —      |
-| lobbyist ↔ bill       | ?     | ?    | ?      |
-| lawmaker ↔ bill       | —     | —    | ✗²     |
+| principal ↔ lobbyist  | ✓¹    | ✗²   | —      |
+| principal ↔ lawmaker  | ✗!³   | —    | —      |
+| principal ↔ bill      | ~⁴    | ~⁵   | ✗!⁶    |
+| lobbyist ↔ lawmaker   | ✓⁷ *(contact, not $)* | ~⁸ | ✗!⁶ |
+| lobbyist ↔ bill       | ~⁴    | ~⁵   | ✗!⁶    |
+| lawmaker ↔ bill       | —     | —    | ✓⁹     |
 
-¹ `parties_lobbied` MVP — confirm whether edge carries (lawmaker, bill) tuple or just lawmaker, and whether time/frequency dimension exists
-² Plural Policy NY bulk-CSV downloaded; chain composer + NY legislature loader not yet built
+¹ Client semiannual `total_compensation` per (principal, lobbyist) filing — NY discloses money at the per-pair grain natively, so the chain composer uses no IPF (unlike WI). Conservation across the chain verified at $153,064,191 exactly.
+² Time not a disclosed field on NY client semiannuals.
+³ Out of lobbying-disclosure scope; would come from JCOPE / state campaign-finance — not in `ny-disclosure-explore` (same shape as WI's principal↔lawmaker).
+⁴ Proportionally allocated from `total_compensation` via chain `comp_per_cell`; cell key includes `lobbyist_id`, replicated across sponsor rows — must not be summed naively (a smoke test caught −$68.6M phantom loss when the key omitted `lobbyist_id`).
+⁵ Uniform per-sponsor share (`modeled_hours_per_sponsor`), same shape as WI.
+⁶ NY structurally has no support/oppose/monitor field — neither on bills nor on lawmaker contact (same shape as WI/OH).
+⁷ Disclosed via `parties_lobbied`. Today's nickname matcher (`io/ny/parties.py::NicknameIndex` + `nicknames` PyPI lib) closed resolution from 90.4% → 92.6% (accent-fold) → **98.61%** of state-legislator-titled rows (213/213 legislators = full Assembly + Senate). Of all `parties_lobbied` rows, ~42% are non-legislators (NYC municipal officials, executive offices, agencies, "entire-legislature" broadcasts), correctly `resolved=False`. **Grain caveat:** edge is per-filing set — recoverable as "lobbyist X contacted lawmaker Y in semester S," NOT "about bill Z" (cartesian, not a mapping per Phase-0 gating).
+⁸ Treat `parties_lobbied` as a binary "contacted-in-semester" signal — ~ imputed time, not a frequency count.
+⁹ Plural Policy NY bulk-CSV via OS; chain joins at 99.5% distinct / 99.8% link; 213 sponsors = full legislature. Primary-only — cosponsors deferred (same shape as WI).
 
-**Validation checklist (for next NY session):**
-- [ ] Does NY's client semiannual filing include compensation $ per (principal, lobbyist) pair?
-- [ ] Does `parties_lobbied` include bill/subject context, or just lawmaker IDs?
-- [ ] Does NY disclose stance (support / oppose / monitor) on bills, structurally?
-- [ ] Are there NY-specific filings (JCOPE separate forms?) that contribute additional edges?
-- [ ] What's the time dimension on `parties_lobbied` — per-meeting? aggregate per period?
-- [ ] Are principal↔lawmaker direct payments (campaign $) tracked, and are they in `ny-disclosure-explore` scope?
+**Remaining NY-side validation questions (for the next NY session, not blocking the leave-behind):**
+- [ ] `lobbyist_bimonthly` filings — what additional edges/attributes do these carry? (fold-in pending)
+- [ ] Multi-year backfill 2019→ — same schema, or year-to-year drift?
+- [ ] `target_kind` taxonomy for the ~42% non-legislator `parties_lobbied` rows (post-MVP — currently all bucketed as `resolved=False`)
+- [ ] `parties_lobbied` chain integration — see plan sketch above
 
 ---
 
