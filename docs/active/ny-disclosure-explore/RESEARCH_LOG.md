@@ -27,6 +27,21 @@ Newest entries first.
 
 ---
 
+## 2026-06-07 — `lobbyist_bimonthly` `party_name` grain probe (Dan-in-the-loop)
+
+- **Convo:** [`convos/20260607_ny_bimonthly_party_grain_probe.md`](convos/20260607_ny_bimonthly_party_grain_probe.md)
+- **Results:** [`results/20260607_ny_bimonthly_party_grain.md`](results/20260607_ny_bimonthly_party_grain.md) (+ raw JSON: [`results/20260607_ny_bimonthly_party_sample.json`](results/20260607_ny_bimonthly_party_sample.json), [`results/20260607_ny_bimonthly_party_top_distinct.json`](results/20260607_ny_bimonthly_party_top_distinct.json))
+- **Probe:** [`scripts/ny_probe_bimonthly_party_grain.py`](../../../scripts/ny_probe_bimonthly_party_grain.py)
+- **Question:** Does `lobbyist_bimonthly`'s *singular* `party_name` column (vs semiannual's set-valued `parties_lobbied`) mean per-row mapping of `focus → party` — recovering the per-bill lawmaker tuples that Phase-0 settled the semiannual structurally loses?
+- **Verdict: NO. Bimonthly is also cartesian.** On a 38,404-row sample across 5 mid-size dense filings, **105 of 133 distinct `(filing, focus)` pairs (79%) carry ≥2 distinct `party_name` values**, tail reaching 164 distinct parties per `(filing, focus)`. Effective bimonthly grain ≈ `(filing × focus × party × expense_event)` fully crossed. The yesterday-evening hypothesis that bimonthly might solve the cartesian-not-mapping problem is dead.
+- **Free upside:** shipped `io/ny/parties.resolve_party_lobbied` resolves **100.0%** of bimonthly's legislator-titled top-400 rows (50.6M rows; top-400 covers 99.1% of 2025 State-Bill bimonthly). Zero resolver work owed if/when bimonthly is folded in. `party_name` is genuinely singular (only 9 delimiter values in top-400, all internal org/committee names).
+- **Scale note:** top-5 worst-case 2025 bimonthly submissions carry 6.3M–9.1M rows each. Anonymous Socrata can't `count(distinct ...)` over even one period's ~10M State-Bill rows within 600s — the load-bearing test had to be done client-side on a pulled mid-size-filing sample.
+- **Chain-completion plan unchanged.** [`plans/ny_chain_completion_sketch.md`](plans/ny_chain_completion_sketch.md) Phase-4 deferral of `lobbyist_bimonthly` was correct. The sketch's note about "contact-event grain finer than semiannual" gets a one-line sharpening (denormalization is expense rows, not distinguishable contact events) — small follow-up edit owed but not a strategic change.
+- **Bimonthly value-prop unchanged from Phase-0:** individual-lobbyist names (semicolon-list, surname-first format, needs its own resolver), itemized expenses, finer bimonthly time grain. None require per-bill grain.
+- **No code changes shipped:** probe is pure analysis. Probe script committed for reproducibility.
+
+---
+
 ## 2026-06-06 — chain-completion plan sketch landed (cross-branch from `leave-behind-prep`)
 
 - **Plan:** [`plans/ny_chain_completion_sketch.md`](plans/ny_chain_completion_sketch.md)
