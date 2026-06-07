@@ -4,6 +4,39 @@ Newest entries first.
 
 ---
 
+## 2026-06-06 (later) — Phase 1 execution + Phase 2 redesign + de jure pivot
+
+**Phase 1 EXECUTED** per [`plans/20260606_pre_dispatch_hygiene.md`](plans/20260606_pre_dispatch_hygiene.md) §Phase 1. TDD: 6 RED tests in `tests/projections/test_cpi_2015_c11_per_item.py` (IND_199 IntCell-months 0/6/12/24/36 paths; IND_207 CPI-enum YES/MODERATE/NO paths) → helper changes accepting both new YAML vocabularies + legacy string-enums → 6 GREEN; full pytest 1901 passed. Re-ran `scripts/cross_state_cpi_2015_audit.py` against Round 1 stored extractions: **19/30 (63.3%), up from 15/30 (50%)** — exactly the +4 cells the failure-mode doc Trend 1 predicted. Per-indicator deltas match prediction (IND_199 +3 NY/WI/OH/CA flip; IND_207 +1 NY's YES match; TX IND_199 flips from spurious-match to correct-mismatch). Committed as `cbcd3e2`; pushed.
+
+**Post-fix audit captured:** [`results/20260606_round_1_post_phase_1_audit.md`](results/20260606_round_1_post_phase_1_audit.md) — Table A (per-cell) + Table B (per-state). Of the 11 remaining misses, 6 are Trend 5 (CPI more generous than extraction); 2 Trend 4 (TX sparse-corpus); 3 Trend 2/value-instability.
+
+**Phase 2 redesigned around three corrections that surfaced mid-session:**
+1. **Test/dispatch scope mismatch.** The dispatcher (`tier_1_direct_read_legal_axis.py`) filters to `axis == 'legal'`. The chunk-inventory's 11 underspecified prompts include 4 practical-axis ones not dispatched in this pipeline. Operational scope = 7 legal-axis prompts.
+2. **Lean-prompt principle (Dan's framing).** "The agent doesn't need a long historical background... it just needs the actual friggin' question." Extraction stays granular; cross-rubric synthesis (e.g., HG Q13 OR-projection across reg-form-comp ∨ spending-report-comp) lives in projection helpers, not in the prompt.
+3. **Schema asymmetry between rows #4 and #5.** Row #4 (`lobbyist_registration_threshold_time_percent`) uses TimeThresholdCell (magnitude+unit composite); row #5 (`lobbyist_filing_de_minimis_threshold_time_percent`) uses FloatCell (no unit slot) — same observable family, different cell types. Dan: states frame time thresholds variously (hours-per-week, days-per-session, %-of-time); forcing percent forces math-on-the-fly. Design: add `other_specification: str | None = None` escape hatch to TimeThresholdCell + promote row #5 from FloatCell to TimeThresholdCell.
+
+**Two new plan docs landed (uncommitted on disk, finalized this session):**
+- [`plans/20260606_phase_2_schema_aware_prompt_hygiene.md`](plans/20260606_phase_2_schema_aware_prompt_hygiene.md) — replaces Phase 2 of the prior plan. Three sub-phases: A (schema change + row #5 promotion + FloatCell-coercion-test refactor), B (7 lean prompt rewrites with Dan-review gate), C (legal-axis format-hint regression test).
+- [`plans/20260606_prompt_audit_all_questions.md`](plans/20260606_prompt_audit_all_questions.md) — read-only audit agent produces ONE findings doc cataloging all ~131 legal-axis prompts (post-de-jure-pivot scope reduction); execution agents apply fixes in separate plans.
+
+**Pedigree dig (n=8 example, `lobbyist_spending_report_includes_total_compensation`):** TSV `rubrics_reading` column tracks paper-level pedigree (8 papers); YAML `source_quotes:` only retained the pri_2010 quote. **50 multi-rubric TSV rows have only 1 YAML source quote.** Not Round-2-blocking under the lean-prompt principle (model only needs the actual question, not rubric chronology); deferred as Phase A pedigree-completeness pass.
+
+**MAJOR ARCHITECTURAL DECISION (Dan, session end): combined-axis rows verboten henceforth. This research line is de jure only.** Reading statutes can answer "what does the law say" but not "what actually happens"; de facto is a separate research line entirely. The 3 remaining combined-axis rows (post-v2.1 Pattern C — `lobbyist_registration_required`, `lobbyist_registration_deadline_days_after_first_lobbying`, `lobbyist_spending_report_filing_cadence`) must be Pattern-C-split into single-axis pairs. The audit plan's HANDOFF UPDATE banner captures this for the next agent. The Phase 2 plan's §Risks wording about practical-axis "deferred until Prong 2" needs a small patch — flagged for the next agent.
+
+**Round 2 reframing (Dan):** *"don't sweat Round 2... the whole point of doing a handful at a time is to stress-test our model against reality; we can make adjustments until we're properly capturing what's out there."* The original Phase 2 plan's σ_noise-comparability concern (Risk #1) is overcalibrated. Iterative model-vs-reality calibration is the design.
+
+**Convo:** [`convos/20260606_phase_1_exec_and_de_jure_pivot.md`](convos/20260606_phase_1_exec_and_de_jure_pivot.md).
+
+**Next-session candidates** (Dan's call):
+- (a) Execute Phase 2 schema-aware plan (TDD; $0; ~75 min + Dan review gate).
+- (b) Run the prompt audit on all questions (the audit agent must update the audit plan per the de jure handoff banner before executing; $0; ~3-4 hours).
+- (c) Pattern-C split the 3 remaining combined-axis rows (new plan; precedent from v2.1; $0).
+- (d) Phase 4 Round 2 dispatch CO/IL/WA/FL/NC at vintage 2015 (~$15; requires explicit Dan authorization; can proceed against current YAML or wait for Phase 2 application).
+
+**Spend this session:** $0 (Phase 1 was code+test only; no model dispatches). Cross-state envelope unchanged at $14.43 of original $15 (now ~$18-25 effective ceiling after the Round 2 reframing).
+
+---
+
 ## 2026-06-06 — Pre-dispatch review + hygiene plan
 
 **Session shape:** review-and-plan, no dispatch. Triggered by Dan's "step back and review" pause before Day-2 5-state extension dispatch (per leave-behind-prep convo's 5-day plan). Two artifacts produced:
