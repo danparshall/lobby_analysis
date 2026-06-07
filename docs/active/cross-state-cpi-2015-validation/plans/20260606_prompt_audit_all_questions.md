@@ -26,6 +26,8 @@
 > 7. The term "combined-axis" itself becomes historical vocabulary post-Pattern-C-finish — note in the findings doc that the term is no longer current usage.
 >
 > After applying these edits to this plan, the auditing agent proceeds with Phase 1 source familiarization as updated.
+>
+> **Sequencing prerequisite:** Phase 2A schema work (in [`./20260606_phase_2_schema_aware_prompt_hygiene.md`](./20260606_phase_2_schema_aware_prompt_hygiene.md) §Phase A — TimeThresholdCell `other_specification` + row #5 FloatCell→TimeThresholdCell promotion) should land BEFORE this audit runs, so the audit can review row #5's prompt normally instead of escalating it as SCHEMA-BLOCKED. If Phase 2A has not yet landed when this audit starts, escalate row #5 with a pointer to Phase 2A rather than auditing against the old FloatCell schema.
 
 ---
 

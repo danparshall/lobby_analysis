@@ -1,5 +1,17 @@
 # Plan — Phase 2 schema-aware prompt hygiene (supersedes Phase 2 of the pre-dispatch plan)
 
+> ## ⚠️ SEQUENCING UPDATE (2026-06-06, post-finish-convo) — READ FIRST
+>
+> The original Phase 2 plan conflates three workstreams under one phase number. The correct execution order — clarified at the end of the finish-convo session, after the audit plan also landed — is:
+>
+> 1. **Execute Phase 2A (schema change) FIRST**, before the audit runs. Phase 2A promotes row #5 from FloatCell to TimeThresholdCell + adds the `other_specification` escape hatch. If the audit hits row #5 against the current FloatCell schema, it has to escalate as SCHEMA-BLOCKED. Landing 2A first lets the audit do a normal lean-prompt review of row #5 alongside the other 130 prompts.
+>
+> 2. **Then defer Phase 2B (the 7 YAML prompt rewrites) to the audit + execution agents.** The 7 prompts here are now "manually-curated reference drafts" — kept in this doc as worked examples of the lean-prompt principle for the audit agent to compare its drafts against, but the audit covers all ~131 legal-axis prompts and produces unified findings. Execution agents apply audit findings; do NOT separately apply Phase 2B as written.
+>
+> 3. **Then execute Phase 2C (legal-axis format-hint regression test) LAST**, after all prompt edits land from the audit-driven execution. The regression test gates future drift; it should be authored against the final post-edit state of the YAML, not the pre-audit state.
+>
+> So: 2A → audit → execute (separate plans, per audit findings) → 2C. The 7 prompt drafts in §Phase B below remain useful as the audit agent's reference drafts and as a sanity check on what the audit produces.
+
 **Originating analysis:**
 - [`./20260606_pre_dispatch_hygiene.md`](./20260606_pre_dispatch_hygiene.md) — the prior hygiene plan. Phase 1 of that plan landed in commit `cbcd3e2` (helper vocab fix; Round 1 re-audit 19/30). This plan **replaces Phase 2** of that plan with a schema-aware version, and renumbers everything downstream.
 - Originating convo: [`../convos/20260606_phase_1_exec_and_de_jure_pivot.md`](../convos/20260606_phase_1_exec_and_de_jure_pivot.md). The design discussion produced three corrections to the prior Phase 2:
