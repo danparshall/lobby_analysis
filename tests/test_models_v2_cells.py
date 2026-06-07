@@ -343,6 +343,48 @@ def test_time_threshold_cell_rejects_unknown_unit():
         )
 
 
+def test_time_threshold_cell_accepts_other_specification_string():
+    """Escape hatch for statutes whose unit doesn't fit TimeUnitLiteral
+    (e.g., "5 hours per week"). magnitude+unit None; verbatim text in
+    other_specification."""
+    from lobby_analysis.models_v2.cells import TimeThresholdCell
+
+    cell = TimeThresholdCell(
+        cell_id=("lobbyist_registration_threshold_time_percent", "legal"),
+        magnitude=None,
+        unit=None,
+        other_specification="5 hours per week",
+    )
+    assert cell.other_specification == "5 hours per week"
+
+
+def test_time_threshold_cell_other_specification_defaults_to_none():
+    """When the statute's unit fits TimeUnitLiteral, other_specification stays
+    None (the field is the escape hatch, not a generic free-text slot)."""
+    from lobby_analysis.models_v2.cells import TimeThresholdCell
+
+    cell = TimeThresholdCell(
+        cell_id=("lobbyist_registration_threshold_time_percent", "legal"),
+        magnitude=Decimal("20"),
+        unit="percent_of_work_time",
+    )
+    assert cell.other_specification is None
+
+
+def test_time_threshold_cell_other_specification_rejects_over_500_chars():
+    """Same 500-char bound as FreeTextCell — prevents unbounded extraction
+    sneaking through the escape hatch."""
+    from lobby_analysis.models_v2.cells import TimeThresholdCell
+
+    with pytest.raises(ValidationError):
+        TimeThresholdCell(
+            cell_id=("lobbyist_registration_threshold_time_percent", "legal"),
+            magnitude=None,
+            unit=None,
+            other_specification="x" * 501,
+        )
+
+
 def test_time_spent_cell_accepts_magnitude_and_unit():
     """User-approved struct: same shape as TimeThreshold but semantically different
     (reads disclosed time, not threshold)."""

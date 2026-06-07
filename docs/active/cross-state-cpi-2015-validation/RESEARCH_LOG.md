@@ -4,6 +4,22 @@ Newest entries first.
 
 ---
 
+## 2026-06-06 (later still) — Phase 2A executed (TimeThresholdCell escape hatch + row #5 promotion)
+
+**Phase 2A EXECUTED** per [`plans/20260606_phase_2_schema_aware_prompt_hygiene.md`](plans/20260606_phase_2_schema_aware_prompt_hygiene.md) §Phase A. TDD: 4 RED tests landed first (3 `TimeThresholdCell.other_specification` behavior + 1 row #5 registry-membership assertion) → schema change in `src/lobby_analysis/models_v2/cells.py` (TimeThresholdCell gains `other_specification: Annotated[str, Field(max_length=500)] | None = None` + docstring updated to cover both rows; FloatCell docstring updated since no compendium row uses it post-2A) + TSV change in `compendium/disclosure_side_compendium_items_v2.1.tsv` (row #5 cell_type `typed Optional[float]` → `typed Optional[TimeThreshold]`; parser table already maps that string to TimeThresholdCell so no parser change) + FloatCell-coercion-test in `tests/test_tier_1_legal_axis.py` retargeted to a synthetic `CompendiumCellSpec` (since row #5 was the only FloatCell in the compendium) → 4 GREEN. Full pytest **1905 passed** (was 1901), 3 skipped, 3 xfailed unchanged. No model dispatches; $0 spend.
+
+**Files touched:**
+- `src/lobby_analysis/models_v2/cells.py` (TimeThresholdCell + FloatCell docstrings + field add)
+- `compendium/disclosure_side_compendium_items_v2.1.tsv` (row #5)
+- `tests/test_models_v2_cells.py` (+3 TimeThresholdCell.other_specification tests)
+- `tests/test_tier_1_legal_axis.py` (FloatCell coercion refactor + row #5 TimeThresholdCell assertion)
+
+**Next:** hand off to audit agent per [`plans/20260606_prompt_audit_all_questions.md`](plans/20260606_prompt_audit_all_questions.md). Phase 2B (7 lean-prompt rewrites) deferred to audit + execution agents per the Phase 2 plan's §Sequencing Update banner — the 7 drafts in §Phase B of the Phase 2 plan stay as worked-example reference drafts for the audit agent to compare its findings against. Phase 2C (legal-axis format-hint regression test) lands AFTER audit-driven prompt edits.
+
+**Convo:** continues [`convos/20260606_phase_1_exec_and_de_jure_pivot.md`](convos/20260606_phase_1_exec_and_de_jure_pivot.md); Phase 2A is a same-day in-session execution from the handoff, no new convo file. Audit agent will open its own convo when it picks up.
+
+---
+
 ## 2026-06-06 (later) — Phase 1 execution + Phase 2 redesign + de jure pivot
 
 **Phase 1 EXECUTED** per [`plans/20260606_pre_dispatch_hygiene.md`](plans/20260606_pre_dispatch_hygiene.md) §Phase 1. TDD: 6 RED tests in `tests/projections/test_cpi_2015_c11_per_item.py` (IND_199 IntCell-months 0/6/12/24/36 paths; IND_207 CPI-enum YES/MODERATE/NO paths) → helper changes accepting both new YAML vocabularies + legacy string-enums → 6 GREEN; full pytest 1901 passed. Re-ran `scripts/cross_state_cpi_2015_audit.py` against Round 1 stored extractions: **19/30 (63.3%), up from 15/30 (50%)** — exactly the +4 cells the failure-mode doc Trend 1 predicted. Per-indicator deltas match prediction (IND_199 +3 NY/WI/OH/CA flip; IND_207 +1 NY's YES match; TX IND_199 flips from spurious-match to correct-mismatch). Committed as `cbcd3e2`; pushed.

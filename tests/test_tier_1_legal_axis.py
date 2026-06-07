@@ -97,12 +97,37 @@ def test_coerce_string_to_int_for_intcell():
 
 
 def test_coerce_string_to_float_for_floatcell():
-    """A JSON-string '3.5' for a FloatCell coerces to float 3.5."""
-    spec = _spec("lobbyist_filing_de_minimis_threshold_time_percent", "legal")
+    """A JSON-string '3.5' for a FloatCell coerces to float 3.5.
+
+    Uses a synthetic FloatCell spec rather than a live registry row: as of the
+    2026-06-06 Phase 2A schema fix, no compendium row uses FloatCell — row #5
+    (`lobbyist_filing_de_minimis_threshold_time_percent`) was promoted to
+    TimeThresholdCell for symmetry with row #4 plus the new
+    `other_specification` escape hatch. The FloatCell class itself is retained
+    as a schema affordance for future rows; this test pins its coercion path.
+    """
+    from lobby_analysis.models_v2 import CompendiumCellSpec, FloatCell
+
+    spec = CompendiumCellSpec(
+        row_id="__synthetic_floatcell__",
+        axis="legal",
+        expected_cell_class=FloatCell,
+        prompt=None,
+    )
     assert spec.expected_cell_class.__name__ == "FloatCell"
     result = tier0._instantiate_cell(spec, _record_cell_args("3.5"))
     assert result["cell"]["value"] == 3.5
     assert isinstance(result["cell"]["value"], float)
+
+
+def test_row_5_is_time_threshold_cell_in_registry():
+    """Row #5 (`lobbyist_filing_de_minimis_threshold_time_percent`) is
+    TimeThresholdCell post-2026-06-06 Phase 2A promotion. Sibling row #4
+    (`lobbyist_registration_threshold_time_percent`) is also TimeThresholdCell;
+    same observable family, same cell type after Phase 2A.
+    """
+    spec = _spec("lobbyist_filing_de_minimis_threshold_time_percent", "legal")
+    assert spec.expected_cell_class.__name__ == "TimeThresholdCell"
 
 
 def test_coerce_string_to_decimal_for_decimalcell():

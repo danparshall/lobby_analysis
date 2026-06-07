@@ -82,8 +82,15 @@ class IntCell(CompendiumCell):
 
 
 class FloatCell(CompendiumCell):
-    """An optional float observable (e.g.
-    `lobbyist_filing_de_minimis_threshold_time_percent`).
+    """An optional float observable.
+
+    As of the 2026-06-06 Phase 2A schema fix, no compendium row uses FloatCell
+    — `lobbyist_filing_de_minimis_threshold_time_percent` was promoted to
+    TimeThresholdCell for symmetry with its sibling
+    `lobbyist_registration_threshold_time_percent` and to share the new
+    `other_specification` escape hatch. The class is retained as a schema
+    affordance for future rows; the coercion path is pinned by a synthetic-spec
+    test in `tests/test_tier_1_legal_axis.py`.
     """
 
     value: float | None
@@ -175,15 +182,29 @@ TimeUnitLiteral = Literal[
 
 class TimeThresholdCell(CompendiumCell):
     """The time-based threshold in a state's lobbyist registration definition
-    (e.g. the federal LDA's 20% of work time rule).
+    or filing-exemption (e.g. the federal LDA's 20% of work time rule, or a
+    state's "5 hours per week" threshold).
 
-    Cell type: `typed Optional[TimeThreshold]` (1 row:
-    `lobbyist_registration_threshold_time_percent`).
-    Source: Newmark 2005/2017 projection mappings.
+    Cell type: `typed Optional[TimeThreshold]` (2 rows, post-2026-06-06:
+    `lobbyist_registration_threshold_time_percent` (registration trigger) and
+    `lobbyist_filing_de_minimis_threshold_time_percent` (filing exemption)).
+
+    Source: Newmark 2005/2017 projection mappings (registration row);
+    PRI 2010 §III.D D2 (filing-exemption row).
+
+    Fields:
+    - magnitude: Decimal threshold value, or None if no threshold.
+    - unit: one of TimeUnitLiteral, or None if the statute's unit doesn't
+      fit any enumerated bucket OR no threshold exists.
+    - other_specification: short verbatim description of the statute's
+      unit framing when it doesn't fit TimeUnitLiteral (e.g., "5 hours per
+      week", "20 hours per legislative session"). None when unit is set
+      or when no threshold exists.
     """
 
     magnitude: Decimal | None
     unit: TimeUnitLiteral | None
+    other_specification: Annotated[str, Field(max_length=500)] | None = None
 
 
 class TimeSpentCell(CompendiumCell):
