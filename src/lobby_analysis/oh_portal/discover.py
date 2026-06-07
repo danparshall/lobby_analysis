@@ -156,7 +156,10 @@ def recent_aers(forms: Iterable[FiledForm], years: set[int]) -> list[FiledForm]:
 
 
 def _discover_dir(data_dir: Path) -> Path:
-    d = data_dir / "oh_portal" / "discover"
+    # `data_dir` is already the oh_portal-rooted data dir (see fetch.DATA_DIR),
+    # so we append only "discover" — appending "oh_portal" here would double
+    # the segment and orphan caches one level too deep (#36).
+    d = data_dir / "discover"
     d.mkdir(parents=True, exist_ok=True)
     return d
 
