@@ -6,7 +6,10 @@ CSV captured live from OLAC on 2026-06-04), which is where the bugs live:
 column-order assumptions, AER-vs-registration discrimination, year filtering.
 """
 
+from pathlib import Path
+
 from lobby_analysis.oh_portal.discover import (
+    _discover_dir,
     category_to_regime,
     parse_agent_roster,
     parse_forms_filed,
@@ -112,3 +115,36 @@ def test_recent_aers_filters_by_type_and_year() -> None:
     # Drops the 2026 Initial (not an AER) and the 2019 AER (too old).
     assert ids == ["1427844", "1492518"]
     assert all(f.form_type == "AER" for f in kept)
+
+
+# --- Issue #36: cache path was doubled (data/oh_portal/oh_portal/discover/). -- #
+# DATA_DIR (from fetch.py) is already .../data/oh_portal, so _discover_dir
+# must NOT prepend "oh_portal" a second time. Contract: result is data_dir
+# joined with "discover" only, regardless of what data_dir is. -------------- #
+
+
+def test_discover_dir_returns_discover_subdir_of_data_dir(tmp_path: Path) -> None:
+    # The caller's data_dir is treated as the oh_portal-rooted dir; _discover_dir
+    # appends only "discover". This mirrors how fetch.DATA_DIR is structured.
+    data_dir = tmp_path / "data" / "oh_portal"
+    assert _discover_dir(data_dir) == data_dir / "discover"
+
+
+def test_discover_dir_does_not_double_oh_portal_segment(tmp_path: Path) -> None:
+    # Regression guard against the doubled-path bug — even if data_dir
+    # itself happens to end in "oh_portal", the function must not append a
+    # second "oh_portal" segment.
+    data_dir = tmp_path / "data" / "oh_portal"
+    result = _discover_dir(data_dir)
+    parts = result.parts
+    # exactly one "oh_portal" between "data" and "discover"
+    assert parts.count("oh_portal") == 1, f"doubled oh_portal in {result}"
+    assert "discover" in parts
+    assert parts[-1] == "discover"
+
+
+def test_discover_dir_creates_directory(tmp_path: Path) -> None:
+    data_dir = tmp_path / "data" / "oh_portal"
+    assert not (data_dir / "discover").exists()
+    result = _discover_dir(data_dir)
+    assert result.is_dir(), "discover dir should be created on call"
