@@ -24,6 +24,15 @@ and the public-corporation universe has a structurally different shape (no
 contractual/beneficial-client triad) that needs its own modeling decision
 before it can be folded into this canonical schema.
 
+Reconciliation: both ``client_semiannual`` and ``lobbyist_bimonthly`` carry
+compensation for the same retained-lobbyist universe at different grains
+(semi-annual vs bi-monthly), and the column map projects *both* into the
+canonical ``filing_compensation``. **Never sum compensation across the two
+datasets** — see ``releases/ny/README.md`` Caveat 11 for the discipline. The
+materializer is single-dataset per CLI invocation, so the current build
+cannot double-count by construction; the rule binds future builds that fold
+in ``lobbyist_bimonthly`` (#37).
+
 NOTE: deriving the canonical ``bill_id`` (from ``focus_type`` +
 ``focus_identifying_number``) is intentionally NOT done here — it belongs to the
 parser step, where the "State Bill focus vs. level_of_government" scoping
