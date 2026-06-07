@@ -13,8 +13,11 @@ then prints a JSON summary of per-file row counts. No new behavior tests — the
 materializer's and the upstream steps' suites cover everything this CLI does
 (mirrors WI's ``tier_2_materialize_cli`` "no new tests" precedent).
 
-The acquisition layer (``io/ny/acquire.download_bulk_csv``) writes the input CSV
-to ``data/raw/ny/<year>/<dataset>.csv``; this CLI reads from there by default.
+The acquisition layer (``io/ny/acquire.download_resource_csv``) writes the
+input CSV to ``data/raw/ny/<year>/<dataset>.csv``; this CLI reads from there
+by default. (``download_bulk_csv`` exists for whole-view archival dumps only
+and emits display-name headers incompatible with the column-map step — see
+acquire.py module docstring.)
 
 Usage::
 

@@ -1,21 +1,30 @@
 """Phase 1 acquisition for the NY Open NY (Socrata) lobbying pipeline.
 
-Two entry points, by design:
+Two CSV download paths and a probe client, by design:
 
-* :func:`download_bulk_csv` — the **primary** path. NY's datasets are
-  denormalized ~1,300x (``client_semiannual`` 2025 is 11.2M rows for only
-  8,613 filings), so the JSON API cannot be paginated for a full pull. The
-  bulk CSV export (``/api/views/<id>/rows.csv?accessType=DOWNLOAD``) is streamed
-  to disk with resume-skip and an atomic temp-then-rename, so a truncated
-  download is never mistaken for a complete one on the next run.
+* :func:`download_resource_csv` — the **primary path for pipeline pulls**. Hits
+  the SODA ``/resource/<id>.csv`` endpoint, accepts SoQL
+  ``$select``/``$where``/``$order``/``$limit``, and returns *field-name* headers
+  (``form_submission_id``) — the headers ``columns.COLUMN_MAPS`` and
+  ``grain.collapse_to_filing_grain`` actually expect. Streams to disk with the
+  same resume-skip + atomic temp-then-rename guarantees as
+  :func:`download_bulk_csv`.
+
+* :func:`download_bulk_csv` — **whole-view archival dump only, not pipeline
+  input**. Hits ``/api/views/<id>/rows.csv?accessType=DOWNLOAD`` which has no
+  ``$where`` and returns *display-name* headers (``Form Submission ID``). For
+  a multi-year denormalized view like ``qym9-xzj6`` (66.9M rows, ~55 GB), it's
+  also operationally infeasible — kept here because the streaming /
+  resume-skip / atomic-rename machinery is sound for any future whole-view
+  archival use, but never feed its output to the pipeline (#39).
 
 * :class:`SocrataProbeClient` — a **thin** JSON client for cheap aggregate
   probes only (``$select``/``$group``/``$where`` counts and distinct-value
   checks), never full pulls.
 
-Both surface HTTP failures as a typed :class:`NYAcquisitionError` rather than a
-silent partial file or empty list, so a failed acquisition can never be read as
-valid data downstream.
+All three surface HTTP failures as a typed :class:`NYAcquisitionError` rather
+than a silent partial file or empty list, so a failed acquisition can never be
+read as valid data downstream.
 """
 
 from __future__ import annotations
@@ -123,7 +132,15 @@ def download_bulk_csv(
     timeout: float = DEFAULT_TIMEOUT,
     force: bool = False,
 ) -> Path:
-    """Stream the bulk CSV export for ``dataset_id`` to ``dest_path``.
+    """Stream the whole-view CSV export for ``dataset_id`` to ``dest_path``.
+
+    **Archival use only — not a pipeline input.** The bulk export emits
+    *display-name* headers (``Form Submission ID``), not the SODA field names
+    (``form_submission_id``) the column-map / grain steps require. It also has
+    no ``$where``, so a year-scoped pull through this endpoint is impossible —
+    operationally infeasible for the denormalized multi-year views NY ships
+    (#39). For pipeline pulls, use :func:`download_resource_csv` against
+    :func:`resource_csv_url`.
 
     Resume-skip: if ``dest_path`` already exists and is non-empty, returns it
     without any network traffic (unless ``force``). The download streams to a
@@ -166,13 +183,14 @@ def download_resource_csv(
 ) -> Path:
     """Stream a filtered/projected SODA ``/resource/<id>.csv`` pull to ``dest_path``.
 
-    This is the right tool when you want *one year* and only the columns the
-    pipeline consumes, with pipeline-compatible field-name headers — as opposed
-    to :func:`download_bulk_csv`, which dumps the entire multi-year view with
-    display-name headers. ``select`` is required (always project columns
-    explicitly so the on-disk schema is intentional, not whatever the view
-    happens to expose); ``where``/``order_by``/``limit`` map to ``$where`` /
-    ``$order`` / ``$limit`` and are sent only when set.
+    **The primary path for pipeline pulls.** Returns pipeline-compatible
+    field-name headers (``form_submission_id``) and accepts ``$where`` for
+    year-scoping (essential — the bulk-view path covers all years at once and
+    is infeasible at NY's denormalization, see :func:`download_bulk_csv`).
+    ``select`` is required (always project columns explicitly so the on-disk
+    schema is intentional, not whatever the view happens to expose);
+    ``where``/``order_by``/``limit`` map to ``$where`` / ``$order`` /
+    ``$limit`` and are sent only when set.
 
     Resume-skip, atomic temp-then-rename, and typed :class:`NYAcquisitionError`
     behave exactly as :func:`download_bulk_csv`. Set ``limit`` above the known
@@ -207,8 +225,8 @@ def download_resource_csv(
 class SocrataProbeClient:
     """Thin JSON client for cheap aggregate probes against ``/resource``.
 
-    Not for full pulls — use :func:`download_bulk_csv` for those. This is for
-    counts, distinct-value checks, and coverage probes via SoQL.
+    Not for full pulls — use :func:`download_resource_csv` for those. This is
+    for counts, distinct-value checks, and coverage probes via SoQL.
     """
 
     def __init__(
