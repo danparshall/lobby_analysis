@@ -7,123 +7,94 @@ The full plan with rationale is at
 This runbook assumes:
 - You are on branch `leave-behind-prep` at the latest commit that includes
   this file, `src/lobby_analysis/oh_portal/extract_openai.py`,
-  `src/lobby_analysis/oh_portal/pipeline_openai.py`, and the two scripts
-  under `scripts/`.
+  `src/lobby_analysis/oh_portal/pipeline_openai.py`, and the scripts under
+  `scripts/` (`gpt5mini_oh_300slice_{preflight,smoke_diff,dispatch,
+  cost_check,analyze}.py`).
 - The Sonnet 300-slice baseline already lives at
   `data/oh_portal/extracted/<report_id>/<run_id>/filing.json` and raw HTML
   at `data/oh_portal/raw/<report_id>/<timestamp>/raw.html`.
 - `.env.local` has `OPENAI_API_KEY` set.
+- **The worktree's venv is activated** (`source .venv/bin/activate` if
+  not — your prompt should say `(lobby-analysis)`). The bare `python`
+  invocations below assume this; without it, `python` resolves to system
+  Python 3.9 and imports will fail. As a defensive alternative every
+  command works with `uv run python …` instead, at the cost of a brief
+  editable-install re-link each time.
 
 ## Phase 0 — Pre-flight (~15 min)
+
+Each Phase 0 step is wrapped in a small operator script under `scripts/`
+so the runbook stays free of `python3 -c "…"` blocks and quoted heredocs
+(both fragile under the local Bash matcher's anti-obfuscation heuristics,
+and easy to break silently when copy-pasted).
 
 ### 0.1 Confirm Sonnet baseline is on disk
 
 ```bash
-ls data/oh_portal/extracted/ | wc -l
-# Expected: 300
-
-# Spot-check 3 random filings have valid filing.json
-for rid in $(ls data/oh_portal/extracted/ | shuf -n 3); do
-  fj=$(find "data/oh_portal/extracted/$rid" -name filing.json | head -1)
-  echo "=== $rid ==="
-  python3 -c "import json; d=json.load(open('$fj')); print('state:', d['state'], 'filer:', (d.get('filer_person') or {}).get('name'), 'positions:', len(d.get('positions', [])))"
-done
+python scripts/gpt5mini_oh_300slice_preflight.py --check baseline
 ```
 
-If `wc -l` is not 300, surface the gap before proceeding — the dispatch
-enumerates report_ids from this directory.
+The script:
+- Counts subdirectories under `data/oh_portal/extracted/`.
+- Spot-checks the first / middle / last report_id (deterministic, so
+  re-runs are comparable across sessions).
+- Surfaces any non-OH `state` value as a WARN.
 
-### 0.2 Confirm OpenAI SDK + key
+Expected count is **305** (the "300-slice" name is approximate; the
+on-disk baseline ended up with 305 clean filings). The dispatch enumerates
+report_ids from this directory and will run mini against whatever is here,
+so if the count drifts much from 305 surface it before continuing.
+
+### 0.2 Confirm OpenAI SDK + key + dated model id
 
 ```bash
-python3 -c "
-import os
-from openai import OpenAI
-from src.lobby_analysis.oh_portal.env_local import load_env_local
-load_env_local()
-assert os.environ.get('OPENAI_API_KEY'), 'OPENAI_API_KEY not loaded'
-c = OpenAI()
-models = [m.id for m in c.models.list().data if 'gpt-5-mini' in m.id]
-print('mini models available:', models)
-"
+python scripts/gpt5mini_oh_300slice_preflight.py --check openai
 ```
 
-If multiple dated suffixes (e.g., `gpt-5-mini-2026-XX-XX`) appear, **pick
-the latest dated one** and set it on `MODEL_ID_DATED` in
+The script loads `.env.local`, lists available `gpt-5-mini*` model ids,
+and prints the **recommended pin** — the lexicographically latest dated
+variant (e.g., `gpt-5-mini-2025-08-07`). To pin, edit
 `src/lobby_analysis/oh_portal/extract_openai.py`:
 
 ```python
-MODEL_ID_DATED: str | None = "gpt-5-mini-2026-XX-XX"  # pin the dated version
+MODEL_ID_DATED: str | None = "gpt-5-mini-2025-08-07"  # <- replace with the recommended id
 ```
 
-Commit this pin so the 3 runs reference the same dated model.
+Commit this pin so the 3 dispatch passes reference the same model snapshot
+(undated `gpt-5-mini` rotates under the hood and would confound the
+self-consistency measurement).
 
 ### 0.3 Run the new tests
 
 ```bash
-python3 -m pytest tests/test_oh_portal_extract_openai.py tests/test_gpt5mini_300slice_analyze.py -v
+uv run pytest tests/test_oh_portal_extract_openai.py tests/test_gpt5mini_300slice_analyze.py -v
 ```
 
 All 9 tests should pass before proceeding.
 
-### 0.4 Single-filing smoke (Phase 1 step 8 — manual diff on 1427844)
-
-Run mini once on the hand-validated baseline filing 1427844:
+### 0.4 Single-filing smoke + diff (Phase 1 step 8)
 
 ```bash
-python3 -c "
-from pathlib import Path
-from src.lobby_analysis.oh_portal.env_local import load_env_local
-from src.lobby_analysis.oh_portal.pipeline_openai import extract_one_filing_from_cache
-load_env_local()
-fp, usage = extract_one_filing_from_cache('1427844', run_label='mini_smoke', log=print)
-print('written:', fp)
-print('usage:', usage)
-"
+python scripts/gpt5mini_oh_300slice_smoke_diff.py
+# or: python scripts/gpt5mini_oh_300slice_smoke_diff.py --report-id 1427844
 ```
 
-Diff against the Sonnet output:
+The script runs mini once against the hand-validated baseline filing
+1427844, diffs against the Sonnet output, and checks four invariants
+(`state=='OH'`, `filer_person.name=='Nathan Aichele'`, `len(positions)==4`,
+`len(expenditures)==1`, `expenditures[0].amount==20.0`).
 
-```bash
-# Find the Sonnet output for 1427844
-SONNET_FJ=$(find data/oh_portal/extracted/1427844 -name filing.json | head -1)
-MINI_FJ=$(find data/oh_portal/extracted_openai/1427844 -name filing.json | head -1)
+Exit codes:
+- `0` — all invariants hold; smoke output is auto-cleaned so it doesn't
+  contaminate the 3-run dispatch.
+- `1` — at least one invariant failed; smoke output is **left in place**
+  for inspection at `data/oh_portal/extracted_openai/1427844/mini_smoke_*`.
+- `2` — top-level shape diverges (different keys, wild array-length
+  mismatch). Engineering bug in the adapter, not a model finding. Fix and
+  re-run before Phase 2.
 
-# Structural diff — focus on top-level keys and array lengths
-python3 << 'PY'
-import json
-sonnet = json.load(open("$SONNET_FJ"))
-mini = json.load(open("$MINI_FJ"))
-print('sonnet top-level keys:', sorted(sonnet.keys()))
-print('mini top-level keys:  ', sorted(mini.keys()))
-for k in ['positions', 'expenditures', 'engagements', 'gifts']:
-    s = len(sonnet.get(k) or [])
-    m = len(mini.get(k) or [])
-    print(f'  {k}: sonnet={s}, mini={m}')
-# Hand-validated invariants on 1427844:
-print()
-print('filer_person.name:', (mini.get('filer_person') or {}).get('name'),
-      '(expected: Nathan Aichele)')
-print('state:', mini.get('state'), '(expected: OH)')
-print('len(positions):', len(mini.get('positions') or []), '(expected: 4)')
-print('len(expenditures):', len(mini.get('expenditures') or []),
-      '(expected: 1)')
-exp = (mini.get('expenditures') or [{}])[0]
-print('expenditures[0].amount:', exp.get('amount'), '(expected: 20.0)')
-PY
-```
-
-**Stop and surface to user if:** top-level shape diverges (different
-field names, missing keys), or if array lengths differ wildly (e.g., mini
-emits 10 positions when Sonnet emits 4). That's an engineering bug, not a
-model finding. Fix the adapter and re-run before Phase 2.
-
-If invariants hold, delete the smoke output so it doesn't contaminate the
-3-run dispatch:
-
-```bash
-rm -rf data/oh_portal/extracted_openai/1427844/mini_smoke_*
-```
+Pass `--no-cleanup` to keep the smoke output on success (useful when
+hand-eyeballing the JSON).
 
 ## Phase 1 — Engineering (~45-90 min)
 
@@ -142,7 +113,7 @@ Phase 2.
 
 ```bash
 mkdir -p data/oh_portal/extracted_openai
-python3 scripts/gpt5mini_oh_300slice_dispatch.py \
+python scripts/gpt5mini_oh_300slice_dispatch.py \
   --pass 1 \
   --wall-clock-cap 10800 \
   --out-summary data/oh_portal/extracted_openai/_summary_run1.json \
@@ -161,13 +132,13 @@ If the sanity diff looks clean, continue:
 ### 2.2 Runs 2 and 3
 
 ```bash
-python3 scripts/gpt5mini_oh_300slice_dispatch.py \
+python scripts/gpt5mini_oh_300slice_dispatch.py \
   --pass 2 \
   --wall-clock-cap 10800 \
   --out-summary data/oh_portal/extracted_openai/_summary_run2.json \
   2>&1 | tee data/oh_portal/extracted_openai/_log_run2.txt
 
-python3 scripts/gpt5mini_oh_300slice_dispatch.py \
+python scripts/gpt5mini_oh_300slice_dispatch.py \
   --pass 3 \
   --wall-clock-cap 10800 \
   --out-summary data/oh_portal/extracted_openai/_summary_run3.json \
@@ -184,8 +155,8 @@ gracefully. Partial outputs are retained. If Run N aborts mid-pass:
 - The dispatch will NOT continue to Run N+1 automatically (it sees the
   short result list and stops)
 - Phase 3 analyze can still run; it'll report `n_report_ids_compared`
-  smaller than 300 and the metrics are over the subset that completed all
-  3 runs
+  smaller than the full slice size (~305) and the metrics are over the
+  subset that completed all 3 runs
 
 If this happens, decide whether to:
 
@@ -195,31 +166,26 @@ If this happens, decide whether to:
 
 ### Cost watchdog
 
-If the cumulative cost across summaries exceeds **$5** (budget ceiling),
-stop and surface to user. Expected per the plan is ~$3; meaningful overage
-suggests gpt-5-mini is emitting far more output tokens than Sonnet, which
-is itself a finding worth flagging.
+Run between passes to confirm we're inside the **$5** budget ceiling.
+Expected per the plan is ~$3; meaningful overage suggests gpt-5-mini is
+emitting far more output tokens than Sonnet, which is itself a finding
+worth flagging.
 
 ```bash
-python3 -c "
-import json
-total = 0
-for n in (1, 2, 3):
-    try:
-        s = json.load(open(f'data/oh_portal/extracted_openai/_summary_run{n}.json'))
-        total += s['total_cost_usd']
-    except FileNotFoundError:
-        pass
-print(f'total so far: \${total:.2f}')
-"
+python scripts/gpt5mini_oh_300slice_cost_check.py
+# or with an explicit cap: python scripts/gpt5mini_oh_300slice_cost_check.py --budget-usd 5.0
 ```
+
+The script reads `_summary_run{1,2,3}.json` from
+`data/oh_portal/extracted_openai/`, prints per-pass and running totals,
+and exits non-zero if the cumulative spend exceeds the cap.
 
 ## Phase 3 — Analysis + writeup (~60-90 min)
 
 ### 3.1 Run analyze
 
 ```bash
-python3 scripts/gpt5mini_oh_300slice_analyze.py
+python scripts/gpt5mini_oh_300slice_analyze.py
 ```
 
 Outputs:
