@@ -10,7 +10,66 @@ This branch hosts the 5-day pre-wrap cleanup + leave-behind work. Scope:
 
 ---
 
-## 2026-06-06 — Branch cut for pre-wrap hygiene + leave-behind work
+## 2026-06-08 — STATUS sweep to main + gpt-5-mini cost-floor plan
+
+**Originating discussion:** session conversation 2026-06-08 (second leave-behind-prep session).
+
+**Convo:** [`convos/20260608_status_sweep_and_gpt5mini_plan.md`](convos/20260608_status_sweep_and_gpt5mini_plan.md)
+
+**Context:** Session opened on the question "what's our status on leave-behind-prep" but pivoted twice. First to STATUS propagation (Dan: "make sure main knows about this branch + state branches"), then to OH extraction decision space (Dan working through the "$800 dispatch — yes or no?" question for an eventual Suhan decisions doc).
+
+### Topics Explored
+
+- Session-start credential diagnostic failure (empty `$TOKEN` in fresh bash shell looked like an expired PAT; agent over-confidently escalated; corrected after Dan's screenshot)
+- Git CLI vs Contents API as the user-repo interaction surface (CLI wins for branches-mode work)
+- CLAUDE.md `Never make changes directly on main` norm vs sole-Fellow exception
+- OH extraction cost decomposition: $800 = single-model Sonnet-4-6 already; Batches+caching brings it down from $1,600 floor
+- 4-node × 6-edge × 3-attribute framework as the right unit for the OH-extraction decision
+- Which OH edges come from AER data (4 of 5 populated edges) vs Plural Policy (`lawmaker↔bill`, free)
+- Ask-then-extract vs extract-then-ask framing as orthogonal to model choice
+- Classical NLP vs LLM extraction: hybrid possible post-Fellowship, false economy before Thursday
+- Vendor swap cost analysis: GPT-5.5 *more* expensive than Sonnet; flagship swaps don't save money
+- Tier-drop cost analysis: GPT-5-mini ~6-12× cheaper than Sonnet → ~$80-150 full corpus IF validation passes
+- Benchmark-substitution trap: SWE-bench / GPQA scores irrelevant for AER extraction; only relevant signal is prior σ_noise work on `extraction-harness-brainstorm`
+- Asymmetric comparator design: mini 3x for σ_noise, Sonnet 1x as reference (saves +$30 / +4hr but limits claimable findings)
+
+### Provisional Findings
+
+- STATUS.md on main was 4 commits behind `leave-behind-prep` pre-session (the Day 1 reconciliation hadn't propagated). Treating main's STATUS as session-start canon for fresh sessions required cherry-picking the Day 1 commits across.
+- `mi-disclosure-explore` (stale base 2026-06-02) and `nc-disclosure-explore` (stale base 2026-05-25) exist on origin but appeared in neither STATUS table on either branch — real gap that Day 1's reconciliation missed. Both need rebase or merge-main before resuming.
+- No `fl-*` branch exists; FL is in `STATE_COVERAGE.md`'s "Prong 1 statute SMR only" bucket along with 6 other states.
+- OH full-corpus extraction at $800 is **already optimized** (single-model Sonnet + Batches + prompt caching). Tier-1's two-model side-by-side was a one-time validation, not the production config.
+- Flagship vendor swap doesn't reduce cost: GPT-5.5 at $5/$30 is more expensive than Sonnet at $3/$15; GPT-5.4 input ~15% cheaper but task is output-heavy.
+- Tier-drop is the real cost lever: GPT-5-mini at $0.25/$2 = ~12×/7.5× cheaper than Sonnet → ~$80-150 projected for full OH corpus IF mini handles AER extraction adequately. **Currently no evidence either way for AER.**
+- For OH, 4 of 5 populated lobbying-chain edges come from AER data; `lawmaker↔bill` is the exception (Plural Policy bulk-CSV, $0).
+- The $800 is *not* the cost of `releases/oh/` — extraction is one of three pending items: (a) Sonnet full-corpus run [$800], (b) Plural Policy OH bulk-CSV [$0], (c) chain composer [Day 4 leave-behind work, time only].
+
+### Results
+
+- **5 commits pushed to `origin/main`** (`83ad0fe` → `6cc5bf0`): cherry-picked Day 1 STATE_COVERAGE.md + STATUS reconciliation + Day 1 finish-convo + NY skeleton fill from this branch + one new commit adding mi/nc stub rows. STATUS.md on main now lists all 6 live branches.
+- **`docs/STATE_COVERAGE.md` now on main** (was leave-behind-prep-only pre-session).
+- **gpt-5-mini 3x validation plan committed** (`5df4f39`) at [`plans/20260608_gpt5mini_on_oh_300slice.md`](plans/20260608_gpt5mini_on_oh_300slice.md). 164 lines, Phase 0-3, hard-stop guardrails, asymmetric-comparator caveat documented.
+
+### Decisions Made
+
+- **STATUS propagation strategy:** cherry-pick all 4 leave-behind-prep commits onto main as-is (not surgical-pick STATUS hunks). Day 5 wrap-up merge will be cleaner; `docs/active/leave-behind-prep/` files landing on main early is acceptable given the leave-behind nature.
+- **mi/nc stub-row convention:** "exists, scope TBD" + latest-commit + merge-base metadata. Candidate convention worth standardizing for future stub additions.
+- **Direct push to main:** authorized as sole-Fellow exception. CLAUDE.md norm preserved for the multi-committer rationale that no longer applies.
+- **gpt-5-mini validation: 3 runs of mini, Sonnet stays at 1x.** Asymmetric comparator with explicit caveat — supports σ_noise + agreement claims, NOT ranked accuracy.
+- **5-day plan revised:** Day 2 mini-validation → Day 3 cross-state CPI 5-state dispatch → Day 4 OH chain composer + `releases/oh/` (FOCAL Plans 3+4 cut) → Day 5 RESEARCH_ARC + resumption brief. No slack — Day 5 lands on Thursday.
+- **Suhan-facing doc genre:** *decisions doc*, not weekly-update status doc. Per-decision structure with options + recommendation + deadline. Distinct from Day 5 resumption brief. Decisions doc not yet drafted.
+
+### Next Steps
+
+- **Execute gpt-5-mini plan today (Day 2).** Hard-stop at Phase 1 + 3 hours if OpenAI structured-output schema translation blocks. If hard-stop hit, write up the engineering blocker as a result file and recover to Day 3.
+- **Day 3 (Tue 2026-06-09):** Cross-state CPI 5-state extension dispatch on `cross-state-cpi-2015-validation` (~$15, CO/IL/WA/FL/NC at vintage 2015).
+- **Day 4 (Wed 2026-06-10):** OH chain composer (`src/lobby_analysis/oh/`, JOIN-based per Anna Karenina) + `releases/oh/`. Requires Plural Policy OH bulk-CSV downloaded first (~30 min task, free, parallel-able with anything).
+- **Day 5 (Thu 2026-06-11):** RESEARCH_ARC.md update with Anna Karenina + SMR-as-canonical principle propagated; resumption brief; finish-convo on surviving branches.
+- **Suhan decisions doc** still pending. Genre clarified this session; decision list itself awaits Dan filter. Likely a Wednesday-or-Thursday task; results from Day 2 mini-validation feed directly into the OH-extraction option framing.
+
+---
+
+
 
 **Originating discussion:** session conversation 2026-06-06 (this branch's first session).
 
