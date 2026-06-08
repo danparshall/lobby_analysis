@@ -38,8 +38,10 @@ from lobby_analysis.oh_portal.extract import assemble_filing, html_to_aer_text
 MODEL_ID = "gpt-5-mini"
 # Phase 0 step 3 of the plan: pin the dated model version after the first
 # `client.models.list()` call to ensure reproducibility across the 3 runs.
-# Set this to a dated suffix (e.g., "gpt-5-mini-2026-XX-XX") once known.
-MODEL_ID_DATED: str | None = None
+# Pinned 2026-06-08 — only one dated mini variant was visible on the account
+# at that time (`gpt-5-mini-2025-08-07`), and the undated alias rotates under
+# the hood, which would confound the 3x self-consistency measurement.
+MODEL_ID_DATED: str | None = "gpt-5-mini-2025-08-07"
 
 
 def resolved_model_id() -> str:
