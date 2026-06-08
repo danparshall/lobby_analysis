@@ -469,3 +469,479 @@ def test_compose_chain_absent_compensation_yields_empty_comp_cells(tmp_path):
     chain = compose_chain(release, _os_dict())
     assert len(chain) == 1
     assert chain.iloc[0]["comp_per_cell"] == ""
+
+
+# ---------------------------------------------------------------------------
+# compose_chain — disclosed-lawmaker enrichment (Phase 1 + Phase 2 of the
+# chain-completion plan: ``plans/ny_chain_completion_sketch.md``)
+#
+# Phase 1 adds ``disclosed_lawmakers`` — the per-(filing, lobbyist) set of
+# resolved ``ocd-person`` IDs from ``parties_lobbied``, joined back onto every
+# chain row for that group. The column is METADATA: it does not change row
+# count or money, and a downstream consumer must NOT read it as a per-(bill,
+# lawmaker) claim — ``parties_lobbied``'s grain is per-filing (Phase-0 finding:
+# cartesian, not mapping), so the set attaches to the *filing*, not to each
+# bill on it.
+#
+# Phase 2 adds two reconciliation columns:
+# - ``sponsor_in_disclosed_set`` (bool): is this row's ``sponsor_lawmaker_id``
+#   in the same (filing, lobbyist)'s disclosed set?
+# - ``disclosed_only_lawmaker_count`` (int): per (filing, lobbyist), how many
+#   disclosed lawmakers are NOT in *any* chain row's ``sponsor_lawmaker_id`` for
+#   that (filing, lobbyist) — the leadership / committee-chair signal. Computed
+#   once per group, replicated to every row of the group.
+# ---------------------------------------------------------------------------
+
+
+def _write_parties(dirpath: Path, rows) -> None:
+    """Write ``NY_filing_parties_lobbied.tsv`` into ``dirpath``.
+
+    Mirrors the materializer's ``_FIELDS`` exactly so the chain reader can't be
+    fooled by a fixture-vs-real schema drift. ``rows`` is a list of dicts with
+    at minimum filing_id/lobbyist_id/client_id/party_lobbied_person_id/resolved.
+    """
+    _write_tsv(
+        dirpath / "NY_filing_parties_lobbied.tsv",
+        ("reporting_year", "reporting_period", "filing_id", "lobbyist_id",
+         "client_id", "party_lobbied_raw", "party_lobbied_name",
+         "party_lobbied_person_id", "resolved"),
+        [
+            {
+                "reporting_year": r.get("reporting_year", "2025"),
+                "reporting_period": r.get("reporting_period", "JANUARY-JUNE"),
+                "filing_id": r["filing_id"],
+                "lobbyist_id": r["lobbyist_id"],
+                "client_id": r.get("client_id", ""),
+                "party_lobbied_raw": r.get("party_lobbied_raw", ""),
+                "party_lobbied_name": r.get("party_lobbied_name", ""),
+                "party_lobbied_person_id": r.get("party_lobbied_person_id", ""),
+                "resolved": r.get("resolved", "True"),
+            }
+            for r in rows
+        ],
+    )
+
+
+# ---- Phase 1: disclosed_lawmakers column -----------------------------------
+
+
+def test_disclosed_lawmakers_column_appears_in_chain_output(tmp_path):
+    """The chain output gains a ``disclosed_lawmakers`` column (metadata-only,
+    additive; default empty string for groups with no disclosed contacts)."""
+    release = _make_release(
+        tmp_path / "rel",
+        clients=[("NY-client-acme-llc", "ACME LLC")],
+        lobbyists=[("NY-lobbyist-firm-inc", "Firm Inc")],
+        links=[{"filing_id": "1", "lobbyist_id": "NY-lobbyist-firm-inc",
+                "client_id": "NY-client-acme-llc", "bill_id": "A100",
+                "bill_print_version": "A100", "comp_per_bill": "100.00",
+                "filing_compensation": "100.00", "n_bills_in_filing": "1",
+                "reporting_year": "2025", "reporting_period": "JANUARY-JUNE"}],
+    )
+    # No parties file → column present, empty for every row
+    chain = compose_chain(release, _os_dict())
+    assert "disclosed_lawmakers" in chain.columns
+    assert (chain["disclosed_lawmakers"] == "").all()
+
+
+def test_disclosed_lawmakers_is_dedup_sorted_semicolon_join(tmp_path):
+    """For one (filing, lobbyist), the column carries the dedup'd set of
+    resolved ``ocd-person`` IDs, sorted alphabetically, semicolon-joined; the
+    same string appears on every chain row for that group."""
+    release = _make_release(
+        tmp_path / "rel",
+        clients=[("NY-client-acme-llc", "ACME LLC")],
+        lobbyists=[("NY-lobbyist-firm-inc", "Firm Inc")],
+        links=[
+            {"filing_id": "1", "lobbyist_id": "NY-lobbyist-firm-inc",
+             "client_id": "NY-client-acme-llc", "bill_id": "A100",
+             "bill_print_version": "A100", "comp_per_bill": "50.00",
+             "filing_compensation": "100.00", "n_bills_in_filing": "2",
+             "reporting_year": "2025", "reporting_period": "JANUARY-JUNE"},
+            {"filing_id": "1", "lobbyist_id": "NY-lobbyist-firm-inc",
+             "client_id": "NY-client-acme-llc", "bill_id": "S200",
+             "bill_print_version": "S200", "comp_per_bill": "50.00",
+             "filing_compensation": "100.00", "n_bills_in_filing": "2",
+             "reporting_year": "2025", "reporting_period": "JANUARY-JUNE"},
+        ],
+    )
+    _write_parties(
+        release,
+        [
+            # Intentionally out of alphabetical order + one duplicate; expect
+            # sorted, dedup'd output.
+            {"filing_id": "1", "lobbyist_id": "NY-lobbyist-firm-inc",
+             "client_id": "NY-client-acme-llc",
+             "party_lobbied_person_id": "ocd-person/zzz", "resolved": "True"},
+            {"filing_id": "1", "lobbyist_id": "NY-lobbyist-firm-inc",
+             "client_id": "NY-client-acme-llc",
+             "party_lobbied_person_id": "ocd-person/aaa", "resolved": "True"},
+            {"filing_id": "1", "lobbyist_id": "NY-lobbyist-firm-inc",
+             "client_id": "NY-client-acme-llc",
+             "party_lobbied_person_id": "ocd-person/aaa", "resolved": "True"},
+        ],
+    )
+    chain = compose_chain(release, _os_dict())
+    # 1 beneficiary × 2 bills, each bill has 1 sponsor → 2 rows
+    assert len(chain) == 2
+    expected = "ocd-person/aaa;ocd-person/zzz"
+    assert chain["disclosed_lawmakers"].unique().tolist() == [expected]
+
+
+def test_disclosed_lawmakers_ignores_unresolved_rows(tmp_path):
+    """Only ``resolved=True`` rows with a non-empty ``party_lobbied_person_id``
+    contribute to the disclosed-lawmakers set; unresolved entries (NYC municipal
+    officials, agencies, broadcasts) MUST NOT leak into the ocd-person set."""
+    release = _make_release(
+        tmp_path / "rel",
+        clients=[("NY-client-acme-llc", "ACME LLC")],
+        lobbyists=[("NY-lobbyist-firm-inc", "Firm Inc")],
+        links=[{"filing_id": "1", "lobbyist_id": "NY-lobbyist-firm-inc",
+                "client_id": "NY-client-acme-llc", "bill_id": "A100",
+                "bill_print_version": "A100", "comp_per_bill": "100.00",
+                "filing_compensation": "100.00", "n_bills_in_filing": "1",
+                "reporting_year": "2025", "reporting_period": "JANUARY-JUNE"}],
+    )
+    _write_parties(
+        release,
+        [
+            {"filing_id": "1", "lobbyist_id": "NY-lobbyist-firm-inc",
+             "client_id": "NY-client-acme-llc",
+             "party_lobbied_raw": "Senator Jane Doe",
+             "party_lobbied_person_id": "ocd-person/aaa", "resolved": "True"},
+            # An unresolved row — agency / broadcast / municipal official.
+            # No person_id; must be ignored regardless of resolved flag.
+            {"filing_id": "1", "lobbyist_id": "NY-lobbyist-firm-inc",
+             "client_id": "NY-client-acme-llc",
+             "party_lobbied_raw": "Department of Health",
+             "party_lobbied_person_id": "", "resolved": "False"},
+            # Hostile case: resolved=True but blank person_id (shouldn't happen
+            # in real data, but a robust reader doesn't fabricate set members).
+            {"filing_id": "1", "lobbyist_id": "NY-lobbyist-firm-inc",
+             "client_id": "NY-client-acme-llc",
+             "party_lobbied_raw": "Mystery",
+             "party_lobbied_person_id": "", "resolved": "True"},
+        ],
+    )
+    chain = compose_chain(release, _os_dict())
+    assert chain["disclosed_lawmakers"].unique().tolist() == ["ocd-person/aaa"]
+
+
+def test_disclosed_lawmakers_empty_when_only_unresolved_in_group(tmp_path):
+    """A filing where every disclosed party is unresolved (e.g. all-agency)
+    yields an EMPTY ``disclosed_lawmakers`` cell — not a missing key or
+    ``None``, an empty string — so downstream string ops are uniform."""
+    release = _make_release(
+        tmp_path / "rel",
+        clients=[("NY-client-acme-llc", "ACME LLC")],
+        lobbyists=[("NY-lobbyist-firm-inc", "Firm Inc")],
+        links=[{"filing_id": "1", "lobbyist_id": "NY-lobbyist-firm-inc",
+                "client_id": "NY-client-acme-llc", "bill_id": "A100",
+                "bill_print_version": "A100", "comp_per_bill": "100.00",
+                "filing_compensation": "100.00", "n_bills_in_filing": "1",
+                "reporting_year": "2025", "reporting_period": "JANUARY-JUNE"}],
+    )
+    _write_parties(
+        release,
+        [
+            {"filing_id": "1", "lobbyist_id": "NY-lobbyist-firm-inc",
+             "client_id": "NY-client-acme-llc",
+             "party_lobbied_raw": "Department of Health",
+             "party_lobbied_person_id": "", "resolved": "False"},
+        ],
+    )
+    chain = compose_chain(release, _os_dict())
+    assert chain["disclosed_lawmakers"].unique().tolist() == [""]
+
+
+def test_disclosed_lawmakers_does_not_alter_chain_money(tmp_path):
+    """Adding the disclosed-lawmakers metadata column MUST NOT change row count
+    or any conservation invariant — it's additive only. Same fixture as the
+    M=2, N=2 conservation test, with parties_lobbied attached."""
+    release = _make_release(
+        tmp_path / "rel",
+        clients=[("NY-client-acme-llc-beta-corp", "ACME LLC; Beta Corp")],
+        lobbyists=[("NY-lobbyist-firm-inc", "Firm Inc")],
+        links=[
+            {"filing_id": "555", "lobbyist_id": "NY-lobbyist-firm-inc",
+             "client_id": "NY-client-acme-llc-beta-corp", "bill_id": "A100",
+             "bill_print_version": "A100", "comp_per_bill": "50.00",
+             "filing_compensation": "100.00", "n_bills_in_filing": "2",
+             "reporting_year": "2025", "reporting_period": "JANUARY-JUNE"},
+            {"filing_id": "555", "lobbyist_id": "NY-lobbyist-firm-inc",
+             "client_id": "NY-client-acme-llc-beta-corp", "bill_id": "S200",
+             "bill_print_version": "S200", "comp_per_bill": "50.00",
+             "filing_compensation": "100.00", "n_bills_in_filing": "2",
+             "reporting_year": "2025", "reporting_period": "JANUARY-JUNE"},
+        ],
+    )
+    _write_parties(
+        release,
+        [
+            {"filing_id": "555", "lobbyist_id": "NY-lobbyist-firm-inc",
+             "client_id": "NY-client-acme-llc-beta-corp",
+             "party_lobbied_person_id": "ocd-person/aaa", "resolved": "True"},
+            {"filing_id": "555", "lobbyist_id": "NY-lobbyist-firm-inc",
+             "client_id": "NY-client-acme-llc-beta-corp",
+             "party_lobbied_person_id": "ocd-person/bbb", "resolved": "True"},
+        ],
+    )
+    chain = compose_chain(release, _os_dict())
+    # Same shape as the conservation test: 2 beneficiaries × 2 bills = 4 cells
+    assert len(chain) == 4
+    cells = chain.drop_duplicates(["filing_id", "beneficiary_id", "bill_id"])
+    total = sum(Decimal(str(v)) for v in cells["comp_per_cell"])
+    assert total == Decimal("100.00")
+    # And every cell carries the same disclosed set
+    assert (chain["disclosed_lawmakers"] == "ocd-person/aaa;ocd-person/bbb").all()
+
+
+def test_disclosed_lawmakers_scoped_per_filing_lobbyist(tmp_path):
+    """Disclosed sets are per ``(filing_id, lobbyist_id)`` — a different
+    lobbyist on the SAME filing has its own, independent set, even when
+    the client is shared."""
+    release = _make_release(
+        tmp_path / "rel",
+        clients=[("NY-client-acme-llc", "ACME LLC")],
+        lobbyists=[
+            ("NY-lobbyist-firm-a", "Firm A"),
+            ("NY-lobbyist-firm-b", "Firm B"),
+        ],
+        links=[
+            {"filing_id": "777", "lobbyist_id": "NY-lobbyist-firm-a",
+             "client_id": "NY-client-acme-llc", "bill_id": "A100",
+             "bill_print_version": "A100", "comp_per_bill": "40.00",
+             "filing_compensation": "40.00", "n_bills_in_filing": "1",
+             "reporting_year": "2025", "reporting_period": "JANUARY-JUNE"},
+            {"filing_id": "777", "lobbyist_id": "NY-lobbyist-firm-b",
+             "client_id": "NY-client-acme-llc", "bill_id": "A100",
+             "bill_print_version": "A100", "comp_per_bill": "60.00",
+             "filing_compensation": "60.00", "n_bills_in_filing": "1",
+             "reporting_year": "2025", "reporting_period": "JANUARY-JUNE"},
+        ],
+    )
+    _write_parties(
+        release,
+        [
+            # Firm A discloses Jane Doe
+            {"filing_id": "777", "lobbyist_id": "NY-lobbyist-firm-a",
+             "client_id": "NY-client-acme-llc",
+             "party_lobbied_person_id": "ocd-person/aaa", "resolved": "True"},
+            # Firm B discloses John Roe
+            {"filing_id": "777", "lobbyist_id": "NY-lobbyist-firm-b",
+             "client_id": "NY-client-acme-llc",
+             "party_lobbied_person_id": "ocd-person/bbb", "resolved": "True"},
+        ],
+    )
+    chain = compose_chain(release, _os_dict())
+    by_firm = {
+        r["lobbyist_id"]: r["disclosed_lawmakers"]
+        for _, r in chain.iterrows()
+    }
+    assert by_firm["NY-lobbyist-firm-a"] == "ocd-person/aaa"
+    assert by_firm["NY-lobbyist-firm-b"] == "ocd-person/bbb"
+
+
+# ---- Phase 2: sponsor_in_disclosed_set + disclosed_only_lawmaker_count ----
+
+
+def test_sponsor_in_disclosed_set_true_when_sponsor_was_lobbied(tmp_path):
+    """When the bill's primary sponsor IS in the (filing, lobbyist)'s disclosed
+    set, the per-row ``sponsor_in_disclosed_set`` is True."""
+    release = _make_release(
+        tmp_path / "rel",
+        clients=[("NY-client-acme-llc", "ACME LLC")],
+        lobbyists=[("NY-lobbyist-firm-inc", "Firm Inc")],
+        links=[{"filing_id": "1", "lobbyist_id": "NY-lobbyist-firm-inc",
+                "client_id": "NY-client-acme-llc", "bill_id": "A100",
+                "bill_print_version": "A100", "comp_per_bill": "100.00",
+                "filing_compensation": "100.00", "n_bills_in_filing": "1",
+                "reporting_year": "2025", "reporting_period": "JANUARY-JUNE"}],
+    )
+    # A100's primary sponsor in _os_dict() is ocd-person/aaa
+    _write_parties(
+        release,
+        [{"filing_id": "1", "lobbyist_id": "NY-lobbyist-firm-inc",
+          "client_id": "NY-client-acme-llc",
+          "party_lobbied_person_id": "ocd-person/aaa", "resolved": "True"}],
+    )
+    chain = compose_chain(release, _os_dict())
+    assert len(chain) == 1
+    assert bool(chain.iloc[0]["sponsor_in_disclosed_set"]) is True
+
+
+def test_sponsor_in_disclosed_set_false_when_sponsor_not_lobbied(tmp_path):
+    """When the bill's primary sponsor is NOT in the disclosed set,
+    ``sponsor_in_disclosed_set`` is False — even if other lawmakers were
+    disclosed for the same (filing, lobbyist)."""
+    release = _make_release(
+        tmp_path / "rel",
+        clients=[("NY-client-acme-llc", "ACME LLC")],
+        lobbyists=[("NY-lobbyist-firm-inc", "Firm Inc")],
+        links=[{"filing_id": "1", "lobbyist_id": "NY-lobbyist-firm-inc",
+                "client_id": "NY-client-acme-llc", "bill_id": "A100",
+                "bill_print_version": "A100", "comp_per_bill": "100.00",
+                "filing_compensation": "100.00", "n_bills_in_filing": "1",
+                "reporting_year": "2025", "reporting_period": "JANUARY-JUNE"}],
+    )
+    # Discloses ocd-person/xxx — NOT A100's sponsor (aaa)
+    _write_parties(
+        release,
+        [{"filing_id": "1", "lobbyist_id": "NY-lobbyist-firm-inc",
+          "client_id": "NY-client-acme-llc",
+          "party_lobbied_person_id": "ocd-person/xxx", "resolved": "True"}],
+    )
+    chain = compose_chain(release, _os_dict())
+    assert bool(chain.iloc[0]["sponsor_in_disclosed_set"]) is False
+
+
+def test_sponsor_in_disclosed_set_false_when_no_sponsor_attached(tmp_path):
+    """An unmatched bill (no OS sponsor) has empty ``sponsor_lawmaker_id``;
+    ``sponsor_in_disclosed_set`` is False regardless of what's disclosed —
+    empty-id is never treated as "yes, the empty sponsor was lobbied"."""
+    release = _make_release(
+        tmp_path / "rel",
+        clients=[("NY-client-acme-llc", "ACME LLC")],
+        lobbyists=[("NY-lobbyist-firm-inc", "Firm Inc")],
+        links=[{"filing_id": "1", "lobbyist_id": "NY-lobbyist-firm-inc",
+                "client_id": "NY-client-acme-llc", "bill_id": "A99999",
+                "bill_print_version": "A99999", "comp_per_bill": "100.00",
+                "filing_compensation": "100.00", "n_bills_in_filing": "1",
+                "reporting_year": "2025", "reporting_period": "JANUARY-JUNE"}],
+    )
+    _write_parties(
+        release,
+        [{"filing_id": "1", "lobbyist_id": "NY-lobbyist-firm-inc",
+          "client_id": "NY-client-acme-llc",
+          "party_lobbied_person_id": "ocd-person/aaa", "resolved": "True"}],
+    )
+    chain = compose_chain(release, _os_dict())
+    row = chain.iloc[0]
+    assert row["sponsor_lawmaker_id"] == ""
+    assert bool(row["sponsor_in_disclosed_set"]) is False
+
+
+def test_disclosed_only_lawmaker_count_counts_leadership(tmp_path):
+    """The classic case: leadership / committee chairs are disclosed-lobbied
+    but don't sponsor the bills the filer engages on. For one (filing,
+    lobbyist) with bills A100 (sponsor aaa) and S200 (sponsor bbb), the
+    disclosed set is {aaa, bbb, leadership-1, leadership-2}; the count of
+    disclosed-only-no-sponsor lawmakers is 2. The same int is replicated to
+    every chain row of the group."""
+    release = _make_release(
+        tmp_path / "rel",
+        clients=[("NY-client-acme-llc", "ACME LLC")],
+        lobbyists=[("NY-lobbyist-firm-inc", "Firm Inc")],
+        links=[
+            {"filing_id": "1", "lobbyist_id": "NY-lobbyist-firm-inc",
+             "client_id": "NY-client-acme-llc", "bill_id": "A100",
+             "bill_print_version": "A100", "comp_per_bill": "50.00",
+             "filing_compensation": "100.00", "n_bills_in_filing": "2",
+             "reporting_year": "2025", "reporting_period": "JANUARY-JUNE"},
+            {"filing_id": "1", "lobbyist_id": "NY-lobbyist-firm-inc",
+             "client_id": "NY-client-acme-llc", "bill_id": "S200",
+             "bill_print_version": "S200", "comp_per_bill": "50.00",
+             "filing_compensation": "100.00", "n_bills_in_filing": "2",
+             "reporting_year": "2025", "reporting_period": "JANUARY-JUNE"},
+        ],
+    )
+    _write_parties(
+        release,
+        [
+            {"filing_id": "1", "lobbyist_id": "NY-lobbyist-firm-inc",
+             "client_id": "NY-client-acme-llc",
+             "party_lobbied_person_id": "ocd-person/aaa", "resolved": "True"},
+            {"filing_id": "1", "lobbyist_id": "NY-lobbyist-firm-inc",
+             "client_id": "NY-client-acme-llc",
+             "party_lobbied_person_id": "ocd-person/bbb", "resolved": "True"},
+            # Two leadership figures lobbied — neither sponsors any of the bills
+            {"filing_id": "1", "lobbyist_id": "NY-lobbyist-firm-inc",
+             "client_id": "NY-client-acme-llc",
+             "party_lobbied_person_id": "ocd-person/heastie", "resolved": "True"},
+            {"filing_id": "1", "lobbyist_id": "NY-lobbyist-firm-inc",
+             "client_id": "NY-client-acme-llc",
+             "party_lobbied_person_id": "ocd-person/stewart-cousins",
+             "resolved": "True"},
+        ],
+    )
+    chain = compose_chain(release, _os_dict())
+    # 2 bills × 1 beneficiary × 1 sponsor each = 2 rows
+    assert len(chain) == 2
+    counts = chain["disclosed_only_lawmaker_count"].unique().tolist()
+    assert counts == [2]
+    # Both chain rows should also flag their own sponsor as in-set
+    assert chain["sponsor_in_disclosed_set"].all()
+
+
+def test_disclosed_only_lawmaker_count_zero_when_set_subset_of_sponsors(tmp_path):
+    """When every disclosed lawmaker is also a sponsor of some bill in the
+    filing, ``disclosed_only_lawmaker_count`` is 0."""
+    release = _make_release(
+        tmp_path / "rel",
+        clients=[("NY-client-acme-llc", "ACME LLC")],
+        lobbyists=[("NY-lobbyist-firm-inc", "Firm Inc")],
+        links=[
+            {"filing_id": "1", "lobbyist_id": "NY-lobbyist-firm-inc",
+             "client_id": "NY-client-acme-llc", "bill_id": "A100",
+             "bill_print_version": "A100", "comp_per_bill": "50.00",
+             "filing_compensation": "100.00", "n_bills_in_filing": "2",
+             "reporting_year": "2025", "reporting_period": "JANUARY-JUNE"},
+            {"filing_id": "1", "lobbyist_id": "NY-lobbyist-firm-inc",
+             "client_id": "NY-client-acme-llc", "bill_id": "S200",
+             "bill_print_version": "S200", "comp_per_bill": "50.00",
+             "filing_compensation": "100.00", "n_bills_in_filing": "2",
+             "reporting_year": "2025", "reporting_period": "JANUARY-JUNE"},
+        ],
+    )
+    _write_parties(
+        release,
+        [
+            {"filing_id": "1", "lobbyist_id": "NY-lobbyist-firm-inc",
+             "client_id": "NY-client-acme-llc",
+             "party_lobbied_person_id": "ocd-person/aaa", "resolved": "True"},
+            {"filing_id": "1", "lobbyist_id": "NY-lobbyist-firm-inc",
+             "client_id": "NY-client-acme-llc",
+             "party_lobbied_person_id": "ocd-person/bbb", "resolved": "True"},
+        ],
+    )
+    chain = compose_chain(release, _os_dict())
+    assert chain["disclosed_only_lawmaker_count"].unique().tolist() == [0]
+
+
+def test_disclosed_only_lawmaker_count_uses_only_matched_sponsors(tmp_path):
+    """Unmatched bills (empty ``sponsor_lawmaker_id``) contribute NO sponsor to
+    the "covered" set, so disclosed lawmakers stay counted as disclosed-only
+    even when the filing has an unmatched bill alongside a matched one."""
+    release = _make_release(
+        tmp_path / "rel",
+        clients=[("NY-client-acme-llc", "ACME LLC")],
+        lobbyists=[("NY-lobbyist-firm-inc", "Firm Inc")],
+        links=[
+            # A100 matched (sponsor aaa)
+            {"filing_id": "1", "lobbyist_id": "NY-lobbyist-firm-inc",
+             "client_id": "NY-client-acme-llc", "bill_id": "A100",
+             "bill_print_version": "A100", "comp_per_bill": "50.00",
+             "filing_compensation": "100.00", "n_bills_in_filing": "2",
+             "reporting_year": "2025", "reporting_period": "JANUARY-JUNE"},
+            # A99999 unmatched (no sponsor in _os_dict)
+            {"filing_id": "1", "lobbyist_id": "NY-lobbyist-firm-inc",
+             "client_id": "NY-client-acme-llc", "bill_id": "A99999",
+             "bill_print_version": "A99999", "comp_per_bill": "50.00",
+             "filing_compensation": "100.00", "n_bills_in_filing": "2",
+             "reporting_year": "2025", "reporting_period": "JANUARY-JUNE"},
+        ],
+    )
+    _write_parties(
+        release,
+        [
+            {"filing_id": "1", "lobbyist_id": "NY-lobbyist-firm-inc",
+             "client_id": "NY-client-acme-llc",
+             "party_lobbied_person_id": "ocd-person/aaa", "resolved": "True"},
+            {"filing_id": "1", "lobbyist_id": "NY-lobbyist-firm-inc",
+             "client_id": "NY-client-acme-llc",
+             "party_lobbied_person_id": "ocd-person/xxx", "resolved": "True"},
+        ],
+    )
+    chain = compose_chain(release, _os_dict())
+    # xxx is disclosed-only-no-sponsor (only matched sponsor is aaa)
+    assert chain["disclosed_only_lawmaker_count"].unique().tolist() == [1]

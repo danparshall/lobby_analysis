@@ -52,6 +52,9 @@ One row per `(reporting_period, lobbyist_firm, beneficiary, bill, sponsor)`.
 | `filing_compensation` | the filing's total compensation (carried, for re-aggregation) |
 | `n_beneficiaries_in_filing` (M), `n_bills_in_filing` (N) | the split denominators |
 | `os_matched` | `True` if the bill resolved to an OS bill with a structured sponsor |
+| `disclosed_lawmakers` | **filing-grain metadata.** Sorted, `;`-joined set of resolved `ocd-person` IDs from `NY_filing_parties_lobbied.tsv` for this row's `(filing_id, lobbyist_id)`. Empty when no resolved contacts. Attaches to the FILING, not to this specific bill — see caveat below. |
+| `sponsor_in_disclosed_set` | `True` iff `sponsor_lawmaker_id` ∈ this row's `disclosed_lawmakers`. Empty sponsor → always `False`. **Read as "this filer disclosed contact with this sponsor on *something* in this filing," NOT as bill-specific evidence** — see caveat. |
+| `disclosed_only_lawmaker_count` | per `(filing, lobbyist)`, count of resolved disclosed lawmakers who are NOT primary sponsors of any *matched* bill in the filing. The "leadership / committee-chair" signal. Same int on every row of the group. |
 
 ## How dollars are attributed (conservation)
 
@@ -76,15 +79,54 @@ Two **load-bearing** rules for anyone aggregating this file:
 NY discloses no per-bill or per-beneficiary effort weight, so the split is
 **uniform** — an explicit modeling assumption, not a disclosed allocation.
 
+## Disclosed lawmakers vs inferred sponsors (read this before consuming the new columns)
+
+The chain carries **two** lawmaker signals per row, and they answer different questions:
+
+1. **Inferred (`sponsor_lawmaker_id`, `sponsor_lawmaker_name`).** The bill's
+   *primary sponsor* per Open States. This is "who's on the bill," derived from
+   the legislative side — not from the filer's disclosure. It is bill-specific.
+2. **Disclosed (`disclosed_lawmakers`, `sponsor_in_disclosed_set`,
+   `disclosed_only_lawmaker_count`).** Resolved `ocd-person` IDs from
+   `NY_filing_parties_lobbied.tsv` (the genuinely disclosed contact field NY
+   requires). **Grain: per `(filing_id, lobbyist_id)`** — the same set attaches
+   to every chain row in that group, regardless of which bill the row is about.
+   This is "who the filer reported lobbying, anywhere in this filing."
+
+**Why `disclosed_lawmakers` is not per-bill.** A Phase-0 grain probe
+(2026-06-08, `docs/active/ny-disclosure-explore/results/`) confirmed that
+`parties_lobbied` is cartesian against the filing's bill list, not a map. NY
+filers disclose a set of contacts per filing, not contact-per-bill. We cannot
+recover the per-(lawmaker, bill) tuple from `parties_lobbied`; future schema
+work might, this release doesn't claim to.
+
+**Why `sponsor_in_disclosed_set=True` is not bill-specific evidence.** With a
+typical fan-out of 36+ disclosed legislators per `(filing, lobbyist)` and a max
+near 209 (the full legislature on the biggest filings), a bill's primary
+sponsor is in the disclosed set largely by base rate. Read True as "this filer
+disclosed contact with this sponsor on *something* in this filing," not as
+"this filer lobbied this sponsor about this bill."
+
+**The genuinely informative per-group signal** is `disclosed_only_lawmaker_count`
+— the count of disclosed lawmakers who are NOT primary sponsors of any matched
+bill in the filing. Large values flag leadership / committee chairs / executive
+contacts a filer discloses lobbying but whose bills don't appear in the
+beneficial-client engagement set. Combined with `sponsor_in_disclosed_set`, a
+useful per-group reading is: high `sponsor_in_disclosed_set` rate + low
+`disclosed_only_lawmaker_count` → the filer's disclosed contacts and the
+engaged bills' sponsors are aligned. High `disclosed_only_lawmaker_count` →
+substantial off-sponsor lobbying activity worth surfacing separately.
+
 ## Honest limitations
 
-- **The lawmaker is the bill's _primary sponsor_, not a disclosed lobbying
-  contact.** The edge means "this company paid to lobby on a bill that lawmaker
-  X sponsored" — an *inferred* connection via Open States, **not** a disclosed
-  "company lobbied lawmaker Y" meeting. NY *does* publish a `parties_lobbied`
-  field (a genuine disclosed lawmaker edge), but it was deliberately out of v1
-  scope; it is free-text names/titles that would need resolution to canonical
-  lawmakers. Ingesting it is the top v1.1 follow-up — see below.
+- **The chain's `sponsor_lawmaker_id` is the bill's _primary sponsor_, not a
+  disclosed lobbying contact.** That edge means "this company paid to lobby on
+  a bill that lawmaker X sponsored" — an *inferred* connection via Open States,
+  **not** a disclosed "company lobbied lawmaker Y" meeting. The disclosed
+  contact lives in the three new metadata columns (`disclosed_lawmakers`,
+  `sponsor_in_disclosed_set`, `disclosed_only_lawmaker_count`) — read the
+  "Disclosed vs inferred" section above before using them. Disclosed contact
+  attaches at the *filing* grain, not per bill.
 - **Primary sponsors only.** NY bills carry exactly one primary sponsor;
   cosponsors (≈83k edges, in the OS bundle) are excluded from v1.
 - **No stance / position.** NY disclosure records *that* a bill was lobbied, not
@@ -129,16 +171,15 @@ Requires the Open States NY 2025-2026 CSV bundle staged under
 
 ## v1.1 follow-ups
 
-- **`parties_lobbied` as a second, disclosed lawmaker edge.** Requires
-  re-pulling `client_semiannual` with the `parties_lobbied` field added to the
-  `$select` (the 2025 pull fetched only 9 fields), then resolving the free-text
-  names/titles to `ocd-person` ids. **Reconnaissance done** (the field is
-  populated on 99.9% of rows): ~83% are named legislators (`Senator X` /
-  `Assembly member X`, often with a `, staff member` suffix — the resolvable
-  core), but ~17% are *not* individual legislators (executive offices, agencies,
-  program/counsel staff, and "communication sent to entire NYS Legislature"
-  broadcasts) and have no `ocd-person`. So this is a free-text-normalization
-  ingest with a routing step, not a clean join. See
-  `docs/active/ny-disclosure-explore/results/20260605_ny_parties_lobbied_recon.md`.
+- **`parties_lobbied` integrated into the chain (2026-06-08).** The disclosed
+  contact field is now joined as filing-grain metadata via the three new
+  columns above. The full disclosed-contact edge (one row per disclosed
+  lawmaker, with raw/resolved fields, including the ~17% non-individual rows —
+  agencies, executive offices, broadcasts) continues to live separately in
+  `releases/ny/NY_filing_parties_lobbied.tsv` since it is not per-(beneficiary,
+  bill) and would be cartesian against the chain's bill grain.
 - Fold in cosponsors as a secondary sponsor edge.
 - Multi-year backfill (2019→) once the single-year chain is proven.
+- A possible Phase-4: a `target_kind` taxonomy for the ~42% non-legislator
+  `parties_lobbied` rows (currently `resolved=False`), so the disclosed edge
+  becomes fully typed rather than half-resolved.

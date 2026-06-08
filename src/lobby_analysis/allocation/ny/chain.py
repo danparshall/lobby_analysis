@@ -241,6 +241,28 @@ _CHAIN_COLUMNS = [
     "n_beneficiaries_in_filing",
     "n_bills_in_filing",
     "os_matched",
+    # ---- Disclosed-lawmaker enrichment (chain-completion plan, Phase 1+2) ----
+    # ``disclosed_lawmakers`` is the set of resolved ``ocd-person`` IDs from
+    # ``parties_lobbied`` for this row's ``(filing_id, lobbyist_id)``, sorted
+    # alphabetically and semicolon-joined (empty string when no disclosed
+    # contacts resolve). It is METADATA at the filing/lobbyist grain — it is
+    # NOT a per-(bill, lawmaker) claim. ``parties_lobbied``'s grain is
+    # per-filing SET (cartesian over the filing's bills), so the set attaches
+    # to the *filing*, not to any specific bill.
+    "disclosed_lawmakers",
+    # ``sponsor_in_disclosed_set`` is True iff this row's
+    # ``sponsor_lawmaker_id`` is in the (filing, lobbyist)'s disclosed set.
+    # **CAVEAT**: with a typical fan-out of 36+ disclosed legislators per
+    # (filing, lobbyist) in 2025, this is True often by base-rate, not by
+    # specific intent — do NOT read True as "this filer lobbied this sponsor
+    # about this bill". Read it as "this filer disclosed contact with this
+    # sponsor on *something* in this filing."
+    "sponsor_in_disclosed_set",
+    # ``disclosed_only_lawmaker_count`` is, per (filing, lobbyist), the count
+    # of resolved disclosed lawmakers who are NOT primary sponsors of any
+    # MATCHED bill in the filing — the leadership / committee-chair signal.
+    # The same int is replicated to every chain row of the group.
+    "disclosed_only_lawmaker_count",
 ]
 
 
@@ -250,6 +272,41 @@ def _name_lookup(path: Path) -> dict[str, str]:
     with path.open(encoding="utf-8") as fh:
         for row in csv.DictReader(fh, delimiter="\t"):
             out[row["id"]] = row["name"]
+    return out
+
+
+def _load_disclosed_contacts(release_dir: Path) -> dict[tuple[str, str], set[str]]:
+    """Load ``NY_filing_parties_lobbied.tsv`` into ``(filing_id, lobbyist_id) ->
+    set(ocd-person)``.
+
+    Only rows with ``resolved=True`` AND a non-empty ``party_lobbied_person_id``
+    contribute — unresolved rows (NYC municipal officials, executive offices,
+    agencies, broadcasts; ~42% of edges in 2025) MUST NOT leak into the
+    legislator set. The empty-id-but-resolved=True case (a fixture hostility,
+    not seen in real data) is also dropped.
+
+    The Phase-0 grain check (2026-06-08, plans/ny_chain_completion_sketch.md)
+    confirmed ``(filing_id, lobbyist_id)`` is the correct join key under this
+    branch's release schema — A and B (``+ client_id``) gave identical coverage
+    of 97.63% (every (filing, lobbyist) group has exactly one client_id).
+
+    Returns an empty dict if the file is absent — keeps the column additive
+    rather than mandatory, so existing tests / consumers that pass a
+    parties-less ``release_dir`` continue to work.
+    """
+    path = release_dir / "NY_filing_parties_lobbied.tsv"
+    out: dict[tuple[str, str], set[str]] = {}
+    if not path.exists():
+        return out
+    with path.open(encoding="utf-8") as fh:
+        for row in csv.DictReader(fh, delimiter="\t"):
+            if (row.get("resolved") or "").strip().lower() != "true":
+                continue
+            pid = (row.get("party_lobbied_person_id") or "").strip()
+            if not pid:
+                continue
+            key = (row["filing_id"], row["lobbyist_id"])
+            out.setdefault(key, set()).add(pid)
     return out
 
 
@@ -273,10 +330,39 @@ def compose_chain(release_dir: Path, os_bills: dict[str, NYBillMeta]) -> pd.Data
     Unmatched bills (no OS identifier match, or matched with zero structured
     sponsors) are FLAGGED (``os_matched=False``, empty sponsor) — never dropped —
     so dollars stay conserved.
+
+    **Disclosed-lawmaker enrichment** (chain-completion plan, Phases 1+2). If
+    ``release_dir/NY_filing_parties_lobbied.tsv`` exists, three extra columns
+    are populated: ``disclosed_lawmakers`` (the sorted, ``;``-joined set of
+    resolved ``ocd-person`` IDs for this row's ``(filing_id, lobbyist_id)``;
+    empty string when none), ``sponsor_in_disclosed_set`` (True iff this row's
+    ``sponsor_lawmaker_id`` is in the disclosed set — empty-id never qualifies),
+    and ``disclosed_only_lawmaker_count`` (per ``(filing, lobbyist)``, the count
+    of disclosed lawmakers NOT primary-sponsoring any MATCHED bill — the
+    leadership / committee-chair signal; same int on every row of the group).
+    The enrichment is purely additive — it never changes row count, money, or
+    sponsor attachment. If the file is absent the three columns are still
+    present with empty/False/0 defaults (back-compat).
+
+    **Reading caveat (do not silently re-derive).** ``parties_lobbied``'s grain
+    is per-filing SET (Phase-0 finding: cartesian, not mapping). So
+    ``disclosed_lawmakers`` attaches at the filing/lobbyist level, NOT per bill,
+    and ``sponsor_in_disclosed_set=True`` is NOT specific evidence that this
+    filer lobbied this sponsor about this bill — with a typical fan-out of 36+
+    legislators per (filing, lobbyist), it is True often by base rate. Read it
+    as "this filer disclosed contact with this sponsor on *something* in this
+    filing." The interesting per-row signal is the conjunction of high
+    ``sponsor_in_disclosed_set`` with low ``disclosed_only_lawmaker_count`` —
+    the filer's disclosed contacts ARE the sponsors of the engaged bills.
     """
     release_dir = Path(release_dir)
     client_names = _name_lookup(release_dir / "NY_clients.tsv")
     lobbyist_names = _name_lookup(release_dir / "NY_lobbyists.tsv")
+    # ``(filing_id, lobbyist_id) -> set(ocd-person)`` — resolved disclosed
+    # lawmakers from ``NY_filing_parties_lobbied.tsv``. Empty dict if absent
+    # (back-compat: callers without the parties release still get an empty
+    # ``disclosed_lawmakers`` column rather than an error).
+    disclosed = _load_disclosed_contacts(release_dir)
 
     # Group link rows by filing so M*N is known per filing.
     by_filing: dict[tuple, list[dict]] = {}
@@ -287,6 +373,9 @@ def compose_chain(release_dir: Path, os_bills: dict[str, NYBillMeta]) -> pd.Data
             ).append(row)
 
     rows: list[dict] = []
+    # Precompute the joined string per ``(filing_id, lobbyist_id)`` so we
+    # don't sort/join inside the inner loop (medians of 36+ IDs per group).
+    disclosed_str = {key: ";".join(sorted(s)) for key, s in disclosed.items()}
     for (filing_id, lobbyist_id, client_id), links in by_filing.items():
         client_raw = client_names.get(client_id, "")
         beneficiaries = split_beneficiaries(client_raw)
@@ -311,6 +400,8 @@ def compose_chain(release_dir: Path, os_bills: dict[str, NYBillMeta]) -> pd.Data
                 os_key = normalize_bill_id_to_os(bill_id)
                 bill_meta = os_bills.get(os_key) if os_key else None
                 sponsors = bill_meta.primary_sponsors if bill_meta else []
+                pl_key = (filing_id, lobbyist_id)
+                disclosed_set = disclosed.get(pl_key, set())
                 base = {
                     "reporting_year": link.get("reporting_year", ""),
                     "reporting_period": link.get("reporting_period", ""),
@@ -329,20 +420,54 @@ def compose_chain(release_dir: Path, os_bills: dict[str, NYBillMeta]) -> pd.Data
                     "n_beneficiaries_in_filing": m,
                     "n_bills_in_filing": n,
                     "os_matched": bool(sponsors),
+                    "disclosed_lawmakers": disclosed_str.get(pl_key, ""),
+                    # ``disclosed_only_lawmaker_count`` is filled in a second
+                    # pass below (it needs the union of sponsor IDs across all
+                    # chain rows for this ``(filing, lobbyist)``).
+                    "disclosed_only_lawmaker_count": 0,
                 }
                 if sponsors:
                     for sp in sponsors:
+                        sid = sp.person_id or ""
                         rows.append(
                             {
                                 **base,
-                                "sponsor_lawmaker_id": sp.person_id or "",
+                                "sponsor_lawmaker_id": sid,
                                 "sponsor_lawmaker_name": sp.name,
+                                "sponsor_in_disclosed_set": bool(sid) and sid in disclosed_set,
                             }
                         )
                 else:
                     rows.append(
-                        {**base, "sponsor_lawmaker_id": "", "sponsor_lawmaker_name": ""}
+                        {
+                            **base,
+                            "sponsor_lawmaker_id": "",
+                            "sponsor_lawmaker_name": "",
+                            "sponsor_in_disclosed_set": False,
+                        }
                     )
+
+    # ---- Second pass: ``disclosed_only_lawmaker_count`` per (filing, lobbyist).
+    # For each (filing, lobbyist), this is |disclosed_set \ matched_sponsors|:
+    # the count of resolved disclosed lawmakers who are NOT primary sponsors of
+    # any MATCHED bill in the filing (the leadership / committee-chair signal).
+    # Unmatched bills contribute no sponsor IDs — see the docstring's caveat.
+    matched_sponsors_per_group: dict[tuple[str, str], set[str]] = {}
+    for r in rows:
+        if not r["os_matched"]:
+            continue
+        sid = r["sponsor_lawmaker_id"]
+        if not sid:
+            continue
+        key = (r["filing_id"], r["lobbyist_id"])
+        matched_sponsors_per_group.setdefault(key, set()).add(sid)
+    only_count: dict[tuple[str, str], int] = {
+        key: len(disclosed.get(key, set()) - matched_sponsors_per_group.get(key, set()))
+        for key in disclosed
+    }
+    for r in rows:
+        key = (r["filing_id"], r["lobbyist_id"])
+        r["disclosed_only_lawmaker_count"] = only_count.get(key, 0)
 
     chain = pd.DataFrame(rows, columns=_CHAIN_COLUMNS)
     chain = chain.sort_values(
