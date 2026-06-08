@@ -348,10 +348,12 @@ def compose_chain(release_dir: Path, os_bills: dict[str, NYBillMeta]) -> pd.Data
     is per-filing SET (Phase-0 finding: cartesian, not mapping). So
     ``disclosed_lawmakers`` attaches at the filing/lobbyist level, NOT per bill,
     and ``sponsor_in_disclosed_set=True`` is NOT specific evidence that this
-    filer lobbied this sponsor about this bill — with a typical fan-out of 36+
-    legislators per (filing, lobbyist), it is True often by base rate. Read it
-    as "this filer disclosed contact with this sponsor on *something* in this
-    filing." The interesting per-row signal is the conjunction of high
+    filer lobbied this sponsor about this bill — with typical fan-outs of 36+
+    legislators per (filing, lobbyist), inclusion is consistent with base-rate
+    matching. The observed in-set rate (~56% on the 2026-06-08 build) is well
+    short of fan-out saturation, so the negative case (False) carries some
+    real signal (44% of matched rows have a sponsor the filer did NOT
+    disclose). The interesting per-row signal is the conjunction of high
     ``sponsor_in_disclosed_set`` with low ``disclosed_only_lawmaker_count`` —
     the filer's disclosed contacts ARE the sponsors of the engaged bills.
     """

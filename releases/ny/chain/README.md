@@ -26,6 +26,9 @@ normalization).
 | distinct bills **un**matched (flagged, not dropped) | 30 (0.5%) |
 | coalition filings (M>1 beneficiaries) | 276 |
 | **total compensation, summed over distinct cells** | **$153,064,191.00** |
+| rows with ≥1 resolved disclosed lawmaker (`disclosed_lawmakers ≠ ""`) | 81,803 (97.63%) |
+| matched rows where the primary sponsor is in the disclosed set (`sponsor_in_disclosed_set=True`) | 46,937 / 83,704 (56.07%) |
+| per-(filing, lobbyist) median `disclosed_only_lawmaker_count` | 24 (mean 35, p75 69, max 200) |
 
 The total reconciles **exactly** ($0 delta) against the Phase-3 release's
 bill-linked compensation. This is the bill-linked subset of NY lobbying spend;
@@ -102,10 +105,17 @@ work might, this release doesn't claim to.
 
 **Why `sponsor_in_disclosed_set=True` is not bill-specific evidence.** With a
 typical fan-out of 36+ disclosed legislators per `(filing, lobbyist)` and a max
-near 209 (the full legislature on the biggest filings), a bill's primary
-sponsor is in the disclosed set largely by base rate. Read True as "this filer
-disclosed contact with this sponsor on *something* in this filing," not as
-"this filer lobbied this sponsor about this bill."
+near 209 (the full legislature on the biggest filings), inclusion is consistent
+with base-rate matching, not specific intent. Read True as "this filer
+disclosed contact with this sponsor on *something* in this filing," **not** as
+"this filer lobbied this sponsor about this bill." That said, the observed
+in-set rate on the matched chain (2026-06-08 build: 56.07% of 83,704 matched
+rows) is well short of the saturation you'd see if every sponsor were captured
+by sheer set size — so the negative case (`False`) carries some real signal:
+44% of matched chain rows have a primary sponsor the filer did NOT disclose
+contact with (working through cosponsors, leadership, staff, or non-individual
+parties — agencies, broadcasts — that fall outside the resolved-legislator
+set).
 
 **The genuinely informative per-group signal** is `disclosed_only_lawmaker_count`
 — the count of disclosed lawmakers who are NOT primary sponsors of any matched
