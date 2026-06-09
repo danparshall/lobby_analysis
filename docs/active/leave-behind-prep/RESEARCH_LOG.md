@@ -15,6 +15,8 @@ This branch hosts the 5-day pre-wrap cleanup + leave-behind work. Scope:
 
 **Originating discussion:** session conversation 2026-06-09 (this is a separate concurrent session from the WI vs NY parity check below; both on the leave-behind-prep branch).
 
+**Convo:** [`convos/20260609_gpt5mini_day2_phase0_hardening_partial_run1.md`](convos/20260609_gpt5mini_day2_phase0_hardening_partial_run1.md)
+
 **Results note:** [`results/20260609_gpt5mini_oh_300slice_partial_run1.md`](results/20260609_gpt5mini_oh_300slice_partial_run1.md)
 
 **Context:** Day 2 of the gpt-5-mini cost-floor validation per the 2026-06-08 plan. Worked through Phase 0 pre-flight, surfaced + fixed several issues, launched Run 1 of the 3x mini dispatch, then stopped at 55/305 by user direction after the per-filing cost projection materially exceeded the plan's estimate.
