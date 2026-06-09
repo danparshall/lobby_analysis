@@ -48,18 +48,41 @@
 | `principal_name` | str | `DoorDash, Inc.` | from same |
 | `lobbyist_id` | int | `11077` | Joins to `releases/wi/WI_lobbyists.tsv` |
 | `lobbyist_name` | str | `Clark Kaericher` | from same |
-| `item_id` | int | `24507` | Joins to `releases/wi/WI_principal_bill_efforts.tsv` — disambiguates WI bill-id collisions (multiple distinct bills can share the same canonical `bill_id`; see caveat #4 below) |
-| `bill_id` | str | `SB 256` | OpenStates short identifier; **not unique within a biennium** (see `item_id` and caveat #4) |
+| `item_id` | int | `24507` | Joins to `releases/wi/WI_principal_bill_efforts.tsv` — disambiguates WI bill-id collisions (multiple distinct bills can share the same canonical `bill_id`; see Conservation rules below and caveat #4) |
+| `bill_id` | str | `SB 256` | OpenStates short identifier; **not unique within a biennium** (see `item_id` and Conservation rules below) |
 | `bill_title` | str | `Relating to: ...` | from Plural Policy bill metadata |
-| `modeled_hours` | float | `9.872997` | `(hours_comm + hours_other) × (filed_percent / 100)` — replicated to every primary sponsor of this bill. **Do not aggregate this across sponsors** — it over-counts by sponsor count. Use `modeled_hours_per_sponsor` instead. |
+| `modeled_hours` | float | `9.872997` | `(hours_comm + hours_other) × (filed_percent / 100)` — replicated to every primary sponsor of this bill. **Do not aggregate this across sponsors** (see Conservation rules below). Use `modeled_hours_per_sponsor` for sponsor-level aggregation. |
 | `num_sponsors_on_bill` | int | `15` | Count of primary sponsors on this bill in the Plural Policy data |
-| `modeled_hours_per_sponsor` | float | `0.658200` | `modeled_hours / num_sponsors_on_bill` — the **honest metric for aggregating across sponsors**. Conservation invariant (enforced by test): `SUM(modeled_hours_per_sponsor)` over a `(semester, principal, lobbyist, item_id)` group equals `modeled_hours`. |
+| `modeled_hours_per_sponsor` | float | `0.658200` | `modeled_hours / num_sponsors_on_bill` — the **honest metric for aggregating across sponsors**. Conservation invariant (enforced by test): `SUM(modeled_hours_per_sponsor)` over a `(semester, principal, lobbyist, item_id)` group equals `modeled_hours`. Uniform-share allocation is a **modeling assumption**, not a disclosed share. |
 | `principal_filed_percent` | float | `0.21` | Float in [0, 1]; from the principal's filed bill-effort percentage |
 | `sponsor_lawmaker_id` | str | `ocd-person/...` | OpenStates person ID for individual legislators; **name string** for collective entities (Joint Legislative Council) |
 | `sponsor_lawmaker_name` | str | `LeMahieu` | Surname for legislators (with disambiguation prefix when shared — e.g. `B. Jacobson`, `L. Johnson`); full entity name for collective entities. **Join on `sponsor_lawmaker_id`, not surname** — surname is fragile when prefixes are present. |
 | `attribution_confidence` | str | `ipf_fit` | One of: `exact` (uniquely pinned by constraints, no inference), `ipf_fit` (max-entropy fit from IPF), `zero_filed` (cell is on an authorization edge but a marginal is zero), `aggregation_flagged` (involves a lobbyist whose self-filed hours are implausibly high — descriptive only, not pejorative; see methodology writeup) |
 
 To get the chamber for a sponsor, join `sponsor_lawmaker_id` → the Plural Policy WI legislator CSV (`wi.csv`) `.id` → `.current_chamber` (`lower` = Assembly, `upper` = Senate).
+
+---
+
+## Conservation rules / aggregator gotchas
+
+**Read this before writing any aggregation query against the chain.** These are the two load-bearing rules that protect against silent over/undercounting.
+
+### Rule 1 — A cell's identity is `(semester, principal_id, lobbyist_id, item_id)`, never `bill_id` alone
+
+WI bill IDs are not unique across sessions or chambers: principal 11473 filed bill-effort against multiple distinct bills both labeled `Assembly Bill 1` (voter-ID vs education-assessment), and similarly for AB 6 and AB 10. The disambiguator is `item_id` — the unique source-row identifier the WI portal assigns. `bill_id` is its human-readable label, possibly ambiguous.
+
+Aggregations that `GROUP BY bill_id` (without `item_id`) will silently merge effort filed on different bills into one bucket. Empirically the collision rate is low — Phase 3.1 found 3 out of 10,290 conservation groups affected in 2025-2026 (~0.03%) — but the merge is silent, so the rule is qualitative discipline: always include `item_id` in the cell key.
+
+### Rule 2 — Do not sum `modeled_hours` across the sponsor rows of one cell
+
+When a bill has N primary sponsors, the `modeled_hours` value for that cell is **replicated** across the N sponsor rows (the modeled hours attach to the bill, not subdivided per lawmaker). The honest per-sponsor metric is `modeled_hours_per_sponsor = modeled_hours / num_sponsors_on_bill`.
+
+- **Aggregating by principal / lobbyist / bill (where the sponsor is NOT the group-by axis):** dedupe to the cell key first (`(semester, principal_id, lobbyist_id, item_id)`), then sum `modeled_hours`. Equivalent: don't dedupe, sum `modeled_hours_per_sponsor` — the two give the same answer by construction.
+- **Aggregating by sponsor (where the sponsor IS the group-by axis):** sum `modeled_hours_per_sponsor` directly (do not dedupe).
+
+`modeled_hours_per_sponsor` is computed under a **uniform-share modeling assumption** — "lead author and 9th co-author are equally lobbied." Probably false in practice, but the right neutral default until position-weighted attribution is designed. Carry that caveat into any sponsor-level claim.
+
+These rules originate in the Phase 3 / 3.1 work on the `wi-allocation-matrix` branch — see [`docs/historical/wi-allocation-matrix/results/20260602_phase_3_1_per_sponsor_normalization.md`](../../../docs/historical/wi-allocation-matrix/results/20260602_phase_3_1_per_sponsor_normalization.md) for the worked-example that motivated each rule.
 
 ---
 
@@ -85,14 +108,106 @@ This isn't a black-box output. Each of the three stages below is standard textbo
    Including these is a Phase 3+ refinement candidate.
 5. **2025 semesters only.** Phase 2's allocation matrix covers 2025-H1 and 2025-H2; 2026-period effort rows are skipped (they exist in the source but were out of scope for v1).
 6. **16 bills with zero structured sponsors** (procedural / Joint Legislative Council vehicles in the bulk CSV) produce no chain rows.
+7. **The chain is hours-grain, not dollar-grain.** WI lobbyist filings are Time Reports — no per-bill compensation field exists in WI disclosure. There is no `comp_per_cell` analog here (unlike NY's chain). If you need dollars, work from `releases/wi/WI_principal_filings.tsv` directly — that has total expenditure per principal per semester, which is the only $-grain WI publishes.
 
 ---
 
 ## Headline finding
 
-The chain's cleanest single-bill signal is **SB 28 (electric-transmission right-of-first-refusal legislation)**. Senate Majority Leader Devin LeMahieu introduced it as sole primary sponsor; 29 principals filed effort on it, heavily concentrated in the electric-utility industry (ATC Management — the incumbent transmission monopoly the bill benefits — at 331 hours, followed by WEC Energy at 134, WI Industrial Energy Group at 124, and the major investor-owned utilities). Americans For Prosperity also filed substantial effort (86 hours), but per caveat #3 above, the chain cannot infer their position. Full inspection: [`docs/historical/wi-allocation-matrix/results/20260602_lemahieu_bill_inspection.md`](../../../docs/historical/wi-allocation-matrix/results/20260602_lemahieu_bill_inspection.md).
+The chain's cleanest single-bill signal is **SB 28 (electric-transmission right-of-first-refusal legislation)**. Senate Majority Leader Devin LeMahieu introduced it as sole primary sponsor; 29 principals filed effort on it, heavily concentrated in the electric-utility industry (ATC Management — the incumbent transmission monopoly the bill benefits — at 331 hours, followed by WEC Energy at 134, WI Industrial Energy Group at 124, and the major investor-owned utilities). Americans For Prosperity also filed substantial effort (86 hours), but per "What this isn't" #3 above, the chain cannot infer their position. Full inspection: [`docs/historical/wi-allocation-matrix/results/20260602_lemahieu_bill_inspection.md`](../../../docs/historical/wi-allocation-matrix/results/20260602_lemahieu_bill_inspection.md).
 
 Chamber distribution after per-sponsor normalization is roughly balanced (Assembly 26,543 hr / Senate 21,657 hr / Joint Legislative Council 590 hr — lower:upper ratio 1.23×); the pre-normalization metric had a 3.4× Assembly skew that was an artifact of Assembly bills carrying more primary co-authors than Senate bills.
+
+---
+
+## Sample analyses (with protective patterns called out)
+
+Each snippet below demonstrates a correct aggregation pattern that respects the Conservation rules above. Comments name the gotcha each one avoids.
+
+```python
+import pandas as pd
+chain = pd.read_csv("WI_chain_2025.tsv", sep="\t")
+```
+
+### 1. Top principals by chain weight on a specific bill
+
+```python
+# Each (semester, principal, lobbyist, item_id) cell is replicated across the
+# bill's primary sponsors with `modeled_hours` repeated. Dedupe to the cell key
+# BEFORE summing modeled_hours. Equivalent: sum modeled_hours_per_sponsor over
+# all rows (no dedupe needed). Both give the same answer by construction.
+sb28 = chain[chain["bill_id"] == "SB 28"]
+cells = sb28.drop_duplicates(
+    subset=["semester", "principal_id", "lobbyist_id", "item_id"]
+)
+top_on_sb28 = (
+    cells.groupby("principal_name")["modeled_hours"]
+    .sum()
+    .sort_values(ascending=False)
+    .head(10)
+)
+```
+
+### 2. Lawmakers most lobbied (across the whole chain)
+
+```python
+# When the sponsor IS the group-by key, use `modeled_hours_per_sponsor` directly
+# (no dedupe — each row's contribution IS the per-sponsor uniform share).
+# Reminder: the uniform-share split is a modeling assumption ("lead author and
+# 9th co-author equally lobbied"), not a disclosed allocation.
+top_lawmakers = (
+    chain.groupby(["sponsor_lawmaker_id", "sponsor_lawmaker_name"])[
+        "modeled_hours_per_sponsor"
+    ]
+    .sum()
+    .sort_values(ascending=False)
+    .head(20)
+)
+# Join `sponsor_lawmaker_id` to wi.csv (Plural Policy) for chamber/party.
+```
+
+### 3. Total modeled chain weight per principal across the full session
+
+```python
+# Same cell-identity discipline as Sample 1 — dedupe by cell, then sum
+# modeled_hours. Each principal's total here equals their total filed
+# (hours_comm + hours_other) × principal_filed_percent rolled across all bills.
+cells = chain.drop_duplicates(
+    subset=["semester", "principal_id", "lobbyist_id", "item_id"]
+)
+principal_totals = (
+    cells.groupby("principal_name")["modeled_hours"]
+    .sum()
+    .sort_values(ascending=False)
+)
+```
+
+### 4. Filter by attribution confidence for cautious analyses
+
+```python
+# `aggregation_flagged` marks cells involving a lobbyist whose self-filed
+# hours are implausibly high (e.g., lobbyist 11072 / Deanna Pettack ≈ 32
+# hours/day across a full semester — see releases/wi/README.md Caveat 1).
+# Descriptive label, not pejorative. Useful pre-publication review filter.
+flagged = chain[chain["attribution_confidence"] == "aggregation_flagged"]
+flagged_principals = sorted(flagged["principal_name"].unique())
+
+# Or, restrict to cells uniquely pinned by the IPF constraints (no inference):
+exact_only = chain[chain["attribution_confidence"] == "exact"]
+```
+
+### 5. Single-semester view (e.g. compare H1 to H2)
+
+```python
+# The same (principal, lobbyist, item_id) tuple can appear in both semesters
+# with independently-filed hours. Always include `semester` in cell-identity
+# grouping when crossing semesters, or filter to one semester first.
+h2 = chain[chain["semester"] == "2025-H2"]
+h2_cells = h2.drop_duplicates(
+    subset=["principal_id", "lobbyist_id", "item_id"]  # semester is fixed
+)
+h2_totals = h2_cells.groupby("principal_name")["modeled_hours"].sum()
+```
 
 ---
 
