@@ -11,6 +11,45 @@ This branch hosts the 5-day pre-wrap cleanup + leave-behind work. Scope:
 ---
 
 
+## 2026-06-09 — Release-doc pattern shipped for WI + NY
+
+**Plan:** [`plans/release_doc_pattern.md`](plans/release_doc_pattern.md) (authored earlier today by the parity-check session)
+**Predecessor convo:** [`convos/20260609_wi_vs_ny_chain_parity.md`](convos/20260609_wi_vs_ny_chain_parity.md)
+
+Fresh-agent execution of the 6-step plan. All 6 steps shipped; 6 commits across 3 branches; ~2 hours wall.
+
+### What shipped
+
+- **Step 1 — `releases/wi/README.md`** on `main` at [`ee507ee`](https://github.com/danparshall/lobby_analysis/commit/ee507eeb0e67ca7c57b515919a4ba360a3c33883). Adds TL;DR, Framework (4 nodes × 6 edges × 3 attributes + 6 quality-convention symbols), per-state "What this release covers for WI" matrix (with all 8 STATE_COVERAGE WI footnotes verbatim), "How to use this release with a Claude agent" naming the two WI silent-mistake traps, and See-also pointers. 119 → 222 lines. Existing Provenance/Files/Aggregates/Caveats/License preserved.
+- **Step 2 — `releases/wi/chain/README.md`** on `main` at [`d5bf780`](https://github.com/danparshall/lobby_analysis/commit/d5bf78030a5294e09c9b9106d57ec74a0e522523). New "Conservation rules / aggregator gotchas" section between Schema and "30-second tour" elevates Rule 1 (cell identity is `(semester, principal_id, lobbyist_id, item_id)`, never `bill_id` alone — quantified collision rate ~0.03% from Phase 3.1 measurements) and Rule 2 (don't sum `modeled_hours` across sponsor rows; `modeled_hours_per_sponsor` is the per-sponsor uniform-share modeling assumption, not a disclosed allocation). 5 pandas sample-analyses snippets with protective-pattern comments. New "What this isn't" #7 names the hours-grain (not dollar-grain) shape. 137 → 251 lines.
+- **Step 3 — `releases/ny/README.md`** on `ny-disclosure-explore` at [`73490c6`](https://github.com/danparshall/lobby_analysis/commit/73490c6fe58bf9691ca27c74a6f3197e9d387293). Parallel to Step 1 with NY-specific content: TL;DR + Framework + "What this release covers for NY" matrix (all 9 STATE_COVERAGE NY footnotes verbatim) + "How to use" naming NY's three load-bearing gotchas (cell key must include `lobbyist_id` per the −$108.9M smoke-test bug; `comp_per_cell` replicated across sponsor rows; `disclosed_lawmakers` is filing-grain not bill-grain). Existing NY-specific subsections ("Disclosed lawmaker contacts", "`comp_per_bill` — the even-split model", 11 caveats) preserved. 154 → 262 lines.
+- **Step 4 — `releases/ny/chain/README.md`** on `ny-disclosure-explore` at [`5a704e6`](https://github.com/danparshall/lobby_analysis/commit/5a704e632f86552460e3a0e859cc2fba36ee5be7). New TL;DR table + audience line + "30-second tour" between Schema and "How dollars are attributed" (explains NY's JOIN-not-IPF construction in three plain-English paragraphs, calls out that per-sponsor replication is 1:1 in 2025 while preserving the rule for forward compatibility). 5 pandas sample-analyses snippets demonstrating cell-key dedupe, `os_matched` filtering, the `disclosed_only_lawmaker_count` base-rate-resistant signal, coalition decomposition, and external joins via `os_bill_identifier`. "Regenerating" section renamed "Reproducer" with section divider for paste-ability, matching WI chain README style. Headline-finding section skipped per plan's "nice-to-have, skip if it would require querying the TSV" guidance. Existing rigor (Conservation rules, Disclosed-vs-inferred semantic warning, Honest limitations, Bill-id normalization) preserved verbatim. 196 → 343 lines.
+- **Step 5 — `docs/STATE_COVERAGE.md`** on `main` at [`bdabfa2`](https://github.com/danparshall/lobby_analysis/commit/bdabfa2ae2c4538bd46bf274e8a2ff11e1f62779). Adds two bullets to the See-also header at the top of the file linking the per-state release READMEs as "Suhan-droppable primers." No structural changes; per-state matrices in STATE_COVERAGE.md are unchanged (the duplication into per-state release READMEs is by design — see plan's "Architectural decision").
+
+### Suhan-droppable artifacts
+
+- **WI:** [`releases/wi/`](https://github.com/danparshall/lobby_analysis/tree/main/releases/wi) (on `main`) — drop the directory into a fresh claude.ai Project; the README's framework + matrix + How-to-use + chain README cover the cold-context use case. Upload at minimum `README.md` + `chain/README.md` + `chain/WI_chain_2025.tsv`.
+- **NY:** [`releases/ny/`](https://github.com/danparshall/lobby_analysis/tree/ny-disclosure-explore/releases/ny) (on `ny-disclosure-explore`, not yet merged to main). Upload at minimum `README.md` + `chain/README.md` + `chain/NY_chain_2025.tsv`; add `NY_filing_parties_lobbied.tsv` if the question involves disclosed lobbying contacts beyond per-bill sponsors.
+
+### Plan acceptance criteria status
+
+Plan §"Acceptance criteria (whole plan)" enumerates three cold-context tests. The doc work is shipped; actual cold-Project validation is for Dan / Suhan to run when convenient. Self-review:
+
+1. **"Top principal by chain weight on AB 50" cold-Project test (WI).** The new chain README's Conservation rules section names the cell-identity rule + uniform-share-is-a-modeling-assumption framing, and Sample 1 demonstrates the dedupe-then-sum pattern explicitly. A cold agent that reads the chain README should produce a correct snippet. Untested in this session.
+2. **"Did Doordash lobby Senator X about S 1234?" cold-Project test (NY).** The chain README's "Disclosed vs inferred" section names `sponsor_in_disclosed_set=True` as base-rate, not bill-specific, and Sample 3 demonstrates the `disclosed_only_lawmaker_count` discipline. A cold agent should correctly caveat. Untested.
+3. **"Read just `releases/<state>/README.md` and explain edges/attributes."** The Framework + matrix + footnotes in each per-state release README are self-contained and require no other files. Footnote count: WI 8, NY 9 — all verbatim from STATE_COVERAGE.
+
+### Process notes
+
+- Initially mis-diagnosed a PAT-scope issue at session start (env vars not persisting across `bash_tool` calls — each tool call is a fresh shell; my early curl commands hit empty-token endpoints and 404'd). Dan pushed back with a screenshot; I re-verified inline and confirmed PAT access is correct. Note for future fresh-agent sessions on claude.ai: `bash_tool` calls do NOT persist env vars; inline `TOKEN=...; curl ...` in a single invocation.
+- One plan deviation: Step 6's RESEARCH_LOG entry placement guidance ("below the existing 2026-06-09 entry from the parity-check session") was anchored to the state of the file at plan-authoring time. Two newer 2026-06-09 entries (gpt-5-mini work) have since been added above the parity-check entry. Per the file's "Newest entries first" convention, this entry is inserted at the very top.
+- Plan §"Risks / known gotchas" item 3 (sample analyses must avoid showing the gotcha as correct): each snippet was reviewed before commit; all use dedupe-to-cell-key before sums when the sponsor isn't the group-by axis. WI Sample 2 (group-by-sponsor case) uses `modeled_hours_per_sponsor` without dedupe; NY Sample 2 (also group-by-sponsor) uses cell-key dedupe explicitly as a "no-op safety net" since N=1 in 2025 data but the discipline still teaches the right pattern.
+
+### Open follow-ups (per plan §"After completion")
+
+- No pre-existing GH issues closed by this work (#42, #43, #44 remain open as cross-state-infra successor tasks).
+- When OH chain composer ships and creates `releases/oh/`, the same 3-doc pattern applies. Either extend this plan or write a follow-up `oh_release_doc_pattern.md` that re-uses the same 5 section additions for OH (TL;DR + Framework + What this release covers for OH + How to use + See-also) + the chain README equivalent.
+
 ## 2026-06-09 (PM) — gpt-5-mini reasoning_effort threading + 3-arm dispatch (medium/low/minimal × 100)
 
 **Convo:** [`convos/20260609_gpt5mini_reasoning_effort_three_arm_dispatch.md`](convos/20260609_gpt5mini_reasoning_effort_three_arm_dispatch.md)
