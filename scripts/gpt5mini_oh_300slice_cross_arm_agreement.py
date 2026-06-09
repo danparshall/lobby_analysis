@@ -234,12 +234,20 @@ def compare_pair(
     return stats, n_loaded
 
 
-def find_intersection_rids(data_dir: Path) -> list[str]:
-    """Return report_ids present in sonnet + mini_medium + mini_low + mini_minimal.
+def find_intersection_rids(
+    data_dir: Path,
+    arms: list[str] | None = None,
+) -> tuple[list[str], dict[str, int]]:
+    """Return report_ids present in every arm passed in, plus per-arm skip counts.
 
-    Each arm's filing must be discoverable (latest by mtime under the right
-    prefix). Order is deterministic: sorted by report_id.
+    `arms` defaults to ("sonnet", "medium", "low", "minimal") for backwards
+    compatibility with the original 3-arm experiment. Pass an explicit list
+    to scope to a different arm set — e.g., for the briefv2 retest the
+    relevant arms are ("sonnet", "medium", "medium_briefv2"), and the
+    minimal arm shouldn't constrain the intersection.
     """
+    if arms is None:
+        arms = ["sonnet", "medium", "low", "minimal"]
     sonnet_root = data_dir / "extracted"
     mini_root = data_dir / EXTRACTED_OPENAI_SUBDIR
     if not sonnet_root.is_dir():
@@ -249,10 +257,10 @@ def find_intersection_rids(data_dir: Path) -> list[str]:
 
     candidates = sorted(p.name for p in sonnet_root.iterdir() if p.is_dir())
     intersection: list[str] = []
-    skipped: dict[str, int] = {a: 0 for a in ("sonnet", "medium", "low", "minimal")}
+    skipped: dict[str, int] = {a: 0 for a in arms}
     for rid in candidates:
         ok = True
-        for arm in ("sonnet", "medium", "low", "minimal"):
+        for arm in arms:
             f = load_arm_filing(rid, data_dir, arm=arm)
             if f is None:
                 skipped[arm] += 1
@@ -334,26 +342,39 @@ def main() -> int:
     args = parser.parse_args()
 
     data_dir = Path(args.data_dir)
-    intersection, skipped = find_intersection_rids(data_dir)
-    print(
-        f"[cross-arm] intersection: {len(intersection)} report_ids",
-        file=sys.stderr,
-    )
-    for arm, n in skipped.items():
-        if n:
-            print(f"[cross-arm] {arm} missing on {n} report_ids", file=sys.stderr)
 
+    # Resolve pairs and arm set BEFORE the intersection scan, so the scan
+    # constrains on exactly the arms in use rather than the original
+    # 3-arm-experiment defaults.
     if args.pairs == "all":
-        arms = ["sonnet", "medium", "low", "minimal"]
+        arms_for_pairs = ["sonnet", "medium", "low", "minimal"]
         pairs = [
-            (arms[i], arms[j])
-            for i in range(len(arms))
-            for j in range(i + 1, len(arms))
+            (arms_for_pairs[i], arms_for_pairs[j])
+            for i in range(len(arms_for_pairs))
+            for j in range(i + 1, len(arms_for_pairs))
         ]
     else:
         pairs = [
             tuple(p.split(",")) for p in args.pairs.split(";") if p.strip()
         ]
+        # Unique arms across all pairs, in order of first appearance.
+        seen: set[str] = set()
+        arms_for_pairs = []
+        for a, b in pairs:
+            for arm in (a, b):
+                if arm not in seen:
+                    arms_for_pairs.append(arm)
+                    seen.add(arm)
+
+    intersection, skipped = find_intersection_rids(data_dir, arms=arms_for_pairs)
+    print(
+        f"[cross-arm] intersection across {arms_for_pairs}: "
+        f"{len(intersection)} report_ids",
+        file=sys.stderr,
+    )
+    for arm, n in skipped.items():
+        if n:
+            print(f"[cross-arm] {arm} missing on {n} report_ids", file=sys.stderr)
 
     pairs_stats: dict[tuple[str, str], dict] = {}
     for a, b in pairs:
