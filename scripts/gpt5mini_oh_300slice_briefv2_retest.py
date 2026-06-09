@@ -94,6 +94,12 @@ def main() -> int:
     # Import the dispatcher's parallel worker directly rather than spawning
     # a subprocess: gives us proper run_label control without adding a new
     # CLI flag to the main dispatcher script.
+    #
+    # NOTE: assigning to sys.modules BEFORE exec_module() is load-bearing.
+    # Without it, the @dataclass decorator inside dispatch.py fails with
+    # "NoneType has no attribute __dict__" because dataclasses looks up
+    # cls.__module__ in sys.modules and finds None. Mirrors the test
+    # harness pattern in test_gpt5mini_oh_300slice_dispatch.py.
     sys.path.insert(0, str(_REPO_ROOT / "scripts"))
     import importlib.util
     spec = importlib.util.spec_from_file_location(
@@ -102,6 +108,7 @@ def main() -> int:
     )
     assert spec and spec.loader
     dispatch_mod = importlib.util.module_from_spec(spec)
+    sys.modules["gpt5mini_dispatch"] = dispatch_mod
     spec.loader.exec_module(dispatch_mod)
 
     run_label = f"mini_{args.reasoning_effort}_{args.run_label_suffix}_run_1"
