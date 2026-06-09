@@ -81,11 +81,15 @@ This branch hosts the 5-day pre-wrap cleanup + leave-behind work. Scope:
 - WI vs NY are at parity *relative to their respective data sources*. Differences are data-shape, not pipeline-completeness, and not "gaps" in either direction.
 - Cross-state shareable infrastructure confirmed on two of three chain legs: Plural Policy (already in active use on `wi-allocation-matrix` and `ny-disclosure-explore`), FTM (50-state, not yet built). Lobbying disclosure remains per-state Anna Karenina by data-acquisition shape.
 - FTM API may not be the long-term contract — site is "not maintained as we integrate with OpenSecrets"; URL/endpoint pattern may change. Worth confirming before #43 implementation starts.
+- The third attribute axis is **Stance** (support/oppose/monitor) per STATE_COVERAGE.md — not Counts/Frequency. Structurally absent in WI/NY/OH; chain detects activity, not composition.
+- Per-state release-doc architecture decided (3-doc pattern). Suhan-droppable constraint requires self-contained release dirs; the ~15-line framework gets duplicated into each state's release README rather than deferring to STATE_COVERAGE.md. Acceptable cost at N=3 states.
 
 ### Results
 
 - GH issue [#42](https://github.com/danparshall/lobby_analysis/issues/42): "Extract Plural Policy bulk-CSV ingest into shared cross-state library"
 - GH issue [#43](https://github.com/danparshall/lobby_analysis/issues/43): "Build reusable FollowTheMoney ingest for cross-state campaign-finance leg" (body updated with the OpenSecrets-integration finding)
+- GH issue [#44](https://github.com/danparshall/lobby_analysis/issues/44): "[2026-06-10] Pull FTM NY sample query to validate 50-state portability" — closes the WI-vs-NY FTM validation asymmetry
+- Plan: [`docs/active/leave-behind-prep/plans/release_doc_pattern.md`](plans/release_doc_pattern.md) — per-state Suhan-droppable release-doc pattern, 22.3KB / 314 lines, 6-step execution spec for fresh-agent pickup
 
 ### Next Steps
 
