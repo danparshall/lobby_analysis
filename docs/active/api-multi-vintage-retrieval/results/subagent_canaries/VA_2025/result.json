@@ -1,0 +1,38 @@
+{
+  "state": "VA",
+  "vintage": 2025,
+  "actual_vintage_used": 2025,
+  "prompt_git_rev": "d2bb1884e712905771e11cf27adb39550970b4ab",
+  "proposed_urls": [
+    {"url": "https://law.justia.com/codes/virginia/2025/title-2-2/chapter-4/section-2-2-418/", "role": "core_chapter", "rationale": "§ 2.2-418 Statement of intent and purposes — opens the Lobbyists article."},
+    {"url": "https://law.justia.com/codes/virginia/2025/title-2-2/chapter-4/section-2-2-419/", "role": "core_chapter", "rationale": "§ 2.2-419 Definitions used throughout the lobbying-disclosure article."},
+    {"url": "https://law.justia.com/codes/virginia/2025/title-2-2/chapter-4/section-2-2-420/", "role": "core_chapter", "rationale": "§ 2.2-420 Exemptions from lobbyist registration."},
+    {"url": "https://law.justia.com/codes/virginia/2025/title-2-2/chapter-4/section-2-2-421/", "role": "core_chapter", "rationale": "§ 2.2-421 Reporting requirements for certain state agencies."},
+    {"url": "https://law.justia.com/codes/virginia/2025/title-2-2/chapter-4/section-2-2-422/", "role": "core_chapter", "rationale": "§ 2.2-422 Registration requirements for lobbyists."},
+    {"url": "https://law.justia.com/codes/virginia/2025/title-2-2/chapter-4/section-2-2-423/", "role": "core_chapter", "rationale": "§ 2.2-423 Contents of registration statement."},
+    {"url": "https://law.justia.com/codes/virginia/2025/title-2-2/chapter-4/section-2-2-424/", "role": "core_chapter", "rationale": "§ 2.2-424 Registration fees."},
+    {"url": "https://law.justia.com/codes/virginia/2025/title-2-2/chapter-4/section-2-2-425/", "role": "core_chapter", "rationale": "§ 2.2-425 Registration information to be recorded in legislative docket; list of executive officials."},
+    {"url": "https://law.justia.com/codes/virginia/2025/title-2-2/chapter-4/section-2-2-426/", "role": "core_chapter", "rationale": "§ 2.2-426 Lobbyist reporting; penalty — central disclosure-statement provision."},
+    {"url": "https://law.justia.com/codes/virginia/2025/title-2-2/chapter-4/section-2-2-427/", "role": "core_chapter", "rationale": "§ 2.2-427 Filings; inspection of disclosure statements."},
+    {"url": "https://law.justia.com/codes/virginia/2025/title-2-2/chapter-4/section-2-2-428/", "role": "core_chapter", "rationale": "§ 2.2-428 Standards for automated preparation and transmittal of lobbyist's disclosure statements; database."},
+    {"url": "https://law.justia.com/codes/virginia/2025/title-2-2/chapter-4/section-2-2-429/", "role": "core_chapter", "rationale": "§ 2.2-429 Retention of records by a lobbyist or lobbyist's principal."},
+    {"url": "https://law.justia.com/codes/virginia/2025/title-2-2/chapter-4/section-2-2-430/", "role": "core_chapter", "rationale": "§ 2.2-430 Termination of lobbyist registration."},
+    {"url": "https://law.justia.com/codes/virginia/2025/title-2-2/chapter-4/section-2-2-431/", "role": "core_chapter", "rationale": "§ 2.2-431 Penalties; filing of substituted statement."},
+    {"url": "https://law.justia.com/codes/virginia/2025/title-2-2/chapter-4/section-2-2-432/", "role": "core_chapter", "rationale": "§ 2.2-432 Contingent compensation prohibited."},
+    {"url": "https://law.justia.com/codes/virginia/2025/title-2-2/chapter-4/section-2-2-433/", "role": "core_chapter", "rationale": "§ 2.2-433 Prohibited acts; violation a misdemeanor."},
+    {"url": "https://law.justia.com/codes/virginia/2025/title-2-2/chapter-4/section-2-2-434/", "role": "core_chapter", "rationale": "§ 2.2-434 Employment of lobbyists prohibited; exceptions."},
+    {"url": "https://law.justia.com/codes/virginia/2025/title-2-2/chapter-4/section-2-2-435/", "role": "core_chapter", "rationale": "§ 2.2-435 Prohibition for state party chairman — closes the Lobbyists article."}
+  ],
+  "pass1_chosen_titles": [
+    "https://law.justia.com/codes/virginia/2025/title-2-2/"
+  ],
+  "pass2_chosen_chapters": [
+    "https://law.justia.com/codes/virginia/2025/title-2-2/chapter-4/"
+  ],
+  "pass3_invoked_on": [
+    "https://law.justia.com/codes/virginia/2025/title-2-2/chapter-4/"
+  ],
+  "tree_depth": 4,
+  "playwright_errors": [],
+  "notes": "VA 2025 fetched cleanly with no Cloudflare block at any pass (contrast: VA 2015 was CF-blocked at pass-1). Tree is 4 levels (state -> title -> chapter -> section); flatter than the dispatch template's Virginia structural note anticipated -- no subtitle/part intermediate layer surfaced on Justia between Title 2.2 and Chapter 4. Regime prior labeled lobbying as 'Chapter 4.4' but the 2025 TOC shows Chapter 4.4 is 'Office of the Children's Ombudsman' (a renumbering/repurposing); the §§ 2.2-418 to 2.2-435 lobbying section range actually lives inside Chapter 4 (Secretary of the Commonwealth, §§ 2.2-400 through 2.2-435) as Article 3. VA uses the per-section-leaf URL convention (Justia example D / Wisconsin), so pass-3 produced 18 leaf URLs covering §§ 2.2-418 through 2.2-435; sections 2.2-400 through 2.2-417 (Articles 1-2 on insignia registration, certifying records, etc.) excluded as out of scope. Compared with the prior VA 2015 lossy bundle: VA 2015 was CF-blocked, so no URL convention is recoverable from it; the slug structure here is wholly new evidence for VA. No support_chapter URLs proposed -- Chapter 31 (State and Local Government Conflict of Interests Act) is conflict-of-interest, not lobbying disclosure."
+}

@@ -1,0 +1,15 @@
+{
+  "state": "AZ",
+  "vintage": 2025,
+  "actual_vintage_used": 2025,
+  "prompt_git_rev": "d2bb1884e712905771e11cf27adb39550970b4ab",
+  "proposed_urls": [],
+  "pass1_chosen_titles": [
+    "https://law.justia.com/codes/arizona/2025/title-41/"
+  ],
+  "pass2_chosen_chapters": [],
+  "pass3_invoked_on": [],
+  "tree_depth": null,
+  "playwright_errors": ["cloudflare_blocked_at_pass2"],
+  "notes": "AZ 2025 hosted on Justia — pass 1 returned a complete state index (Titles 1-49 visible, no CF challenge). Pass 1 selected Title 41 (State Government), which houses A.R.S. Ch. 7 Art. 8.1 (Lobbyists, §§41-1231 through 41-1239) — matches the documented regime prior. Pass 2 fetch of https://law.justia.com/codes/arizona/2025/title-41/ was blocked by a Cloudflare challenge page ('Just a moment... Performing security verification', Ray ID a093fee4195925d1). The CF challenge appeared between pass-1 and pass-2 fetches within this subagent's run; not a static block on the title URL itself. Stopped per protocol — no retry, no probing. Recommended re-canary later under different IP/session conditions; pass-1 work is preserved in pass1_state_index.html/.tsv and pass1_chosen.json so a future direct-API replay can resume from pass 2."
+}
