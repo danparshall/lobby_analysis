@@ -186,3 +186,86 @@ Neither is a dealbreaker. Both deserve a one-line acknowledgment in the writeup'
 | **Total OpenAI this session** | **~$1.89** |
 
 Plus this morning's $0.31 Anthropic = **~$2.20 cumulative on this branch**.
+
+---
+
+## Continuation 2: is_current spot-check → brief-v3 → is_itemized side effect (next-session gate)
+
+After the doc-update commit, the open follow-ups got addressed:
+
+### Side-effect investigation (commits `2944121` test scripts; `211c576` + `e8b0ae1` brief-v3 + retest harness)
+
+Built two read-only diagnostic scripts modeled on the period spot-check:
+- `is_current_spotcheck.py` — enumerate sonnet vs mini disagreements on the is_current boolean
+- `extraction_warnings_inspect.py` — read warning text across arms; per-rid breakdown or arm-level histogram
+
+**`is_current` finding:** 6/6 disagreements were sonnet=True / briefv2=False on filings that both arms classified filing_action=original / supersedes=None. Unidirectional conservatism bias from briefv2's longer prompt. Direction-of-truth: an original filing with no later amendment is canonically `current`; sonnet was right. Verified empirically: no text in any brief revision mentions is_current — the regression came from briefv2 feeling more rule-heavy and mini becoming less willing to default True without positive evidence.
+
+**`extraction_warnings` finding:** the 30%→13% list-length-agreement drop is *not* a quality regression. Histogram: briefv2 emits 0 warnings on 39/100 filings vs 5/100 for sonnet, 2/100 for original-brief medium. The lost warnings are procedural confirmations sonnet emitted ("Reporting period given as 'Jan-Apr25', expanded to 2025-01-01/04-30"; "Section II shows No expenditures"). Brief-v2's explicit Jan-Apr25→ISO instruction made the period-expansion no longer an "inference worth flagging" — mini stopped narrating the canonical move. For Suhan-as-auditor specifically, losing the "I checked X and confirmed empty" signal is a small quality-floor concern; for steady-state production, it's terseness. **Disagreement on framing unresolved — captured in the plan doc.**
+
+### Brief-v3 fix (commit `211c576`)
+
+One-line patch: new step 8 — "Default is_current=True for original filings. Set is_current=False ONLY if the source explicitly indicates supersession. Absence of evidence is not evidence of supersession." Brief sha `5606c835` → `57ac0b6c`. No re-extraction needed for OH outputs since the change is purely additive.
+
+### Brief-v3 verification (`e8b0ae1` adds is_current-regression mode to retest harness)
+
+**6-rid targeted test:** 6/6 flipped back to is_current=True. Reporting_period agreement preserved (0/0 disagreements on the same 6). is_current fix generalized cleanly without leaking to other fields ON THE TARGETED TEST SET.
+
+**Full 100-filing cross-arm rerun under brief-v3** (~$0.66, results doc `20260609_cross_arm_agreement_briefv3.md`):
+
+| field | brief-v2 vs sonnet | brief-v3 vs sonnet | move |
+|---|---|---|---|
+| is_current | 94% (6 disagree) | **100%** | targeted fix generalized |
+| reporting_period_start/end | 100%/100% | 100%/100% | no leak |
+| is_itemized | (5 agree / 34 one-null / 61 both-null) | **(0 agree / 39 one-null / 61 both-null)** | new side effect ← |
+| positions | 96% | 94% | -2 (noise threshold) |
+| extraction_warnings | 13% | 14% | unchanged |
+| everything else | ≥99% | ≥99% | unchanged |
+
+### The is_itemized side effect — the open question gating shipment
+
+Brief-v3 made the is_itemized field fully abstain. briefv2 emitted is_itemized on 5/100 filings (all 5 agreeing with sonnet); briefv3 emits on 0/100. medium_briefv2-vs-medium_briefv3 panel confirms: 95 both-null + 5 one-null + 0 both-emit, meaning briefv3 dropped all 5 of briefv2's sonnet-matching emissions.
+
+Three readings, plus my strong prior (option 2):
+1. **Brief-v3 broke a working signal.** briefv2 had 5 cases right; iterate to brief-v4.
+2. **Sonnet was guessing.** is_itemized may be semantically undefined when Section II is empty (~95% of OH AERs). Sonnet defaults False; briefv2 matched the default; **briefv3's abstention is the correct behavior.** Ship briefv3 unchanged.
+3. **Field is too low-coverage to matter.** Sonnet itself only emits on ~39/100 filings; mini-briefv2 emits on 5. Down-funnel impact may be zero.
+
+### Filing 1423176 issue filed (#54)
+
+GitHub issue [#54](https://github.com/danparshall/lobby_analysis/issues/54) captures the cross-arm cost-pathology data (5 data points across original/v2/v3 × medium/low/minimal). Filing is 5-10× median cost on every metric regardless of brief or reasoning_effort. Issue asks for raw-HTML eyeball + decision on denylist mechanism (out of scope for this session). Labeled `task` + `bug`.
+
+### Brief-iteration whack-a-mole pattern (worth naming)
+
+Three brief revisions, three rounds of "fixed one field, perturbed another":
+- v2: fixed period (85→100%), broke is_current (98→94%) + reduced warnings (30→13%)
+- v3: fixed is_current (94→100%), broke is_itemized (5→0 emits)
+
+This isn't random. Each prescriptive addition makes mini treat the brief as more complete-specification-of-what-to-emit, and unmentioned fields under-emit at the margin. Brief-v4 (if needed) probably perturbs something else. The plan doc captures this as a discipline point: future brief revisions need a $0.66 full-medium re-extract + cross-arm scan as part of the iteration cost.
+
+## Decisions
+
+- **Investigation before iteration on is_itemized.** Plan doc: [`plans/20260609_is_itemized_investigation_and_writeup.md`](../plans/20260609_is_itemized_investigation_and_writeup.md). Strong prior is that sonnet was guessing on empty-Section-II filings, in which case briefv3 is the final brief.
+- **Brief-v3 stays staged in `extraction_brief.py`** regardless of investigation outcome. Worst case the investigation says "brief-v4 needed" and we add another rule. Brief-v3 isn't *wrong*, it's possibly *incomplete*.
+- **Suhan writeup waits on the investigation result.** Both possible outcomes lead to a shippable writeup, just with different framings.
+
+## Cumulative session spend
+
+| Phase | Spend |
+|---|---|
+| Original 3-arm dispatch (medium/low/minimal) | $1.23 |
+| briefv2 known-failures + full-medium | $0.66 |
+| briefv3 is_current targeted retest | $0.05 |
+| briefv3 full-medium top-up + cross-arm | ~$0.66 |
+| **Total OpenAI this session** | **~$2.60** |
+
+Plus this morning's $0.31 Anthropic = **~$2.91 cumulative on this branch**.
+
+## What the next session inherits
+
+- Brief-v3 staged but not finalized (sha `57ac0b6c`).
+- 100 filings of brief-v3 output on disk under `mini_medium_briefv3_run_1_*`.
+- Cross-arm agreement results for v3 on disk.
+- Plan doc covers the is_itemized investigation procedure step-by-step.
+- Issue #54 open for the 1423176 long-tail.
+- The Suhan writeup itself is the final substantive artifact and is unblocked once is_itemized resolves.

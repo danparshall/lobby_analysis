@@ -192,6 +192,50 @@ After the 3-arm cross-arm analysis landed, the session continued into root-causi
 - Write Suhan-facing summary
 - STATUS.md update
 
+### Continuation 2: is_current spot-check → brief-v3 → is_itemized side effect (next-session gate)
+
+After the doc-update commit, the open follow-ups got addressed. Built two read-only diagnostic scripts: `is_current_spotcheck.py` (commit `2944121`) + `extraction_warnings_inspect.py`.
+
+**is_current finding:** 6/6 disagreements were sonnet=True / briefv2=False on filings both arms call filing_action=original / supersedes=None. Unidirectional conservatism bias from briefv2's longer prompt. No text in any brief revision mentions is_current — regression came from briefv2 feeling more rule-heavy and mini becoming less willing to default True without positive evidence.
+
+**extraction_warnings finding (NOT a quality regression):** histogram shows briefv2 emits 0 warnings on 39/100 filings vs 5/100 sonnet, 2/100 original. Lost warnings are procedural confirmations sonnet emitted ("Reporting period given as 'Jan-Apr25', expanded to ..."; "Section II shows No expenditures"). Brief-v2's explicit period-expansion instruction made these no longer "inferences worth flagging" — mini stopped narrating the canonical move. Open framing question for writeup: lost audit-trail signal (concern) vs noise-stripped output (feature).
+
+**Brief-v3 (commit `211c576`):** new step 8 — "Default is_current=True for original filings. Set False ONLY if source explicitly indicates supersession." Brief sha `5606c835` → `57ac0b6c`.
+
+**Brief-v3 verification on full n=100 cross-arm (commit `bfe64fa` + results doc `20260609_cross_arm_agreement_briefv3.md`):**
+
+| field | brief-v2 vs sonnet | brief-v3 vs sonnet | move |
+|---|---|---|---|
+| is_current | 94% | **100%** | targeted fix generalized |
+| reporting_period_start/end | 100%/100% | 100%/100% | no leak |
+| **is_itemized** | (5 agree / 34 one-null / 61 both-null) | **(0 agree / 39 one-null / 61 both-null)** | **new side effect** |
+| positions | 96% | 94% | -2 (noise) |
+| extraction_warnings | 13% | 14% | unchanged |
+| everything else | ≥99% | ≥99% | unchanged |
+
+**The is_itemized side effect — open gate.** Brief-v3 made the field fully abstain. briefv2 emitted on 5/100 (all 5 agreeing with sonnet); briefv3 emits on 0. Three readings:
+1. Brief-v3 broke a working signal → iterate to brief-v4.
+2. Sonnet was guessing. is_itemized may be semantically undefined when Section II is empty (~95% of OH AERs). briefv3's abstention is correct behavior → ship briefv3 unchanged. **Strong prior.**
+3. Field too low-coverage to matter (sonnet only emits on 39/100, mini-briefv2 on 5).
+
+**Plan doc** [`plans/20260609_is_itemized_investigation_and_writeup.md`](plans/20260609_is_itemized_investigation_and_writeup.md) walks the next session through the investigation: spot-check script identifies the 5 rids → 5-min raw-HTML eyeball categorizes each as GROUND_TRUTH_EMITS / ABSTAINS / AMBIGUOUS → decision tree ships briefv3 unchanged or motivates brief-v4. Plan also covers the Suhan-writeup that follows.
+
+**Issue [#54](https://github.com/danparshall/lobby_analysis/issues/54)** filed for filing 1423176 cross-arm cost pathology (5-10× median across every config). Labels `task` + `bug`. Asks for raw-HTML eyeball + decision on denylist mechanism.
+
+**Pattern worth naming: brief-iteration whack-a-mole.** Three brief revisions, three rounds of "fixed one field, perturbed another" (v2: fixed period, broke is_current + reduced warnings; v3: fixed is_current, broke is_itemized). Not random — each prescriptive addition makes mini treat the brief as more complete-specification-of-what-to-emit, and unmentioned fields under-emit at the margin. Future brief revisions need a $0.66 full-medium re-extract + cross-arm scan as iteration cost.
+
+**Incremental spend (continuation 2):** $0.05 is_current targeted retest + ~$0.66 briefv3 full-medium = ~$0.71.
+**Session total: ~$2.60 OpenAI.** Cumulative on branch: **~$2.91** including this morning's $0.31 Anthropic.
+
+**Next-session pending:**
+
+- is_itemized investigation (spot-check + 5-min HTML eyeball) — gates everything else
+- Decide on extraction_warnings framing for the writeup (lost signal vs noise-stripped)
+- Suhan writeup itself
+- (Conditional) brief-v4 if is_itemized investigation says GROUND_TRUTH_EMITS
+- Filing 1423176 denylist mechanism design (#54, separate)
+- STATUS.md update (the Active table row says "Day 2 DONE" which is now optimistic — it's "Day 2 DONE pending one investigation step")
+
 ---
 
 
