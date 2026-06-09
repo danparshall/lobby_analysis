@@ -7,11 +7,15 @@ invariants documented in RUNBOOK_day2.md step 0.4 and reports
 top-level-shape divergence.
 
 Behavior on completion:
-    - All invariants hold  → delete the smoke output so it doesn't contaminate
-      the 3-run dispatch.   Exit 0.
+    - Invariants pass + no wild array divergence → cleanup + exit 0. Key-set
+      asymmetries (either direction) are logged as WARN but do not gate exit
+      — we're TESTING mini against Sonnet's baseline, not declaring Sonnet
+      ground truth, and schema drift can flow either way over time.
     - Any invariant fails  → leave the smoke output in place for inspection.
       Exit 1.
-    - Structural shape diverges → leave output in place, exit 2.
+    - Wild array-length divergence (a provider hallucinated or dropped bulk
+      content) → leave output in place, exit 2. This is real extractor
+      misbehavior, not schema drift.
 
 Usage:
     python scripts/gpt5mini_oh_300slice_smoke_diff.py
@@ -122,23 +126,44 @@ def _check_invariants(mini: dict, report_id: str) -> tuple[bool, list[str]]:
     return (not failures), failures
 
 
-def _check_structure(sonnet: dict, mini: dict) -> tuple[bool, list[str]]:
-    """Top-level shape comparison: same key set, same array fields present.
-    Wild length divergences (e.g., 10x) flag a probable extractor bug."""
-    issues = []
+def _check_structure(
+    sonnet: dict, mini: dict
+) -> tuple[bool, list[str], list[str]]:
+    """Top-level shape comparison.
+
+    Returns (no_hard_failure, hard_issues, warnings).
+
+    Hard failures (gate exit nonzero):
+      - Wild array-length divergence — a provider hallucinated or dropped bulk
+        content. >5x ratio with both >0, or one >5 while the other is 0.
+
+    Warnings (logged but do not gate exit):
+      - Key-set asymmetry in either direction. Sonnet and mini share the
+        Pydantic schema, so any key on either side IS a real schema field.
+        Asymmetry is schema drift between the two extractions' moments, not
+        evidence of extractor misbehavior. We're TESTING mini against Sonnet's
+        baseline, not declaring Sonnet ground truth; treating one direction as
+        "buggy" would bake in that assumption.
+    """
+    hard_issues: list[str] = []
+    warnings: list[str] = []
     s_keys = set(sonnet.keys())
     m_keys = set(mini.keys())
     only_sonnet = s_keys - m_keys
     only_mini = m_keys - s_keys
     if only_sonnet:
-        issues.append(f"top-level keys only in sonnet: {sorted(only_sonnet)}")
+        warnings.append(
+            f"keys only in sonnet (mini may have dropped or sonnet baseline "
+            f"is older schema): {sorted(only_sonnet)}"
+        )
     if only_mini:
-        issues.append(f"top-level keys only in mini:   {sorted(only_mini)}")
+        warnings.append(
+            f"keys only in mini (sonnet baseline may be older schema or mini "
+            f"extracted something extra): {sorted(only_mini)}"
+        )
     for f in _ARRAY_FIELDS:
         sl = len(sonnet.get(f) or [])
         ml = len(mini.get(f) or [])
-        # Wild = >5x in either direction with both >0, OR one is >5 and the
-        # other is 0. Tight invariant tied to the explicit invariants above.
         if sl == 0 and ml == 0:
             continue
         wild = (
@@ -147,8 +172,11 @@ def _check_structure(sonnet: dict, mini: dict) -> tuple[bool, list[str]]:
             or (ml == 0 and sl > 5)
         )
         if wild:
-            issues.append(f"len({f}): sonnet={sl}, mini={ml} (wild divergence)")
-    return (not issues), issues
+            hard_issues.append(
+                f"len({f}): sonnet={sl}, mini={ml} (wild divergence — "
+                f"likely extractor bug, not schema drift)"
+            )
+    return (not hard_issues), hard_issues, warnings
 
 
 def main() -> int:
@@ -201,10 +229,12 @@ def main() -> int:
             f"mini={len(mini.get(f) or [])}",
             file=sys.stderr,
         )
-    shape_ok, shape_issues = _check_structure(sonnet, mini)
+    shape_ok, hard_issues, warnings = _check_structure(sonnet, mini)
+    for w in warnings:
+        print(f"[smoke] WARN — {w}", file=sys.stderr)
     if not shape_ok:
-        print("[smoke] STRUCTURAL DIVERGENCE:", file=sys.stderr)
-        for s in shape_issues:
+        print("[smoke] STRUCTURAL DIVERGENCE (hard):", file=sys.stderr)
+        for s in hard_issues:
             print(f"  - {s}", file=sys.stderr)
         print(
             f"[smoke] leaving output for inspection at "
