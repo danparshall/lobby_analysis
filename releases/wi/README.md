@@ -6,6 +6,84 @@ A snapshot of structured lobbying-disclosure data extracted from the [Wisconsin 
 
 ---
 
+## TL;DR
+
+| | |
+|---|---|
+| **State** | Wisconsin |
+| **Vintage** | 2025-2026 legislative session (H1 + H2) |
+| **Files** | 6 TSVs (~2.9 MB) + derived [`chain/`](chain/) |
+| **Distinct principals** | 944 |
+| **Distinct lobbyists** | 773 |
+| **Authorization edges** | 2,254 |
+| **Total principal-side spend** | $47,458,304.69 |
+| **Parse failures** | 0 |
+| **Key acronyms** | **IPF** = Iterative Proportional Fitting (chain-only — used to model lobbyist↔principal hours from marginals). **OS/PP** = OpenStates / Plural Policy (the bill-sponsorship source the chain joins to). **CFIS** = WI Ethics Commission Campaign Finance Information System / "Sunshine" (the separate $-flow source — **not** in this release). |
+
+---
+
+## Framework — the lobbying chain in 4 nodes × 6 edges × 3 attributes
+
+The lobbying chain has **4 nodes** — principal, lobbyist, lawmaker, bill — connected by up to **6 edges**:
+
+```
+                lawmaker
+               /        \
+              /          \
+        principal ──── lobbyist
+              \          /
+               \        /
+                  bill
+```
+
+Each edge can carry up to **3 attributes**:
+- **Money** — $ flowing along the edge (compensation, gifts, allocated spending)
+- **Time** — hours or events allocated along the edge
+- **Stance** — policy position on bills (support / oppose / monitor)
+
+Per (edge, attribute), we mark **quality** and **source**.
+
+**Quality conventions:**
+- **✓ exact** — directly disclosed in source data, extracted to artifact
+- **~ imputed** — derived via JOIN / IPF / allocation rule
+- **✗ missing** — extractable in principle, not yet materialized
+- **✗! structurally missing** — state doesn't collect / regime doesn't disclose
+- **—** — not a meaningful (edge, attribute) combination
+- **?** — needs validation
+
+---
+
+## What this release covers for WI
+
+**Status:** Mature. Full chain materialized at [`chain/WI_chain_2025.tsv`](chain/) (115,229 rows). Source disclosure data — the 6 TSVs in this directory — is the result of the `wi-disclosure-explore` Tier-1 and Tier-2 work (archived). The chain itself was built on the `wi-allocation-matrix` branch (archived). Follow-up `wi-campaign-finance` is queued pending FollowTheMoney expanded access.
+
+|                       | Money | Time | Stance |
+|-----------------------|-------|------|--------|
+| principal ↔ lobbyist  | ✗!¹   | ~²   | —      |
+| principal ↔ lawmaker  | ✗³    | —    | —      |
+| principal ↔ bill      | ~⁴    | ~²   | ✗!⁵    |
+| lobbyist ↔ lawmaker   | ✗!⁶   | —    | —      |
+| lobbyist ↔ bill       | ~⁴    | ~⁷   | ✗!⁵    |
+| lawmaker ↔ bill       | —     | —    | ✓⁸     |
+
+¹ WI §13.68(4) routes lobbyist compensation info to principal-side filings; not separately disclosed per (principal, lobbyist) pair.
+
+² IPF over bipartite (principal, lobbyist) graph with semester marginals — the chain composer (`src/lobby_analysis/allocation/wi/`) materializes this.
+
+³ Would come from WI Ethics Commission CFIS/Sunshine campaign-finance database — scoped but not materialized; pending the follow-up `wi-campaign-finance` work.
+
+⁴ Proportionally allocated from per-principal total spending via the chain composer — the principal filed bill-effort percentages drive the per-bill allocation.
+
+⁵ WI lobbying disclosure has no support/oppose field; the chain detects activity, not composition. (E.g., a 2026-06-02 inspection of SB 28 — electric-transmission ROFR — found Americans For Prosperity filing 86 hours alongside ATC Management / WEC / electric utilities; AFP historically opposes ROFR elsewhere, but WI disclosure has no field that would resolve their position.)
+
+⁶ WI principal-side filings don't itemize per-lawmaker gift recipients the way OH AERs do — the structurally-missing $-flow leg.
+
+⁷ Per-sponsor uniform-share normalization — chain TSV column `modeled_hours_per_sponsor`.
+
+⁸ Plural Policy WI bulk-CSV `bill_sponsorships.csv`, primary-only (cosponsors deferred; structurally absent from both Plural Policy JSON and CSV bundles — they live only in `bill_actions.description` text).
+
+---
+
 ## Provenance
 
 | | |
@@ -46,7 +124,7 @@ Field semantics come from the Pydantic models at [`src/lobby_analysis/models/`](
 
 ### Derived datasets
 
-- **[`chain/`](chain/)** — modeled per-(semester, principal, lobbyist, bill, sponsor) chain joining these source TSVs to bill sponsorship from the WI Legislature (via Plural Policy / OpenStates), with per-lobbyist effort hours inferred via IPF and per-sponsor effort hours normalized by primary-sponsor count. See [`chain/README.md`](chain/README.md) for schema, methodology, and limitations. 115,229 rows / ~38 MB.
+- **[`chain/`](chain/)** — modeled per-(semester, principal, lobbyist, bill, sponsor) chain joining these source TSVs to bill sponsorship from the WI Legislature (via Plural Policy / OpenStates), with per-lobbyist effort hours inferred via IPF and per-sponsor effort hours normalized by primary-sponsor count. See [`chain/README.md`](chain/README.md) for schema, methodology, conservation rules, and limitations. 115,229 rows / ~38 MB.
 
 ---
 
@@ -111,8 +189,34 @@ These are known data shapes that don't map cleanly into the schema, or genuine p
 
 ---
 
+## How to use this release with a Claude agent
+
+If you're dropping this dataset into a fresh claude.ai Project for analysis, upload the following files (everything else is optional context):
+
+**Minimum upload for chain-level questions:**
+- `README.md` (this file — gives the agent the framework, the matrix, and the gotchas)
+- `chain/README.md` (gives the agent the schema, the conservation rules, and worked example queries)
+- `chain/WI_chain_2025.tsv` (the chain itself)
+
+**For analyses below the chain layer** (e.g., per-principal expenditure reports without the bill-sponsorship overlay), also upload the 6 source TSVs in this directory.
+
+The chain README is the load-bearing reference for any quantitative work. Two silent-mistake traps a cold agent is likely to hit if it doesn't read the chain README first:
+
+1. **Don't sum `modeled_hours` across sponsor rows.** `modeled_hours` is replicated across each bill's primary sponsors — summing it across sponsors over-counts by sponsor count. Use `modeled_hours_per_sponsor` when aggregating by sponsor, or dedupe to the cell key `(semester, principal_id, lobbyist_id, item_id)` before summing `modeled_hours`. The chain README's "Conservation rules" section has worked snippets.
+
+2. **The chain is hours-grain, not dollar-grain.** WI lobbyists file Time Reports — no per-bill or per-lobbyist compensation field exists in WI disclosure. The chain's `modeled_hours` is a modeled attribution of self-filed lobbyist hours, not dollars. See the chain README's "What this isn't" section for what the chain can and can't answer about money.
+
+---
+
 ## License & usage
 
 Source data is public-record disclosure data published by the Wisconsin Ethics Commission. This MVP release is shared under the project's repo license (see repo root). If you build on it, please cite the source portal and the generating commit ([`5fcc6ac`](https://github.com/danparshall/lobby_analysis/commit/5fcc6ac)).
 
 For methodology details, the multi-session research log on the archived [`wi-disclosure-explore`](../../docs/historical/wi-disclosure-explore/) branch documents the full Tier-1 and Tier-2 development arc.
+
+---
+
+## See also
+
+- [`chain/README.md`](chain/README.md) — chain artifact deep-dive (schema, conservation rules, sample analyses, methodology writeup pointers).
+- [`docs/STATE_COVERAGE.md`](https://github.com/danparshall/lobby_analysis/blob/main/docs/STATE_COVERAGE.md) — cross-state context (the framework and matrix above are adapted from this file; that file also documents OH, NY, and the seven Prong-1-only states). Optional reading; this release stands alone.
