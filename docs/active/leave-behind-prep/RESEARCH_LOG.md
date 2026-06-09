@@ -11,6 +11,48 @@ This branch hosts the 5-day pre-wrap cleanup + leave-behind work. Scope:
 ---
 
 
+## 2026-06-09 — gpt-5-mini OH 300-slice Day 2: Phase 0 hardening + partial Run 1 (55/305 then stop)
+
+**Originating discussion:** session conversation 2026-06-09 (this is a separate concurrent session from the WI vs NY parity check below; both on the leave-behind-prep branch).
+
+**Results note:** [`results/20260609_gpt5mini_oh_300slice_partial_run1.md`](results/20260609_gpt5mini_oh_300slice_partial_run1.md)
+
+**Context:** Day 2 of the gpt-5-mini cost-floor validation per the 2026-06-08 plan. Worked through Phase 0 pre-flight, surfaced + fixed several issues, launched Run 1 of the 3x mini dispatch, then stopped at 55/305 by user direction after the per-filing cost projection materially exceeded the plan's estimate.
+
+### Hardening done before Phase 2 (committed + pushed)
+
+- Patched RUNBOOK_day2.md to call new operator scripts instead of inline `python3 -c` / quoted heredocs (the 0.4 heredoc was actually broken — quoted PY delimiter killed shell expansion).
+- New operator scripts: `gpt5mini_oh_300slice_preflight.py`, `gpt5mini_oh_300slice_smoke_diff.py`, `gpt5mini_oh_300slice_cost_check.py`, `gpt5mini_oh_300slice_reconstruct_summary.py`.
+- Pinned `MODEL_ID_DATED = "gpt-5-mini-2025-08-07"` (only dated mini variant visible on the account; undated alias rotates and would confound 3x consistency).
+- Re-extracted the 5 legacy-schema Sonnet baselines (1405684, 1427844, 1459616, 1492516, 1492518 — written before commit e5d2da3 added `employer` / `extraction_warnings` / `total_hours_*`); 305/305 now modern.
+- `_latest_filing_json` switched to mtime-based selection in 4 places — name-sort of bare-UUID run_ids was misnamed-as-latest; 1492516 was the smoking gun (legacy uuid `abc274e2` lex-sorted after the new `62802a47`).
+- Run_id format now date-prefixed (`YYYYMMDDTHHMMSS_<uuid8>`, with `run_label_` first for the OpenAI side to preserve startswith() filters).
+- Smoke-diff symmetric WARN (key-set asymmetry in either direction is informational; only wild array-length divergence is a hard fail — original strict check baked in "Sonnet is ground truth" which the validation explicitly doesn't assume).
+
+### Findings (the reason we stopped)
+
+- **Mini per-filing cost: $0.0070** (4,585 prompt + 2,933 completion tokens avg, n=55). Plan estimate implied $0.0022-$0.0033 (i.e. ~$100-150 for full 45,605 corpus). Actual full-corpus 1x mini projection: **$317**.
+- Sonnet vs mini *ratio* still favorable (~2.5x cheaper, vs the 5-8x the plan hoped for). $800 Sonnet → $317 mini is real cost reduction, just smaller than the plan's leave-behind framing implied.
+- Driver: mini emits **~3x more completion tokens than Sonnet** at the same input. Sonnet's $800 implies ~1K output tokens/filing assuming prompt caching on the brief; mini emits ~2,900. Cause not yet investigated — possibilities in results note (nested-entity full skeletons, verbose extraction_warnings, new schema fields).
+- Dispatcher is serial — ~32s per filing → ~2.7 hr per pass at 305 filings. HTTP-bound; a thread pool would cut to ~15-20 min per pass.
+
+### Next steps (deferred, not for this session)
+
+- Parallelize the dispatcher (10-way ThreadPoolExecutor on `run_one_pass`) before resuming.
+- Investigate why mini is verbose — look at any one mini output vs the Sonnet baseline for the same report_id; the difference should be visible.
+- Decide whether to (a) resume the 3-pass validation at higher actual cost (~$6-7, fine in absolute terms), or (b) trim the schema/brief to reduce verbosity first, or (c) reframe the leave-behind for Suhan around the actual $317 number.
+
+### Decisions Made
+
+- Stop Run 1 mid-pass rather than spend $2 to complete a serial pass on data that's projected to overshoot the budget — partial data is sufficient for the verbosity investigation.
+- Don't parallelize in this session; user explicitly asked another agent to take that on.
+
+### Day-2 spend
+
+~$0.72 total: $0.31 Anthropic (5 re-Sonnet runs for legacy-baseline cleanup) + ~$0.41 OpenAI (smoke runs + the 55-filing partial Run 1).
+
+---
+
 ## 2026-06-09 — WI vs NY chain parity check; two cross-state-infra tasks captured
 
 **Originating discussion:** session conversation 2026-06-09 (third leave-behind-prep session).
