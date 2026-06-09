@@ -25,6 +25,15 @@ Operator controls (concern #1 from the pre-dispatch review):
   - --resume               : skip filings that already have output (default).
   - --no-resume            : re-run all filings (rarely needed; will overwrite
                              nothing — output dirs use UUIDs — but doubles cost).
+  - --reasoning-effort EFF : minimal | low | medium | high — passed through to
+                             gpt-5-mini and used to derive the run_label
+                             (e.g., --reasoning-effort=minimal --pass=1 →
+                             "mini_minimal_run_1"). Omit to use API default
+                             and the legacy "mini_run_<N>" label.
+  - --max-concurrent N     : ThreadPoolExecutor worker count. Default 1
+                             (serial, byte-identical legacy behavior). 10 is
+                             recommended for parallel experiments; drop to 5
+                             if rate-limited.
 
 Per-pass summary on completion or wall-clock abort:
   - Total filings attempted / extracted / skipped (resume) / failed.
@@ -43,7 +52,9 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import threading
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -119,6 +130,61 @@ def _cost_usd(prompt_tokens: int, completion_tokens: int) -> float:
     )
 
 
+def _process_one_filing(
+    report_id: str,
+    *,
+    run_label: str,
+    data_dir: Path,
+    resume: bool,
+    reasoning_effort: str | None,
+    log: callable,
+) -> FilingResult:
+    """Process a single filing — used by both serial and parallel paths.
+
+    Returns one of three FilingResult shapes (extracted / skipped / failed).
+    Per-filing exceptions are caught here so a worker exception never escapes
+    to the executor; the result carries the error for the summary to surface.
+    """
+    if resume:
+        existing = already_extracted(report_id, run_label, data_dir)
+        if existing is not None:
+            return FilingResult(
+                report_id=report_id, status="skipped",
+                filing_path=str(existing), prompt_tokens=None,
+                completion_tokens=None, cost_usd=None,
+                duration_s=None, error=None,
+            )
+
+    t0 = time.monotonic()
+    try:
+        filing_path, usage = extract_one_filing_from_cache(
+            report_id,
+            run_label=run_label,
+            data_dir=data_dir,
+            log=lambda m: log(f"  {m}"),
+            reasoning_effort=reasoning_effort,
+        )
+        duration = time.monotonic() - t0
+        cost = _cost_usd(usage["prompt_tokens"], usage["completion_tokens"])
+        return FilingResult(
+            report_id=report_id, status="extracted",
+            filing_path=str(filing_path),
+            prompt_tokens=usage["prompt_tokens"],
+            completion_tokens=usage["completion_tokens"],
+            cost_usd=cost,
+            duration_s=duration,
+            error=None,
+        )
+    except Exception as exc:  # noqa: BLE001 — isolate per-filing failures
+        duration = time.monotonic() - t0
+        return FilingResult(
+            report_id=report_id, status="failed",
+            filing_path=None, prompt_tokens=None,
+            completion_tokens=None, cost_usd=None,
+            duration_s=duration, error=repr(exc),
+        )
+
+
 def run_one_pass(
     report_ids: list[str],
     *,
@@ -127,69 +193,123 @@ def run_one_pass(
     wall_clock_cap_s: float,
     resume: bool,
     log: callable,
+    reasoning_effort: str | None = None,
+    max_concurrent: int = 1,
 ) -> list[FilingResult]:
     """Execute one pass of mini extraction over `report_ids`.
 
     Aborts gracefully (returns partial results) if `wall_clock_cap_s` elapses.
     Per-filing failures are captured and the loop continues.
+
+    `max_concurrent=1` preserves the original serial behavior. Higher values
+    dispatch via a `ThreadPoolExecutor` — each filing is HTTP-bound to OpenAI,
+    so concurrency scales linearly until rate limits bite. The per-filing
+    resume skip-check and on-disk write are concurrency-safe (distinct
+    report_ids → distinct paths; the `already_extracted` check is a read-only
+    `os.listdir`). Progress logging serializes through `_log_lock` so the
+    interleaved per-filing lines don't tear.
+
+    Wall-clock semantics under parallelism: the cap means "stop submitting
+    new work after T elapsed". Work already in flight is allowed to finish
+    (its output would otherwise be wasted billing). This is the right
+    behavior because per-filing cost is fixed and per-filing wall-time is
+    bounded — letting in-flight tasks complete prevents abandoned spend.
     """
     results: list[FilingResult] = []
+    results_lock = threading.Lock()
+    log_lock = threading.Lock()
     pass_started = time.monotonic()
 
-    for i, report_id in enumerate(report_ids, start=1):
-        elapsed = time.monotonic() - pass_started
-        if elapsed > wall_clock_cap_s:
-            log(
-                f"[{run_label}] wall-clock cap {wall_clock_cap_s}s exceeded "
-                f"after {i-1}/{len(report_ids)} filings; aborting pass."
+    def safe_log(m: str) -> None:
+        with log_lock:
+            log(m)
+
+    # Pre-compute total counter for progress lines. We can't use enumerate()
+    # under concurrency since completion order != submission order.
+    total = len(report_ids)
+    completed_counter = {"n": 0}
+
+    def record_and_log(report_id: str, result: FilingResult) -> None:
+        with results_lock:
+            results.append(result)
+            completed_counter["n"] += 1
+            i = completed_counter["n"]
+        if result.status == "extracted":
+            safe_log(
+                f"[{run_label}] [{i}/{total}] "
+                f"{report_id} OK ({result.duration_s:.1f}s, "
+                f"{result.prompt_tokens}+{result.completion_tokens} tok, "
+                f"${result.cost_usd:.4f})"
             )
-            break
+        elif result.status == "failed":
+            safe_log(
+                f"[{run_label}] [{i}/{total}] {report_id} FAILED :: "
+                f"{result.error}"
+            )
+        # "skipped" intentionally not logged — would be noisy on resume
 
-        if resume:
-            existing = already_extracted(report_id, run_label, data_dir)
-            if existing is not None:
-                results.append(FilingResult(
-                    report_id=report_id, status="skipped",
-                    filing_path=str(existing), prompt_tokens=None,
-                    completion_tokens=None, cost_usd=None,
-                    duration_s=None, error=None,
-                ))
-                continue
-
-        t0 = time.monotonic()
-        try:
-            filing_path, usage = extract_one_filing_from_cache(
+    # Serial fast path — preserves byte-identical behavior for max_concurrent=1
+    # (no executor overhead, no thread-creation, no ordering ambiguity).
+    if max_concurrent <= 1:
+        for report_id in report_ids:
+            elapsed = time.monotonic() - pass_started
+            if elapsed > wall_clock_cap_s:
+                safe_log(
+                    f"[{run_label}] wall-clock cap {wall_clock_cap_s}s "
+                    f"exceeded; aborting pass."
+                )
+                break
+            result = _process_one_filing(
                 report_id,
                 run_label=run_label,
                 data_dir=data_dir,
-                log=lambda m: log(f"  {m}"),
+                resume=resume,
+                reasoning_effort=reasoning_effort,
+                log=safe_log,
             )
-            duration = time.monotonic() - t0
-            cost = _cost_usd(usage["prompt_tokens"], usage["completion_tokens"])
-            results.append(FilingResult(
-                report_id=report_id, status="extracted",
-                filing_path=str(filing_path),
-                prompt_tokens=usage["prompt_tokens"],
-                completion_tokens=usage["completion_tokens"],
-                cost_usd=cost,
-                duration_s=duration,
-                error=None,
-            ))
-            log(
-                f"[{run_label}] [{i}/{len(report_ids)}] "
-                f"{report_id} OK ({duration:.1f}s, "
-                f"{usage['prompt_tokens']}+{usage['completion_tokens']} tok, "
-                f"${cost:.4f})"
+            record_and_log(report_id, result)
+        return results
+
+    # Parallel path.
+    with ThreadPoolExecutor(max_workers=max_concurrent) as executor:
+        future_to_rid: dict = {}
+        for report_id in report_ids:
+            elapsed = time.monotonic() - pass_started
+            if elapsed > wall_clock_cap_s:
+                safe_log(
+                    f"[{run_label}] wall-clock cap {wall_clock_cap_s}s "
+                    f"exceeded; not submitting remaining "
+                    f"{len(report_ids) - len(future_to_rid)} filings. "
+                    f"In-flight work will complete."
+                )
+                break
+            future = executor.submit(
+                _process_one_filing,
+                report_id,
+                run_label=run_label,
+                data_dir=data_dir,
+                resume=resume,
+                reasoning_effort=reasoning_effort,
+                log=safe_log,
             )
-        except Exception as exc:  # noqa: BLE001 — isolate per-filing failures
-            duration = time.monotonic() - t0
-            results.append(FilingResult(
-                report_id=report_id, status="failed",
-                filing_path=None, prompt_tokens=None,
-                completion_tokens=None, cost_usd=None,
-                duration_s=duration, error=repr(exc),
-            ))
-            log(f"[{run_label}] [{i}/{len(report_ids)}] {report_id} FAILED :: {exc!r}")
+            future_to_rid[future] = report_id
+
+        for future in as_completed(future_to_rid):
+            report_id = future_to_rid[future]
+            # _process_one_filing catches per-filing exceptions; future.result()
+            # only raises if something pathological happens in the wrapper
+            # itself (e.g., the function reference is broken). Surface as
+            # failed result rather than crashing the whole pass.
+            try:
+                result = future.result()
+            except Exception as exc:  # noqa: BLE001
+                result = FilingResult(
+                    report_id=report_id, status="failed",
+                    filing_path=None, prompt_tokens=None,
+                    completion_tokens=None, cost_usd=None,
+                    duration_s=None, error=f"executor-level: {exc!r}",
+                )
+            record_and_log(report_id, result)
 
     return results
 
@@ -221,13 +341,19 @@ def summarize_pass(run_label: str, results: list[FilingResult]) -> dict:
 
 
 def post_run1_sanity_diff(
-    report_ids: list[str], data_dir: Path
+    report_ids: list[str],
+    data_dir: Path,
+    run_label_prefix: str = "mini_run_1_",
 ) -> dict:
     """Per plan step 11: compare null-field profile of Run 1 vs Sonnet baseline.
 
     If many fields are null in mini that Sonnet populated (or vice versa),
     surface it before burning Runs 2+3. This is a structural check, not a
     correctness check — the analyze step (Phase 3) does the latter.
+
+    `run_label_prefix` defaults to the legacy "mini_run_1_" prefix; pass the
+    effort-coupled prefix (e.g., "mini_minimal_run_1_") when running with
+    --reasoning-effort.
     """
     sonnet_null_counts: dict[str, int] = {}
     mini_null_counts: dict[str, int] = {}
@@ -238,7 +364,7 @@ def post_run1_sanity_diff(
     for report_id in report_ids:
         sonnet_filing = _latest_filing_json(sonnet_dir / report_id)
         mini_filing = _latest_filing_json(
-            mini_dir / report_id, run_label_prefix="mini_run_1_"
+            mini_dir / report_id, run_label_prefix=run_label_prefix
         )
         if not (sonnet_filing and mini_filing):
             continue
@@ -341,6 +467,32 @@ def main() -> int:
         "--out-summary", default=None,
         help="Path to write the run summary JSON. Default: stderr only.",
     )
+    parser.add_argument(
+        "--reasoning-effort",
+        default=None,
+        choices=["minimal", "low", "medium", "high"],
+        help=(
+            "Reasoning effort for gpt-5-family models. When set, the value is "
+            "(a) forwarded to chat.completions.parse, and (b) used to derive "
+            "the per-pass run_label (e.g., --reasoning-effort=minimal --pass=1 "
+            "→ run_label='mini_minimal_run_1'). When omitted (default), the "
+            "API's own default applies and the legacy run_label "
+            "'mini_run_<N>' is used — preserves byte-identical behavior for "
+            "any caller that doesn't opt into the new dial."
+        ),
+    )
+    parser.add_argument(
+        "--max-concurrent",
+        type=int,
+        default=1,
+        help=(
+            "Number of filings to dispatch concurrently via ThreadPoolExecutor. "
+            "Default 1 (serial, byte-identical legacy behavior). Each filing "
+            "is HTTP-bound to OpenAI; concurrency scales linearly until "
+            "rate-limits engage. Recommended starting point for parallel "
+            "experiments: 10. Reduce to 5 if TPM/RPM limits trip."
+        ),
+    )
     args = parser.parse_args()
 
     load_env_local()
@@ -358,9 +510,19 @@ def main() -> int:
         file=sys.stderr,
     )
 
-    passes = ["mini_run_1", "mini_run_2", "mini_run_3"]
-    if args.which_pass != "all":
-        passes = [f"mini_run_{args.which_pass}"]
+    # Couple run_label to reasoning_effort so the three experimental arms
+    # (medium / low / minimal) write to distinct on-disk namespaces and the
+    # analyze step can attribute outputs to settings without parsing
+    # extraction_run.json. When --reasoning-effort is None (legacy default)
+    # the label stays at the bare "mini_run_<N>" form.
+    label_prefix = (
+        f"mini_{args.reasoning_effort}_run" if args.reasoning_effort
+        else "mini_run"
+    )
+    if args.which_pass == "all":
+        passes = [f"{label_prefix}_{n}" for n in (1, 2, 3)]
+    else:
+        passes = [f"{label_prefix}_{args.which_pass}"]
 
     log = lambda m: print(m, file=sys.stderr)
     summaries = []
@@ -375,6 +537,8 @@ def main() -> int:
             wall_clock_cap_s=args.wall_clock_cap,
             resume=args.resume,
             log=log,
+            reasoning_effort=args.reasoning_effort,
+            max_concurrent=args.max_concurrent,
         )
         summary = summarize_pass(run_label, results)
         summary["started_at"] = run_started.isoformat()
@@ -394,18 +558,20 @@ def main() -> int:
             )
             aborted_early = True
 
-        if run_label == "mini_run_1":
-            sanity = post_run1_sanity_diff(report_ids, data_dir)
+        if run_label.endswith("_run_1"):
+            sanity = post_run1_sanity_diff(
+                report_ids, data_dir, run_label_prefix=f"{run_label}_"
+            )
             summary["post_run1_sanity"] = sanity
             print(
-                f"[mini_run_1] post-run sanity diff vs Sonnet:\n"
+                f"[{run_label}] post-run sanity diff vs Sonnet:\n"
                 f"{json.dumps(sanity, indent=2)}",
                 file=sys.stderr,
             )
             if sanity["fields_with_diverging_null_rate"]:
                 print(
-                    "[mini_run_1] ^^^ Review fields with diverging null rates "
-                    "before launching mini_run_2/3. Re-invoke with --pass 2 "
+                    f"[{run_label}] ^^^ Review fields with diverging null rates "
+                    f"before launching the next pass. Re-invoke with --pass 2 "
                     "once reviewed.",
                     file=sys.stderr,
                 )
@@ -436,3 +602,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
