@@ -552,3 +552,130 @@ class TestStateMasterRecord:
         json_str = smr.model_dump_json()
         smr2 = StateMasterRecord.model_validate_json(json_str)
         assert smr == smr2
+
+
+# ============================================================================
+# 2026-06-09: ReasonableDate validator catches extractor date corruption
+#
+# The OH cross-arm experiment surfaced gpt-5-mini emitting dates like
+# `0501-08-25` (misreading "May-Aug25" shorthand). Pydantic's default `date`
+# accepts year 501 as valid; the ReasonableDate annotated type rejects it.
+# ============================================================================
+
+
+class TestReasonableDateValidator:
+    def test_well_formed_2025_date_passes(self) -> None:
+        from datetime import date
+
+        from lobby_analysis.models.filings import LobbyingFiling
+        f = LobbyingFiling(
+            id="f-1", state="OH", filing_type="activity_report",
+            filer_role="lobbyist",
+            reporting_period_start=date(2025, 5, 1),
+            reporting_period_end=date(2025, 8, 31),
+            filed_date=date(2025, 9, 16),
+        )
+        assert f.reporting_period_start == date(2025, 5, 1)
+
+    def test_mini_corruption_year_501_rejected(self) -> None:
+        """gpt-5-mini's `0501-08-25` (year 501 AD) must raise."""
+        from datetime import date
+
+        import pytest
+
+        from lobby_analysis.models.filings import LobbyingFiling
+        with pytest.raises(ValueError, match="implausible year 501"):
+            LobbyingFiling(
+                id="f-1", state="OH", filing_type="activity_report",
+                filer_role="lobbyist",
+                reporting_period_start=date(501, 8, 25),
+            )
+
+    def test_year_below_min_threshold_rejected(self) -> None:
+        from datetime import date
+
+        import pytest
+
+        from lobby_analysis.models.filings import LobbyingFiling
+        with pytest.raises(ValueError, match="implausible year"):
+            LobbyingFiling(
+                id="f-1", state="OH", filing_type="activity_report",
+                filer_role="lobbyist",
+                # 1989 = pre-electronic-filing era; reject
+                reporting_period_start=date(1989, 1, 1),
+            )
+
+    def test_min_year_1990_accepted(self) -> None:
+        """Boundary: 1990 is the minimum reasonable year."""
+        from datetime import date
+
+        from lobby_analysis.models.filings import LobbyingFiling
+        f = LobbyingFiling(
+            id="f-1", state="OH", filing_type="activity_report",
+            filer_role="lobbyist",
+            reporting_period_start=date(1990, 1, 1),
+        )
+        assert f.reporting_period_start.year == 1990
+
+    def test_far_future_year_rejected(self) -> None:
+        """Year > current_year + 1 is rejected (forward-dating shouldn't be huge)."""
+        from datetime import date
+
+        import pytest
+
+        from lobby_analysis.models.filings import LobbyingFiling
+        with pytest.raises(ValueError, match="implausible year"):
+            LobbyingFiling(
+                id="f-1", state="OH", filing_type="activity_report",
+                filer_role="lobbyist",
+                reporting_period_start=date(2100, 1, 1),
+            )
+
+    def test_iso_string_with_bad_year_rejected(self) -> None:
+        """The validator runs after string→date parsing, so '0501-08-25' is
+        rejected just as date(501, 8, 25) would be."""
+        import pytest
+
+        from lobby_analysis.models.filings import LobbyingFiling
+        with pytest.raises(ValueError, match="implausible year"):
+            LobbyingFiling.model_validate({
+                "id": "f-1", "state": "OH", "filing_type": "activity_report",
+                "filer_role": "lobbyist",
+                "reporting_period_start": "0501-08-25",
+            })
+
+    def test_validator_applies_to_filed_date_too(self) -> None:
+        """All date fields use ReasonableDate, not just reporting_period_start."""
+        import pytest
+
+        from lobby_analysis.models.filings import LobbyingFiling
+        with pytest.raises(ValueError, match="implausible year"):
+            LobbyingFiling(
+                id="f-1", state="OH", filing_type="activity_report",
+                filer_role="lobbyist",
+                filed_date="0925-09-16",  # year 925 — extractor garbage
+            )
+
+    def test_validator_applies_to_nested_subentity_dates(self) -> None:
+        """LobbyingExpenditure.expenditure_date is also ReasonableDate-typed."""
+        import pytest
+
+        from lobby_analysis.models.filings import LobbyingExpenditure
+        with pytest.raises(ValueError, match="implausible year"):
+            LobbyingExpenditure(
+                expenditure_date="0501-08-25",
+                amount="100.00",
+                category="meals",
+            )
+
+    def test_none_still_allowed(self) -> None:
+        """Validator only fires on a date value; None passes through."""
+        from lobby_analysis.models.filings import LobbyingFiling
+        f = LobbyingFiling(
+            id="f-1", state="OH", filing_type="activity_report",
+            filer_role="lobbyist",
+            reporting_period_start=None,
+            reporting_period_end=None,
+            filed_date=None,
+        )
+        assert f.reporting_period_start is None

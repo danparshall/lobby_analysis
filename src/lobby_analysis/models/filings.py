@@ -4,10 +4,10 @@ Follows Epton's Filing -> Sections -> Transactions pattern.
 Amendment handling via filing_action + supersedes + is_current.
 """
 
-from datetime import date
-from typing import Literal
+from datetime import date, datetime, timezone
+from typing import Annotated, Literal
 
-from pydantic import BaseModel, Field
+from pydantic import AfterValidator, BaseModel, Field
 
 from lobby_analysis.models.entities import (
     BillReference,
@@ -15,6 +15,34 @@ from lobby_analysis.models.entities import (
     Person,
 )
 from lobby_analysis.models.provenance import Provenance
+
+
+# Year-range guard for date fields. Lobbying-disclosure electronic filing
+# starts in the early 1990s; forward-dated filings rarely exceed the current
+# year by more than one. The OH cross-arm experiment (2026-06-09) surfaced
+# extractor outputs like `0501-08-25` — gpt-5-mini misreading the OH form's
+# "May-Aug25" shorthand and emitting year=501. Python and Pydantic happily
+# accept year 501 as a valid date, so the only place to catch this is here.
+# Raising in the validator turns silent data corruption into a loud
+# extraction failure — the right tradeoff, since extractors should re-emit
+# correctly rather than ship garbage.
+_MIN_REASONABLE_YEAR = 1990
+
+
+def _reasonable_year(d: date) -> date:
+    max_year = datetime.now(timezone.utc).year + 1
+    if d.year < _MIN_REASONABLE_YEAR or d.year > max_year:
+        raise ValueError(
+            f"date {d.isoformat()} has implausible year {d.year}; "
+            f"expected {_MIN_REASONABLE_YEAR} ≤ year ≤ {max_year}. "
+            "This usually indicates the extractor misread a 2-digit-year "
+            "shorthand (e.g., OH's 'May-Aug25' for May 1 – Aug 31, 2025) "
+            "as literal digits."
+        )
+    return d
+
+
+ReasonableDate = Annotated[date, AfterValidator(_reasonable_year)]
 
 
 # ---------------------------------------------------------------------------
@@ -60,7 +88,7 @@ class LobbyingExpenditure(BaseModel):
         default=None, description="official, agency, vendor, lobbyist, other"
     )
     purpose: str | None = None
-    expenditure_date: date | None = None
+    expenditure_date: ReasonableDate | None = None
     issue_area: str | None = Field(
         default=None, description="Expenditure per issue (FOCAL 7.8)"
     )
@@ -81,7 +109,7 @@ class LobbyingEngagement(BaseModel):
     institution: str | None = Field(
         default=None, description="Agency/department (FOCAL 8.3)"
     )
-    contact_date: date | None = None
+    contact_date: ReasonableDate | None = None
     form_of_contact: Literal[
         "in_person", "phone", "email", "video", "written", "event", "other"
     ] | None = Field(default=None, description="FOCAL 8.6")
@@ -115,7 +143,7 @@ class Gift(BaseModel):
     donor_name: str | None = None
     value: float | None = None
     description: str | None = None
-    gift_date: date | None = None
+    gift_date: ReasonableDate | None = None
     gift_type: Literal[
         "meal", "travel", "lodging", "entertainment", "event_ticket", "other"
     ] | None = None
@@ -155,10 +183,10 @@ class LobbyistRegistration(BaseModel):
     compensation_type: Literal["compensated", "uncompensated"] | None = Field(
         default=None, description="FOCAL 7.7"
     )
-    registration_date: date | None = None
-    termination_date: date | None = None
-    effective_period_start: date | None = None
-    effective_period_end: date | None = None
+    registration_date: ReasonableDate | None = None
+    termination_date: ReasonableDate | None = None
+    effective_period_start: ReasonableDate | None = None
+    effective_period_end: ReasonableDate | None = None
     status: Literal["active", "terminated", "suspended", "expired"]
     general_issue_areas: list[str] = Field(
         default_factory=list,
@@ -221,9 +249,9 @@ class LobbyingFiling(BaseModel):
     )
 
     # Reporting period
-    reporting_period_start: date | None = None
-    reporting_period_end: date | None = None
-    filed_date: date | None = None
+    reporting_period_start: ReasonableDate | None = None
+    reporting_period_end: ReasonableDate | None = None
+    filed_date: ReasonableDate | None = None
 
     # Amendment handling (Epton pattern)
     is_current: bool = Field(
