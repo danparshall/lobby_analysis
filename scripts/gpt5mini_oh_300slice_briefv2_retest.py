@@ -32,9 +32,19 @@ Run
     uv run python scripts/gpt5mini_oh_300slice_briefv2_retest.py \\
         --mode full-medium
 
+    # brief-v3 is_current fix: re-test the 6 rids where briefv2 flipped
+    # is_current to False. Pass --run-label-suffix briefv3 so the outputs
+    # land in a distinct namespace.
+    uv run python scripts/gpt5mini_oh_300slice_briefv2_retest.py \\
+        --mode is_current-regression --run-label-suffix briefv3
+
 After it runs, evaluate:
+    # reporting_period (under whichever suffix was used):
     uv run python scripts/gpt5mini_oh_300slice_reporting_period_spotcheck.py \\
         --arm medium_briefv2
+    # is_current (likewise):
+    uv run python scripts/gpt5mini_oh_300slice_is_current_spotcheck.py \\
+        --arm medium_briefv3
 """
 
 from __future__ import annotations
@@ -63,6 +73,17 @@ KNOWN_FAILURE_RIDS = [
     "1396552", "1399318", "1400518", "1401482", "1407808", "1417388",
     "1426400", "1428760", "1430446", "1433900", "1434836", "1436990",
     "1438288",
+]
+
+
+# The 6 report_ids where briefv2 medium emitted is_current=False on filings
+# that sonnet (and the schema default) marked True. All 6 are original
+# filings with no supersedes — i.e., the "default to True" case. After the
+# brief-v3 step-8 addition, these 6 should re-emit True. Identified by
+# scripts/gpt5mini_oh_300slice_is_current_spotcheck.py against the
+# medium_briefv2 outputs.
+IS_CURRENT_REGRESSION_RIDS = [
+    "1412044", "1417626", "1423176", "1437148", "1438288", "1438366",
 ]
 
 
@@ -96,7 +117,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--mode", default="known-failures",
-        choices=["known-failures", "full-medium"],
+        choices=["known-failures", "full-medium", "is_current-regression"],
         help=(
             "Which rid set to re-extract under the new brief. "
             "'known-failures' (default): the 26 hardcoded report_ids that "
@@ -106,7 +127,10 @@ def main() -> int:
             "'full-medium': all ~100 report_ids that were in the original "
             "medium arm, derived at runtime by listing extracted_openai/ for "
             "mini_medium_run_1_* outputs. Used to verify the brief change "
-            "doesn't REGRESS the previously-good cases. Costs ~$0.79."
+            "doesn't REGRESS the previously-good cases. Costs ~$0.79. "
+            "'is_current-regression': the 6 report_ids where briefv2 emitted "
+            "is_current=False on original filings. Used to verify the brief-v3 "
+            "step-8 fix. Cheap (~$0.05)."
         ),
     )
     parser.add_argument(
@@ -171,6 +195,9 @@ def main() -> int:
     if args.mode == "known-failures":
         target_rids = list(KNOWN_FAILURE_RIDS)
         mode_descr = "26 known reporting_period failure rids (hardcoded)"
+    elif args.mode == "is_current-regression":
+        target_rids = list(IS_CURRENT_REGRESSION_RIDS)
+        mode_descr = "6 known is_current regression rids (hardcoded; from briefv2 spot-check)"
     elif args.mode == "full-medium":
         target_rids = derive_full_medium_rids(DATA_DIR)
         mode_descr = f"all {len(target_rids)} rids found in mini_medium_run_1_* (derived)"
