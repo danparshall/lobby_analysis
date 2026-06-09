@@ -8,6 +8,8 @@ For each priority state, this doc inventories what disclosure-data edges have be
 - `STATUS.md` — branch inventory + recent sessions
 - `docs/RESEARCH_ARC.md` — three-prong arc + Prong 1 internals
 - `releases/wi/chain/` — materialized WI chain TSV (only fully-shipped state artifact to date)
+- `releases/wi/README.md` — per-state Suhan-droppable primer (framework + matrix + use-with-Claude)
+- `releases/ny/README.md` (on `ny-disclosure-explore` branch) — per-state Suhan-droppable primer
 
 ---
 
