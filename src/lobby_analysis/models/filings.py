@@ -190,10 +190,24 @@ class LobbyingFiling(BaseModel):
         "other",
     ]
     filer_person: Person | None = Field(
-        default=None, description="Set if the filer is a natural person"
+        default=None,
+        description=(
+            "Set when the filing identifies a natural-person filer. "
+            "Independent of filer_organization — some regimes disclose both "
+            "(e.g., a registered lobbyist filing under their own name AND "
+            "their lobbying firm appearing as a co-filer or registrant)."
+        ),
     )
     filer_organization: Organization | None = Field(
-        default=None, description="Set if the filer is an organization"
+        default=None,
+        description=(
+            "Set when the filing identifies an organizational filer. "
+            "Independent of filer_person — some regimes disclose both. "
+            "Distinct from `employer` (which is the principal the filing is "
+            "filed on behalf of); a lobbying firm that itself files is a "
+            "filer_organization, while the client whose interests are "
+            "lobbied for is the employer."
+        ),
     )
     filer_role: Literal["lobbyist", "client", "firm"]
     employer: Organization | None = Field(

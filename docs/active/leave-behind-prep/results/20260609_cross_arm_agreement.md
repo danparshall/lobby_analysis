@@ -12,6 +12,16 @@ Filings missing per arm during intersection scan:
 - **both_emitted_disagree:** both arms emitted non-null but values differ.
 - **agreement_rate:** both_emitted_agree / (both_emitted_agree + both_emitted_disagree). Denominator excludes null cells so null asymmetry shows up separately in the both_null and one_null columns.
 
+## Reading the both-null rows
+
+Some fields are 99-100% both-null across every arm in the table below — and several of those are **regime-shape-correct null**, not extraction failure. The OH legislative AER is a person-files-for-org form: a natural-person lobbying agent files on behalf of an employer organization, and the form structurally has no other entities or money-flow disclosures. So for OH specifically:
+
+- `filer_organization` (100% both-null everywhere): correct. OH AERs identify a natural-person filer (the agent), not an organizational filer. Goes to `filer_person`; the org goes to `employer`. **Note (2026-06-09):** the schema docstrings and OH brief were edited this session to clarify that `filer_person` and `filer_organization` are *independent*, not XOR — other states' regimes may populate both. The 100% both-null here is OH-shape, not schema-shape. See `src/lobby_analysis/models/filings.py` + `oh_portal/extraction_brief.py`.
+- `total_compensation`, `total_reimbursements`, `total_hours_communicating`, `total_hours_other`, `total_income` (99-100% both-null): correct. OH AERs disclose **expenditures by the agent**, not compensation received or hours worked. See `docs/STATE_COVERAGE.md` for the per-state attribute matrix; OH structurally lacks principal↔lobbyist money disclosure.
+- `total_other_costs` (90-96% both-null): probably regime-shape too, though worth a spot-check since the both-null rate isn't 100%.
+
+The fields where both-null carries real signal (not regime-shape) are `total_expenditure` and `is_itemized` — those are populated when an AER discloses expenditures and the population rate aligns with the Day-1 finding that ~5% of OH AERs carry expenditures. The Sonnet 28-29 both_null on these reflects ~5% expenditures-carrying filings × 100; the mini both_null rates (60-91) are higher because mini is more conservative about emitting amounts when source is silent.
+
 ## sonnet vs medium
 
 | field | n | both_null | one_null | agree | disagree | agreement_rate |

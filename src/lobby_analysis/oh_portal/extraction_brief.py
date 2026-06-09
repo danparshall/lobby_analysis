@@ -50,9 +50,13 @@ Extraction rules:
    filer — set filer_person. Also set the reporting period dates, date filed,
    and confirmation number (use the confirmation number as the external
    filing_id). The "Employer" on the OH form is the principal the agent lobbies
-   for — it is NOT the filer. Put it in the `employer` field. Do NOT put it in
-   filer_organization (that field is only for when the filer itself is an
-   organization; here the filer is the agent, a person).
+   for — it is NOT the filer. Put it in the `employer` field, NOT in
+   filer_organization (employer ≠ organizational-filer). In the OH legislative
+   regime the filer is always a natural-person agent, so filer_organization
+   stays null — the OH form has no organizational-filer field separate from
+   the agent and the employer. (Schema-wide, filer_person and
+   filer_organization are independent and other states' regimes may populate
+   both; this brief is OH-legislative-only.)
 
 7. If the source contains information that does not fit any schema field, do NOT
    silently drop it and do NOT force it into an ill-fitting field. Add a short,
