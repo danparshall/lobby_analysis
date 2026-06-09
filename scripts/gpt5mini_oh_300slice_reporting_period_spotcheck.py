@@ -199,8 +199,14 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data-dir", default=str(DATA_DIR))
     parser.add_argument(
-        "--arm", action="append", choices=["medium", "low", "minimal"],
-        default=None, help="Arm(s) to check. Default: medium.",
+        "--arm", action="append",
+        default=None,
+        help=(
+            "Arm(s) to check. Default: medium. Accepts effort tags "
+            "(medium / low / minimal) and any custom variant like "
+            "'medium_briefv2' that resolves to a run_label prefix "
+            "'mini_<arm>_run_1_' on disk."
+        ),
     )
     parser.add_argument(
         "--field", action="append",
