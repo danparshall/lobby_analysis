@@ -58,7 +58,19 @@ Extraction rules:
    filer_organization are independent and other states' regimes may populate
    both; this brief is OH-legislative-only.)
 
-7. If the source contains information that does not fit any schema field, do NOT
+7. The "Reporting Period" field uses OH's standard semesterly shorthand. The
+   OH legislative AER has exactly three reporting periods per year (per ORC
+   §101.72), and the form's UI compresses them:
+     - "Jan-Apr<YY>"  means January 1, 20YY  through April 30, 20YY
+     - "May-Aug<YY>"  means May 1, 20YY      through August 31, 20YY
+     - "Sep-Dec<YY>"  means September 1, 20YY through December 31, 20YY
+   Always emit reporting_period_start and reporting_period_end as 4-digit-year
+   ISO dates (YYYY-MM-DD) by expanding the 2-digit year YY to 20YY. Example:
+   source "May-Aug25" yields reporting_period_start=2025-05-01 and
+   reporting_period_end=2025-08-31. Do NOT emit the literal source string as
+   the year; "May-Aug25" is shorthand, not a date.
+
+8. If the source contains information that does not fit any schema field, do NOT
    silently drop it and do NOT force it into an ill-fitting field. Add a short,
    specific note to extraction_warnings describing what you saw and why it did
    not fit (e.g., "Section II.D splits into Meals/Speaking/National Conference
