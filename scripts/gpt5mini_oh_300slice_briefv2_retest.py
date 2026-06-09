@@ -86,10 +86,17 @@ def main() -> int:
     )
     args = parser.parse_args()
 
+    from lobby_analysis.oh_portal.env_local import load_env_local
     from lobby_analysis.oh_portal.fetch import DATA_DIR
     from lobby_analysis.oh_portal.pipeline_openai import (
         EXTRACTED_OPENAI_SUBDIR,
     )
+
+    # Load OPENAI_API_KEY etc. from .env.local. Without this, fresh shells
+    # see no credentials and every extraction fails with OpenAIError. The
+    # main dispatcher does this at the start of main(); briefv2_retest
+    # needs to do it too since it doesn't shell out to the dispatcher CLI.
+    load_env_local()
 
     # Import the dispatcher's parallel worker directly rather than spawning
     # a subprocess: gives us proper run_label control without adding a new
