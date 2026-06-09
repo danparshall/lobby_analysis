@@ -8,6 +8,87 @@ NY is structurally different from the Wisconsin release: the lobbyist→bill lin
 
 ---
 
+## TL;DR
+
+| | |
+|---|---|
+| **State** | New York |
+| **Vintage** | Reporting year 2025 (Jan/June + July/Dec periods) |
+| **Files** | 4 TSVs (~11 MB) + derived [`chain/`](chain/) |
+| **Distinct clients** | 4,373 |
+| **Distinct lobbyist firms** | 1,333 |
+| **Firm-filings** | 10,870 |
+| **Bill-link rows** | 47,204 |
+| **`parties_lobbied` edges** | 168,430 (98.6% of state-legislator-titled rows resolve to `ocd-person`) |
+| **Total compensation** | $345,762,462.00 (conserved exact, $0 delta vs raw) |
+| **Key acronyms** | **OS/PP** = OpenStates / Plural Policy (the bill-sponsorship source the chain joins to). **JCOPE / CELG** = the NY ethics commission (now Commission on Ethics and Lobbying in Government — the disclosure regulator). **FTM** = FollowTheMoney.org (not in this release; the campaign-finance leg is queued). |
+
+---
+
+## Framework — the lobbying chain in 4 nodes × 6 edges × 3 attributes
+
+The lobbying chain has **4 nodes** — principal, lobbyist, lawmaker, bill — connected by up to **6 edges**:
+
+```
+                lawmaker
+               /        \
+              /          \
+        principal ──── lobbyist
+              \          /
+               \        /
+                  bill
+```
+
+Each edge can carry up to **3 attributes**:
+- **Money** — $ flowing along the edge (compensation, gifts, allocated spending)
+- **Time** — hours or events allocated along the edge
+- **Stance** — policy position on bills (support / oppose / monitor)
+
+Per (edge, attribute), we mark **quality** and **source**.
+
+**Quality conventions:**
+- **✓ exact** — directly disclosed in source data, extracted to artifact
+- **~ imputed** — derived via JOIN / IPF / allocation rule
+- **✗ missing** — extractable in principle, not yet materialized
+- **✗! structurally missing** — state doesn't collect / regime doesn't disclose
+- **—** — not a meaningful (edge, attribute) combination
+- **?** — needs validation
+
+---
+
+## What this release covers for NY
+
+**Status:** `ny-disclosure-explore` branch active. **Chain shipped** ([`chain/NY_chain_2025.tsv`](chain/), 83,786 rows, $153,064,191 conserved exactly; bill-match 99.9%; 213 distinct sponsors = full NY legislature). **`parties_lobbied` disclosed-lawmaker edge MVP shipped + nickname-matched** (`NY_filing_parties_lobbied.tsv`, 168,430 edges; **98.61%** of state-legislator-titled rows resolve to `ocd-person`; all 213 NY legislators covered).
+
+|                       | Money | Time | Stance |
+|-----------------------|-------|------|--------|
+| principal ↔ lobbyist  | ✓¹    | ✗²   | —      |
+| principal ↔ lawmaker  | ✗!³   | —    | —      |
+| principal ↔ bill      | ~⁴    | ~⁵   | ✗!⁶    |
+| lobbyist ↔ lawmaker   | ✓⁷ *(contact, not $)* | ~⁸ | ✗!⁶ |
+| lobbyist ↔ bill       | ~⁴    | ~⁵   | ✗!⁶    |
+| lawmaker ↔ bill       | —     | —    | ✓⁹     |
+
+¹ Client semiannual `total_compensation` per (principal, lobbyist) filing — NY discloses money at the per-pair grain natively, so the chain composer uses no IPF (unlike WI). Conservation across the chain verified at $153,064,191 exactly.
+
+² Time not a disclosed field on NY client semiannuals.
+
+³ Out of lobbying-disclosure scope; would come from JCOPE / state campaign-finance — not in this release (same shape as WI's principal↔lawmaker).
+
+⁴ Proportionally allocated from `total_compensation` via the chain's `comp_per_cell` column; cell key includes `lobbyist_id`, replicated across sponsor rows — must not be summed naively (a smoke test caught a −$68.6M phantom loss when the key omitted `lobbyist_id`).
+
+⁵ Uniform per-sponsor share (carried as the cell's replication across sponsor rows in the chain), same shape as WI.
+
+⁶ NY structurally has no support/oppose/monitor field — neither on bills nor on lawmaker contact (same shape as WI/OH).
+
+⁷ Disclosed via `parties_lobbied`. Today's nickname matcher (`io/ny/parties.py::NicknameIndex` + `nicknames` PyPI lib) closed resolution from 90.4% → 92.6% (accent-fold) → **98.61%** of state-legislator-titled rows (213/213 legislators = full Assembly + Senate). Of all `parties_lobbied` rows, ~42% are non-legislators (NYC municipal officials, executive offices, agencies, "entire-legislature" broadcasts), correctly `resolved=False`. **Grain caveat:** edge is per-filing set — recoverable as "lobbyist X contacted lawmaker Y in semester S," NOT "about bill Z" (cartesian against the filing's bill list, not a mapping).
+
+⁸ Treat `parties_lobbied` as a binary "contacted-in-semester" signal — ~ imputed time, not a frequency count.
+
+⁹ Plural Policy NY bulk-CSV via Open States; chain joins at 99.5% distinct / 99.8% link; 213 sponsors = full legislature. Primary-only — cosponsors deferred (same shape as WI).
+
+---
+
 ## Provenance
 
 | | |
@@ -146,8 +227,36 @@ These are New York's recognized top-tier lobbying firms, a strong face-validity 
 
 ---
 
+## How to use this release with a Claude agent
+
+If you're dropping this dataset into a fresh claude.ai Project for analysis, upload the following files (everything else is optional context):
+
+**Minimum upload for chain-level questions:**
+- `README.md` (this file — gives the agent the framework, the matrix, and the gotchas)
+- `chain/README.md` (gives the agent the schema, the conservation rules, the disclosed-vs-inferred semantic warning, and worked example queries)
+- `chain/NY_chain_2025.tsv` (the chain itself)
+
+**For analyses below the chain layer** (e.g., client/firm rosters without the bill-sponsorship overlay, or the full disclosed-contact edge with non-legislator parties), also upload the 4 source TSVs in this directory — particularly `NY_filing_parties_lobbied.tsv` if the question involves disclosed lobbying contacts beyond the chain's per-bill sponsors.
+
+The chain README is the load-bearing reference for any quantitative work. Three silent-mistake traps a cold agent is likely to hit if it doesn't read the chain README first:
+
+1. **Cell identity in NY chain is `(filing_id, lobbyist_id, beneficiary_id, bill_id)` — never `filing_id` alone.** A `form_submission_id` is the **client's** report id, shared across every firm the client retained (26% of submissions list multiple firms). Summing `comp_per_cell` after dedupe on `filing_id` alone silently drops co-retained firms' dollars — a smoke test caught a $108.9M / 32% loss this way before the live release was built. **Always include `lobbyist_id` in joins / dedupe keys.**
+
+2. **Do not sum `comp_per_cell` across the sponsor rows of one cell.** `comp_per_cell` is the cell's share of filing compensation, **replicated** across each row that pairs the cell with a primary sponsor. Dedupe to distinct cells before summing.
+
+3. **`disclosed_lawmakers` is filing-grain, not bill-grain.** The chain carries two lawmaker signals: the bill's *primary sponsor* (inferred from Open States) and the filer's *disclosed contacts* (from `parties_lobbied`). The disclosed contacts attach to a `(filing, lobbyist)` group, not to a specific bill — `sponsor_in_disclosed_set=True` means "the filer disclosed contact with this sponsor *somewhere* in this filing," NOT "the filer lobbied this sponsor *about this bill*." Read the chain README's "Disclosed vs inferred" section before drawing inferences from `sponsor_in_disclosed_set` — base-rate makes True common at the typical 36+ disclosed-legislators-per-filing fan-out. The genuinely informative per-group signal is `disclosed_only_lawmaker_count`.
+
+---
+
 ## License & usage
 
 Source data is public-record disclosure data published by New York State (Open NY / Commission on Ethics and Lobbying in Government). This MVP release is shared under the project's repo license (see repo root). If you build on it, please cite the source portal and the generating commit (`cb59653`).
 
 For the full development arc, see the [`ny-disclosure-explore` research log](../../docs/active/ny-disclosure-explore/RESEARCH_LOG.md).
+
+---
+
+## See also
+
+- [`chain/README.md`](chain/README.md) — chain artifact deep-dive (schema, conservation rules, disclosed-vs-inferred semantic warning, sample analyses, methodology writeup pointers).
+- [`docs/STATE_COVERAGE.md`](https://github.com/danparshall/lobby_analysis/blob/main/docs/STATE_COVERAGE.md) — cross-state context (the framework and matrix above are adapted from this file; that file also documents WI, OH, and the seven Prong-1-only states). Optional reading; this release stands alone.
