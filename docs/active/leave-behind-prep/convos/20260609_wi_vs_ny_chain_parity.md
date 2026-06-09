@@ -12,7 +12,7 @@ The comparison surfaced three categories of difference: (1) **structural** — N
 
 Dan then proposed running IPF on dollars in WI (symmetric with the hours IPF that's already there). That doesn't work either — WI lobbyists file Time Reports (no compensation-received field), so we have row marginals (principal aggregate spend) but no column marginals. IPF needs both. Honest verdict: **WI is structurally complete relative to its data; NY ditto; differences are data-shape, not pipeline-completeness.**
 
-Architectural finding that surfaced from the CFIS/FTM/Plural Policy clarification: the **campaign-finance leg can be a 50-state shared-infrastructure layer via FTM** — parallel architectural axis to Plural Policy/OpenStates for bill-sponsorship. Lobbying disclosure stays per-state Anna Karenina, but two of three chain legs are now confirmed-shareable. Outcome: two captured tasks (#42 Plural Policy refactor, #43 FTM new build) to externalize the shared-infrastructure work as successor-Fellow handoff.
+Architectural finding that surfaced from the CFIS/FTM/Plural Policy clarification: the **campaign-finance leg can be a 50-state shared-infrastructure layer via FTM** — parallel architectural axis to Plural Policy/OpenStates for bill-sponsorship. Lobbying disclosure stays per-state Anna Karenina, but two of three chain legs are now confirmed-shareable. Outcome: two captured tasks (#42 Plural Policy refactor, #43 FTM new build) to externalize the shared-infrastructure work as successor-Fellow handoff. A third outcome surfaced later in the session: an architectural agreement on **per-state Suhan-droppable release docs** (3-doc pattern — per-state release README + per-state chain README + cross-state STATE_COVERAGE.md as index), captured as an executable plan at [`docs/active/leave-behind-prep/plans/release_doc_pattern.md`](../plans/release_doc_pattern.md) for fresh-agent execution. Plus one more captured task (#44, FTM NY sample query, fires 2026-06-10) externalizing the WI-vs-NY FTM-validation asymmetry.
 
 ## Topics Explored
 
@@ -25,6 +25,10 @@ Architectural finding that surfaced from the CFIS/FTM/Plural Policy clarificatio
 - FTM access mechanism: API-only, single PHP-style endpoint at `api.followthemoney.org`, basic-tier quota ~15 queries pending Institute review
 - FTM-in-OpenSecrets-integration sunset mode (banner observation, post-dates the wi-cfis-scoping work)
 - Architectural axis count: lobbying disclosure (per-state, bespoke), bill sponsorship (shared via Plural Policy/OpenStates), campaign finance (shareable via FTM — not yet built)
+- WI vs NY chain README comparison: WI has consumer-front-door polish (TL;DR, audience, 30-sec tour, headline finding); NY has reference-doc rigor (conservation rules, disclosed-vs-inferred semantic warning, measured-impact methodology). Each state's README needs a back-port from the other.
+- Suhan-droppable release-doc workflow: per-state release dir must be self-contained for upload to an isolated claude.ai Project (no repo-wide context). Triggers a 3-doc architecture: per-state release README (framework + matrix + gotchas), per-state chain README (schema + conservation rules + sample analyses), cross-state STATE_COVERAGE.md (matrix index, unchanged).
+- Recognition that the cross-state "basics" doc Dan described already exists as `docs/STATE_COVERAGE.md` (drafted 2026-06-06) — 4-node × 6-edge × 3-attribute framework, 6-symbol quality conventions, per-state matrices with footnoted gotchas, Anna Karenina principle
+- Third attribute axis identified as **Stance** (support/oppose/monitor) — structurally absent in all three priority states' lobbying disclosure
 
 ## Provisional Findings
 
@@ -34,6 +38,9 @@ Architectural finding that surfaced from the CFIS/FTM/Plural Policy clarificatio
 - FTM API base tier hits a quota after ~15 queries; Institute review on quota-exceed (~2 business days) for expanded access. The wi-cfis-scoping `lobbying@opensecrets.org` outreach (2026-06-03) is the pending item for WI.
 - FTM is in sunset/integration mode pending OpenSecrets merger. Banner reads: *"The National Institute on Money in Politics and the Center for Responsive Politics joined forces to become OpenSecrets... isn't maintained as we integrate with OpenSecrets."* Long-term API contract may not survive intact. Worth confirming before #43 implementation starts.
 - Cross-state shareable infrastructure axes confirmed: Plural Policy (already in active use on both `wi-allocation-matrix` and `ny-disclosure-explore`), FTM (not yet built, 50-state aggregator). Lobbying disclosure remains per-state Anna Karenina by data-acquisition shape.
+- The third attribute axis in the 4×6×3 framework is **Stance** (not Counts/Frequency) — confirmed by re-reading STATE_COVERAGE.md. Mostly absent across states (WI/NY/OH all structurally lack it), which is itself a load-bearing observation: the chain detects activity, not composition.
+- The Suhan-droppable use case requires self-contained per-state release dirs. Acceptable approach: duplicate the ~15-line framework into each state's release README rather than have it defer to STATE_COVERAGE.md (which won't be in an isolated Project upload). Cost (N+1 sources of truth) is acceptable at N=3, revisit at N≥10.
+- Per-state release-doc architecture decided (3-doc pattern: per-state release README, per-state chain README, cross-state STATE_COVERAGE.md as index). Each per-state release README to be enriched with framework + this-state matrix (adapted from STATE_COVERAGE) + use-instructions; each chain README back-ported with the polish/rigor it lacks; STATE_COVERAGE gets only a See-also touch.
 
 ## Decisions Made
 
@@ -42,11 +49,19 @@ Architectural finding that surfaced from the CFIS/FTM/Plural Policy clarificatio
   - [#42: Extract Plural Policy bulk-CSV ingest into shared cross-state library](https://github.com/danparshall/lobby_analysis/issues/42)
   - [#43: Build reusable FollowTheMoney ingest for cross-state campaign-finance leg](https://github.com/danparshall/lobby_analysis/issues/43)
 - Both tasks point at `docs/STATE_COVERAGE.md` as the principle reference. Both bodies updated with proper GitHub blob URLs (the initial drafts had path mentions in backticks, not clickable links — caught by Dan).
+- **Per-state release-doc architecture decided** — 3-doc pattern, all docs already exist, all to be enriched (not replaced). Execution externalized to fresh agent via plan at `docs/active/leave-behind-prep/plans/release_doc_pattern.md` rather than performed inline this session.
+- **Task #44 dated 2026-06-10** to validate FTM 50-state portability against NY data (parallel to the WI LeMahieu sample query). FTM site flagged as down at session time; retry tomorrow.
 
 ## Results
 
 - GH issue #42 (Plural Policy refactor): https://github.com/danparshall/lobby_analysis/issues/42
 - GH issue #43 (FTM new build): https://github.com/danparshall/lobby_analysis/issues/43
+- GH issue #44 (FTM NY sample query, fires 2026-06-10): https://github.com/danparshall/lobby_analysis/issues/44
+- Plan: [`docs/active/leave-behind-prep/plans/release_doc_pattern.md`](../plans/release_doc_pattern.md) — 22.3KB, 314 lines, 6-step execution spec for fresh-agent pickup, est. 2:20-3:30 depending on rigor
+
+## Plans Authored
+
+- [`docs/active/leave-behind-prep/plans/release_doc_pattern.md`](../plans/release_doc_pattern.md) — Per-state Suhan-droppable release-doc pattern. 6-step execution plan: extend `releases/wi/README.md` (framework + matrix + use-instructions), extend `releases/wi/chain/README.md` (back-port conservation rules + sample analyses), parallel work for NY on `ny-disclosure-explore`, touch STATE_COVERAGE.md See-also header, RESEARCH_LOG completion entry. For fresh-agent execution; original author won't be in-session.
 
 ## Open Questions
 
