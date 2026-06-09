@@ -58,3 +58,4 @@ Architectural finding that surfaced from the CFIS/FTM/Plural Policy clarificatio
 
 - [#42: Extract Plural Policy bulk-CSV ingest into shared cross-state library](https://github.com/danparshall/lobby_analysis/issues/42) — captured 2026-06-09
 - [#43: Build reusable FollowTheMoney ingest for cross-state campaign-finance leg](https://github.com/danparshall/lobby_analysis/issues/43) — captured 2026-06-09
+- [#44: Pull FTM NY sample query to validate 50-state portability](https://github.com/danparshall/lobby_analysis/issues/44) — captured 2026-06-09, dated 2026-06-10
