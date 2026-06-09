@@ -75,6 +75,7 @@ def extract_one_filing_from_cache(
     run_label: str,
     data_dir: Path = DATA_DIR,
     log: Callable[[str], None] = _noop,
+    reasoning_effort: str | None = None,
 ) -> tuple[Path, dict]:
     """Extract one cached OH AER via OpenAI. Return (filing.json path, usage).
 
@@ -82,6 +83,11 @@ def extract_one_filing_from_cache(
     of the three runs. Combined with a uuid suffix it becomes the per-filing
     run_id (`mini_run_1_a1b2c3d4`), so the three passes' outputs land under
     distinct directories within each report_id.
+
+    `reasoning_effort` is threaded to `extract_oh_legislative_filing`; see
+    its docstring. None preserves byte-identical legacy behavior. The
+    chosen value is also stamped into extraction_run.json (via the returned
+    usage dict) so the analyze step can attribute cost by setting.
 
     Writes:
       data_dir/extracted_openai/<report_id>/<run_id>/filing.json
@@ -121,7 +127,9 @@ def extract_one_filing_from_cache(
     )
 
     log(f"[oh_portal_openai] extracting via {resolved_model_id()} ({run_label})")
-    filing, usage = extract_oh_legislative_filing(html_path, brief, provenance)
+    filing, usage = extract_oh_legislative_filing(
+        html_path, brief, provenance, reasoning_effort=reasoning_effort
+    )
     finished_at = datetime.now(timezone.utc)
 
     out_dir = data_dir / EXTRACTED_OPENAI_SUBDIR / report_id / run_id
@@ -148,3 +156,4 @@ def extract_one_filing_from_cache(
     (out_dir / "extraction_run.json").write_text(json.dumps(run_meta, indent=2))
 
     return filing_path, usage
+
