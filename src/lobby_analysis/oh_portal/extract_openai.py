@@ -53,6 +53,8 @@ def extract_oh_legislative_filing(
     html_path: Path,
     brief: str,
     provenance: Provenance,
+    *,
+    reasoning_effort: str | None = None,
 ) -> tuple[LobbyingFiling, dict]:
     """Extract one OH legislative AER's HTML into a populated LobbyingFiling.
 
@@ -60,6 +62,17 @@ def extract_oh_legislative_filing(
     dict (`prompt_tokens`, `completion_tokens`, etc.) so the dispatcher can
     track per-filing cost without re-issuing the call. The plan requires
     per-run cost tracking (step 10) and this is the cheapest way to surface it.
+
+    `reasoning_effort` controls how many reasoning tokens gpt-5-mini budgets
+    before emitting the final structured output. Values: "minimal", "low",
+    "medium", "high". When None (default), the API's own default applies —
+    "medium" for gpt-5-mini as of 2026-06. Reasoning tokens are billed as
+    completion tokens but are NOT visible in the structured output; on a
+    schema-constrained extraction workload they can dominate cost. The
+    2026-06-09 partial Run 1 measured 2,933 avg completion tokens against
+    a ~3,500-byte filing.json — implying reasoning tokens were ~2x the
+    serialization tokens. The reasoning_tokens field of the usage dict
+    (captured below) confirms this hypothesis directly when present.
 
     Raises:
         RuntimeError: if the model refuses to respond or returns no parsed
@@ -69,6 +82,13 @@ def extract_oh_legislative_filing(
     """
     aer_text = html_to_aer_text(html_path)
     client = OpenAI()
+
+    # Build kwargs conditionally so when reasoning_effort is None we send the
+    # exact same request the legacy code path sent. This preserves backwards
+    # compatibility for any caller (or test) that doesn't pass the new param.
+    extra: dict = {}
+    if reasoning_effort is not None:
+        extra["reasoning_effort"] = reasoning_effort
 
     completion = client.chat.completions.parse(
         model=resolved_model_id(),
@@ -83,6 +103,7 @@ def extract_oh_legislative_filing(
             }
         ],
         response_format=LobbyingFiling,
+        **extra,
     )
 
     choice = completion.choices[0]
@@ -111,10 +132,22 @@ def extract_oh_legislative_filing(
     filing_dict = filing.model_dump()
     filing_dict.pop("raw_text", None)
 
+    # Capture reasoning_tokens from completion_tokens_details if present.
+    # gpt-5-family models report this; older models won't have the attribute.
+    # We surface it in the usage dict so the dispatcher's per-pass summary
+    # can attribute completion-token cost between "reasoning" (billed but
+    # invisible in the output) and "output" (the actual emitted JSON).
+    reasoning_tokens: int | None = None
+    details = getattr(completion.usage, "completion_tokens_details", None)
+    if details is not None:
+        reasoning_tokens = getattr(details, "reasoning_tokens", None)
+
     usage = {
         "prompt_tokens": completion.usage.prompt_tokens,
         "completion_tokens": completion.usage.completion_tokens,
         "total_tokens": completion.usage.total_tokens,
+        "reasoning_tokens": reasoning_tokens,
+        "reasoning_effort": reasoning_effort,  # None means API default
         "model": completion.model,
     }
     return assemble_filing(filing_dict, aer_text, provenance), usage
@@ -140,3 +173,4 @@ def dump_error(out_dir: Path, exc: Exception, raw_response: str | None = None) -
         )
     )
     return err_path
+
