@@ -11,7 +11,19 @@ This branch hosts the 5-day pre-wrap cleanup + leave-behind work. Scope:
 ---
 
 
-## 2026-06-09 — Release-doc pattern shipped for WI + NY
+## 2026-06-09 (later) — Project review (claude.ai) → ticket sweep + STATE_COVERAGE corrections (#48)
+
+**Session type:** review + doc hygiene; claude.ai (claude_researcher workflow), no convo file in-repo.
+
+Full-project review against GitHub state surfaced and **verified** (not just eyeballed): NY release TSVs are deliberately untracked-in-dev (`.gitignore` 31-35, "re-add at merge") — NOT missing; PR #33 (OH) merged 2026-06-05 (STATUS narrative was stale); CO/IL/WA/FL/NC were never dispatched (only 5 state-keyed 2015 result dirs on `cross-state-cpi-2015-validation`); issue #37 is an explicit **merge gate** for `ny-disclosure-explore`; #9 marked closable in-issue 2026-06-07.
+
+**Ticket sweep:** filed **#46–#53** for every outstanding item lacking coverage (NY merge checklist; >100MB hosting policy; STATE_COVERAGE corrections; RESEARCH_ARC triaged rewrite; Round-2 dispatch; Pattern-C splits; OH chain composer + `releases/oh/`; FOCAL Plans 3+4). Close-candidates flagged for Dan: #9 (verified closable), #3 (v1-schema era), #6 (statute half done; portal-snapshot half overlaps #38).
+
+**#48 EXECUTED this session:** `docs/STATE_COVERAGE.md` — Status header rewritten (was "Draft 2026-06-06 / NY skeleton"); CA/TX section header fixed (CO/IL/WA/FL/NC = **pending #50**, not "completed"); post-Phase-1 19/30 (63.3%) added alongside pre-fix Round-1 numbers; de-jure-only decision propagated (#51 ref); NY section gains tracking caveat + #37/#46 merge gates + parties-integration shipped status; NY checklist bimonthly item promoted to MERGE-BLOCKING; new **MI/NC recon section**; new **Access-posture principle** section (promoted from mi/nc branch logs); scorecard rebuilt (NY row had contradicted the NY section header within the same file). `STATUS.md` — Active-table NY row rewritten (chain composer shipped; merge gates), date bumped to 2026-06-09.
+
+**RESEARCH_ARC findings deferred to #49** (Day-5 scope): Status header superseded twice; Prong-1 internals diagram presents the abandoned retrieval_v2→scoring_v2 path as current.
+
+
 
 **Plan:** [`plans/release_doc_pattern.md`](plans/release_doc_pattern.md) (authored earlier today by the parity-check session)
 **Predecessor convo:** [`convos/20260609_wi_vs_ny_chain_parity.md`](convos/20260609_wi_vs_ny_chain_parity.md)
