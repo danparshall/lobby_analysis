@@ -62,21 +62,23 @@ _ARRAY_FIELDS = ("positions", "expenditures", "engagements", "gifts")
 
 
 def _find_filing(report_dir: Path, run_label_prefix: str | None = None) -> Path | None:
-    """Most-recent filing.json under report_dir, optionally restricting to a
-    run_label prefix (e.g., 'mini_smoke_' to pick out this script's output)."""
+    """Most-recent filing.json under report_dir by mtime, optionally
+    restricting to a run_label prefix. mtime, not name sort — bare-UUID
+    run_ids don't lex-sort by time."""
     if not report_dir.is_dir():
         return None
-    runs = sorted(
-        d for d in report_dir.iterdir()
-        if d.is_dir() and (
-            run_label_prefix is None or d.name.startswith(run_label_prefix)
-        )
-    )
-    for run_dir in reversed(runs):
-        candidate = run_dir / "filing.json"
-        if candidate.exists():
-            return candidate
-    return None
+    candidates: list[Path] = []
+    for d in report_dir.iterdir():
+        if not d.is_dir():
+            continue
+        if run_label_prefix is not None and not d.name.startswith(run_label_prefix):
+            continue
+        fj = d / "filing.json"
+        if fj.exists():
+            candidates.append(fj)
+    if not candidates:
+        return None
+    return max(candidates, key=lambda p: p.stat().st_mtime)
 
 
 def _check_invariants(mini: dict, report_id: str) -> tuple[bool, list[str]]:

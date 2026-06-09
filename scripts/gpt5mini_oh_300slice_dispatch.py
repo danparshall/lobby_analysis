@@ -279,19 +279,28 @@ def post_run1_sanity_diff(
 def _latest_filing_json(
     report_dir: Path, run_label_prefix: str | None = None
 ) -> Path | None:
+    """Return the most recent filing.json under report_dir, by file mtime.
+
+    Sorting by name was buggy for legacy bare-UUID run_ids: lex order doesn't
+    match temporal order, so when a report had multiple runs, the function
+    could return an arbitrary one (e.g., 1492516 returned the old legacy
+    extraction instead of the post-schema-fix re-extraction). mtime is the
+    actual semantic we want.
+    """
     if not report_dir.is_dir():
         return None
-    runs = sorted(
-        d for d in report_dir.iterdir()
-        if d.is_dir() and (
-            run_label_prefix is None or d.name.startswith(run_label_prefix)
-        )
-    )
-    for run_dir in reversed(runs):
-        candidate = run_dir / "filing.json"
-        if candidate.exists():
-            return candidate
-    return None
+    candidates: list[Path] = []
+    for d in report_dir.iterdir():
+        if not d.is_dir():
+            continue
+        if run_label_prefix is not None and not d.name.startswith(run_label_prefix):
+            continue
+        fj = d / "filing.json"
+        if fj.exists():
+            candidates.append(fj)
+    if not candidates:
+        return None
+    return max(candidates, key=lambda p: p.stat().st_mtime)
 
 
 def main() -> int:

@@ -90,9 +90,14 @@ def extract_one_filing_from_cache(
     html_path = find_cached_html(report_id, data_dir)
     log(f"[oh_portal_openai] using cached html {html_path}")
 
-    run_uuid = uuid.uuid4().hex[:8]
-    run_id = f"{run_label}_{run_uuid}"
     started_at = datetime.now(timezone.utc)
+    # Run_id format: "<run_label>_<YYYYMMDDTHHMMSS>_<uuid8>". Run_label stays at
+    # the front so the dispatch + analyze prefix filters (startswith("mini_run_1_"))
+    # continue to match; the timestamp follows so within a run_label the dirs
+    # also sort by time. UUID disambiguates same-second extractions.
+    run_uuid = uuid.uuid4().hex[:8]
+    timestamp = started_at.strftime("%Y%m%dT%H%M%S")
+    run_id = f"{run_label}_{timestamp}_{run_uuid}"
 
     brief = build_oh_legislative_brief()
     prompt_sha = sha256(brief.encode()).hexdigest()[:16]

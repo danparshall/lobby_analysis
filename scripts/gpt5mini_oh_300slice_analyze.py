@@ -112,35 +112,41 @@ _ARRAY_ALIGNMENT_KEYS: dict[str, tuple[str, ...]] = {
 def _latest_filing_json(
     report_dir: Path, run_label_prefix: str | None = None
 ) -> Path | None:
+    """Most recent filing.json under report_dir, by file mtime. See note in
+    dispatch.py's identical function — sorting by name is unreliable for
+    bare-UUID run_ids because lex order ≠ temporal order."""
     if not report_dir.is_dir():
         return None
-    runs = sorted(
-        d for d in report_dir.iterdir()
-        if d.is_dir() and (
-            run_label_prefix is None or d.name.startswith(run_label_prefix)
-        )
-    )
-    for run_dir in reversed(runs):
-        candidate = run_dir / "filing.json"
-        if candidate.exists():
-            return candidate
-    return None
+    candidates: list[Path] = []
+    for d in report_dir.iterdir():
+        if not d.is_dir():
+            continue
+        if run_label_prefix is not None and not d.name.startswith(run_label_prefix):
+            continue
+        fj = d / "filing.json"
+        if fj.exists():
+            candidates.append(fj)
+    if not candidates:
+        return None
+    return max(candidates, key=lambda p: p.stat().st_mtime)
 
 
 def _latest_extraction_run_json(
     report_dir: Path, run_label_prefix: str
 ) -> Path | None:
+    """Most recent extraction_run.json under report_dir, by file mtime."""
     if not report_dir.is_dir():
         return None
-    runs = sorted(
-        d for d in report_dir.iterdir()
-        if d.is_dir() and d.name.startswith(run_label_prefix)
-    )
-    for run_dir in reversed(runs):
-        candidate = run_dir / "extraction_run.json"
-        if candidate.exists():
-            return candidate
-    return None
+    candidates: list[Path] = []
+    for d in report_dir.iterdir():
+        if not d.is_dir() or not d.name.startswith(run_label_prefix):
+            continue
+        meta = d / "extraction_run.json"
+        if meta.exists():
+            candidates.append(meta)
+    if not candidates:
+        return None
+    return max(candidates, key=lambda p: p.stat().st_mtime)
 
 
 def assemble_extraction_set(

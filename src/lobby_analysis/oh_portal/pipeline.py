@@ -56,8 +56,14 @@ def extract_one_filing(
     (fail-loud — the caller decides whether to isolate the failure).
     """
     report_id = parse_report_id(url)
-    run_id = uuid.uuid4().hex[:8]
     started_at = datetime.now(timezone.utc)
+    # Run_id format: "YYYYMMDDTHHMMSS_<uuid8>". Lex-sortable by time so that
+    # multiple runs of the same report sort by extraction time (mtime-based
+    # selection in analyze is the authoritative semantic, but the name itself
+    # being readable is a separate hygiene win).
+    run_id = (
+        started_at.strftime("%Y%m%dT%H%M%S") + "_" + uuid.uuid4().hex[:8]
+    )
 
     log(f"[oh_portal] fetching {url}")
     html_path = fetch_olac_aer(url)
