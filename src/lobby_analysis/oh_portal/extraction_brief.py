@@ -70,7 +70,15 @@ Extraction rules:
    reporting_period_end=2025-08-31. Do NOT emit the literal source string as
    the year; "May-Aug25" is shorthand, not a date.
 
-8. If the source contains information that does not fit any schema field, do NOT
+8. Default is_current to True for original filings. Set is_current=False ONLY
+   if the source explicitly indicates the filing has been superseded by a
+   later amendment — e.g., a visible "Amended by <other filing id>" link, an
+   "Amended" status banner, or text identifying this filing as historical.
+   Absence of evidence is not evidence of supersession: a filing that simply
+   doesn't reference any later version is current. (Schema default is True;
+   when in doubt, leave it True.)
+
+9. If the source contains information that does not fit any schema field, do NOT
    silently drop it and do NOT force it into an ill-fitting field. Add a short,
    specific note to extraction_warnings describing what you saw and why it did
    not fit (e.g., "Section II.D splits into Meals/Speaking/National Conference
