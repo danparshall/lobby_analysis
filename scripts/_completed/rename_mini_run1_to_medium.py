@@ -1,5 +1,7 @@
 """One-shot rename: data/oh_portal/extracted_openai/<rid>/mini_run_1_* → mini_medium_run_1_*.
 
+Session: docs/active/leave-behind-prep/convos/20260609_gpt5mini_reasoning_effort_three_arm_dispatch.md
+
 Why this script exists
 ----------------------
 The 2026-06-09 Day-2 partial Run 1 produced 55 filings under run_dir names of

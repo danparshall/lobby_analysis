@@ -11,6 +11,87 @@ This branch hosts the 5-day pre-wrap cleanup + leave-behind work. Scope:
 ---
 
 
+## 2026-06-09 (PM) — gpt-5-mini reasoning_effort threading + 3-arm dispatch (medium/low/minimal × 100)
+
+**Convo:** [`convos/20260609_gpt5mini_reasoning_effort_three_arm_dispatch.md`](convos/20260609_gpt5mini_reasoning_effort_three_arm_dispatch.md)
+
+**Results:** [`results/20260609_cross_arm_agreement.md`](results/20260609_cross_arm_agreement.md)
+
+**Predecessor:** [`convos/20260609_gpt5mini_day2_phase0_hardening_partial_run1.md`](convos/20260609_gpt5mini_day2_phase0_hardening_partial_run1.md) — that session left the dispatch stopped at 55/305 with a cost-over-projection finding; this session followed up.
+
+**Context:** The morning session diagnosed mini cost as 2-3× plan estimate driven by ~3× completion tokens vs Sonnet. The likely root cause was unset `reasoning_effort` → API default `medium` → mini paying for reasoning tokens that are billed as completion but invisible in the structured output. Confirmed by inspecting on-disk artifacts before any new dispatch: bytes-per-completion-token across 5 matched pairs was 1.1-1.5 (vs 2.5-4 typical for dense JSON), consistent with the reasoning-token-overhead hypothesis.
+
+### Code changes (4 commits)
+
+- `extract_openai`: keyword-only `reasoning_effort` param; capture `reasoning_tokens` + `reasoning_effort` in usage dict; default `None` omits the kwarg from `chat.completions.parse` for byte-identical legacy semantics. 4 mock-boundary tests.
+- `pipeline_openai`: thread `reasoning_effort` through to the extractor; lands in `extraction_run.json` alongside per-filing tokens.
+- `dispatch`: `--reasoning-effort {minimal,low,medium,high}` flag couples to `run_label` (so each arm writes to `mini_<effort>_run_<N>_*`); `--max-concurrent N` adds `ThreadPoolExecutor` (default 1 preserves byte-identical serial path); `_process_one_filing` extracted as shared worker; `post_run1_sanity_diff` parameterized on prefix. 7 tests covering parallel safety, resume concurrency, per-filing failure isolation, and sanity-diff prefix correctness.
+- `scripts/_completed/rename_mini_run1_to_medium.py`: idempotent rename of the 55 partial-Run-1 dirs from `mini_run_1_*` → `mini_medium_run_1_*` (they were dispatched at API-default reasoning, which is medium). `--dry-run` + `--reverse` supported.
+
+### Cross-arm field agreement analyzer (5th commit)
+
+`scripts/gpt5mini_oh_300slice_cross_arm_agreement.py` + 7 tests. Per the 2026-06-09 design call:
+- Exact equality after JSON canonicalization; no semantic normalization layer (date format, whitespace, etc.).
+- Both-null is **NOT** counted as agreement — it gets its own bucket, so null asymmetry stays visible.
+- One-null counts as disagreement.
+- Named-object fields compared by `.name`; list fields compared by length.
+- `agreement_rate = both_emitted_agree / (both_emitted_agree + both_emitted_disagree)` — null cells excluded from denominator so "when both emit, do they agree?" measures separately from "do they both emit?"
+
+### Findings — cost (n=100 per arm, full-corpus extrapolation across 45,605 OH AERs)
+
+| arm | $/filing | full-corpus | vs Sonnet $800 |
+|---|---|---|---|
+| Sonnet baseline | $0.0175 | $800 | reference |
+| mini medium | **$0.0079** | **$359** | 2.2× cheaper |
+| mini low | **$0.0047** | **$212** | 3.7× cheaper |
+| mini minimal | **$0.0041** | **$188** | 4.2× cheaper |
+
+Minimal hits a cost floor — dropping from low to minimal cut completion tokens 15% but only 12% cost, because the structured-output JSON serialization itself has a ~600-800 completion-token floor that reasoning_effort can't compress.
+
+### Findings — quality (cross-arm agreement on the 100-filing intersection)
+
+**Minimal is below the quality floor**: 97-98% null on `reporting_period_start`/`_end`. Not abstention calibration — the model isn't bothering with the field. **Drop minimal from the leave-behind framing.**
+
+**Medium vs Sonnet on fields where both emit**: 100% agreement on every identity field (filer_role, filing_id, filer_person), 100% agreement on every dollar amount (`total_expenditure` 14/14, `is_itemized` 5/5), 95-100% on list-length and entity-name fields. The genuine gap is `reporting_period_start` (85.1%) and `_end` (90.6%) — 13 and 8 disagreements out of 74-77 both-emitted cells. Worth eyeballing a few to see if they're 1-day-off normalization or genuinely different reads.
+
+**Low vs Sonnet**: similar shape to medium but with worse null asymmetry (`reporting_period_end` one_null 32/100 vs 15/100 on medium). Cost-quality tradeoff is real.
+
+**`extraction_warnings` 30-32% agreement is a brief-design difference, not a quality issue** — mini was instructed to emit interpretive notes; Sonnet emits fewer. Not a worry.
+
+**`filer_organization` is 100% both-null across all arms** — OH AERs don't use that field; the employer lands in the dedicated `employer` slot. Worth flagging so it doesn't surface as a false issue later.
+
+### Long-tail filing 1423176 gets *more* expensive at lower reasoning_effort
+
+| arm | duration | completion tokens | cost |
+|---|---|---|---|
+| mini low | 181s | 13,698 | $0.0289 |
+| mini minimal | **244s** | **21,427** | **$0.0443** |
+
+Pathological. Mini spins in output mode when it can't reason its way through. Full-corpus extrapolations using the median understate the tail; even at 1% pathological filings, that's $20-30 of long-tail cost regardless of setting. Batches API + transient retry (issue #35) is the principled fix.
+
+### Decisions
+
+- **Drop minimal as a shipping setting.** Quality below floor. Keep the data for the writeup as evidence the floor exists.
+- **Medium is the production-defensible setting** ($359 full-corpus, 85-91% reporting_period agreement when both emit, 100% agreement on identity + dollar fields).
+- **Low stays in the writeup as the budget option** for consumers who can tolerate 30%+ reporting_period null rates.
+- **No 3-pass self-consistency** on each arm. The 3-arm × 1-pass shape is already a cross-setting consistency check; burning 6 more passes ($6-8) for inter-run noise floor isn't worth it for the writeup.
+
+### Spend this session
+
+- Arm A medium (45 fresh + 55 resume): $0.3546
+- Arm B low (100 fresh): $0.4652
+- Arm C minimal (100 fresh): $0.4132
+- **Total: ~$1.23 OpenAI** (no Anthropic)
+
+### Next steps
+
+- Spot-check the 13-16 reporting_period disagreements on medium (1-2 filings; ~10 min) to see if a normalization layer would tighten the agreement number.
+- Pull filing 1423176's raw HTML and read it; understand the long-tail pathology shape.
+- Write Suhan-facing summary using medium-only framing.
+
+---
+
+
 ## 2026-06-09 — gpt-5-mini OH 300-slice Day 2: Phase 0 hardening + partial Run 1 (55/305 then stop)
 
 **Originating discussion:** session conversation 2026-06-09 (this is a separate concurrent session from the WI vs NY parity check below; both on the leave-behind-prep branch).

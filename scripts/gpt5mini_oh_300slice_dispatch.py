@@ -1,6 +1,8 @@
 """Phase 2 dispatch: 3 runs of gpt-5-mini over the OH 300-slice.
 
 See `docs/active/leave-behind-prep/plans/20260608_gpt5mini_on_oh_300slice.md`.
+The 3-arm experiment (medium/low/minimal) was added under the 2026-06-09 PM
+session `convos/20260609_gpt5mini_reasoning_effort_three_arm_dispatch.md`.
 
 Operational shape:
   - Enumerates report_ids by listing `data/oh_portal/extracted/` (the Sonnet

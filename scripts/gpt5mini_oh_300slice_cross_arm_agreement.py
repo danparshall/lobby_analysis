@@ -1,5 +1,8 @@
 """Per-(arm-pair) field agreement across sonnet / mini-medium / mini-low.
 
+Session: docs/active/leave-behind-prep/convos/20260609_gpt5mini_reasoning_effort_three_arm_dispatch.md
+Results: docs/active/leave-behind-prep/results/20260609_cross_arm_agreement.md
+
 Walks the 100-filing intersection of the three arms' on-disk outputs and
 emits a per-field agreement matrix. Run after all three mini dispatches
 land.
