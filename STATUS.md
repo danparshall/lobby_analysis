@@ -98,6 +98,19 @@ Lines moved to `docs/historical/` — not currently active, but available for re
 
 ## Recent Sessions
 
+### 2026-06-09 — `leave-behind-prep` — WI vs NY chain parity check; release-doc pattern planned
+
+Cross-state state-of-the-world audit comparing WI and NY chain artifacts. Identified three categories of difference (structural / modeling-architecture / mis-framed gap); pushback walked the third back as surface parity that would stack 4 modeling layers under a number that reads as disclosed. IPF-on-dollars idea falsified — WI lobbyist filings are Time Reports only, no column marginals for IPF. Architectural axis count confirmed: lobbying disclosure (per-state, bespoke), bill sponsorship (shared via Plural Policy), campaign finance (shareable via FTM — not yet built).
+
+FTM site flagged as in sunset/integration mode pending OpenSecrets merger. Long-term API contract uncertain.
+
+**Captured:** GH issues #42 (Plural Policy refactor), #43 (FTM reusable ingest, with OpenSecrets-integration note), #44 (FTM NY sample query, dated 2026-06-10).
+
+**Plan authored** at `docs/active/leave-behind-prep/plans/release_doc_pattern.md` (22.3KB, 314 lines, 6-step) for fresh-agent execution: per-state Suhan-droppable release-doc pattern. Extends `releases/{wi,ny}/README.md` and `releases/{wi,ny}/chain/README.md`; touches STATE_COVERAGE.md See-also; RESEARCH_LOG completion entry.
+
+Convo: `docs/active/leave-behind-prep/convos/20260609_wi_vs_ny_chain_parity.md`
+
+
 (One-line session summaries, newest first)
 
 - **2026-06-06** — [leave-behind-prep] **Take stock + Day 1 hygiene.** Branch cut for pre-wrap (~5 days to Fellowship end). Confirmed 3 live fronts (`cross-state-cpi-2015-validation`, `ny-disclosure-explore`, `oh-portal-aprime-batch` — original `oh-portal-extraction` row was doubly-stale; Dan took over from Amina 2026-06-03 under `oh-portal-aprime-batch`). 5-day plan provisionally locked: Day 1 hygiene → Days 2-3 cross-state CPI N=10 extension (~$15) → Day 4 OH chain composer + FOCAL Plans 3+4 → Day 5 RESEARCH_ARC update + resumption brief. **Two reframings load-bearing**: (1) **SMR-as-canonical principle** (Dan): YAML is statute-literal; helpers translate per-rubric; matching prior art is a CHECK not the goal — moots most v2.2 schema-design framing for Trends 1/6, partly Trend 2 from cross-state CPI N=5 failure-mode trends. (2) **Anna Karenina principle** (Dan): per-state pipelines are bespoke; no state-agnostic chain composer; shared infrastructure lives downstream of extraction. **Deliverables landed**: `docs/STATE_COVERAGE.md` (4-node × 6-edge × 3-attribute matrix, WI/OH detailed, NY skeleton with validation checklist, CA/TX/CO/IL/WA/FL/NC Prong-1-only) at commit `92b4ff8`; STATUS Active+Archived reconciliation (4 stale Active rows → Archived: `wi-tier1-direct-read`, `compendium-v2-promote`, `oh-portal-extraction`, `filing-schema-extraction`; 4 fresh rows surfaced as Active) at commit `546663e`. Contribution data confirmed empirically: Dan **699 non-merge commits (98%)**; Amina 13 (1.8%, mostly last-14-days burst); Gowrav 4 (single April day, ~0.6%). OH subagent verified `principal↔lobbyist money` is structurally missing on OH AER (same shape as WI). Convo: [`convos/20260606_take_stock_and_day1_hygiene.md`](docs/active/leave-behind-prep/convos/20260606_take_stock_and_day1_hygiene.md).
