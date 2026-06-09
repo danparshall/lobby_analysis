@@ -10,6 +10,49 @@ This branch hosts the 5-day pre-wrap cleanup + leave-behind work. Scope:
 
 ---
 
+
+## 2026-06-09 — WI vs NY chain parity check; two cross-state-infra tasks captured
+
+**Originating discussion:** session conversation 2026-06-09 (third leave-behind-prep session).
+
+**Convo:** [`convos/20260609_wi_vs_ny_chain_parity.md`](convos/20260609_wi_vs_ny_chain_parity.md)
+
+**Context:** Dan opened the session asking whether WI had reached parity with NY's chain — referencing the 2026-06-08 NY `parties_lobbied` integration on `ny-disclosure-explore`. Session walked through a parity comparison + an IPF-on-dollars false start + cross-state shareable-infrastructure framing, ending with two GH issues captured for successor-Fellow handoff.
+
+### Topics Explored
+
+- WI chain (`releases/wi/chain/`, on main) vs NY chain (`releases/ny/chain/`, on `ny-disclosure-explore`, not yet merged) artifact-level comparison
+- Three categories of difference: structural (NY's `parties_lobbied` has no WI analog; WI lobbying disclosure doesn't require disclosing which lawmakers were contacted), modeling-architecture (NY = clean JOIN; WI = IPF because WI lobbyists report only aggregate hours), and a mis-framed "fixable" $-attribution gap
+- Dan's IPF-on-dollars idea — falsified because WI lobbyists file Time Reports only (no compensation-received field) → no column marginals; IPF underdetermined without external lobbyist-revenue data
+- Hours ∝ spending rule of thumb: structurally untestable across all 10 priority states (each state discloses one of {$, hours} but not both at per-(lobbyist, client, bill) grain)
+- CFIS as WI-specific name vs FTM as 50-state aggregator (with API-only access surface, basic-tier quota, Institute review on quota-exceed)
+- FTM-in-OpenSecrets-integration sunset mode (banner observation that post-dates the wi-cfis-scoping work — long-term API contract may not survive the merger)
+- Architectural axis count: lobbying disclosure (per-state, bespoke), bill sponsorship (shared via Plural Policy), campaign finance (shareable via FTM — not yet built)
+
+### Provisional Findings
+
+- WI chain is structurally complete given WI's disclosure shape. The `comp_per_cell` column I initially proposed would have stacked 4 layers of modeling (IPF + proportional bill attribution + per-sponsor split + per-principal $/hr rescaling) under a number that reads as disclosed — explicitly rejected as surface parity.
+- WI vs NY are at parity *relative to their respective data sources*. Differences are data-shape, not pipeline-completeness, and not "gaps" in either direction.
+- Cross-state shareable infrastructure confirmed on two of three chain legs: Plural Policy (already in active use on `wi-allocation-matrix` and `ny-disclosure-explore`), FTM (50-state, not yet built). Lobbying disclosure remains per-state Anna Karenina by data-acquisition shape.
+- FTM API may not be the long-term contract — site is "not maintained as we integrate with OpenSecrets"; URL/endpoint pattern may change. Worth confirming before #43 implementation starts.
+
+### Results
+
+- GH issue [#42](https://github.com/danparshall/lobby_analysis/issues/42): "Extract Plural Policy bulk-CSV ingest into shared cross-state library"
+- GH issue [#43](https://github.com/danparshall/lobby_analysis/issues/43): "Build reusable FollowTheMoney ingest for cross-state campaign-finance leg" (body updated with the OpenSecrets-integration finding)
+
+### Next Steps
+
+- Day 4 (OH chain composer + `releases/oh/`) remains the next leave-behind action item per the 2026-06-08 revised 5-day plan. This session's work is captured-task externalization, not Day 4 execution.
+- If Day 5 (RESEARCH_ARC.md update) covers Anna Karenina principle propagation, fold in the cross-state shareable axes (Plural Policy + FTM) finding from this session as a sub-point.
+
+### Decisions Made
+
+- No WI chain `comp_per_cell` work. Rejected as surface-parity dressing.
+- Two tasks externalized to GH issues (#42, #43) rather than absorbed into Day 4/5 scope — they're successor-Fellow handoff work, not pre-Thursday work.
+
+---
+
 ## 2026-06-08 — STATUS sweep to main + gpt-5-mini cost-floor plan
 
 **Originating discussion:** session conversation 2026-06-08 (second leave-behind-prep session).
