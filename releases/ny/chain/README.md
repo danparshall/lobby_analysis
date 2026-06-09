@@ -13,6 +13,26 @@ aggregate hours), NY discloses the lobbyist→bill link directly, so the chain i
 a join plus two deterministic transforms (coalition split + bill-id
 normalization).
 
+**Audience:** colleagues who want the influence graph "company → lobbyist → bill → lawmaker" for NY 2025 without having to assemble it from the 5 source TSVs themselves. This is a *derived* artifact — different shape than the source TSVs in [`releases/ny/`](..). Read "How dollars are attributed" and "Disclosed lawmakers vs inferred sponsors" before quantitative use.
+
+---
+
+## TL;DR
+
+| | |
+|---|---|
+| **Rows** | 83,786 |
+| **Coverage** | New York State, reporting year 2025 (Jan/June + July/Dec periods) |
+| **Distinct lobbying firms** | 927 |
+| **Distinct beneficiaries** (post coalition-split) | 1,812 |
+| **Distinct bills** (source `bill_id`) | 6,352 |
+| **Distinct sponsoring lawmakers** | 213 (= full NY legislature: 150 Assembly + 63 Senate) |
+| **Total compensation, conserved** | $153,064,191.00 ($0 delta vs Phase-3 release) |
+| **`os_matched` rate** | 99.9% (83,704 of 83,786 rows; 30 distinct bills unmatched and flagged, never dropped) |
+| **Modeling layers** | JOIN + coalition split + bill-id normalization — no IPF |
+
+---
+
 ## Aggregates (2025)
 
 | metric | value |
@@ -58,6 +78,18 @@ One row per `(reporting_period, lobbyist_firm, beneficiary, bill, sponsor)`.
 | `disclosed_lawmakers` | **filing-grain metadata.** Sorted, `;`-joined set of resolved `ocd-person` IDs from `NY_filing_parties_lobbied.tsv` for this row's `(filing_id, lobbyist_id)`. Empty when no resolved contacts. Attaches to the FILING, not to this specific bill — see caveat below. |
 | `sponsor_in_disclosed_set` | `True` iff `sponsor_lawmaker_id` ∈ this row's `disclosed_lawmakers`. Empty sponsor → always `False`. **Read as "this filer disclosed contact with this sponsor on *something* in this filing," NOT as bill-specific evidence** — see caveat. |
 | `disclosed_only_lawmaker_count` | per `(filing, lobbyist)`, count of resolved disclosed lawmakers who are NOT primary sponsors of any *matched* bill in the filing. The "leadership / committee-chair" signal. Same int on every row of the group. |
+
+## What this is — a 30-second tour of the chain construction
+
+NY's chain is structurally much simpler than WI's: it's a JOIN, not an IPF. Three steps:
+
+1. **Lobbying disclosure → chain rows.** NY filers (lobbying firms, on behalf of beneficial clients) report `total_compensation` semi-annually, plus the list of bills they lobbied on for that client. The chain composer reads `releases/ny/NY_filings.tsv` and `NY_filing_bill_links.tsv`, then joins on `os_bill_identifier` against the Open States NY 2025-2026 bill bundle to attach each bill's primary sponsor (`ocd-person`).
+2. **Coalition split.** When a filing's `beneficial_client` cell names multiple beneficiaries separated by `;` (276 filings in 2025), the compensation is split evenly across `M` beneficiaries. This is a *uniform-share modeling assumption* — no per-beneficiary dollar weight is disclosed.
+3. **Per-bill split + sponsor replication.** Within each (beneficiary, bills) sub-filing, compensation is split evenly across the `N` bills lobbied: `comp_per_cell = C / (M·N)`. Each resulting (beneficiary, bill) cell is then **replicated** across the bill's primary-sponsor rows. NY bills in 2025 each have exactly one primary sponsor, so this replication is 1:1 in practice — but the schema and conservation rules are written for general N≥1 forward compatibility.
+
+Step (2) and step (3) both use integer-cent `even_split` arithmetic so cells sum to the filing's compensation **exactly** with no rounding loss.
+
+The chain detects *that* a beneficiary's firm lobbied on a bill whose sponsor is X — it does *not* claim that the firm lobbied X *about that bill*. The disclosed-contact field (`disclosed_lawmakers`) is at the *filing* grain and tells a different story; see "Disclosed lawmakers vs inferred sponsors" below.
 
 ## How dollars are attributed (conservation)
 
@@ -166,18 +198,134 @@ and inserts the space to match OS exactly. Measured match rate: **99.5% of
 distinct bills, 99.8% of link rows** with suffix-stripping, vs only 81.3%
 without — i.e. suffix-stripping is worth ~18 points of chain closure.
 
-## Regenerating
+## Sample analyses (with protective patterns called out)
 
+Each snippet below demonstrates a correct aggregation pattern that respects the conservation rules above. Comments name the gotcha each one avoids.
+
+```python
+import pandas as pd
+chain = pd.read_csv("NY_chain_2025.tsv", sep="\t")
 ```
+
+### 1. Top beneficiaries on a given bill
+
+```python
+# Each (filing, lobbyist, beneficiary, bill) cell is replicated across the
+# bill's primary-sponsor rows with `comp_per_cell` repeated. Dedupe to the cell
+# key BEFORE summing comp_per_cell. (In 2025 each bill has exactly one primary
+# sponsor so the replication is 1:1, but the rule preserves correctness for
+# future builds and is the right discipline regardless.)
+target = chain[chain["bill_id"] == "S550"]
+cells = target.drop_duplicates(
+    subset=["filing_id", "lobbyist_id", "beneficiary_id", "bill_id"]
+)
+top = (
+    cells.groupby("beneficiary_name")["comp_per_cell"]
+    .sum()
+    .sort_values(ascending=False)
+    .head(10)
+)
+```
+
+### 2. Top primary sponsors by chain-attributed compensation
+
+```python
+# Filter to os_matched=True so unmatched bills (empty sponsor) don't drag in
+# a phantom "empty sponsor" bucket. Then dedupe to cell key before summing —
+# even though in 2025 N_sponsors=1 always, the dedupe is a no-op safety net
+# that protects against future multi-sponsor data without changing today's
+# answer.
+matched = chain[chain["os_matched"] == True]
+cells = matched.drop_duplicates(
+    subset=["filing_id", "lobbyist_id", "beneficiary_id", "bill_id"]
+)
+top_sponsors = (
+    cells.groupby(["sponsor_lawmaker_id", "sponsor_lawmaker_name"])[
+        "comp_per_cell"
+    ]
+    .sum()
+    .sort_values(ascending=False)
+    .head(20)
+)
+```
+
+### 3. Off-sponsor lobbying activity by (filing, lobbyist)
+
+```python
+# `disclosed_only_lawmaker_count` is the count of disclosed lawmakers who are
+# NOT primary sponsors of any matched bill in the filing — the leadership /
+# committee-chair / executive-contact signal that survives base-rate noise.
+# It's the SAME int on every row of a (filing_id, lobbyist_id) group, so
+# DEDUPE TO THAT GROUP before ranking by it, or you'll be ranking by
+# group-row-count, not by group-value.
+off_sponsor = (
+    chain.drop_duplicates(subset=["filing_id", "lobbyist_id"])
+    .nlargest(20, "disclosed_only_lawmaker_count")[
+        ["lobbyist_name", "client_id", "filing_id",
+         "disclosed_only_lawmaker_count"]
+    ]
+)
+# sponsor_in_disclosed_set=True is largely base-rate (typical fan-out 36+
+# disclosed legislators per filing). disclosed_only_lawmaker_count is the
+# genuinely informative per-group signal.
+```
+
+### 4. Coalition decomposition for a multi-beneficiary filing
+
+```python
+# When a filing names multiple beneficiaries (M>1), NY's chain splits
+# filing compensation evenly across (beneficiaries × bills). Pick one
+# coalition filing and see the M·N grid of beneficiary × bill cells.
+coalition = chain[chain["n_beneficiaries_in_filing"] > 1]
+example_filing = coalition.iloc[0]["filing_id"]
+this_filing = chain[chain["filing_id"] == example_filing]
+# Conservation: comp_per_cell summed across distinct cells of one
+# (filing, lobbyist) equals that filing's filing_compensation, exactly.
+this_filing_cells = this_filing.drop_duplicates(
+    subset=["filing_id", "lobbyist_id", "beneficiary_id", "bill_id"]
+)
+print(
+    this_filing_cells["comp_per_cell"].sum(),
+    "==",
+    this_filing_cells["filing_compensation"].iloc[0],
+)
+```
+
+### 5. Joining to external bill-text or bill-actions data via the OS canonical key
+
+```python
+# `os_bill_identifier` is the Open States canonical form (`A 1668` / `S 550`)
+# — suffix-stripped and zero-unpadded. Use it as the join key against any
+# Plural Policy / Open States bill metadata table. The source `bill_id`
+# column preserves the lobbying-side form (may be padded or suffixed) and
+# `bill_print_version` is the suffixed print actually lobbied (which the
+# filer specified). For external joins, prefer os_bill_identifier.
+os_bills = (
+    chain[chain["os_matched"] == True]
+    .drop_duplicates(subset=["os_bill_identifier"])
+    [["os_bill_identifier", "bill_id", "bill_print_version", "bill_title"]]
+)
+```
+
+## Reproducer
+
+The chain depends on the 4 source TSVs in `releases/ny/` (already in this repo on the `ny-disclosure-explore` branch) plus the Open States NY 2025-2026 bulk CSV bundle (external to this repo, gitignored).
+
+```bash
+# 1. Fetch the Open States / Plural Policy NY 2025-2026 bill bundle
+#    (~few hundred kB)
+#    Download "New York 2025 Regular Session" from:
+#    https://open.pluralpolicy.com/data/session-csv/
+#    Stage it under data/bills/NY/2025/ (gitignored).
+
+# 2. Compose the chain
 uv run --active python -m lobby_analysis.allocation.ny.cli chain \
     --release-dir releases/ny \
     --bill-csv-dir data/bills/NY/2025 \
     --output releases/ny/chain/NY_chain_2025.tsv
 ```
 
-Requires the Open States NY 2025-2026 CSV bundle staged under
-`data/bills/NY/2025/` (gitignored; download from
-`open.pluralpolicy.com/data/session-csv/`, "New York 2025 Regular Session").
+Wall time is on the order of a minute (this is a JOIN, not an IPF). The materialized output is sorted deterministically, so re-runs produce a byte-identical TSV when sources are unchanged.
 
 ## v1.1 follow-ups
 
