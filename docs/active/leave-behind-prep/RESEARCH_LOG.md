@@ -128,6 +128,58 @@ Pathological. Mini spins in output mode when it can't reason its way through. Fu
 - Pull filing 1423176's raw HTML and read it; understand the long-tail pathology shape.
 - Write Suhan-facing summary using medium-only framing.
 
+### Continuation: filer_organization XOR fix + reporting_period root-cause + briefv2 fix
+
+After the 3-arm cross-arm analysis landed, the session continued into root-causing the reporting_period disagreements. Three findings, summarized — full narrative in the convo doc.
+
+**Schema/brief: filer_organization is independent of filer_person, not XOR** (commit `c541d91`). Cross-arm showed 100% both-null on `filer_organization`. Initial read was "regime-shape correct for OH" but Dan pushed back: the schema docstring framing ("Set if the filer is a natural person" / "Set if the filer is an organization") read as XOR, and the OH brief's "DO NOT put it in filer_organization" prohibition reinforced it. For WI/NY where a registered lobbyist legitimately disclosures alongside their firm, XOR throws away data. Edits: docstrings rewritten as independent in `models/filings.py`; OH brief's prohibition replaced with positive regime-shape guidance; results doc annotated. No validator was enforcing XOR — purely social. Win is structural for downstream pipelines; OH outputs unchanged.
+
+**Root cause of reporting_period disagreements: OH semesterly shorthand misread.** The spot-check script (`f83b265`) classified 12 of 13 medium-arm disagreements as `large_delta` — mini emitting structurally malformed dates like `0501-08-25` (year 501 AD). Raw HTML inspection of filing `1433534` confirmed the source field: `Reporting Period: May-Aug25`. Mini parsed this literally as "May 01 to Aug 25, year `0501`" instead of "May 1 — Aug 31, 2025". Sonnet recognized the OH convention. Pathology was worse at lower reasoning_effort (minimal failed harder → 98% null on this field).
+
+**Brief surgery + schema validator (commits `5a87c79` + `4d0c930`):**
+- New brief step 7 (per ORC §101.72) maps OH's three semesterly periods to ISO date ranges. Brief sha `8e564091 → 5606c835`, auto-distinguishing pre/post-fix outputs.
+- `ReasonableDate` annotated type (year ∈ [1990, current_year + 1]) on all 10 date fields. Raises ValueError on garbage; turns silent data corruption into loud extraction failure. 9 new tests.
+
+**briefv2 verification on n=100** (commits `e5bce15` / `0bc54ef` / `ac906a4`): 26 known-failures → 100% recovery. Full-medium top-up → 74 new + 26 resume-skip, 0 reporting_period disagreements across the arm. **No regressions on the 74 previously-good filings.**
+
+**Bonus finding: prescriptive brief is also cheaper.** Per-filing cost dropped from $0.0079 → $0.0066 under briefv2 despite the brief being longer. Mini spends fewer reasoning tokens once it has the explicit mapping. Full-corpus extrapolation moves from $359 to **~$301**.
+
+**Cross-arm briefv2 results** (commit `bfe64fa`, doc `20260609_cross_arm_agreement_briefv2.md`):
+
+| field | sonnet vs medium (original) | sonnet vs medium_briefv2 |
+|---|---|---|
+| reporting_period_start | 85.1% | **100%** |
+| reporting_period_end | 90.6% | **100%** |
+| filer_role / filing_id / filing_action / filer_person / filed_date | 100% | 100% |
+| employer / expenditures / gifts | 99-100% | 99-100% |
+| positions, engagements | 95-96% | 96% |
+| is_current | 98% | **94%** ← minor regression |
+| extraction_warnings | 30% | **13%** ← brief perturbed warning emission |
+
+**Two side-effects worth flagging:**
+
+- `is_current` 98% → 94%: brief change introduced 4-6 new disagreements on a deterministic boolean field. Worth a 5-min spot-check before writeup; probably a brief tweak ("True unless source explicitly marks the filing as amended") fixes it.
+- `extraction_warnings` 30% → 13%: brief perturbed warning patterns. Probably benign churn; one-rid eyeball confirms or denies.
+
+**Decisions reaffirmed:**
+
+- Ship medium with briefv2: $301 full-corpus, 100% reporting_period agreement, 99-100% on identity/dollar/list-count fields.
+- Drop minimal from shipping framing (pre-existing decision; briefv2 doesn't change it).
+- Keep low data on disk; de-emphasize in writeup unless we re-test at briefv2 (~$0.40, ~5 min).
+- Schema validator stays regardless — defense-in-depth.
+
+**Incremental spend (continuation):** $0.16 known-failures + $0.50 full-medium top-up = $0.66.
+**Session total: ~$1.89 OpenAI.** Cumulative on branch: ~$2.20 including this morning's $0.31 Anthropic.
+
+**Pending follow-ups before writeup:**
+
+- is_current spot-check (the 6 disagreement rids)
+- extraction_warnings content sanity-check (one rid)
+- Decide whether to re-test low at briefv2
+- Filing 1423176 deep-dive (long-tail pathology, source-content-driven)
+- Write Suhan-facing summary
+- STATUS.md update
+
 ---
 
 

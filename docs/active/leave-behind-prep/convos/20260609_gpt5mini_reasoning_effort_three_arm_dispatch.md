@@ -101,3 +101,88 @@ The three arm-1 dispatches themselves land as on-disk JSONs under `data/oh_porta
 - **Total: ~$1.23 OpenAI** (no Anthropic)
 
 Cumulative on this branch: ~$1.95 OpenAI + $0.31 Anthropic from this morning's 5 re-Sonnet runs = ~$2.26.
+
+---
+
+## Continuation: reporting_period root-cause + brief surgery + briefv2 retest
+
+After the 3-arm dispatch landed, the session continued into root-causing the reporting_period disagreements. Three substantive findings emerged.
+
+### Finding 1: filer_organization XOR was a schema-design issue, not a regime-shape one
+
+Initial read of the cross-arm table: `filer_organization` at 100% both-null across all four arms was "regime-shape correct for OH" — OH AERs have a natural-person filer (the agent), so `filer_organization` stays null. **Dan correctly pushed back** that the framing was wrong: states like WI/NY legitimately disclose BOTH a natural-person filer AND an organizational filer (a lobbyist plus their firm), and the schema docstrings + OH brief framed `filer_person` / `filer_organization` as XOR via "Set if the filer is a natural person" / "Set if the filer is an organization" wording.
+
+No validator was enforcing XOR — the constraint was purely social, from docstrings and brief language. Fixed in commit `c541d91`:
+- `models/filings.py`: docstrings rewritten as independent, calling out the distinction from `employer`.
+- `oh_portal/extraction_brief.py`: removed "DO NOT put it in filer_organization" prohibition, replaced with positive regime-shape guidance + a note that other states' regimes may populate both.
+- `results/20260609_cross_arm_agreement.md`: added a "Reading the both-null rows" section flagging regime-shape-correct nulls.
+
+No data re-extraction needed; OH outputs were already correct. Win is structural for downstream pipelines.
+
+### Finding 2: reporting_period disagreements were `May-Aug25` shorthand misreads, not date judgment calls
+
+The spot-check (`scripts/gpt5mini_oh_300slice_reporting_period_spotcheck.py`, commit `f83b265`) classified each disagreement by date-delta. Result was striking: **12 of 13 medium-arm disagreements were `large_delta` cases** with mini emitting structurally malformed dates like `0501-08-25`, `0101-01-01`, `0831-08-31`. The malformed years (`0501`, `0831`, `0101`) were consistently `MMDD` reinterpretations.
+
+Raw HTML inspection of filing `1433534` showed the source: `<th>Reporting Period:</th><td>May-Aug25</td>`. **Mini was misreading OH's semesterly shorthand**: parsing `May-Aug25` as "May 01 through Aug 25" with year `0501`, instead of "May 1 — Aug 31, 2025." Sonnet recognized the OH convention; mini at every reasoning_effort failed on it (worse at lower effort — minimal hit 98% null on this field by failing harder).
+
+### Finding 3: brief surgery + schema validator both fix the problem cleanly
+
+Two complementary fixes:
+
+- **Brief change (commit `4d0c930`):** new step 7 explicitly maps OH's three semesterly periods (per ORC §101.72) to ISO date ranges. Brief sha bumped `8e564091 → 5606c835`, automatically distinguishing pre/post-fix outputs in `extraction_run.json.prompt_version`.
+- **Schema validator (commit `5a87c79`):** `ReasonableDate = Annotated[date, AfterValidator(_reasonable_year)]` enforces `1990 ≤ year ≤ current+1` on all 10 date fields across the models. Raises ValueError instead of silently accepting `0501-08-25` as year 501. Defense-in-depth — protects against future extractor garbage regardless of brief.
+
+Verification:
+1. **briefv2 retest, known-failures mode (26 rids):** 26/26 extracted, 0 disagreements, 0 one-nulls. Brief fix works on the cases that broke.
+2. **briefv2 retest, full-medium mode (top up 26 → 100):** 74 fresh + 26 resume-skip, $0.5024 incremental. 100/100 extracted, 0 reporting_period disagreements across full arm. **No regressions on the 74 previously-good filings.**
+
+### Bonus finding: more-prescriptive brief is also cheaper
+
+Per-filing cost dropped from **$0.0079 → $0.0066** under briefv2. The new brief is *longer* (added step 7 ~10 lines), but mini spends fewer reasoning tokens — it no longer has to guess what `May-Aug25` means. Full-corpus extrapolation moves from $359 to **~$301**.
+
+### Cross-arm briefv2 results (commit `bfe64fa`, results doc `20260609_cross_arm_agreement_briefv2.md`)
+
+Three pairs compared on the 100-filing intersection:
+
+| field | sonnet vs medium (original) | sonnet vs medium_briefv2 |
+|---|---|---|
+| reporting_period_start | 85.1% (74 agree / 13 disagree / 13 one-null) | **100% (100 / 0 / 0)** |
+| reporting_period_end | 90.6% (77 / 8 / 15) | **100% (100 / 0 / 0)** |
+| filer_role, filing_id, filing_action | 100% | 100% |
+| filer_person, employer, expenditures, gifts | 99-100% | 99-100% |
+| positions, engagements | 95-96% | 96% |
+| is_current | 98% (2 disagree) | **94% (6 disagree)** ← minor regression |
+| extraction_warnings | 30% | **13%** ← brief perturbed warning emission |
+
+### Two side-effects worth flagging in the writeup
+
+1. **`is_current` 98% → 94%.** Six new disagreements introduced by briefv2 on a field that should be deterministic (True unless the source explicitly marks the filing as amended). Likely briefv2 is emitting False where True is correct on 4-6 filings. Direction confirmed by `medium vs medium_briefv2` panel showing the same shift (92% agreement on the field between the two mini runs, vs 100% expected if both defaulted to True). Worth a 5-min spot-check before final writeup. Small regression but real.
+
+2. **`extraction_warnings` 30% → 13%.** Brief change perturbed mini's warning-emission patterns. Probably benign churn (mini emits more warnings now that the brief feels more rule-driven), but worth a 2-min eyeball of one rid to confirm warnings remain content-relevant rather than noise.
+
+Neither is a dealbreaker. Both deserve a one-line acknowledgment in the writeup's "honest limitations" section.
+
+### Decisions
+
+- **Ship medium with the briefv2 patch.** $301 full-corpus extrapolation, 100% reporting_period agreement with Sonnet, 99-100% on identity/dollar/list-count fields when both emit.
+- **`is_current` regression is a follow-up, not a blocker.** Spot-check first, then either a brief tweak ("is_current is True unless the source explicitly marks the filing as amended or superseded") or accept the 6/100 noise.
+- **Keep low and minimal data on disk** but de-emphasize them in the writeup. The case for low as a budget option weakened: 30%+ reporting_period nulls without the brief fix; we haven't re-tested low+briefv2. If we want to keep low in the writeup, we should re-test ($0.40, ~5 min).
+- **Schema validator stays even if mini behavior is "fixed."** Defense-in-depth is independently valuable; future extractors won't be the only ones hitting this class of bug.
+
+### Open questions remaining
+
+- **is_current spot-check** (the 6 disagreement rids). Pending.
+- **extraction_warnings content sanity-check** (one rid eyeball). Pending.
+- **Low and minimal at briefv2.** $0.40 each if we want them in the writeup. Pending decision.
+- **Filing 1423176 deep-dive.** Still pathological at briefv2 ($0.0338, 184s, 16,133 tokens). Source-content-driven, not reasoning-driven.
+
+### Cumulative session spend
+
+| Phase | Spend |
+|---|---|
+| Original 3-arm dispatch (medium/low/minimal) | $1.23 |
+| briefv2 known-failures (26 rids) | $0.16 |
+| briefv2 full-medium top-up (74 rids) | $0.50 |
+| **Total OpenAI this session** | **~$1.89** |
+
+Plus this morning's $0.31 Anthropic = **~$2.20 cumulative on this branch**.

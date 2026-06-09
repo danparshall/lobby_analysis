@@ -1,3 +1,6 @@
+<!-- Generated during: convos/20260609_gpt5mini_reasoning_effort_three_arm_dispatch.md -->
+<!-- Note: title and intro line are inherited from the render template and don't reflect the actual arm pairs compared (sonnet × medium_briefv2 × medium). The pair-by-pair tables below are correct. -->
+
 # Cross-arm field agreement — sonnet / mini-medium / mini-low
 Comparison set: **100 filings** present in all four arms (sonnet + mini-medium + mini-low + mini-minimal).
 Filings missing per arm during intersection scan:
