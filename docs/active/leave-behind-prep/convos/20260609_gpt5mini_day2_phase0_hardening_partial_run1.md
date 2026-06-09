@@ -106,6 +106,16 @@ another agent take over after parallelizing the dispatcher (currently serial,
 
 - [`results/20260609_gpt5mini_oh_300slice_partial_run1.md`](../results/20260609_gpt5mini_oh_300slice_partial_run1.md)
   — partial Run 1 finding (cost, verbosity, what's on disk, resume path)
+- [`handoff/`](../handoff/) — tracked copy of this session's gitignored
+  extraction outputs (committed in `27f376f` after the initial finish-convo
+  at user request, so the next agent can inspect without depending on Dan's
+  cross-machine data sync). Contents: 55 mini Run 1 outputs + `_log_run1.txt`
+  + reconstructed `_summary_run1.json` + the 5 Sonnet runs re-extracted this
+  session (legacy-schema cleanup) + a 10-sample of pre-existing Sonnet
+  baselines spread across the 55 mini-extracted IDs for matched-pair
+  verbosity diffing. README in the handoff dir has the `cp -r` recipes for
+  restoration back under `data/oh_portal/` if `--resume` needs to skip the
+  55 done filings.
 
 ## Open Questions
 

@@ -19,6 +19,8 @@ This branch hosts the 5-day pre-wrap cleanup + leave-behind work. Scope:
 
 **Results note:** [`results/20260609_gpt5mini_oh_300slice_partial_run1.md`](results/20260609_gpt5mini_oh_300slice_partial_run1.md)
 
+**Handoff data (tracked copy of gitignored outputs):** [`handoff/`](handoff/) — 55 mini Run 1 outputs + 5 re-Sonnet runs (this session) + 10-sample of pre-existing Sonnet baselines for matched-pair diffing. Restoration recipes in `handoff/README.md`.
+
 **Context:** Day 2 of the gpt-5-mini cost-floor validation per the 2026-06-08 plan. Worked through Phase 0 pre-flight, surfaced + fixed several issues, launched Run 1 of the 3x mini dispatch, then stopped at 55/305 by user direction after the per-filing cost projection materially exceeded the plan's estimate.
 
 ### Hardening done before Phase 2 (committed + pushed)
