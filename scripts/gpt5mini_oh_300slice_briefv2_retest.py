@@ -22,9 +22,17 @@ confirm the malformed-date count drops.
 
 Run
 ---
+    # Default: re-test the 26 known reporting_period failure rids.
+    # ~10s wall-clock, ~$0.21.
     uv run python scripts/gpt5mini_oh_300slice_briefv2_retest.py
 
-After it finishes, evaluate:
+    # Full medium-arm regression: re-test all ~100 rids from the original
+    # medium arm. Confirms the brief change doesn't BREAK previously-good
+    # filings. ~$0.79.
+    uv run python scripts/gpt5mini_oh_300slice_briefv2_retest.py \\
+        --mode full-medium
+
+After it runs, evaluate:
     uv run python scripts/gpt5mini_oh_300slice_reporting_period_spotcheck.py \\
         --arm medium_briefv2
 """
@@ -46,7 +54,7 @@ if str(_SRC) not in sys.path:
 # (mini=null where Sonnet emitted). All 26 share the same root cause —
 # mini couldn't parse 'May-Aug25' shorthand. After the brief fix, all 26
 # should emit clean 2025-XX-XX dates matching Sonnet.
-TARGET_RIDS_MEDIUM = [
+KNOWN_FAILURE_RIDS = [
     # ── disagreements (both emitted, mini emitted malformed) ──
     "1429064", "1436864", "1437090", "1429882", "1433534", "1433628",
     "1435010", "1437386", "1396330", "1401706", "1411564", "1428260",
@@ -58,8 +66,49 @@ TARGET_RIDS_MEDIUM = [
 ]
 
 
+def derive_full_medium_rids(data_dir, run_label_prefix: str = "mini_medium_run_1_") -> list[str]:
+    """Find every report_id with an existing mini_medium_run_1_* output.
+
+    This is the "what did the original medium arm actually run on" source
+    of truth, used by --mode full-medium for the full-arm regression test.
+    Distinct from --mode known-failures (the 26-rid cherry-pick).
+    """
+    from lobby_analysis.oh_portal.pipeline_openai import EXTRACTED_OPENAI_SUBDIR
+    root = data_dir / EXTRACTED_OPENAI_SUBDIR
+    if not root.is_dir():
+        return []
+    rids: list[str] = []
+    for report_dir in sorted(root.iterdir()):
+        if not report_dir.is_dir():
+            continue
+        # Each report dir contains one or more run_dirs; check if any
+        # has the medium prefix.
+        has_medium = any(
+            d.is_dir() and d.name.startswith(run_label_prefix)
+            for d in report_dir.iterdir()
+        )
+        if has_medium:
+            rids.append(report_dir.name)
+    return rids
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--mode", default="known-failures",
+        choices=["known-failures", "full-medium"],
+        help=(
+            "Which rid set to re-extract under the new brief. "
+            "'known-failures' (default): the 26 hardcoded report_ids that "
+            "the spot-check identified as reporting_period failures on the "
+            "original medium arm. Cheap (~$0.21) and fast (~10s). Good for "
+            "first-pass 'does the fix work on the broken cases?' check. "
+            "'full-medium': all ~100 report_ids that were in the original "
+            "medium arm, derived at runtime by listing extracted_openai/ for "
+            "mini_medium_run_1_* outputs. Used to verify the brief change "
+            "doesn't REGRESS the previously-good cases. Costs ~$0.79."
+        ),
+    )
     parser.add_argument(
         "--max-concurrent", type=int, default=10,
         help="Concurrency level (default 10).",
@@ -118,11 +167,33 @@ def main() -> int:
     sys.modules["gpt5mini_dispatch"] = dispatch_mod
     spec.loader.exec_module(dispatch_mod)
 
+    # Resolve target rid set from --mode.
+    if args.mode == "known-failures":
+        target_rids = list(KNOWN_FAILURE_RIDS)
+        mode_descr = "26 known reporting_period failure rids (hardcoded)"
+    elif args.mode == "full-medium":
+        target_rids = derive_full_medium_rids(DATA_DIR)
+        mode_descr = f"all {len(target_rids)} rids found in mini_medium_run_1_* (derived)"
+        if not target_rids:
+            print(
+                "[briefv2-retest] ERROR: --mode full-medium found no "
+                "mini_medium_run_1_* outputs. Run the original medium arm "
+                "first or check --data-dir.",
+                file=sys.stderr,
+            )
+            return 1
+    else:
+        raise ValueError(f"unhandled mode: {args.mode}")
+
+    # Cost estimate. The original medium arm averaged $0.0079/filing.
+    estimated_cost = len(target_rids) * 0.0079
     run_label = f"mini_{args.reasoning_effort}_{args.run_label_suffix}_run_1"
-    print(f"Target rids ({len(TARGET_RIDS_MEDIUM)}): {TARGET_RIDS_MEDIUM[:5]}...", file=sys.stderr)
+    print(f"Mode: {args.mode} — {mode_descr}", file=sys.stderr)
+    print(f"Target rids: {len(target_rids)}", file=sys.stderr)
     print(f"Run label: {run_label}", file=sys.stderr)
     print(f"Reasoning effort: {args.reasoning_effort}", file=sys.stderr)
     print(f"Concurrency: {args.max_concurrent}", file=sys.stderr)
+    print(f"Estimated cost: ~${estimated_cost:.2f} (at $0.0079/filing)", file=sys.stderr)
     print(f"Output dir: {DATA_DIR}/{EXTRACTED_OPENAI_SUBDIR}/<rid>/{run_label}_*", file=sys.stderr)
 
     if args.dry_run:
@@ -133,7 +204,7 @@ def main() -> int:
         print(m, file=sys.stderr)
 
     results = dispatch_mod.run_one_pass(
-        TARGET_RIDS_MEDIUM,
+        target_rids,
         run_label=run_label,
         data_dir=DATA_DIR,
         wall_clock_cap_s=3600,
@@ -147,7 +218,7 @@ def main() -> int:
     n_ok = sum(1 for r in results if r.status == "extracted")
     n_failed = sum(1 for r in results if r.status == "failed")
     total_cost = sum(r.cost_usd for r in results if r.cost_usd)
-    print(f"\n[briefv2-retest] {n_ok}/{len(TARGET_RIDS_MEDIUM)} extracted, {n_failed} failed, ${total_cost:.4f}", file=sys.stderr)
+    print(f"\n[briefv2-retest] {n_ok}/{len(target_rids)} extracted, {n_failed} failed, ${total_cost:.4f}", file=sys.stderr)
     print(
         "\nNext: rerun the spot-check pointed at the new arm:\n"
         f"  uv run python scripts/gpt5mini_oh_300slice_reporting_period_spotcheck.py \\\n"
