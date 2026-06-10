@@ -10,6 +10,45 @@
 
 ## Session log (newest first)
 
+### 2026-06-09 — 50-state 2025 expansion (Phase 1 clean / Phase 2 batch 1 mostly CF-blocked)
+
+- **Convo:** [`convos/20260609_2025_50_state_expansion.md`](convos/20260609_2025_50_state_expansion.md)
+- **Plan:** [`plans/20260609_2025_50_state_expansion.md`](plans/20260609_2025_50_state_expansion.md)
+- **Results:** [`results/20260609_50_state_2025_expansion_session_summary.md`](results/20260609_50_state_2025_expansion_session_summary.md)
+- **Branch README:** [`README.md`](README.md) (new — Method B process documentation; user deliverable)
+- **Machine:** Dans-MacBook-Pro
+
+#### Topics explored
+
+- Inventoried existing Justia 2025 coverage: 16 states on disk (user said "~10" — actually 16). Identified 34 expansion targets.
+- Mapped the two retrieval paths: Method A (curated `LOBBYING_STATUTE_URLS` — 6 entries) vs Method B (agent-driven via [`plans/_handoffs/20260519_subagent_dispatch_prompt.md`](plans/_handoffs/20260519_subagent_dispatch_prompt.md)).
+- Canary 3 (AL/LA/NE) — structurally diverse states (single-body / two-body / unicameral) to validate Method B handles long-tail regimes.
+- Batch 1 (AZ/GA/VA) of the 31-state Phase 2 fan-out.
+- CF posture: AL probe → canary trio → batch 1. Found cumulative-fetch rate-limit pattern.
+
+#### Provisional findings
+
+- **Method B handles structurally diverse regimes at opus tier.** AL (single-body), LA (two-body across Title 24 + Title 49 in Revised Statutes — Civil Code correctly excluded), NE (unicameral flat-chapter), VA (Title 2.2 / Chapter 4 / Article 3 — deeper-than-expected hierarchy turned out to be flatter than the prior anticipated). All four self-corrected stale regime priors by reading the actual Justia TSV.
+- **Per-canary cost ~$0.45–$0.90 at opus rates (avg ~82K subagent_tokens).** 5-10× my pre-session $0.10/canary estimate. Budget raised mid-session $5 → $35.
+- **CF rate-limit appears cumulative, not just per-batch concurrency.** AL pass-1 probe clean (1 fetch). Canary 1 all clean (~10-15 fetches, 3-concurrent). Batch 1 had 1/3 clean (~25-30 cumulative fetches, also 3-concurrent). AZ's pass-1 succeeded then pass-2 CF-blocked seconds later — consistent with per-IP rate-limit that decays over time, not a hard ban.
+- **VA regime prior in this session's dispatch prompts was stale.** "Chapter 4.4" was correct at some prior vintage but in 2025 the lobbying article moved to "Chapter 4 Article 3" (4.4 now houses Children's Ombudsman). Worth fixing in any persisted regime-prior reference.
+
+#### Results
+
+- 4 new clean canaries: AL, LA, NE, VA (URL bundles ready for Phase 3 section fetch).
+- 2 partial canaries with pass-1 work preserved for resume: AZ (pass-1 picked Title 41), GA (pass-1 CF interstitial only).
+- 28 states remaining: CT, DE, HI, ID, IN, IA, KS, KY, ME, MD, MN, MS, MO, MT, NV, NH, NJ, NM, ND, OK, OR, RI, SC, SD, TN, UT, VT, WY.
+- Phase 3 section-body fetch deferred (no API spend; one Python pass once enough clean bundles accumulate).
+- Branch README shipped at [`README.md`](README.md).
+- Repo root README updated with 1-line pointer.
+
+#### Next steps
+
+- **Cooldown** before resuming Justia fetches from Dans-MacBook-Pro IP (user is handling IP reset out-of-band with another agent). Probe with a single pass-1 fetch before any subagent dispatch.
+- Resume fan-out at **2-concurrent + cooldown between batches** per user directive after batch 1 tripped CF. Re-canary AZ (resume from pass-2) and GA (restart from pass-1) along the way.
+- Phase 3 section-body fetch (write `scripts/fetch_50state_2025_sections.py`) once enough clean bundles in hand.
+- Fix "Chapter 4.4" → "Chapter 4 Article 3" in any persisted VA regime-prior reference.
+
 ### 2026-06-05 — Top-10 priority-list update → 3-vintage statute gap-fill (5 cells; 30/30 now covered)
 
 - **Convo:** [`convos/20260605_top10_vintage_gapfill.md`](convos/20260605_top10_vintage_gapfill.md)
