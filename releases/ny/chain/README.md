@@ -31,6 +31,8 @@ normalization).
 | **`os_matched` rate** | 99.9% (83,704 of 83,786 rows; 30 distinct bills unmatched and flagged, never dropped) |
 | **Modeling layers** | JOIN + coalition split + bill-id normalization — no IPF |
 
+**File availability.** `NY_chain_2025.tsv` (238 MB) is **gitignored** — it exceeds GitHub's 100 MB per-file hard limit; regenerate from the in-tree `releases/ny/` source TSVs via the [reproducer](#reproducer) below (~1 minute, byte-identical on unchanged sources).
+
 ---
 
 ## Aggregates (2025)

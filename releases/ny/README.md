@@ -14,7 +14,7 @@ NY is structurally different from the Wisconsin release: the lobbyist→bill lin
 |---|---|
 | **State** | New York |
 | **Vintage** | Reporting year 2025 (Jan/June + July/Dec periods) |
-| **Files** | 4 TSVs (~11 MB) + derived [`chain/`](chain/) |
+| **Files** | 5 TSVs (~42 MB) + derived [`chain/`](chain/) (chain TSV is regenerable, not in-tree — see below) |
 | **Distinct clients** | 4,373 |
 | **Distinct lobbyist firms** | 1,333 |
 | **Firm-filings** | 10,870 |
@@ -106,7 +106,9 @@ Per (edge, attribute), we mark **quality** and **source**.
 
 ## Files
 
-All files are tab-separated (`.tsv`) with a single header row. Total size: **~11 MB**.
+All files are tab-separated (`.tsv`) with a single header row. Total size: **~42 MB**.
+
+**Note on file availability.** The 5 source TSVs listed below ARE committed in-tree on this branch (force-added at merge per [#46](https://github.com/danparshall/lobby_analysis/issues/46)); the derived chain at [`chain/NY_chain_2025.tsv`](chain/NY_chain_2025.tsv) (238 MB) is **gitignored** as it exceeds GitHub's 100 MB per-file hard limit — regenerate it from the in-tree source TSVs via the [chain reproducer](chain/README.md#reproducer) (~1 minute, byte-identical on unchanged sources). The raw 2025 client-semiannual pull (`data/raw/ny/2025/client_semiannual.csv`, 1.9 GB) is also gitignored; regen with `scripts/ny_pull_2025.py`.
 
 ### Entities
 
@@ -215,15 +217,19 @@ These are New York's recognized top-tier lobbying firms, a strong face-validity 
 
 10. **`parties_lobbied` resolution is non-uniform — do NOT read `resolved=False` density as "less lobbied."** Only legislator-titled values that matched the state legislator roster are resolved (`resolved=True` ⟺ a specific named *state* legislator). The unresolved rows are biased two ways: (a) by design, parties that aren't state legislators (NYC municipal officials, executive offices, agencies, broadcasts — 41% of edges); and (b) a known residual gap — accents and standard nicknames are now canonicalized, so the remaining unresolved legislators are *former* members (correctly not mapped to a current `ocd-person`), one-character spelling variants, and the occasional non-sponsoring current member absent from the *sponsorship* roster. A naive "times each legislator was lobbied" count will undercount exactly the harder-to-match members. The edge is also reported per-firm: NY discloses `parties_lobbied` at the client-submission level and it replicates onto each co-retained firm's filing, so a party attaches to every firm on the client's filing, not to a specific firm's contact.
 
-11. **Do not sum compensation across `client_semiannual` and `lobbyist_bimonthly`** — they overlap. The NY pipeline column-map ([`io/ny/columns.py`](../../src/lobby_analysis/io/ny/columns.py)) wires two datasets — `client_semiannual` (Socrata [`qym9-xzj6`](https://data.ny.gov/d/qym9-xzj6), semi-annual grain, **materialized here**) and `lobbyist_bimonthly` (Socrata [`t9kf-dqbc`](https://data.ny.gov/d/t9kf-dqbc), bi-monthly grain, **not yet materialized**). Both carry compensation for the same retained-lobbyist universe; the column map projects both into canonical `filing_compensation`. **Naively concatenating their materialized outputs would roughly double-count dollars** for any `(client, lobbyist, year)` covered by both (one semi-annual period ≈ three bimonthly periods on the same filings).
+11. **Do not sum compensation across `client_semiannual` and `lobbyist_bimonthly`** — they overlap, and the overlap is **empirically exact**. The NY pipeline column-map ([`io/ny/columns.py`](../../src/lobby_analysis/io/ny/columns.py)) wires two datasets — `client_semiannual` (Socrata [`qym9-xzj6`](https://data.ny.gov/d/qym9-xzj6), semi-annual grain, **materialized here**) and `lobbyist_bimonthly` (Socrata [`t9kf-dqbc`](https://data.ny.gov/d/t9kf-dqbc), bi-monthly grain, **not yet materialized**). Both carry compensation for the same retained-lobbyist universe; the column map projects both into canonical `filing_compensation`. The two datasets are **filed by different parties** — the semi by the *client*, the bi by the *firm* — but they reconcile to the cent. For any `(principal_lobbyist, beneficial_client, half-year H)`:
+
+    > `SUM(canonical bimonthly compensation for periods in H)` **`= canonical semiannual compensation for H`** to the cent (canonical = amendment-superseded via `max(form_submission_id)` per business key on each side).
+
+    Empirically verified 2026-06-10 on 5 firms × 11 `(firm, client, half-year)` cells in 2025, zero delta in every cell — including a load-bearing case where a semiannual amendment corrected $47,000 → $45,823 and the bimonthly side independently reports $45,823. See [`docs/active/ny-disclosure-explore/results/20260610_ny_bi_semi_reconciliation.md`](../../docs/active/ny-disclosure-explore/results/20260610_ny_bi_semi_reconciliation.md) for the per-cell table, the supersede mechanics, and the script. **Naively concatenating the two materialized outputs' `filing_compensation` columns would therefore *exactly 2× double-count* the retained-lobbyist universe** — not a precaution, a literal multiplicative error.
 
     Discipline:
     - **`client_semiannual` is the canonical compensation source.** The 2025 totals in this release ($345.8M) are sourced exclusively from it. The `--dataset` CLI argument selects one column map per invocation; there is no cross-dataset combiner, so the current build cannot double-count by construction.
-    - **`lobbyist_bimonthly` is the source of *finer time grain*, *individual-lobbyist-person* resolution** (names individuals; the client-side report names only the firm), **and itemized expenses**. When it's folded in (Phase 2+), pull those columns — **not** compensation aggregates.
-    - **If both materialized outputs must be joined**, dedupe by the business key `(form_submission_id, lobbyist_id, client_id, reporting_year)` and keep `client_semiannual`'s `filing_compensation`; or drop `filing_compensation` from the `lobbyist_bimonthly` side before the join.
-    - The precise sum-across-grain relationship (`SUM(bimonthly periods) ?= semi-annual period`) is **structurally overlapping but not yet empirically reconciled** — bimonthly has only been schema-probed, never pulled. A reconciliation probe (e.g., one client over one half-year) is recommended before the first build that materializes both. Until then, the rules above are the safe default.
+    - **`lobbyist_bimonthly` is the source of *individual-lobbyist-person* resolution** (names individuals; the client-side report names only the firm), **itemized expenses, and finer time grain — NOT a source of additional compensation dollars.** When it's folded in (Phase 2+), pull those columns; **drop `filing_compensation`** before any join.
+    - **If both materialized outputs must be joined**, dedupe by the business key `(reporting_year, principal_lobbyist, beneficial_client, contractual_client_name)` + half-year and keep `client_semiannual`'s `filing_compensation` — exactly equivalent to `SUM(bi periods)` for that half-year, and cheaper to read at semiannual grain.
+    - **Sample-scale caveat**: 5 firms × 11 cells is large enough to make the binary verdict unambiguous and to confirm SUM equality on three distinct retainer shapes (constant per-period retainer, variable per-period billing, amendment-corrected total); it is NOT large enough to claim every one of 2025's 1,333 firms × 4,373 clients reconciles. A full-sample sanity check is recommended once `lobbyist_bimonthly` is pulled and materialized.
 
-    Tracked at [#37](https://github.com/danparshall/lobby_analysis/issues/37).
+    Resolves [#37](https://github.com/danparshall/lobby_analysis/issues/37).
 
 ---
 
