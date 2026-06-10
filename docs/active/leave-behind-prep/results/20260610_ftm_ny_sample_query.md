@@ -83,6 +83,16 @@ _(fill: gro=d-llink split for the target's 2024 cycle. WI baseline ~5%.)_
   not API calls. Retroactively explains WI's "~15 queries before throttle": ~11 pages
   × ~100 records ≈ 1,083.
 
+**Outreach log:**
+- 2026-06-03 — email to info@opensecrets.org after the WI gate fired. No response as
+  of 2026-06-10.
+- 2026-06-10 — follow-up sent, To: info@opensecrets.org, CC: info@crp.org. (No
+  @followthemoney.org address exists: the homepage banner publishes
+  info@opensecrets.org, the Contact Us page's only mailto is info@crp.org — the
+  Institute's contact surface has fully migrated to the merged-org identities.)
+- On-site Exemption Request form (`/account` sidebar): NOT yet filed as of
+  2026-06-10 — the remaining untried channel.
+
 **Consequence:** the §2–§6 query sequence is hard-blocked until expanded access is
 granted. This writeup documents the blocked state with evidence rather than claiming
 NY validation.
