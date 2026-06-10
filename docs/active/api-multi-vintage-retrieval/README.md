@@ -1,5 +1,11 @@
 # api-multi-vintage-retrieval — Justia statute retrieval pipeline
 
+> ## 📬 Handoff in flight (2026-06-10)
+>
+> Dan's IPs got CF rate-limited mid-fan-out on 2026-06-09. The remaining 28 fresh + 2 partial-resume Method B canary dispatches for the 50-state 2025 expansion have been handed off to Suhan's agent. **If you are Suhan's agent — go to [`HANDOFF.md`](HANDOFF.md). That doc is self-contained and is your one-stop entry point.**
+>
+> The rest of this README is background.
+
 **Branch home for:** the Anthropic-API-driven discovery + Playwright-driven fetch pipeline that retrieves Justia-hosted state lobbying statutes across multiple historical vintages (2010 / 2015 / 2025) for all 50 states. The substrate for multi-rubric calibration (PRI 2010, CPI 2015, Sunlight 2015, FOCAL 2024, etc.) and for the project's data-layer commitment to up-to-date lobbying disclosure infrastructure.
 
 **Started:** 2026-05-14. Active. Coverage at last update: see [`results/`](results/) for per-session inventories.
