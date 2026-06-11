@@ -70,7 +70,7 @@ Per (edge, attribute), we mark **quality** and **source**.
 
 ## OH — Ohio
 
-**Status:** Extraction pipeline validated at 300-filing slice. Discovery TSV (45,605 AERs for 2025-2026) materialized at $0. Full-corpus extraction (~$800 / ~24 hr via Batches API + caching) pending Batches integration. `releases/oh/` not yet materialized. Plural Policy OH bulk-CSV not yet downloaded.
+**Status:** Extraction pipeline validated at 300-filing slice. Discovery TSV (45,605 AERs for 2025-2026) materialized at $0. Full-corpus extraction (~$800 / ~24 hr via Batches API + caching) pending Batches integration. `releases/oh/` not yet materialized. **Plural Policy OH 136th GA session bundle landed 2026-06-11** at `data/bills/OH/136/` (2,325 bills, 11,559 sponsorship rows); 86.4% row-weighted join smoke test against cached extractions (see `docs/active/oh-portal-extraction/results/20260611_plural_policy_data_landed.md`). `oh.csv` legislator roster still pending.
 
 |                       | Money | Time | Stance |
 |-----------------------|-------|------|--------|
@@ -87,7 +87,7 @@ Per (edge, attribute), we mark **quality** and **source**.
 ⁴ OH AER form does not collect stance per Section I (per `src/lobby_analysis/oh_portal/extraction_brief.py`)
 ⁵ AER Section II.A (Gifts) — `recipient_name` + `amount` per row
 ⁶ AER Section II.B (Itemized Meals & Beverages) treated as time-event proxy with $ amount; not literal hours
-⁷ Plural Policy OH bulk-CSV not yet downloaded; `oh.csv` legislator roster pending. Same path as WI — `openstates.org/data/session-csv/` for the OH session bundle + `openstates.org/data/legislators-csv/` for `oh.csv`
+⁷ Plural Policy OH 136th GA session bundle landed 2026-06-11 at `data/bills/OH/136/` (2,325 bills); 86.4% row-weighted join with extracted positions; unmatched 13.6% are exclusively OAC administrative-rule citations (e.g., `5160-32-02`, `JC 4731-9-01`), not bills — future chain composer should classify these separately. `oh.csv` legislator roster still pending — `openstates.org/data/legislators-csv/oh.csv`, analog of `data/bills/WI/wi.csv`.
 
 ---
 
