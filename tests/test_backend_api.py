@@ -78,3 +78,15 @@ def test_search_by_filer_name(client):
     body = r.json()
     assert len(body) == 1
     assert body[0]["id"] == "f-1"
+
+
+def test_stats_endpoint_returns_breakdowns(client):
+    client.post("/filings", json=_filing_dict("oh-1", state="OH"))
+    client.post("/filings", json=_filing_dict("ca-1", state="CA"))
+
+    r = client.get("/stats")
+    assert r.status_code == 200
+    body = r.json()
+    assert body["total"] == 2
+    assert body["by_state"] == {"OH": 1, "CA": 1}
+    assert set(body.keys()) == {"total", "by_state", "by_filer_role", "top_spenders"}

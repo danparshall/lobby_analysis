@@ -11,7 +11,8 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from sqlalchemy import DateTime, String, Text, create_engine, select
+from sqlalchemy import DateTime, Numeric, String, Text, cast, create_engine, func, select
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column
 
@@ -83,35 +84,100 @@ def get_filing(engine: Engine, id: str) -> LobbyingFiling | None:
         return LobbyingFiling.model_validate_json(row.payload)
 
 
+def _apply_filters(stmt, state: str | None, filer_role: str | None):
+    if state is not None:
+        stmt = stmt.where(FilingRow.state == state)
+    if filer_role is not None:
+        stmt = stmt.where(FilingRow.filer_role == filer_role)
+    return stmt
+
+
+def count_filings(
+    engine: Engine,
+    state: str | None = None,
+    filer_role: str | None = None,
+) -> int:
+    """Count filings matching the optional state / filer_role filters."""
+    stmt = _apply_filters(select(func.count()).select_from(FilingRow), state, filer_role)
+    with Session(engine) as session:
+        return session.scalar(stmt) or 0
+
+
 def list_filings(
     engine: Engine,
     state: str | None = None,
     filer_role: str | None = None,
     limit: int = 100,
+    offset: int = 0,
 ) -> list[LobbyingFiling]:
     """List filings, optionally filtered by state and/or filer_role.
 
     Ordered by ingested_at descending so newest-first is the default view.
+    `offset` supports pagination alongside `limit`.
     """
-    stmt = select(FilingRow)
-    if state is not None:
-        stmt = stmt.where(FilingRow.state == state)
-    if filer_role is not None:
-        stmt = stmt.where(FilingRow.filer_role == filer_role)
-    stmt = stmt.order_by(FilingRow.ingested_at.desc()).limit(limit)
+    stmt = _apply_filters(select(FilingRow), state, filer_role)
+    stmt = stmt.order_by(FilingRow.ingested_at.desc()).limit(limit).offset(offset)
     with Session(engine) as session:
         rows = session.scalars(stmt).all()
         return [LobbyingFiling.model_validate_json(r.payload) for r in rows]
 
 
-def search_filings(engine: Engine, q: str, limit: int = 100) -> list[LobbyingFiling]:
+def search_filings(
+    engine: Engine, q: str, limit: int = 100, offset: int = 0
+) -> list[LobbyingFiling]:
     """Search filings by filer_name (case-insensitive substring match)."""
     stmt = (
         select(FilingRow)
         .where(FilingRow.filer_name.ilike(f"%{q}%"))
         .order_by(FilingRow.ingested_at.desc())
         .limit(limit)
+        .offset(offset)
     )
     with Session(engine) as session:
         rows = session.scalars(stmt).all()
         return [LobbyingFiling.model_validate_json(r.payload) for r in rows]
+
+
+# Numeric value of payload->>'total_expenditure', for SQL-side aggregation.
+_TOTAL_EXPENDITURE = cast(
+    cast(FilingRow.payload, JSONB)["total_expenditure"].astext, Numeric
+)
+
+
+def stats(engine: Engine, top_n: int = 10) -> dict:
+    """Aggregate dashboard stats: totals, breakdowns, and top spenders.
+
+    Returns a dict with `total`, `by_state`, `by_filer_role`, and
+    `top_spenders` (filers ranked by summed total_expenditure).
+    """
+    with Session(engine) as session:
+        total = session.scalar(select(func.count()).select_from(FilingRow)) or 0
+        by_state = dict(
+            session.execute(
+                select(FilingRow.state, func.count()).group_by(FilingRow.state)
+            ).all()
+        )
+        by_filer_role = dict(
+            session.execute(
+                select(FilingRow.filer_role, func.count()).group_by(FilingRow.filer_role)
+            ).all()
+        )
+        spend = func.sum(_TOTAL_EXPENDITURE).label("spend")
+        spender_rows = session.execute(
+            select(FilingRow.filer_name, spend)
+            .where(FilingRow.filer_name.isnot(None))
+            .group_by(FilingRow.filer_name)
+            .having(spend > 0)
+            .order_by(spend.desc())
+            .limit(top_n)
+        ).all()
+        top_spenders = [
+            {"name": name, "total_expenditure": float(amount)}
+            for name, amount in spender_rows
+        ]
+    return {
+        "total": total,
+        "by_state": by_state,
+        "by_filer_role": by_filer_role,
+        "top_spenders": top_spenders,
+    }

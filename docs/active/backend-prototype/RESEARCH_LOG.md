@@ -22,6 +22,15 @@ This branch is the **infrastructure counterpart** to Track B's per-state extract
 
 (Newest entries first.)
 
+### 2026-06-11 — Frontend explorer + /stats endpoint (goal #3 shipped)
+
+- Verified and checkpointed in-flight, previously-uncommitted work: a React/Vite **State Lobbying Disclosure Explorer** UI plus the backend additions that feed it.
+- Backend (`v0.2 → v0.3`): new `GET /stats` (totals, per-state/role breakdowns, top spenders via a SQL-side JSONB cast on `total_expenditure`), `count_filings()`, `offset` pagination on list/search, CORS for the Vite dev server, and a `frontend/dist` static mount so the prototype serves from one process.
+- **24/24 backend tests green** (storage 9 + api 6 + cli 4 + ingest_wi 5; +4 new); frontend `tsc && vite build` clean.
+- Live smoke against the real WI dev DB reproduced every ingest invariant: 4,798 filings, WI 4,798, client 1,706 / lobbyist 3,092, top spender DoorDash **$2,183,623.40** (matches Dan's `releases/wi/README.md`). The JSONB aggregation works on real payloads, not just fixtures.
+- Gotcha: bare `uvicorn` needs `DATABASE_URL` set (dispatch scripts use `load_env_local()`); absent it, the first request 500s with `RuntimeError: DATABASE_URL is not set`.
+- Convo: [`convos/20260611_frontend_and_stats.md`](convos/20260611_frontend_and_stats.md).
+
 ### 2026-06-05 — Postgres swap validated + merged up to main
 
 - The SQLite → Postgres swap (written 2026-06-02, blocked on having no local Postgres) validated end-to-end this session after Docker Desktop was installed: `docker compose up -d postgres` brings up postgres:16 with `lobby_dev` + `lobby_test`; tests isolate via session-scoped engine + per-test `TRUNCATE` (`tests/conftest.py`).
@@ -57,6 +66,7 @@ This branch is the **infrastructure counterpart** to Track B's per-state extract
 
 ## Convos
 
+- [`20260611_frontend_and_stats.md`](convos/20260611_frontend_and_stats.md) — React explorer UI + `/stats` aggregation endpoint verified end-to-end against real WI data and checkpointed (goal #3, the simple interface, shipped).
 - [`20260605_postgres_swap_validation.md`](convos/20260605_postgres_swap_validation.md) — Postgres swap validated end-to-end (invariants byte-identical to SQLite run); branch merged up to `origin/main` for a clean future PR.
 
 ## Results

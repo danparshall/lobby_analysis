@@ -1,32 +1,50 @@
 """FastAPI surface over the backend storage layer.
 
 Endpoints:
-    GET  /filings              List filings (filters: state, filer_role, limit).
+    GET  /filings              List filings (filters: state, filer_role, limit, offset).
     GET  /filings/{id}         Fetch one filing by id.
     POST /filings              Ingest one LobbyingFiling JSON body.
     GET  /search?q=...         Substring match on filer name.
+    GET  /stats                Dashboard aggregates (totals, breakdowns, top spenders).
 
 Storage engine is injected via the `get_engine` dependency so tests can swap
 in a test engine without touching module state.
+
+If a built frontend exists at `frontend/dist`, it is mounted at `/` so the
+whole prototype can be served from a single process. In dev, the Vite server
+(port 5173) proxies the API paths instead, and CORS is enabled as a fallback.
 """
 
 from __future__ import annotations
 
 import os
+from pathlib import Path
 
 from fastapi import Depends, FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.engine import Engine
 
 from lobby_analysis.backend.storage import (
+    count_filings,
     get_filing,
     init_engine,
     insert_filing,
     list_filings,
     search_filings,
+    stats,
 )
 from lobby_analysis.models.filings import LobbyingFiling
 
-app = FastAPI(title="Lobby Analysis Backend", version="0.2")
+app = FastAPI(title="Lobby Analysis Backend", version="0.3")
+
+# Allow the Vite dev server (and any local origin) to call the API directly.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 _engine: Engine | None = None
 
@@ -51,9 +69,12 @@ def list_filings_endpoint(
     state: str | None = None,
     filer_role: str | None = None,
     limit: int = 100,
+    offset: int = 0,
     engine: Engine = Depends(get_engine),
 ) -> list[LobbyingFiling]:
-    return list_filings(engine, state=state, filer_role=filer_role, limit=limit)
+    return list_filings(
+        engine, state=state, filer_role=filer_role, limit=limit, offset=offset
+    )
 
 
 @app.get("/filings/{id}", response_model=LobbyingFiling)
@@ -80,6 +101,19 @@ def post_filing_endpoint(
 def search_endpoint(
     q: str,
     limit: int = 100,
+    offset: int = 0,
     engine: Engine = Depends(get_engine),
 ) -> list[LobbyingFiling]:
-    return search_filings(engine, q, limit=limit)
+    return search_filings(engine, q, limit=limit, offset=offset)
+
+
+@app.get("/stats")
+def stats_endpoint(engine: Engine = Depends(get_engine)) -> dict:
+    return stats(engine)
+
+
+# Serve the built frontend (if present) as a catch-all so the prototype runs
+# from a single process. Explicit API routes above always take precedence.
+_DIST = Path(__file__).resolve().parents[3] / "frontend" / "dist"
+if _DIST.is_dir():
+    app.mount("/", StaticFiles(directory=str(_DIST), html=True), name="frontend")
