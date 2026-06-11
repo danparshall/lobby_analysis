@@ -1,0 +1,467 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "actor_registration_required",
+    "run_index": 2,
+    "state_abbr": "WI",
+    "vintage_year": 2025,
+    "prompt_sha256": "cf5e534eb79e06bd8862cb6a71fa3ba6db44eb86d8d1b12b85431ef394b042c8",
+    "timestamp_utc": "2026-06-05T17:28:19+00:00"
+  },
+  "wall_clock_seconds": 32.25006433296949,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 1140
+    },
+    "cache_creation_input_tokens": 1140,
+    "cache_read_input_tokens": 29466,
+    "inference_geo": "global",
+    "input_tokens": 6,
+    "output_tokens": 3116,
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.07793,
+  "legal_roster": [
+    [
+      "actor_executive_agency_registration_required",
+      "legal"
+    ],
+    [
+      "actor_governors_office_registration_required",
+      "legal"
+    ],
+    [
+      "actor_independent_agency_registration_required",
+      "legal"
+    ],
+    [
+      "actor_intergov_agency_lobbying_registration_required",
+      "legal"
+    ],
+    [
+      "actor_legislative_branch_registration_required",
+      "legal"
+    ],
+    [
+      "actor_lobbying_firm_registration_required",
+      "legal"
+    ],
+    [
+      "actor_local_government_registration_required",
+      "legal"
+    ],
+    [
+      "actor_paid_lobbyist_registration_required",
+      "legal"
+    ],
+    [
+      "actor_principal_registration_required",
+      "legal"
+    ],
+    [
+      "actor_public_entity_other_registration_required",
+      "legal"
+    ],
+    [
+      "actor_volunteer_lobbyist_registration_required",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "actor_executive_agency_registration_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.695(1); §13.621(2)",
+      "justification": "State agencies file a separate statement under §13.695 identifying officers/employees who lobby and are exempted from the standard lobbyist registration/licensing regime (§§13.63, 13.64, 13.65, 13.68) by §13.621(2)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "actor_governors_office_registration_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.621(3); §13.62(8)",
+      "justification": "The Governor is an elective state official; §13.621(3) exempts elective state officials acting in official capacity from §§13.63, 13.64, 13.65, 13.68, and 13.695, and §13.62(8) treats the Governor's action on bills/proposals as legislative action itself, not lobbying requiring registration."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "actor_independent_agency_registration_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.695(1); §13.621(2)",
+      "justification": "Independent agencies fall within the §13.62(2) definition of \"agency\" and therefore file under §13.695 rather than registering as principals/lobbyists, per the §13.621(2) exemption."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "actor_intergov_agency_lobbying_registration_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.621(1)(d)",
+      "justification": "Section 13.621(1)(d) makes the entire subchapter inapplicable to \"Lobbying of an agency official by an agency official of a different agency or another agency official of the same agency,\" so no registration is required."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "actor_legislative_branch_registration_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.621(3); §13.62(2)",
+      "justification": "Section 13.621(3) exempts legislative employees acting in official capacity from §§13.63, 13.64, 13.65, 13.68, and 13.695, and §13.62(2) excludes legislative councils/committees from the definition of \"agency.\""
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "actor_lobbying_firm_registration_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.62(12); §13.64(1)",
+      "justification": "A lobbying firm that employs lobbyists falls within the §13.62(12) definition of \"principal\" (\"any person who employs a lobbyist\") and must register under §13.64 when expenditures exceed $500; its individual lobbyists must also be licensed under §13.63."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "actor_local_government_registration_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.625(4m)(e), (f); §13.62(12)",
+      "justification": "Section 13.625(4m)(e) and (f) expressly contemplate \"a principal that is a local governmental unit,\" confirming that local governments employing lobbyists are principals subject to registration under §13.64; they are not within the §13.621(2) state-agency exemption (which applies only to §13.62(2) \"agencies\")."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "actor_paid_lobbyist_registration_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.63(1)(a); §13.66",
+      "justification": "Section 13.63(1)(a) requires lobbyists to obtain a license from the commission, and §13.66 prohibits any person from engaging in lobbying as a lobbyist unless licensed under §13.63 and authorized under §13.65."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "actor_principal_registration_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.64(1)",
+      "justification": "Section 13.64(1) requires \"Every principal who makes expenditures or incurs obligations in an aggregate amount exceeding $500 in a calendar year for the purpose of engaging in lobbying\" to file a registration statement with the commission."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "actor_public_entity_other_registration_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.62(12); §13.64(1)",
+      "justification": "\"Principal\" under §13.62(12) is \"any person who employs a lobbyist\" without exclusion for non-agency public entities; such entities employing lobbyists must register under §13.64 if expenditures exceed $500, since only §13.62(2) \"agencies\" qualify for the §13.621(2) state-agency exemption."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "actor_volunteer_lobbyist_registration_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.62(11)",
+      "justification": "Section 13.62(11) defines \"lobbyist\" as one employed by a principal or who \"contracts for or receives economic consideration, other than reimbursement for actual expenses, from a principal\"; an unpaid volunteer receiving no economic consideration is not a lobbyist and need not be licensed, and §13.621(6) further protects individuals lobbying solely on their own behalf."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "msg_011feibZeiXCVWM3THYk8EDy",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "I'll analyze each entity type against the Wisconsin lobbying statute to determine registration requirements.\n\nKey statute references:\n- §13.64: Principals (those who employ lobbyists) with expenditures >$500 must register\n- §13.63: Lobbyists must be licensed\n- §13.695: State agencies file separate statements (not standard lobbyist registration)\n- §13.621(1)(d): Agency-to-agency lobbying exempt\n- §13.621(3): Elective state officials, local officials, tribal officials, legislative employees acting in official capacity exempt\n- §13.62(2): \"Agency\" excludes legislative councils/committees\n- §13.62(12): Principal = any person who employs a lobbyist",
+        "type": "text"
+      },
+      {
+        "id": "toolu_01F2VerMhJStkXEr4tuf6nFX",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_001",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§13.695(1); §13.621(2)",
+          "justification": "State agencies file a separate statement under §13.695 identifying officers/employees who lobby and are exempted from the standard lobbyist registration/licensing regime (§§13.63, 13.64, 13.65, 13.68) by §13.621(2)."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01CPRy3MbQUtGcShwKSgRJ7C",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_002",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§13.621(3); §13.62(8)",
+          "justification": "The Governor is an elective state official; §13.621(3) exempts elective state officials acting in official capacity from §§13.63, 13.64, 13.65, 13.68, and 13.695, and §13.62(8) treats the Governor's action on bills/proposals as legislative action itself, not lobbying requiring registration."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01RgdrjnX81zYEFnpJZ2mdmT",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_003",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§13.695(1); §13.621(2)",
+          "justification": "Independent agencies fall within the §13.62(2) definition of \"agency\" and therefore file under §13.695 rather than registering as principals/lobbyists, per the §13.621(2) exemption."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01KcRHGryx6Jf9ULwrDtVs53",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_004",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§13.621(1)(d)",
+          "justification": "Section 13.621(1)(d) makes the entire subchapter inapplicable to \"Lobbying of an agency official by an agency official of a different agency or another agency official of the same agency,\" so no registration is required."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_012CHbm6oCuNGCZFw5x2hdx4",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_005",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§13.621(3); §13.62(2)",
+          "justification": "Section 13.621(3) exempts legislative employees acting in official capacity from §§13.63, 13.64, 13.65, 13.68, and 13.695, and §13.62(2) excludes legislative councils/committees from the definition of \"agency.\""
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01AKuwXCzaWY9vcCJBqHoYwK",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_006",
+          "axis": "legal",
+          "value": true,
+          "confidence": "medium",
+          "cited_section": "§13.62(12); §13.64(1)",
+          "justification": "A lobbying firm that employs lobbyists falls within the §13.62(12) definition of \"principal\" (\"any person who employs a lobbyist\") and must register under §13.64 when expenditures exceed $500; its individual lobbyists must also be licensed under §13.63."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_0176UHXDVNSvFh13R22rYuuy",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_007",
+          "axis": "legal",
+          "value": true,
+          "confidence": "medium",
+          "cited_section": "§13.625(4m)(e), (f); §13.62(12)",
+          "justification": "Section 13.625(4m)(e) and (f) expressly contemplate \"a principal that is a local governmental unit,\" confirming that local governments employing lobbyists are principals subject to registration under §13.64; they are not within the §13.621(2) state-agency exemption (which applies only to §13.62(2) \"agencies\")."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01SUm3Yan7hy2H2hgpWaWWrx",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_008",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.63(1)(a); §13.66",
+          "justification": "Section 13.63(1)(a) requires lobbyists to obtain a license from the commission, and §13.66 prohibits any person from engaging in lobbying as a lobbyist unless licensed under §13.63 and authorized under §13.65."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_016FiJf4uYeWvQ472NQ7esHS",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_009",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.64(1)",
+          "justification": "Section 13.64(1) requires \"Every principal who makes expenditures or incurs obligations in an aggregate amount exceeding $500 in a calendar year for the purpose of engaging in lobbying\" to file a registration statement with the commission."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01JhY4d1rKP9rM7ukLMKK5Lc",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_010",
+          "axis": "legal",
+          "value": true,
+          "confidence": "medium",
+          "cited_section": "§13.62(12); §13.64(1)",
+          "justification": "\"Principal\" under §13.62(12) is \"any person who employs a lobbyist\" without exclusion for non-agency public entities; such entities employing lobbyists must register under §13.64 if expenditures exceed $500, since only §13.62(2) \"agencies\" qualify for the §13.621(2) state-agency exemption."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01FaFPiPWrR2JfDtYBKmWCC4",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_011",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§13.62(11)",
+          "justification": "Section 13.62(11) defines \"lobbyist\" as one employed by a principal or who \"contracts for or receives economic consideration, other than reimbursement for actual expenses, from a principal\"; an unpaid volunteer receiving no economic consideration is not a lobbyist and need not be licensed, and §13.621(6) further protects individuals lobbying solely on their own behalf."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 1140
+      },
+      "cache_creation_input_tokens": 1140,
+      "cache_read_input_tokens": 29466,
+      "inference_geo": "global",
+      "input_tokens": 6,
+      "output_tokens": 3116,
+      "server_tool_use": null,
+      "service_tier": "standard",
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      }
+    }
+  }
+}

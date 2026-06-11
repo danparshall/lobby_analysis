@@ -1,0 +1,274 @@
+warning: `VIRTUAL_ENV=/Users/dan/code/lobby_analysis/.venv` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead
+Total unique (chunk, row_id) cells: 84
+Jointly within-model stable: 65
+  Inter-model agree: 47
+  Inter-model DISAGREE: 18
+
+## Disagreements per chunk
+  lobbying_definitions: 0
+  registration_thresholds: 2
+  registration_mechanics_and_exemptions: 1
+  lobbyist_spending_report: 14
+  principal_spending_report: 0
+  enforcement_and_audits: 1
+
+
+=== registration_thresholds (2 disagreement cells) ===
+
+### `lobbyist_registration_threshold_expenditure_dollars`
+
+**Claude** (scored):
+  - value: `"500"`
+  - confidence: high
+  - cited: §13.64(1) and §13.621(5)
+  - justification: Section 13.64(1) requires a principal to register within 10 days after making lobbying expenditures or incurring obligations exceeding $500 in a calendar year (and §13.621(5) provides the parallel exemption for those not exceeding $500).
+
+**GPT-5.2** (unscoreable):
+  - reason: The bundled text provides a $500 principal registration threshold (s. 13.64) and verified statement option (s. 13.621(5)), but does not set any expenditure-dollar threshold that triggers lobbyist registration/licensure.
+  - confidence: None
+  - cited: None
+
+### `lobbyist_filing_de_minimis_threshold_time_percent`
+
+**Claude** (scored):
+  - value: `10.0`
+  - confidence: high
+  - cited: §13.68(1)(bn)
+  - justification: Section 13.68(1)(bn) requires the principal to estimate time spent on any legislative proposal, administrative rule, budget bill subject, or topic that accounts for 10 percent or more of the principal's lobbying time during the reporting period.
+
+**GPT-5.2** (unscoreable):
+  - reason: The bundled statute sets time-based exclusions (e.g., non-lobbyist employees devoting not more than 10 hours per reporting period) but does not provide any filing/reporting de minimis threshold expressed as a percentage of time.
+  - confidence: None
+  - cited: None
+
+
+=== registration_mechanics_and_exemptions (1 disagreement cells) ===
+
+### `lobbyist_registration_deadline_days_after_first_lobbying`
+
+**Claude** (scored):
+  - value: `10`
+  - confidence: high
+  - cited: §13.64(1)
+  - justification: §13.64(1) requires every principal who makes lobbying expenditures exceeding $500 to file a registration statement within 10 days after exceeding $500.
+
+**GPT-5.2** (unscoreable):
+  - reason: The statute prohibits lobbying as a lobbyist unless already licensed and authorized (§ 13.66) but does not specify a numeric number of days after first lobbying in which registration must occur.
+  - confidence: None
+  - cited: None
+
+
+=== lobbyist_spending_report (14 disagreement cells) ===
+
+### `lobbyist_spending_report_required`
+
+**Claude** (scored):
+  - value: `true`
+  - confidence: high
+  - cited: §13.68(1)
+  - justification: Section 13.68(1) requires every registered principal to file an expense statement covering the preceding reporting period, and §13.68(4) requires lobbyists to provide expenditure information to the principal that is filed with the commission.
+
+**GPT-5.2** (scored):
+  - value: `false`
+  - confidence: high
+  - cited: Wis. Stat. § 13.68 (2025) (Principal’s expense statement); § 13.68(4) (reports by lobbyist to principal)
+  - justification: The statute requires principals (not lobbyists) to file periodic expense statements, while lobbyists only provide information to principals for inclusion in the principal’s statement.
+
+### `lobbyist_spending_report_cadence_includes_semiannual`
+
+**Claude** (scored):
+  - value: `true`
+  - confidence: high
+  - cited: §13.68(1); §13.62(12r)
+  - justification: Section 13.68(1) sets filing deadlines of July 31 and January 31 covering the 6-month reporting periods defined in §13.62(12r), which is semiannual.
+
+**GPT-5.2** (scored):
+  - value: `false`
+  - confidence: high
+  - cited: Wis. Stat. § 13.68(1)
+  - justification: Although principals file semiannual expense statements, the statute does not require lobbyists to file their own periodic spending reports.
+
+### `lobbyist_spending_report_categorizes_expenses_by_type`
+
+**Claude** (scored):
+  - value: `true`
+  - confidence: medium
+  - cited: §13.68(1)(a), (b), (e)
+  - justification: Section 13.68(1) separately requires reporting of aggregate lobbying expenditures (para (a)), office overhead for in-house lobbyists (para (b)), and personal travel and living expenses (para (e)), thereby categorizing expenses by type.
+
+**GPT-5.2** (scored):
+  - value: `false`
+  - confidence: high
+  - cited: Wis. Stat. § 13.68(1)
+  - justification: The statute’s reporting requirements apply to principals and do not require a lobbyist periodic spending report that categorizes expenses by type.
+
+### `lobbyist_spending_report_includes_bill_or_action_identifier`
+
+**Claude** (scored):
+  - value: `true`
+  - confidence: high
+  - cited: §13.68(1)(bn); §13.67(1)
+  - justification: Section 13.68(1)(bn) requires reporting each legislative proposal, proposed administrative rule, budget bill subject or other topic accounting for 10%+ of lobbying time, and §13.67(1) requires reporting each legislative proposal/rule number lobbied on.
+
+**GPT-5.2** (scored):
+  - value: `false`
+  - confidence: high
+  - cited: Wis. Stat. § 13.67(1)
+  - justification: Legislative proposal/proposed rule identifiers are reported by principals under § 13.67(1), not in any required lobbyist spending report.
+
+### `lobbyist_spending_report_includes_general_issues`
+
+**Claude** (scored):
+  - value: `true`
+  - confidence: high
+  - cited: §13.68(1)(bn); §13.67(1)
+  - justification: Section 13.68(1)(bn) requires reporting topics accounting for 10%+ of lobbying time, and §13.67(1) requires identifying topics of lobbying communications with reasonable specificity.
+
+**GPT-5.2** (scored):
+  - value: `false`
+  - confidence: high
+  - cited: Wis. Stat. § 13.67(1) (principal topic reporting); § 13.68(1)
+  - justification: Topic/issue identification duties are imposed on principals, not via a lobbyist periodic spending report.
+
+### `lobbyist_spending_report_includes_general_subject_matter`
+
+**Claude** (scored):
+  - value: `true`
+  - confidence: high
+  - cited: §13.68(1)(bn); §13.67(1)
+  - justification: Section 13.68(1)(bn) ties the expense statement to legislative proposals, administrative rules, budget bill subjects, or other topics — the general subject matter of lobbying.
+
+**GPT-5.2** (scored):
+  - value: `false`
+  - confidence: high
+  - cited: Wis. Stat. § 13.67(1)
+  - justification: The statute requires principals to report topics with reasonable specificity, but it does not require a lobbyist periodic spending report to include general subject matter.
+
+### `lobbyist_spending_report_includes_gifts_entertainment_transport_lodging`
+
+**Claude** (scored):
+  - value: `true`
+  - confidence: medium
+  - cited: §13.68(1)(d), (e)
+  - justification: Section 13.68(1)(d) requires reporting reimbursements (transportation, lodging) authorized under §13.621(7)(a) with names of officials, dates and amounts, and §13.68(1)(e) requires reporting personal travel and living expenses.
+
+**GPT-5.2** (scored):
+  - value: `false`
+  - confidence: high
+  - cited: Wis. Stat. § 13.625(1g) (generally prohibits furnishing); § 13.68(1)(d) (reimbursement under § 13.621(7)(a) reported by principal)
+  - justification: The statute largely prohibits such items and requires principals to report certain reimbursements, but does not require a lobbyist periodic spending report to disclose gifts/entertainment/transport/lodging.
+
+### `lobbyist_spending_report_includes_indirect_costs`
+
+**Claude** (scored):
+  - value: `true`
+  - confidence: high
+  - cited: §13.68(1)(b)
+  - justification: Section 13.68(1)(b) requires reporting office space, utilities, supplies and compensation of employees used in preparing for lobbying communications — i.e., indirect/overhead costs.
+
+**GPT-5.2** (scored):
+  - value: `false`
+  - confidence: high
+  - cited: Wis. Stat. § 13.68(1)(b) (office overhead by principal)
+  - justification: Office overhead and related indirect costs are reported by the principal when applicable, but no lobbyist-filed spending report is required to include indirect costs.
+
+### `lobbyist_spending_report_includes_lobbyist_contact_info`
+
+**Claude** (scored):
+  - value: `true`
+  - confidence: medium
+  - cited: §13.68(1)(a)6.
+  - justification: Section 13.68(1)(a)6 requires that the name and address of any lobbyist paid more than $200 in the reporting period be listed.
+
+**GPT-5.2** (scored):
+  - value: `false`
+  - confidence: high
+  - cited: Wis. Stat. § 13.68(1)
+  - justification: The required periodic filing is a principal expense statement and does not require a lobbyist-filed spending report containing the lobbyist’s contact information.
+
+### `lobbyist_spending_report_includes_principal_names`
+
+**Claude** (scored):
+  - value: `true`
+  - confidence: high
+  - cited: §13.68(1)
+  - justification: Section 13.68(1) requires every registered principal to file its own expense statement, signed by an authorized representative, inherently identifying the principal by name.
+
+**GPT-5.2** (scored):
+  - value: `false`
+  - confidence: high
+  - cited: Wis. Stat. § 13.68(1)
+  - justification: The statute requires principal-filed expense statements and does not impose any lobbyist spending report requirement to list principal names.
+
+### `lobbyist_spending_report_includes_specific_bill_number`
+
+**Claude** (scored):
+  - value: `true`
+  - confidence: high
+  - cited: §13.68(1)(bn); §13.67(1)
+  - justification: Section 13.67(1) requires reporting each legislative proposal and proposed administrative rule number, and §13.68(1)(bn) ties expense reporting to those proposals.
+
+**GPT-5.2** (scored):
+  - value: `false`
+  - confidence: high
+  - cited: Wis. Stat. § 13.67(1)
+  - justification: The principal must report each legislative proposal and proposed administrative rule number, but the statute does not require lobbyists to file a spending report including bill numbers.
+
+### `lobbyist_spending_report_includes_total_compensation`
+
+**Claude** (scored):
+  - value: `true`
+  - confidence: high
+  - cited: §13.68(1)(a), (a)1.
+  - justification: Section 13.68(1)(a)1 expressly includes compensation to lobbyists for lobbying in the aggregate total of lobbying expenditures that must be reported.
+
+**GPT-5.2** (scored):
+  - value: `false`
+  - confidence: high
+  - cited: Wis. Stat. § 13.68(1)(a)1. (compensation to lobbyists reported by principal)
+  - justification: Compensation to lobbyists must be included in the principal’s aggregate total, but no separate lobbyist spending report is required to disclose total compensation.
+
+### `lobbyist_spending_report_includes_total_expenditures`
+
+**Claude** (scored):
+  - value: `true`
+  - confidence: high
+  - cited: §13.68(1)(a)
+  - justification: Section 13.68(1)(a) expressly requires reporting "the aggregate total amount of lobbying expenditures made and obligations incurred for lobbying."
+
+**GPT-5.2** (scored):
+  - value: `false`
+  - confidence: high
+  - cited: Wis. Stat. § 13.68(1) (principal’s statement required); § 13.68(4) (lobbyist provides info to principal)
+  - justification: The law requires principals to report aggregate lobbying expenditures, but does not require a lobbyist-filed spending report to include total expenditures.
+
+### `lobbyist_spending_report_required_when_no_activity`
+
+**Claude** (scored):
+  - value: `true`
+  - confidence: medium
+  - cited: §13.68(1); §13.64(2)
+  - justification: Section 13.68(1) requires every registered principal to file an expense statement each period without exception for no activity; under §13.64(2) the registration only terminates after the principal files a cessation statement and final expense statements.
+
+**GPT-5.2** (scored):
+  - value: `false`
+  - confidence: high
+  - cited: Wis. Stat. § 13.68(1) (every registered principal must file)
+  - justification: Because the statute does not require lobbyists to file periodic spending reports at all, it likewise does not impose a lobbyist 'no activity' report requirement.
+
+
+=== enforcement_and_audits (1 disagreement cells) ===
+
+### `lobbying_violation_penalties_imposed_in_practice`
+
+**Claude** (scored):
+  - value: `true`
+  - confidence: high
+  - cited: §13.69
+  - justification: Section 13.69 authorizes monetary forfeitures (up to $5,000 for principals, $1,000 for lobbyists), criminal fines/imprisonment for false statements, Class H felony liability, and license revocation for violations of the lobbying provisions, establishing statutory penalties for lobbying violations.
+
+**GPT-5.2** (unscoreable):
+  - reason: The bundled statute text describes available penalties and enforcement mechanisms (e.g., forfeitures, fines, imprisonment), but does not state whether penalties are imposed 'in practice,' which is an empirical/practical question not answered de jure by the statute.
+  - confidence: None
+  - cited: None
+

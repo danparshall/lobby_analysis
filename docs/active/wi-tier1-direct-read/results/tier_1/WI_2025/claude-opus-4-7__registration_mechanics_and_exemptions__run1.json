@@ -1,0 +1,342 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "registration_mechanics_and_exemptions",
+    "run_index": 1,
+    "state_abbr": "WI",
+    "vintage_year": 2025,
+    "prompt_sha256": "cf5e534eb79e06bd8862cb6a71fa3ba6db44eb86d8d1b12b85431ef394b042c8",
+    "timestamp_utc": "2026-06-04T19:29:16+00:00"
+  },
+  "wall_clock_seconds": 19.775151125038974,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 29466,
+    "inference_geo": "global",
+    "input_tokens": 1361,
+    "output_tokens": 1937,
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.055229999999999994,
+  "legal_roster": [
+    [
+      "lobbyist_registration_required",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_renewal_cadence",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_amendment_deadline_days",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_deadline_days_after_first_lobbying",
+      "legal"
+    ],
+    [
+      "separate_registrations_for_lobbyists_and_clients",
+      "legal"
+    ],
+    [
+      "lobbyist_required_to_submit_photograph_with_registration",
+      "legal"
+    ],
+    [
+      "exemption_for_govt_official_capacity_exists",
+      "legal"
+    ],
+    [
+      "exemption_partial_for_govt_agencies",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.66",
+      "justification": "Section 13.66 prohibits any person from engaging in lobbying as a lobbyist unless licensed under §13.63 and authorized under §13.65, requiring all paid lobbyists to register."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_renewal_cadence",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": 24
+      },
+      "cell_class": "IntCell",
+      "cited_section": "§13.63(1)(a) and §13.64(2)",
+      "justification": "A lobbyist license under §13.63(1)(a) expires on December 31 of each even-numbered year, and principal registration under §13.64(2) likewise expires biennially — a 24-month cycle."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_amendment_deadline_days",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": 10
+      },
+      "cell_class": "IntCell",
+      "cited_section": "§13.695(2)",
+      "justification": "Although §13.695(2) addresses state agency filers, it is the only express change-notification deadline in the subchapter, requiring reporting of changes within 10 days; §13.64(3) otherwise requires only pre-activity written notice of new areas without a numeric deadline."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "separate_registrations_for_lobbyists_and_clients",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§§13.63(1)(a), 13.64(1), 13.65",
+      "justification": "The lobbyist must obtain a separate license under §13.63(1)(a), the principal must file a separate registration statement under §13.64(1), and §13.65 requires a separate authorization for each principal — these are distinct filings for each party."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_required_to_submit_photograph_with_registration",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.63(1)(a)",
+      "justification": "Section 13.63(1)(a) enumerates the contents of a lobbyist license application (signature, SSN, residence address, fee) and does not require submission of a photograph."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "exemption_for_govt_official_capacity_exists",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.621(3)",
+      "justification": "Section 13.621(3) provides that elective state officials, local officials, tribal officials, and legislative employees are not subject to §§13.63, 13.64, 13.65, 13.68, or 13.695 when acting in an official capacity."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "exemption_partial_for_govt_agencies",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.621(2) and §13.695",
+      "justification": "Section 13.621(2) exempts an agency that files a statement under §13.695 (and named officials) from §§13.625, 13.63, 13.64, 13.65, and 13.68 — substituting the simpler §13.695 reporting regime for the full lobbyist/principal scheme."
+    }
+  ],
+  "unscoreable_emissions": [
+    {
+      "handle": "row_004",
+      "axis": "legal",
+      "reason": "Wisconsin's statute sets no post-activity deadline by which a lobbyist must register; §13.63 and §13.66 require licensing BEFORE engaging in lobbying, and §13.64's 10-day/$500 trigger applies to principals, not lobbyists. There is no \"days after first lobbying\" figure for the lobbyist.",
+      "row_id": "lobbyist_registration_deadline_days_after_first_lobbying"
+    }
+  ],
+  "errors": [],
+  "response": {
+    "id": "msg_018KgsDy4Pm1UrefpuwcpaFv",
+    "container": null,
+    "content": [
+      {
+        "id": "toolu_011Fmdas4gZXCHxT6U5mDM6e",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_001",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.66",
+          "justification": "Section 13.66 prohibits any person from engaging in lobbying as a lobbyist unless licensed under §13.63 and authorized under §13.65, requiring all paid lobbyists to register."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01Wwk39eR2cNqAwMtZJyfyfw",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_002",
+          "axis": "legal",
+          "value": "24",
+          "confidence": "high",
+          "cited_section": "§13.63(1)(a) and §13.64(2)",
+          "justification": "A lobbyist license under §13.63(1)(a) expires on December 31 of each even-numbered year, and principal registration under §13.64(2) likewise expires biennially — a 24-month cycle."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01SV2ZEigEEfRMej1Pxq585K",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_003",
+          "axis": "legal",
+          "value": "10",
+          "confidence": "medium",
+          "cited_section": "§13.695(2)",
+          "justification": "Although §13.695(2) addresses state agency filers, it is the only express change-notification deadline in the subchapter, requiring reporting of changes within 10 days; §13.64(3) otherwise requires only pre-activity written notice of new areas without a numeric deadline."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_012ttjayT98B2dk8wXFLxyv2",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_004",
+          "axis": "legal",
+          "reason": "Wisconsin's statute sets no post-activity deadline by which a lobbyist must register; §13.63 and §13.66 require licensing BEFORE engaging in lobbying, and §13.64's 10-day/$500 trigger applies to principals, not lobbyists. There is no \"days after first lobbying\" figure for the lobbyist."
+        },
+        "name": "record_unscoreable_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01TeheiNnpM4RajuMvNMVCdA",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_005",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§§13.63(1)(a), 13.64(1), 13.65",
+          "justification": "The lobbyist must obtain a separate license under §13.63(1)(a), the principal must file a separate registration statement under §13.64(1), and §13.65 requires a separate authorization for each principal — these are distinct filings for each party."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_014qptb7wfBrc4KzEBTXXTJX",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_006",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§13.63(1)(a)",
+          "justification": "Section 13.63(1)(a) enumerates the contents of a lobbyist license application (signature, SSN, residence address, fee) and does not require submission of a photograph."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01QRNpaVzpDJYZ6Mg4VRkuXG",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_007",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.621(3)",
+          "justification": "Section 13.621(3) provides that elective state officials, local officials, tribal officials, and legislative employees are not subject to §§13.63, 13.64, 13.65, 13.68, or 13.695 when acting in an official capacity."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_012xjvbo1VCspa4vxnhYfLQe",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_008",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.621(2) and §13.695",
+          "justification": "Section 13.621(2) exempts an agency that files a statement under §13.695 (and named officials) from §§13.625, 13.63, 13.64, 13.65, and 13.68 — substituting the simpler §13.695 reporting regime for the full lobbyist/principal scheme."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 29466,
+      "inference_geo": "global",
+      "input_tokens": 1361,
+      "output_tokens": 1937,
+      "server_tool_use": null,
+      "service_tier": "standard",
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      }
+    }
+  }
+}

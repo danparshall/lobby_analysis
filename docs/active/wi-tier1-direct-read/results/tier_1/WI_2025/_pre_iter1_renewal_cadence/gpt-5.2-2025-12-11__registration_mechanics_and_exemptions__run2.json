@@ -1,0 +1,282 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "registration_mechanics_and_exemptions",
+    "run_index": 2,
+    "state_abbr": "WI",
+    "vintage_year": 2025,
+    "prompt_sha256": "cf5e534eb79e06bd8862cb6a71fa3ba6db44eb86d8d1b12b85431ef394b042c8",
+    "timestamp_utc": "2026-06-04T17:01:51+00:00"
+  },
+  "wall_clock_seconds": 11.308756333019119,
+  "usage": {
+    "completion_tokens": 769,
+    "prompt_tokens": 19465,
+    "total_tokens": 20234,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 19328
+    }
+  },
+  "cost_usd_estimate": 0.04482975,
+  "legal_roster": [
+    [
+      "lobbyist_registration_required",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_renewal_cadence",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_amendment_deadline_days",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_deadline_days_after_first_lobbying",
+      "legal"
+    ],
+    [
+      "separate_registrations_for_lobbyists_and_clients",
+      "legal"
+    ],
+    [
+      "lobbyist_required_to_submit_photograph_with_registration",
+      "legal"
+    ],
+    [
+      "exemption_for_govt_official_capacity_exists",
+      "legal"
+    ],
+    [
+      "exemption_partial_for_govt_agencies",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.66; § 13.62(11)",
+      "justification": "The law prohibits engaging in lobbying as a lobbyist without being licensed and authorized (§13.66), and defines a ‘lobbyist’ as an individual paid by a principal whose duties include lobbying (with a 5-days-per-reporting-period threshold if duties are mixed) (§13.62(11))."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_renewal_cadence",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": 2
+      },
+      "cell_class": "IntCell",
+      "cited_section": "Wis. Stat. § 13.63(1)(a)",
+      "justification": "Lobbyists must obtain a license to act as a lobbyist, and the license ‘shall expire on December 31 of each even-numbered year,’ requiring renewal biennially rather than at least once per year."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "separate_registrations_for_lobbyists_and_clients",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.63(1)(a); § 13.64(1)",
+      "justification": "Lobbyists must file a license application to be issued a lobbyist license (§13.63), while principals must separately file a registration statement when they exceed the $500 threshold (§13.64)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_required_to_submit_photograph_with_registration",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.63(1)(a)",
+      "justification": "The lobbyist license application must include specified items (e.g., signature and generally a social security number) but the statute does not require submission of a photograph."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "exemption_for_govt_official_capacity_exists",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.621(2)-(3)",
+      "justification": "An agency that files a statement under §13.695 and named officials are not subject to multiple lobbying provisions (§13.621(2)), and elective state officials, local/tribal officials, and legislative employees are not subject to listed lobbying provisions when acting in an official capacity (§13.621(3))."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "exemption_partial_for_govt_agencies",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.621(2); § 13.695",
+      "justification": "State agencies that file statements under §13.695 (and named officials) are expressly not subject to several requirements that apply to non-government actors (e.g., licensing/registration/reporting provisions) except as provided in §13.695 (§13.621(2))."
+    }
+  ],
+  "unscoreable_emissions": [
+    {
+      "handle": "row_003",
+      "axis": "legal",
+      "reason": "The bundled sections do not state any lobbyist-side deadline to notify the commission of changes in license/registration information; the only explicit change-notice rule provided is for agencies under §13.695(2).",
+      "row_id": "lobbyist_registration_amendment_deadline_days"
+    },
+    {
+      "handle": "row_004",
+      "axis": "legal",
+      "reason": "The statute imposes a ‘before engaging’ licensing/authorization requirement (§13.66) but does not provide a numeric number-of-days-after-first-lobbying deadline for the lobbyist’s own registration/licensing.",
+      "row_id": "lobbyist_registration_deadline_days_after_first_lobbying"
+    }
+  ],
+  "errors": [],
+  "response": {
+    "id": "chatcmpl-Dn5joXPlXKEIX8UquapIBp9B2MqQ6",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_njc46aMmKfitlcT189ZxsSgn",
+              "function": {
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.66; § 13.62(11)\", \"justification\": \"The law prohibits engaging in lobbying as a lobbyist without being licensed and authorized (§13.66), and defines a ‘lobbyist’ as an individual paid by a principal whose duties include lobbying (with a 5-days-per-reporting-period threshold if duties are mixed) (§13.62(11)).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_53docVe3olMZIvjx3JtUNwCL",
+              "function": {
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": 2, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.63(1)(a)\", \"justification\": \"Lobbyists must obtain a license to act as a lobbyist, and the license ‘shall expire on December 31 of each even-numbered year,’ requiring renewal biennially rather than at least once per year.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_5OXV0TGxffI3ZClYJnmpQ3tg",
+              "function": {
+                "arguments": "{\"handle\": \"row_003\", \"axis\": \"legal\", \"reason\": \"The bundled sections do not state any lobbyist-side deadline to notify the commission of changes in license/registration information; the only explicit change-notice rule provided is for agencies under §13.695(2).\"}",
+                "name": "record_unscoreable_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_xU9JbQDgO7zzPJCm4rGOw3vj",
+              "function": {
+                "arguments": "{\"handle\": \"row_004\", \"axis\": \"legal\", \"reason\": \"The statute imposes a ‘before engaging’ licensing/authorization requirement (§13.66) but does not provide a numeric number-of-days-after-first-lobbying deadline for the lobbyist’s own registration/licensing.\"}",
+                "name": "record_unscoreable_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_BQnyjJ8QMlpOWnCRFJUROGME",
+              "function": {
+                "arguments": "{\"handle\": \"row_005\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.63(1)(a); § 13.64(1)\", \"justification\": \"Lobbyists must file a license application to be issued a lobbyist license (§13.63), while principals must separately file a registration statement when they exceed the $500 threshold (§13.64).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_371Ggc5RX8O8ZvkppQ8JghNZ",
+              "function": {
+                "arguments": "{\"handle\": \"row_006\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.63(1)(a)\", \"justification\": \"The lobbyist license application must include specified items (e.g., signature and generally a social security number) but the statute does not require submission of a photograph.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_4SyLchq1ihqhvPDEkl1i05va",
+              "function": {
+                "arguments": "{\"handle\": \"row_007\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.621(2)-(3)\", \"justification\": \"An agency that files a statement under §13.695 and named officials are not subject to multiple lobbying provisions (§13.621(2)), and elective state officials, local/tribal officials, and legislative employees are not subject to listed lobbying provisions when acting in an official capacity (§13.621(3)).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_RbZembMMCPqYWxgWSAYgoShe",
+              "function": {
+                "arguments": "{\"handle\": \"row_008\", \"axis\": \"legal\", \"value\": true, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.621(2); § 13.695\", \"justification\": \"State agencies that file statements under §13.695 (and named officials) are expressly not subject to several requirements that apply to non-government actors (e.g., licensing/registration/reporting provisions) except as provided in §13.695 (§13.621(2)).\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1780592500,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 769,
+      "prompt_tokens": 19465,
+      "total_tokens": 20234,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 19328
+      }
+    }
+  }
+}

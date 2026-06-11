@@ -1,0 +1,360 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "registration_mechanics_and_exemptions",
+    "run_index": 2,
+    "state_abbr": "WI",
+    "vintage_year": 2025,
+    "prompt_sha256": "cf5e534eb79e06bd8862cb6a71fa3ba6db44eb86d8d1b12b85431ef394b042c8",
+    "timestamp_utc": "2026-06-04T16:52:13+00:00"
+  },
+  "wall_clock_seconds": 21.578274166036863,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 1307
+    },
+    "cache_creation_input_tokens": 1307,
+    "cache_read_input_tokens": 29466,
+    "inference_geo": "global",
+    "input_tokens": 6,
+    "output_tokens": 2014,
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.05038000000000001,
+  "legal_roster": [
+    [
+      "lobbyist_registration_required",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_renewal_cadence",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_amendment_deadline_days",
+      "legal"
+    ],
+    [
+      "lobbyist_registration_deadline_days_after_first_lobbying",
+      "legal"
+    ],
+    [
+      "separate_registrations_for_lobbyists_and_clients",
+      "legal"
+    ],
+    [
+      "lobbyist_required_to_submit_photograph_with_registration",
+      "legal"
+    ],
+    [
+      "exemption_for_govt_official_capacity_exists",
+      "legal"
+    ],
+    [
+      "exemption_partial_for_govt_agencies",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.66 and §13.63(1)(a)",
+      "justification": "§13.66 prohibits any person from engaging in lobbying as a lobbyist unless licensed under §13.63 and authorized under §13.65, requiring all paid lobbyists to register/license (subject to limited exemptions in §13.621)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_amendment_deadline_days",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": 10
+      },
+      "cell_class": "IntCell",
+      "cited_section": "§13.695(2)",
+      "justification": "For agency statements, changes must be reported within 10 days; while §13.64(3) requires written notice of new general areas/agencies \"before\" lobbying without a numerical day window, the closest statutory change-reporting deadline is 10 days under §13.695(2)."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_registration_deadline_days_after_first_lobbying",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": 0
+      },
+      "cell_class": "IntCell",
+      "cited_section": "§13.66 and §13.65",
+      "justification": "§13.66 and §13.65 require a lobbyist to be licensed and authorized BEFORE engaging in lobbying on behalf of a principal, so the lobbyist must register prior to (zero days after) initial lobbying activity."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "separate_registrations_for_lobbyists_and_clients",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.63(1)(a) and §13.64(1)",
+      "justification": "§13.63(1)(a) requires the lobbyist to file a license application and §13.64(1) separately requires the principal to file a registration statement, establishing two distinct registration filings by lobbyist and principal."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_required_to_submit_photograph_with_registration",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.63(1)(a)",
+      "justification": "§13.63(1)(a) specifies application contents (social security number, signature, fee) and §13.64 specifies registration contents with no mention of any photograph requirement."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "exemption_for_govt_official_capacity_exists",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.621(3)",
+      "justification": "§13.621(3) expressly exempts elective state officials, local officials, tribal officials, and legislative employees acting in an official capacity from §§13.63, 13.64, 13.65, 13.68, and 13.695."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "exemption_partial_for_govt_agencies",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": true
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "§13.621(2) and §13.695",
+      "justification": "§13.621(2) provides that an agency filing a statement under §13.695 (and officials named in it) are not subject to §§13.625, 13.63, 13.64, 13.65, or 13.68, partially exempting state agencies from lobbying regulations applied to non-government entities."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [
+    {
+      "reason": "instantiation_failed",
+      "key": [
+        "lobbyist_registration_renewal_cadence",
+        "legal"
+      ],
+      "error": "ValueError('IntCell: cannot coerce \\'\"YES\"\\' to int')",
+      "arguments": {
+        "handle": "row_002",
+        "axis": "legal",
+        "value": "\"YES\"",
+        "confidence": "high",
+        "cited_section": "§13.63(1)(a) and §13.64(2)",
+        "justification": "Lobbyist licenses and principal registrations expire on December 31 of each even-numbered year (biennial), with annual fee structure; principals must register within 10 days of exceeding $500 in expenditures each calendar year per §13.64(1)."
+      }
+    }
+  ],
+  "response": {
+    "id": "msg_01DTdgxceuJSKHAb9Z8xq3eg",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "I'll analyze each cell based on the Wisconsin statute text provided.",
+        "type": "text"
+      },
+      {
+        "id": "toolu_01BrtTCXc8yb9G5TmedLkMWo",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_001",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.66 and §13.63(1)(a)",
+          "justification": "§13.66 prohibits any person from engaging in lobbying as a lobbyist unless licensed under §13.63 and authorized under §13.65, requiring all paid lobbyists to register/license (subject to limited exemptions in §13.621)."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_015HoTG5o2Zd6vYbf9AsPwZA",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_002",
+          "axis": "legal",
+          "value": "\"YES\"",
+          "confidence": "high",
+          "cited_section": "§13.63(1)(a) and §13.64(2)",
+          "justification": "Lobbyist licenses and principal registrations expire on December 31 of each even-numbered year (biennial), with annual fee structure; principals must register within 10 days of exceeding $500 in expenditures each calendar year per §13.64(1)."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_018CH54w1Ecd63jD5i4gfc53",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_003",
+          "axis": "legal",
+          "value": "10",
+          "confidence": "medium",
+          "cited_section": "§13.695(2)",
+          "justification": "For agency statements, changes must be reported within 10 days; while §13.64(3) requires written notice of new general areas/agencies \"before\" lobbying without a numerical day window, the closest statutory change-reporting deadline is 10 days under §13.695(2)."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01NoSDgPRxxFJtbU9iG9B9aM",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_004",
+          "axis": "legal",
+          "value": "0",
+          "confidence": "high",
+          "cited_section": "§13.66 and §13.65",
+          "justification": "§13.66 and §13.65 require a lobbyist to be licensed and authorized BEFORE engaging in lobbying on behalf of a principal, so the lobbyist must register prior to (zero days after) initial lobbying activity."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_012eovTN8eB6U8ntFgtcbqrT",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_005",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.63(1)(a) and §13.64(1)",
+          "justification": "§13.63(1)(a) requires the lobbyist to file a license application and §13.64(1) separately requires the principal to file a registration statement, establishing two distinct registration filings by lobbyist and principal."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_013eMeeR7nbwhqyzEDuvMiBJ",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_006",
+          "axis": "legal",
+          "value": false,
+          "confidence": "high",
+          "cited_section": "§13.63(1)(a)",
+          "justification": "§13.63(1)(a) specifies application contents (social security number, signature, fee) and §13.64 specifies registration contents with no mention of any photograph requirement."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_011gn1G2ueY6McJn64yCXgTT",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_007",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.621(3)",
+          "justification": "§13.621(3) expressly exempts elective state officials, local officials, tribal officials, and legislative employees acting in an official capacity from §§13.63, 13.64, 13.65, 13.68, and 13.695."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01L9RgpBVr9tuDZ31Z1E3rBn",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_008",
+          "axis": "legal",
+          "value": true,
+          "confidence": "high",
+          "cited_section": "§13.621(2) and §13.695",
+          "justification": "§13.621(2) provides that an agency filing a statement under §13.695 (and officials named in it) are not subject to §§13.625, 13.63, 13.64, 13.65, or 13.68, partially exempting state agencies from lobbying regulations applied to non-government entities."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 1307
+      },
+      "cache_creation_input_tokens": 1307,
+      "cache_read_input_tokens": 29466,
+      "inference_geo": "global",
+      "input_tokens": 6,
+      "output_tokens": 2014,
+      "server_tool_use": null,
+      "service_tier": "standard",
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      }
+    }
+  }
+}

@@ -260,6 +260,8 @@ def _cells_from_per_item_scores(per_item: dict[str, int]) -> dict[str, dict]:
         audit_enum = "no_audit_requirement"
     cells["lobbying_disclosure_audit_required_in_law"] = {
         "legal_availability": audit_enum,
+    }
+    cells["lobbying_disclosure_audit_required_in_practice"] = {
         "practical_availability": per_item["IND_208"],
     }
     # IND_209: passthrough.

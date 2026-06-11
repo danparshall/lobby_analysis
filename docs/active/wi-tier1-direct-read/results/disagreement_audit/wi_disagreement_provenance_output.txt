@@ -1,0 +1,58 @@
+warning: `VIRTUAL_ENV=/Users/dan/code/lobby_analysis/.venv` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead
+
+## Pattern A
+
+| row_id | rubrics_reading | n | first_introduced_by | status | notes |
+|---|---|---|---|---|---|
+| `lobbyist_spending_report_required` | cpi_2015;hg_2007;pri_2010;sunlight_2015 | 4 | cpi_2015_c11_projection_mapping.md | firm |  |
+| `lobbyist_spending_report_cadence_includes_semiannual` | newmark_2005;pri_2010 | 2 | pri_2010_projection_mapping.md | firm |  |
+| `lobbyist_spending_report_categorizes_expenses_by_type` | hg_2007;newmark_2005;newmark_2017;opheim_1991;sunlight_2015 | 5 | sunlight_2015_projection_mapping.md | firm |  |
+| `lobbyist_spending_report_includes_bill_or_action_identifier` | focal_2024;hg_2007;opheim_1991;sunlight_2015 | 4 | sunlight_2015_projection_mapping.md | firm |  |
+| `lobbyist_spending_report_includes_general_issues` | pri_2010 | 1 | pri_2010_projection_mapping.md | firm | single-rubric (pri_2010) |
+| `lobbyist_spending_report_includes_general_subject_matter` | hg_2007;newmark_2005;newmark_2017;sunlight_2015 | 4 | sunlight_2015_projection_mapping.md | firm |  |
+| `lobbyist_spending_report_includes_gifts_entertainment_transport_lodging` | focal_2024;hg_2007;newmark_2005;newmark_2017;opheim_1991;pri_2010 | 6 | pri_2010_projection_mapping.md | firm |  |
+| `lobbyist_spending_report_includes_indirect_costs` | pri_2010 | 1 | pri_2010_projection_mapping.md | firm | single-rubric (pri_2010) |
+| `lobbyist_spending_report_includes_lobbyist_contact_info` | pri_2010 | 1 | pri_2010_projection_mapping.md | firm | single-rubric (pri_2010) |
+| `lobbyist_spending_report_includes_principal_names` | focal_2024;pri_2010 | 2 | pri_2010_projection_mapping.md | firm |  |
+| `lobbyist_spending_report_includes_specific_bill_number` | pri_2010 | 1 | pri_2010_projection_mapping.md | firm | single-rubric (pri_2010) |
+| `lobbyist_spending_report_includes_total_compensation` | cpi_2015;pri_2010;sunlight_2015;newmark_2017;newmark_2005;opheim_1991;hg_2007;focal_2024 | 8 | pri_2010_projection_mapping.md | firm |  |
+| `lobbyist_spending_report_includes_total_expenditures` | focal_2024;newmark_2005;newmark_2017;opheim_1991 | 4 | newmark_2017_projection_mapping.md | firm |  |
+| `lobbyist_spending_report_required_when_no_activity` | hg_2007 | 1 | hiredguns_2007_projection_mapping.md | firm | single-rubric (hg_2007) |
+
+## Pattern B
+
+| row_id | rubrics_reading | n | first_introduced_by | status | notes |
+|---|---|---|---|---|---|
+| `lobbyist_registration_threshold_expenditure_dollars` | focal_2024;newmark_2005;newmark_2017;opheim_1991 | 4 | newmark_2017_projection_mapping.md | firm |  |
+| `lobbyist_filing_de_minimis_threshold_time_percent` | pri_2010 | 1 | pri_2010_projection_mapping.md | firm | single-rubric (pri_2010) |
+| `lobbyist_registration_deadline_days_after_first_lobbying` | cpi_2015;hg_2007 | 2 | cpi_2015_c11_projection_mapping.md | firm |  |
+
+## Pattern C
+
+| row_id | rubrics_reading | n | first_introduced_by | status | notes |
+|---|---|---|---|---|---|
+| `lobbying_violation_penalties_imposed_in_practice` | cpi_2015 | 1 | cpi_2015_c11_projection_mapping.md | firm | single-rubric (cpi_2015) |
+
+## Rubrics appearing across the 18 cells
+  - pri_2010: 5
+  - focal_2024;newmark_2005;newmark_2017;opheim_1991: 2
+  - cpi_2015: 1
+  - newmark_2005;pri_2010: 1
+  - hg_2007;newmark_2005;newmark_2017;opheim_1991;sunlight_2015: 1
+  - focal_2024;hg_2007;opheim_1991;sunlight_2015: 1
+  - hg_2007;newmark_2005;newmark_2017;sunlight_2015: 1
+  - focal_2024;hg_2007;newmark_2005;newmark_2017;opheim_1991;pri_2010: 1
+  - focal_2024;pri_2010: 1
+  - cpi_2015;pri_2010;sunlight_2015;newmark_2017;newmark_2005;opheim_1991;hg_2007;focal_2024: 1
+  - cpi_2015;hg_2007;pri_2010;sunlight_2015: 1
+  - hg_2007: 1
+  - cpi_2015;hg_2007: 1
+
+## Full notes column per disagreement row
+  - `lobbyist_spending_report_includes_general_issues` (A): single-rubric (pri_2010)
+  - `lobbyist_spending_report_includes_indirect_costs` (A): single-rubric (pri_2010)
+  - `lobbyist_spending_report_includes_lobbyist_contact_info` (A): single-rubric (pri_2010)
+  - `lobbyist_spending_report_includes_specific_bill_number` (A): single-rubric (pri_2010)
+  - `lobbyist_spending_report_required_when_no_activity` (A): single-rubric (hg_2007)
+  - `lobbyist_filing_de_minimis_threshold_time_percent` (B): single-rubric (pri_2010)
+  - `lobbying_violation_penalties_imposed_in_practice` (C): single-rubric (cpi_2015)

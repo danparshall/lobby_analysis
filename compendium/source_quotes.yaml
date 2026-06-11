@@ -1,0 +1,754 @@
+# compendium/source_quotes.yaml
+#
+# Source-quotes sidecar — prompt SSOT for the tier-1 dispatch.
+#
+# Per-row schema:
+#   <compendium_row_id>:
+#     source_quotes:                            # non-empty dict
+#       <rubric>_<vintage>_<section_ref>: "<verbatim quote>"
+#     prompt: "<what the model sees>"        # non-empty string
+#
+# `source_quotes` is immutable reference material; provenance lives
+# in the keys. `prompt` is mutable — the Ralph loop edits it.
+# Citations DO NOT appear inside the `prompt` value; they live in
+# the `source_quotes` keys only. See
+# `convos/20260604_wide_pass_yaml_sidecar_design.md` for the design.
+#
+# Commit 1 (wide-pass plan): 17 narrow-pass rows migrated from the
+# now-dropped `prompt_text` TSV column.
+# Commit 2 (this file): 164 remaining rows populated via the projection-
+# doc walk by `scripts/_completed/populate_source_quotes_wide_pass.py`.
+
+"actor_executive_agency_registration_required":
+  "source_quotes":
+    "pri_2010_A6": "Executive branch agencies."
+  "prompt": "Executive branch agencies. Answer with the boolean value true or false."
+"actor_governors_office_registration_required":
+  "source_quotes":
+    "pri_2010_A5": "Governor's office."
+  "prompt": "Governor's office. Answer with the boolean value true or false."
+"actor_independent_agency_registration_required":
+  "source_quotes":
+    "pri_2010_A8": "Independent agencies."
+  "prompt": "Independent agencies. Answer with the boolean value true or false."
+"actor_intergov_agency_lobbying_registration_required":
+  "source_quotes":
+    "pri_2010_A10": "Government agencies who lobby other agencies."
+  "prompt": "Government agencies who lobby other agencies. Answer with the boolean value true or false."
+"actor_legislative_branch_registration_required":
+  "source_quotes":
+    "pri_2010_A7": "Legislative branch."
+  "prompt": "Legislative branch. Answer with the boolean value true or false."
+"actor_lobbying_firm_registration_required":
+  "source_quotes":
+    "pri_2010_A4": "Lobbying firms."
+  "prompt": "Lobbying firms. Answer with the boolean value true or false."
+"actor_local_government_registration_required":
+  "source_quotes":
+    "pri_2010_A9": "Local governments."
+  "prompt": "Local governments. Answer with the boolean value true or false."
+"actor_paid_lobbyist_registration_required":
+  "source_quotes":
+    "pri_2010_A1": "Lobbyists."
+  "prompt": "Lobbyists. Answer with the boolean value true or false."
+"actor_principal_registration_required":
+  "source_quotes":
+    "pri_2010_A3": "Principals who employ a lobbyist."
+  "prompt": "Principals who employ a lobbyist. Answer with the boolean value true or false."
+"actor_public_entity_other_registration_required":
+  "source_quotes":
+    "pri_2010_A11": "Public entities, other than government agencies."
+  "prompt": "Public entities, other than government agencies. Answer with the boolean value true or false."
+"actor_volunteer_lobbyist_registration_required":
+  "source_quotes":
+    "pri_2010_A2": "Volunteer lobbyists."
+  "prompt": "Volunteer lobbyists. Answer with the boolean value true or false."
+"consultant_lobbyist_report_includes_income_by_source_type":
+  "source_quotes":
+    "focal_2024_financials_3": "Income sources (eg, including government agencies, grant-making foundations, companies) and amount received"
+  "prompt": "Income sources (eg, including government agencies, grant-making foundations, companies) and amount received. Under state law, which income-source types must consultant lobbyists report by category on their disclosure (with associated amounts)? Answer with one or more of: 'government_agency', 'foundation', 'company', 'individual', 'other'. Use the empty set if the statute does not require an income-source-type breakdown."
+"def_actor_class_elected_officials":
+  "source_quotes":
+    "newmark_2017_def_elective_officials_as_lobbyists": "Some states require elected officials and public appointees to register if they engage in certain lobbying-related behaviors."
+  "prompt": "Some states require elected officials and public appointees to register if they engage in certain lobbying-related behaviors. Answer with the boolean value true or false."
+"def_actor_class_public_employees":
+  "source_quotes":
+    "newmark_2017_def_public_employees_as_lobbyists": "public employees as lobbyists, and whether there are compensation, expenditure, and time standards"
+  "prompt": "public employees as lobbyists, and whether there are compensation, expenditure, and time standards Answer with the boolean value true or false."
+"def_lobbying_activity_types":
+  "source_quotes":
+    "focal_2024_scope_4": "A wide breadth of activities are included, eg, oral, written, electronic, virtual communications; organising meetings for others; events; phone calls and emails"
+  "prompt": "A wide breadth of activities are included, eg, oral, written, electronic, virtual communications; organising meetings for others; events; phone calls and emails. Under state law, which activity types are included in the statutory definition of lobbying? Answer with one or more of: 'oral', 'written', 'electronic', 'virtual', 'organising_meetings', 'events', 'phone_calls', 'emails'. Use the empty set if the statute does not enumerate lobbying activity types."
+"def_lobbyist_actor_types":
+  "source_quotes":
+    "focal_2024_scope_1": "The following types of lobbyists are included in the register: professional lobbyists/consultants, in-house company lobbyists, in-house organisation lobbyists, professional consultancies, law firms, think tanks, research institutions, public entities, government agencies/employees"
+  "prompt": "The following types of lobbyists are included in the register: professional lobbyists/consultants, in-house company lobbyists, in-house organisation lobbyists, professional consultancies, law firms, think tanks, research institutions, public entities, government agencies/employees. Under state law, which actor types are included in the statutory definition of who must register as a lobbyist? Answer with one or more of: 'professional_lobbyist', 'in_house_company', 'in_house_organisation', 'professional_consultancy', 'law_firm', 'think_tank', 'research_institution', 'public_entity', 'government_agency'. Use the empty set if the statute does not enumerate actor types."
+"def_target_executive_agency":
+  "source_quotes":
+    "cpi_2015_IND_196": "A YES score is earned if in law, the definition of lobbying includes communications with state legislators and executive officials, including the governor. A NO score is earned if no such law exists or it exists, but the definition does not recognize communications with executive and legislative officials."
+  "prompt": "A YES score is earned if in law, the definition of lobbying includes communications with state legislators and executive officials, including the governor. A NO score is earned if no such law exists or it exists, but the definition does not recognize communications with executive and legislative officials. Answer with the boolean value true or false."
+"def_target_executive_staff":
+  "source_quotes":
+    "focal_2024_scope_3": "The following are included as targets of lobbying: legislative branches, executive branch officials, Ministers, Deputy Ministers, members of parliament, Director-Generals and senior officials, staff, administrative branch/bureaucracy"
+  "prompt": "The following are included as targets of lobbying: legislative branches, executive branch officials, Ministers, Deputy Ministers, members of parliament, Director-Generals and senior officials, staff, administrative branch/bureaucracy Answer with the boolean value true or false."
+"def_target_governors_office":
+  "source_quotes":
+    "cpi_2015_IND_196": "A YES score is earned if in law, the definition of lobbying includes communications with state legislators and executive officials, including the governor. A NO score is earned if no such law exists or it exists, but the definition does not recognize communications with executive and legislative officials."
+  "prompt": "A YES score is earned if in law, the definition of lobbying includes communications with state legislators and executive officials, including the governor. A NO score is earned if no such law exists or it exists, but the definition does not recognize communications with executive and legislative officials. Answer with the boolean value true or false."
+"def_target_independent_agency":
+  "source_quotes":
+    "cpi_2015_IND_196": "A YES score is earned if in law, the definition of lobbying includes communications with state legislators and executive officials, including the governor. A NO score is earned if no such law exists or it exists, but the definition does not recognize communications with executive and legislative officials."
+  "prompt": "A YES score is earned if in law, the definition of lobbying includes communications with state legislators and executive officials, including the governor. A NO score is earned if no such law exists or it exists, but the definition does not recognize communications with executive and legislative officials. Answer with the boolean value true or false."
+"def_target_legislative_branch":
+  "source_quotes":
+    "cpi_2015_IND_196": "A YES score is earned if in law, the definition of lobbying includes communications with state legislators and executive officials, including the governor. A NO score is earned if no such law exists or it exists, but the definition does not recognize communications with executive and legislative officials."
+  "prompt": "A YES score is earned if in law, the definition of lobbying includes communications with state legislators and executive officials, including the governor. A NO score is earned if no such law exists or it exists, but the definition does not recognize communications with executive and legislative officials. Answer with the boolean value true or false."
+"def_target_legislative_staff":
+  "source_quotes":
+    "focal_2024_scope_3": "The following are included as targets of lobbying: legislative branches, executive branch officials, Ministers, Deputy Ministers, members of parliament, Director-Generals and senior officials, staff, administrative branch/bureaucracy"
+  "prompt": "The following are included as targets of lobbying: legislative branches, executive branch officials, Ministers, Deputy Ministers, members of parliament, Director-Generals and senior officials, staff, administrative branch/bureaucracy Answer with the boolean value true or false."
+"exemption_for_govt_official_capacity_exists":
+  "source_quotes":
+    "pri_2010_B1": "Is there an exemption for government agencies and/or public officials acting within their official capacity?"
+  "prompt": "Is there an exemption for government agencies and/or public officials acting within their official capacity? Answer with the boolean value true or false."
+"exemption_partial_for_govt_agencies":
+  "source_quotes":
+    "pri_2010_B2": "Are government agencies relieved and/or exempted (partially) from the regulations imposed on non-government organizations and individuals?"
+  "prompt": "Are government agencies relieved and/or exempted (partially) from the regulations imposed on non-government organizations and individuals? Answer with the boolean value true or false."
+"govt_agencies_subject_to_lobbyist_disclosure_requirements":
+  "source_quotes":
+    "pri_2010_B3": "Are government agencies subject to the same disclosure requirements as lobbyists?"
+  "prompt": "Are government agencies subject to the same disclosure requirements as lobbyists? Answer with the boolean value true or false."
+"govt_agencies_subject_to_principal_disclosure_requirements":
+  "source_quotes":
+    "pri_2010_B4": "Are government agencies subject to the same disclosure requirements as principals?"
+  "prompt": "Are government agencies subject to the same disclosure requirements as principals? Answer with the boolean value true or false."
+"law_defines_public_entity":
+  "source_quotes":
+    "pri_2010_C0": "Does the law include a definition of 'public entity'?"
+  "prompt": "Does the law include a definition of 'public entity'? Answer with the boolean value true or false."
+"law_includes_materiality_test":
+  "source_quotes":
+    "pri_2010_D0": "Does the law include a materiality test (ability to exempt) for coverage in disclosure regulations?"
+  "prompt": "Does the law include a materiality test (ability to exempt) for coverage in disclosure regulations? Answer with the boolean value true or false."
+"lobbying_contact_log_includes_beneficiary_organization":
+  "source_quotes":
+    "focal_2024_contact_log_1": "Organisation/interest(s) represented (beneficiary)"
+  "prompt": "Organisation/interest(s) represented (beneficiary) Answer with the boolean value true or false."
+"lobbying_contact_log_includes_communication_form":
+  "source_quotes":
+    "focal_2024_contact_log_6": "Form (eg, in person meeting, video conference, phone call)"
+  "prompt": "Form (eg, in person meeting, video conference, phone call). Under state law, what communication-form classification (if any) must be recorded on each lobbyist contact-log entry? Answer with one of: 'in_person', 'video_conference', 'phone_call', 'email', 'written', 'other', or null. Use null if statute does not require contact-log entries to record the communication form."
+"lobbying_contact_log_includes_date":
+  "source_quotes":
+    "focal_2024_contact_log_5": "Date"
+  "prompt": "Date Answer with the boolean value true or false."
+"lobbying_contact_log_includes_institution_or_department":
+  "source_quotes":
+    "focal_2024_contact_log_3": "Institution/department contacted"
+  "prompt": "Institution/department contacted Answer with the boolean value true or false."
+"lobbying_contact_log_includes_location":
+  "source_quotes":
+    "focal_2024_contact_log_7": "Location"
+  "prompt": "Location Answer with the boolean value true or false."
+"lobbying_contact_log_includes_materials_shared":
+  "source_quotes":
+    "focal_2024_contact_log_8": "Any materials that were shared, excluding commercially sensitive materials (before, during and after the meeting)"
+  "prompt": "Any materials that were shared, excluding commercially sensitive materials (before, during and after the meeting) Answer with the boolean value true or false."
+"lobbying_contact_log_includes_meeting_attendees":
+  "source_quotes":
+    "focal_2024_contact_log_4": "If a meeting, names of all attendees"
+  "prompt": "If a meeting, names of all attendees Answer with the boolean value true or false."
+"lobbying_contact_log_includes_official_contacted_name":
+  "source_quotes":
+    "focal_2024_contact_log_2": "Names of persons contacted and their position/role"
+  "prompt": "Names of persons contacted and their position/role Answer with the boolean value true or false."
+"lobbying_contact_log_includes_topics_discussed":
+  "source_quotes":
+    "focal_2024_contact_log_9": "Topics/issues discussed"
+  "prompt": "Topics/issues discussed Answer with the boolean value true or false."
+"lobbying_data_changes_flagged_with_versioning":
+  "source_quotes":
+    "focal_2024_openness_9": "Changes or updates documented with a flagging system"
+  "prompt": "Changes or updates documented with a flagging system Answer with the boolean value true or false."
+"lobbying_data_current_year_present_on_website":
+  "source_quotes":
+    "pri_2010_Q4": "At least some current lobbying data/information available on the website for the most recent year."
+  "prompt": "At least some current lobbying data/information available on the website for the most recent year. Answer with the boolean value true or false."
+"lobbying_data_downloadable_in_analytical_format":
+  "source_quotes":
+    "pri_2010_Q6": "How easily users can download lobbying data and information and analyze it, and specifically, whether users are able to download information in an electronic format that is immediately useable for analysis, such as Excel or SPSS."
+  "prompt": "How easily users can download lobbying data and information and analyze it, and specifically, whether users are able to download information in an electronic format that is immediately useable for analysis, such as Excel or SPSS. Answer with the boolean value true or false."
+"lobbying_data_historical_archive_present":
+  "source_quotes":
+    "pri_2010_Q5": "Historical lobbying information is available, downloadable, or at least viewable on the state's website."
+  "prompt": "Historical lobbying information is available, downloadable, or at least viewable on the state's website. Answer with the boolean value true or false."
+"lobbying_data_minimally_available":
+  "source_quotes":
+    "pri_2010_Q1": "At least some lobbying data available (in any format) either by request (email, telephone, fax, etc.) or anonymously (web-based)."
+  "prompt": "At least some lobbying data available (in any format) either by request (email, telephone, fax, etc.) or anonymously (web-based). Answer with the boolean value true or false."
+"lobbying_data_no_user_registration_required":
+  "source_quotes":
+    "focal_2024_openness_3": "Available without registration, free to access, open license (eg, no limits to reuse), non-proprietary format (eg, CSV, not Excel), machine readable"
+  "prompt": "Available without registration, free to access, open license (eg, no limits to reuse), non-proprietary format (eg, CSV, not Excel), machine readable Answer with the boolean value true or false."
+"lobbying_data_open_data_quality":
+  "source_quotes":
+    "cpi_2015_IND_206": "A 100 is earned if lobbying disclosure information is made available online and can be easily accessed, downloaded in bulk, and in machine-readable format. A 50 is earned if where lobbying disclosure information is available online but cannot be easily accessed and/or downloaded in bulk, but can be downloaded in machine-readable format. A 0 is earned if lobbying disclosure information is not available online or it is but cannot be downloaded."
+  "prompt": "A 100 is earned if lobbying disclosure information is made available online and can be easily accessed, downloaded in bulk, and in machine-readable format. A 50 is earned if where lobbying disclosure information is available online but cannot be easily accessed and/or downloaded in bulk, but can be downloaded in machine-readable format. A 0 is earned if lobbying disclosure information is not available online or it is but cannot be downloaded."
+"lobbying_data_open_license":
+  "source_quotes":
+    "focal_2024_openness_3": "Available without registration, free to access, open license (eg, no limits to reuse), non-proprietary format (eg, CSV, not Excel), machine readable"
+  "prompt": "Available without registration, free to access, open license (eg, no limits to reuse), non-proprietary format (eg, CSV, not Excel), machine readable Answer with the boolean value true or false."
+"lobbying_disclosure_audit_required_in_law":
+  "source_quotes":
+    "cpi_2015_IND_207": "A YES score is earned if there is a legal requirement for the regular auditing of lobbying disclosure records by an impartial third party. A MODERATE score is earned if independent auditing only occurs when financial irregularities are discovered or suspected or the law requires a compliance review. A NO score is earned if no such law exists."
+  "prompt": "A YES score is earned if there is a legal requirement for the regular auditing of lobbying disclosure records by an impartial third party. A MODERATE score is earned if independent auditing only occurs when financial irregularities are discovered or suspected or the law requires a compliance review. A NO score is earned if no such law exists. Under state law, is regular auditing of lobbying disclosure records required? Answer with one of: 'YES', 'MODERATE', or 'NO'. Use 'YES' if statute requires regular impartial-third-party auditing. Use 'MODERATE' if statute requires only compliance review, or auditing triggered solely by suspected financial irregularities. Use 'NO' if no such auditing requirement exists in statute."
+"lobbying_disclosure_audit_required_in_practice":
+  "source_quotes":
+    "cpi_2015_IND_208": "A 100 score is earned if lobbying disclosures are audited yearly by an impartial third party. A 50 score is earned if lobbying disclosures are not always independently audited, or they are but audits may fail to identify problems in the information. A 0 score is earned if lobbying disclosures are not independently audited, or they generally fail to identify problems in the information."
+  "prompt": "A 100 score is earned if lobbying disclosures are audited yearly by an impartial third party. A 50 score is earned if lobbying disclosures are not always independently audited, or they are but audits may fail to identify problems in the information. A 0 score is earned if lobbying disclosures are not independently audited, or they generally fail to identify problems in the information."
+"lobbying_disclosure_data_includes_unique_identifiers":
+  "source_quotes":
+    "focal_2024_openness_6": "Unique identifiers (eg, for lobbyists, individuals, organisations)"
+  "prompt": "Unique identifiers (eg, for lobbyists, individuals, organisations). Under state law, what kinds of entities receive unique identifiers in the lobbying disclosure data? Answer with one or more of: 'lobbyist', 'individual', 'organisation', 'other'. Use the empty set if no unique identifiers are recorded in the disclosure data."
+"lobbying_disclosure_data_linked_to_other_datasets":
+  "source_quotes":
+    "focal_2024_openness_7": "Linked or interconnected data (to other datasets, eg, campaign financing)"
+  "prompt": "Linked or interconnected data (to other datasets, eg, campaign financing). Under state law, to what other datasets is the lobbying disclosure data linked or interconnected? Answer with one or more of: 'campaign_financing', 'other'. Use the empty set if the disclosure data is not linked to any other datasets."
+"lobbying_disclosure_documents_free_to_access":
+  "source_quotes":
+    "cpi_2015_IND_205": "A 100 score is earned if the all lobbying disclosure documents are available online at no cost, can be obtained electronically within a week, or in paper for no more than the cost of photocopies. A 50 score is earned if it takes two weeks to obtain these documents, requesters are required to visit an office, or a fee must be paid. A 0 score is earned if it takes more than a month to obtain these documents, the cost is prohibitive, or they cannot be obtained at all."
+  "prompt": "A 100 score is earned if the all lobbying disclosure documents are available online at no cost, can be obtained electronically within a week, or in paper for no more than the cost of photocopies. A 50 score is earned if it takes two weeks to obtain these documents, requesters are required to visit an office, or a fee must be paid. A 0 score is earned if it takes more than a month to obtain these documents, the cost is prohibitive, or they cannot be obtained at all. Answer with the boolean value true or false."
+"lobbying_disclosure_documents_online":
+  "source_quotes":
+    "cpi_2015_IND_205": "A 100 score is earned if the all lobbying disclosure documents are available online at no cost, can be obtained electronically within a week, or in paper for no more than the cost of photocopies. A 50 score is earned if it takes two weeks to obtain these documents, requesters are required to visit an office, or a fee must be paid. A 0 score is earned if it takes more than a month to obtain these documents, the cost is prohibitive, or they cannot be obtained at all."
+  "prompt": "A 100 score is earned if the all lobbying disclosure documents are available online at no cost, can be obtained electronically within a week, or in paper for no more than the cost of photocopies. A 50 score is earned if it takes two weeks to obtain these documents, requesters are required to visit an office, or a fee must be paid. A 0 score is earned if it takes more than a month to obtain these documents, the cost is prohibitive, or they cannot be obtained at all. Answer with the boolean value true or false."
+"lobbying_disclosure_offline_request_response_time_days":
+  "source_quotes":
+    "cpi_2015_IND_205": "A 100 score is earned if the all lobbying disclosure documents are available online at no cost, can be obtained electronically within a week, or in paper for no more than the cost of photocopies. A 50 score is earned if it takes two weeks to obtain these documents, requesters are required to visit an office, or a fee must be paid. A 0 score is earned if it takes more than a month to obtain these documents, the cost is prohibitive, or they cannot be obtained at all."
+  "prompt": "A 100 score is earned if the all lobbying disclosure documents are available online at no cost, can be obtained electronically within a week, or in paper for no more than the cost of photocopies. A 50 score is earned if it takes two weeks to obtain these documents, requesters are required to visit an office, or a fee must be paid. A 0 score is earned if it takes more than a month to obtain these documents, the cost is prohibitive, or they cannot be obtained at all."
+"lobbying_records_copy_cost_per_page_dollars":
+  "source_quotes":
+    "hiredguns_2007_Q33": "33. Cost of copies: 25 cents or more per page – 0 points; Less than 25 cents per page – 1 point"
+  "prompt": "33. Cost of copies: 25 cents or more per page – 0 points; Less than 25 cents per page – 1 point. Under state law, what is the per-page cost the state (or its agency) may charge for copies of lobbying disclosure records? Answer as a non-negative decimal in dollars (e.g., 0.25 for 25 cents per page). Use 0 if copies must be provided free of charge. Use null if no statute defines a copy cost."
+"lobbying_search_filter_by_assigned_entity":
+  "source_quotes":
+    "pri_2010_Q7l": "Can users specify data searches on the website by Designated entities assigned to lobbyist (group/congressman the lobbyist is working for)."
+  "prompt": "Can users specify data searches on the website by Designated entities assigned to lobbyist (group/congressman the lobbyist is working for). Answer with the boolean value true or false."
+"lobbying_search_filter_by_compensation":
+  "source_quotes":
+    "pri_2010_Q7h": "Can users specify data searches on the website by Compensation spending (portion of total expenditures for which the lobbyist is paid back)."
+  "prompt": "Can users specify data searches on the website by Compensation spending (portion of total expenditures for which the lobbyist is paid back). Answer with the boolean value true or false."
+"lobbying_search_filter_by_funding_source":
+  "source_quotes":
+    "pri_2010_Q7j": "Can users specify data searches on the website by Sources of funding (emphasis on public/taxpayer-funded)."
+  "prompt": "Can users specify data searches on the website by Sources of funding (emphasis on public/taxpayer-funded). Answer with the boolean value true or false."
+"lobbying_search_filter_by_lobbyist_location":
+  "source_quotes":
+    "pri_2010_Q7d": "Can users specify data searches on the website by Lobbyist location (specific address; city)."
+  "prompt": "Can users specify data searches on the website by Lobbyist location (specific address; city). Answer with the boolean value true or false."
+"lobbying_search_filter_by_lobbyist_name":
+  "source_quotes":
+    "pri_2010_Q7c": "Can users specify data searches on the website by Lobbyist name."
+  "prompt": "Can users specify data searches on the website by Lobbyist name. Answer with the boolean value true or false."
+"lobbying_search_filter_by_misc_expenses":
+  "source_quotes":
+    "pri_2010_Q7i": "Can users specify data searches on the website by Miscellaneous expenses (non-compensation)."
+  "prompt": "Can users specify data searches on the website by Miscellaneous expenses (non-compensation). Answer with the boolean value true or false."
+"lobbying_search_filter_by_principal":
+  "source_quotes":
+    "pri_2010_Q7a": "Can users specify data searches on the website by Principal (city; authority hiring; employer; corporation; etc.)."
+  "prompt": "Can users specify data searches on the website by Principal (city; authority hiring; employer; corporation; etc.). Answer with the boolean value true or false."
+"lobbying_search_filter_by_principal_legal_status":
+  "source_quotes":
+    "pri_2010_Q7m": "Can users specify data searches on the website by Legal status of the principal (government; non-profit; for-profit; etc.)."
+  "prompt": "Can users specify data searches on the website by Legal status of the principal (government; non-profit; for-profit; etc.). Answer with the boolean value true or false."
+"lobbying_search_filter_by_principal_location":
+  "source_quotes":
+    "pri_2010_Q7b": "Can users specify data searches on the website by Principal's location (specific address; city)."
+  "prompt": "Can users specify data searches on the website by Principal's location (specific address; city). Answer with the boolean value true or false."
+"lobbying_search_filter_by_sector":
+  "source_quotes":
+    "pri_2010_Q7n": "Can users specify data searches on the website by Sector (transport; energy; banking; education; social services; etc.)."
+  "prompt": "Can users specify data searches on the website by Sector (transport; energy; banking; education; social services; etc.). Answer with the boolean value true or false."
+"lobbying_search_filter_by_specific_date":
+  "source_quotes":
+    "pri_2010_Q7e": "Can users specify data searches on the website by Specific date."
+  "prompt": "Can users specify data searches on the website by Specific date. Answer with the boolean value true or false."
+"lobbying_search_filter_by_subject":
+  "source_quotes":
+    "pri_2010_Q7k": "Can users specify data searches on the website by Subject of lobbying (or item of legislation)."
+  "prompt": "Can users specify data searches on the website by Subject of lobbying (or item of legislation). Answer with the boolean value true or false."
+"lobbying_search_filter_by_subsector":
+  "source_quotes":
+    "pri_2010_Q7o": "Can users specify data searches on the website by Sub-sector (K–12; secondary; vocational; etc.)."
+  "prompt": "Can users specify data searches on the website by Sub-sector (K–12; secondary; vocational; etc.). Answer with the boolean value true or false."
+"lobbying_search_filter_by_time_period":
+  "source_quotes":
+    "pri_2010_Q7f": "Can users specify data searches on the website by Specific time period (normally quarter but it depends on how often the law requires data to be disclosed)."
+  "prompt": "Can users specify data searches on the website by Specific time period (normally quarter but it depends on how often the law requires data to be disclosed). Answer with the boolean value true or false."
+"lobbying_search_filter_by_total_expenditures":
+  "source_quotes":
+    "pri_2010_Q7g": "Can users specify data searches on the website by Total expenditures."
+  "prompt": "Can users specify data searches on the website by Total expenditures. Answer with the boolean value true or false."
+"lobbying_search_simultaneous_multicriteria_capability":
+  "source_quotes":
+    "pri_2010_Q8": "Users can simultaneously sort lobbying data by multiple criteria."
+  "prompt": "Users can simultaneously sort lobbying data by multiple criteria."
+"lobbying_violation_penalties_defined_in_law":
+  "source_quotes":
+    "hiredguns_2007_Q41": "41. Is there a statutory penalty for late filing of a lobby registration form?"
+    "hiredguns_2007_Q42": "42. Is there a statutory penalty for late filing of a lobby spending report?"
+  "prompt": "Under state law, are penalties defined for lobbying disclosure violations? Answer with the boolean value true or false. Use true if any statute prescribes a penalty (civil fine, criminal sanction, administrative penalty, or forfeiture) for failure to register as a lobbyist, failure to file a required disclosure report by its statutory deadline, or filing a false or incomplete report. Use false only if no such statutory penalty exists anywhere in the state's lobbying-disclosure statutes."
+"lobbying_violation_penalties_imposed_in_practice":
+  "source_quotes":
+    "cpi_2015_IND_209": "A 100 score is earned if offenders are always sanctioned when violations to reporting requirements are discovered. A 50 score is earned if offenders are generally sanctioned, but documented evidence show some exceptions exist. A 0 score is earned if sanctions are rarely or never imposed even though they are necessary."
+  "prompt": "A 100 score is earned if offenders are always sanctioned when violations to reporting requirements are discovered. A 50 score is earned if offenders are generally sanctioned, but documented evidence show some exceptions exist. A 0 score is earned if sanctions are rarely or never imposed even though they are necessary."
+"lobbying_website_easily_findable":
+  "source_quotes":
+    "pri_2010_Q3": "How easily a state's lobbying website can be found."
+  "prompt": "How easily a state's lobbying website can be found. Answer with the boolean value true or false."
+"lobbyist_directory_available_as_downloadable_database":
+  "source_quotes":
+    "hiredguns_2007_Q31": "31. Location/format of registrations or active lobbyist directory: Photocopies from ofﬁce only – 1 point; PDF or image ﬁles on the Web – 2 points; Searchable database on the Web – 3 points; Downloadable ﬁles/database – 4 points"
+  "prompt": "31. Location/format of registrations or active lobbyist directory: Photocopies from ofﬁce only – 1 point; PDF or image ﬁles on the Web – 2 points; Searchable database on the Web – 3 points; Downloadable ﬁles/database – 4 points Answer with the boolean value true or false."
+"lobbyist_directory_available_as_pdf_or_image_on_web":
+  "source_quotes":
+    "hiredguns_2007_Q31": "31. Location/format of registrations or active lobbyist directory: Photocopies from ofﬁce only – 1 point; PDF or image ﬁles on the Web – 2 points; Searchable database on the Web – 3 points; Downloadable ﬁles/database – 4 points"
+  "prompt": "31. Location/format of registrations or active lobbyist directory: Photocopies from ofﬁce only – 1 point; PDF or image ﬁles on the Web – 2 points; Searchable database on the Web – 3 points; Downloadable ﬁles/database – 4 points Answer with the boolean value true or false."
+"lobbyist_directory_available_as_photocopies_from_office_only":
+  "source_quotes":
+    "hiredguns_2007_Q31": "31. Location/format of registrations or active lobbyist directory: Photocopies from ofﬁce only – 1 point; PDF or image ﬁles on the Web – 2 points; Searchable database on the Web – 3 points; Downloadable ﬁles/database – 4 points"
+  "prompt": "31. Location/format of registrations or active lobbyist directory: Photocopies from ofﬁce only – 1 point; PDF or image ﬁles on the Web – 2 points; Searchable database on the Web – 3 points; Downloadable ﬁles/database – 4 points Answer with the boolean value true or false."
+"lobbyist_directory_available_as_searchable_database_on_web":
+  "source_quotes":
+    "hiredguns_2007_Q31": "31. Location/format of registrations or active lobbyist directory: Photocopies from ofﬁce only – 1 point; PDF or image ﬁles on the Web – 2 points; Searchable database on the Web – 3 points; Downloadable ﬁles/database – 4 points"
+  "prompt": "31. Location/format of registrations or active lobbyist directory: Photocopies from ofﬁce only – 1 point; PDF or image ﬁles on the Web – 2 points; Searchable database on the Web – 3 points; Downloadable ﬁles/database – 4 points Answer with the boolean value true or false."
+"lobbyist_directory_update_cadence":
+  "source_quotes":
+    "hiredguns_2007_Q38": "38. How often are lobby lists updated? Semi-annually or less often – 1 point; Monthly – 2 points; Weekly – 3 points; Daily – 4 points"
+  "prompt": "38. How often are lobby lists updated? Semi-annually or less often – 1 point; Monthly – 2 points; Weekly – 3 points; Daily – 4 points"
+"lobbyist_filing_de_minimis_threshold_dollars":
+  "source_quotes":
+    "pri_2010_D1_present": "Financial threshold exists: if expenses are less than some dollar threshold the entity is exempted from filing disclosure."
+  "prompt": "Financial threshold exists: if expenses are less than some dollar threshold the entity is exempted from filing disclosure. Under state law, what is the overall dollar threshold of total lobbying expenditures below which an entity is exempt from filing a lobbying disclosure entirely? Answer as a non-negative decimal (e.g., 500 for a $500 filing-exemption threshold). Use 0 if any lobbying expenditure triggers a filing duty (no de minimis exemption). Use null if no statute defines a de minimis exemption from filing."
+"lobbyist_filing_de_minimis_threshold_time_percent":
+  "source_quotes":
+    "pri_2010_§III.D_D2_present": "\"Time threshold exists: if amount of time devoted to lobbying is less than a threshold percentage of an individual's compensated time the individual or entity is exempted from filing disclosure.\""
+  "prompt": "\"Time threshold exists: if amount of time devoted to lobbying is less than a threshold percentage of an individual's compensated time the individual or entity is exempted from filing disclosure.\" Asks about the LOBBYIST's own filing-de-minimis time-percent exemption, not a principal-side itemized-reporting threshold."
+"lobbyist_filing_distinguishes_in_house_vs_contract_filer":
+  "source_quotes":
+    "lobbyview_2018_schema_field_is_client_self_filer": "LobbyView (Kim 2018) schema includes the field `is_client_self_filer`, capturing whether the registrant is the principal filing on their own behalf (in-house) vs. a contract lobbyist filing for a client. Promoted to compendium v2 per row-freeze decision D12 (LV-1 IN); no quotable question exists in the source paper — provenance is the schema-field origin."
+  "prompt": "Does the state's lobbyist registration filing distinguish in-house lobbyists (filing on their own behalf as the principal) from contract lobbyists (filing on behalf of a client / principal)? Answer with the boolean value true or false."
+"lobbyist_filing_itemization_de_minimis_threshold_dollars":
+  "source_quotes":
+    "sunlight_2015_expenditure_reporting_thresholds": "Expenditure Reporting Thresholds: Does the state require lobbyists to include all expenses in reports, or only those above a certain amount? Tier 0: Lobbyists must disclose all expenditures; Tier −1: Lobbyists do not need to disclose individual expenditures or event expenses if under a certain amount."
+  "prompt": "Expenditure Reporting Thresholds: Does the state require lobbyists to include all expenses in reports, or only those above a certain amount? Tier 0: Lobbyists must disclose all expenditures; Tier −1: Lobbyists do not need to disclose individual expenditures or event expenses if under a certain amount. Under state law, what is the per-item dollar threshold below which an individual itemized expenditure does not need to be listed on a lobbyist spending report? Answer as a non-negative decimal (e.g., 100 for a $100 itemization threshold). Use 0 if all expenditures must be itemized regardless of amount. Use null if no statute defines an itemization de minimis threshold."
+"lobbyist_itemized_expenditure_identifies_employer_or_principal":
+  "source_quotes":
+    "hiredguns_2007_Q16": "16. Is the lobbyist employer/principal on whose behalf the itemized expenditure was made required to be identiﬁed? No – 0 points Yes – 1 point"
+  "prompt": "16. Is the lobbyist employer/principal on whose behalf the itemized expenditure was made required to be identiﬁed? No – 0 points Yes – 1 point Answer with the boolean value true or false."
+"lobbyist_itemized_expenditure_identifies_recipient":
+  "source_quotes":
+    "hiredguns_2007_Q17": "17. Is the recipient of the itemized expenditure required to be identiﬁed? No – 0 points Yes – 1 point"
+  "prompt": "17. Is the recipient of the itemized expenditure required to be identiﬁed? No – 0 points Yes – 1 point Answer with the boolean value true or false."
+"lobbyist_itemized_expenditure_includes_date":
+  "source_quotes":
+    "hiredguns_2007_Q18": "18. Is the date of the itemized expenditure required to be reported? No – 0 points Yes – 1 point"
+  "prompt": "18. Is the date of the itemized expenditure required to be reported? No – 0 points Yes – 1 point Answer with the boolean value true or false."
+"lobbyist_itemized_expenditure_includes_description":
+  "source_quotes":
+    "hiredguns_2007_Q19": "19. Is a description of the itemized expenditure required to be reported? No – 0 points Yes – 1 point"
+  "prompt": "19. Is a description of the itemized expenditure required to be reported? No – 0 points Yes – 1 point Answer with the boolean value true or false."
+"lobbyist_or_principal_reg_form_includes_lobbyist_board_memberships":
+  "source_quotes":
+    "focal_2024_relationships_3": "List of board seats held (eg, in associations, companies)"
+  "prompt": "List of board seats held (eg, in associations, companies) Answer with the boolean value true or false."
+"lobbyist_or_principal_reg_form_includes_member_or_sponsor_names":
+  "source_quotes":
+    "focal_2024_relationships_2": "Names of all sponsors or members (for associations and representative groups)"
+  "prompt": "Names of all sponsors or members (for associations and representative groups) Answer with the boolean value true or false."
+"lobbyist_or_principal_spending_report_includes_contributions_received_for_lobbying":
+  "source_quotes":
+    "newmark_2017_disclosure_contributions_from_others": "contributions received from others for lobbying purposes"
+  "prompt": "contributions received from others for lobbying purposes Answer with the boolean value true or false."
+"lobbyist_or_principal_spending_report_includes_lobbyist_count_total_and_FTE":
+  "source_quotes":
+    "focal_2024_financials_4": "Number of lobbyists employed/contracted (total and full-time equivalent)"
+  "prompt": "Number of lobbyists employed/contracted (total and full-time equivalent)"
+"lobbyist_or_principal_spending_report_includes_time_spent_on_lobbying":
+  "source_quotes":
+    "focal_2024_financials_5": "Amount of time spent on lobbying"
+  "prompt": "Amount of time spent on lobbying"
+"lobbyist_or_principal_spending_report_includes_trade_association_dues_or_sponsorship":
+  "source_quotes":
+    "focal_2024_financials_9": "Expenditure on membership/sponsorship of organisations that lobby (eg, trade associations)"
+  "prompt": "Expenditure on membership/sponsorship of organisations that lobby (eg, trade associations) Answer with the boolean value true or false."
+"lobbyist_reg_form_includes_bill_or_action_identifier":
+  "source_quotes":
+    "sunlight_2015_lobbyist_activity": "Lobbyist Activity: Do lobbyists have to reveal which pieces of legislation or executive actions they are seeking to influence? Tier 2: Lobbyists report the bill/action discussed and position taken; Tier 1: Lobbyists report the bill/action discussed; Tier 0: Lobbyists report the general subjects of lobbying; Tier −1: Lobbyists do not report activity."
+  "prompt": "Lobbyist Activity: Do lobbyists have to reveal which pieces of legislation or executive actions they are seeking to influence? Tier 2: Lobbyists report the bill/action discussed and position taken; Tier 1: Lobbyists report the bill/action discussed; Tier 0: Lobbyists report the general subjects of lobbying; Tier −1: Lobbyists do not report activity. Answer with the boolean value true or false."
+"lobbyist_reg_form_includes_business_associations_with_officials":
+  "source_quotes":
+    "hiredguns_2007_Q22": "22. Is a lobbyist required to disclose direct business associations with public ofﬁcials, candidates or members of their households? No – 0 points Yes – 1 point"
+  "prompt": "22. Is a lobbyist required to disclose direct business associations with public ofﬁcials, candidates or members of their households? No – 0 points Yes – 1 point Answer with the boolean value true or false."
+"lobbyist_reg_form_includes_compensation":
+  "source_quotes":
+    "sunlight_2015_lobbyist_compensation": "Lobbyist Compensation: Does the state mandate that lobbyists disclose how much they receive from a client? Tier 0: Lobbyists disclose earnings received from client/employer for lobbying; Tier −1: Lobbyists do not disclose earnings received from client/employer for lobbying."
+  "prompt": "Lobbyist Compensation: Does the state mandate that lobbyists disclose how much they receive from a client? Tier 0: Lobbyists disclose earnings received from client/employer for lobbying; Tier −1: Lobbyists do not disclose earnings received from client/employer for lobbying. Answer with the boolean value true or false."
+"lobbyist_reg_form_includes_employment_type":
+  "source_quotes":
+    "hiredguns_2007_Q10": "10. Is a lobbyist required to include on the registration form any additional information about the type of lobbying work he or she does (i.e., compensated or non-compensated/contract or salaried)?"
+  "prompt": "10. Is a lobbyist required to include on the registration form any additional information about the type of lobbying work he or she does (i.e., compensated or non-compensated/contract or salaried)? Answer with the boolean value true or false."
+"lobbyist_reg_form_includes_general_subject_matter":
+  "source_quotes":
+    "sunlight_2015_lobbyist_activity": "Lobbyist Activity: Do lobbyists have to reveal which pieces of legislation or executive actions they are seeking to influence? Tier 2: Lobbyists report the bill/action discussed and position taken; Tier 1: Lobbyists report the bill/action discussed; Tier 0: Lobbyists report the general subjects of lobbying; Tier −1: Lobbyists do not report activity."
+  "prompt": "Lobbyist Activity: Do lobbyists have to reveal which pieces of legislation or executive actions they are seeking to influence? Tier 2: Lobbyists report the bill/action discussed and position taken; Tier 1: Lobbyists report the bill/action discussed; Tier 0: Lobbyists report the general subjects of lobbying; Tier −1: Lobbyists do not report activity. Answer with the boolean value true or false."
+"lobbyist_reg_form_includes_lobbyist_business_id":
+  "source_quotes":
+    "focal_2024_descriptors_4": "Company registration number"
+  "prompt": "Company registration number Answer with the boolean value true or false."
+"lobbyist_reg_form_includes_lobbyist_contact_details":
+  "source_quotes":
+    "focal_2024_descriptors_2": "Contact details provided (eg, Address, telephone and/or website)"
+  "prompt": "Contact details provided (eg, Address, telephone and/or website) Answer with the boolean value true or false."
+"lobbyist_reg_form_includes_lobbyist_full_name":
+  "source_quotes":
+    "focal_2024_descriptors_1": "Full names of lobbyists/organisations, (not abbreviations or ambiguous names)"
+  "prompt": "Full names of lobbyists/organisations, (not abbreviations or ambiguous names) Answer with the boolean value true or false."
+"lobbyist_reg_form_includes_lobbyist_legal_form":
+  "source_quotes":
+    "focal_2024_descriptors_3": "Legal form (eg, public, private, not-for-profit, NGO, government)"
+  "prompt": "Legal form (eg, public, private, not-for-profit, NGO, government). Under state law, what legal-form classification (if any) can a registering lobbyist report on the registration form? Answer with one of: 'public', 'private', 'not_for_profit', 'ngo', 'government', 'other', or null. Use null if the registration form does not capture legal form."
+"lobbyist_reg_form_includes_lobbyist_prior_public_offices_held":
+  "source_quotes":
+    "focal_2024_revolving_door_1": "List of all prior public offices that lobbyists have held, dates when left office"
+  "prompt": "List of all prior public offices that lobbyists have held, dates when left office Answer with the boolean value true or false."
+"lobbyist_reg_form_includes_lobbyist_sector":
+  "source_quotes":
+    "focal_2024_descriptors_5": "Sector (eg, transport, energy), sub sector"
+  "prompt": "Sector (eg, transport, energy), sub sector"
+"lobbyist_reg_form_includes_position_on_bill":
+  "source_quotes":
+    "sunlight_2015_lobbyist_activity": "Lobbyist Activity: Do lobbyists have to reveal which pieces of legislation or executive actions they are seeking to influence? Tier 2: Lobbyists report the bill/action discussed and position taken; Tier 1: Lobbyists report the bill/action discussed; Tier 0: Lobbyists report the general subjects of lobbying; Tier −1: Lobbyists do not report activity."
+  "prompt": "Lobbyist Activity: Do lobbyists have to reveal which pieces of legislation or executive actions they are seeking to influence? Tier 2: Lobbyists report the bill/action discussed and position taken; Tier 1: Lobbyists report the bill/action discussed; Tier 0: Lobbyists report the general subjects of lobbying; Tier −1: Lobbyists do not report activity. Answer with the boolean value true or false."
+"lobbyist_reg_form_lists_each_employer_or_principal":
+  "source_quotes":
+    "hiredguns_2007_Q9": "9. Is a lobbyist required to identify by name each employer on the registration form? No – 0 points Yes – 1point"
+  "prompt": "9. Is a lobbyist required to identify by name each employer on the registration form? No – 0 points Yes – 1point Answer with the boolean value true or false."
+"lobbyist_registration_amendment_deadline_days":
+  "source_quotes":
+    "hiredguns_2007_Q7": "7. Within how many days must a lobbyist notify the oversight agency of changes in registration?"
+  "prompt": "7. Within how many days must a lobbyist notify the oversight agency of changes in registration?"
+"lobbyist_registration_deadline_days_after_first_lobbying":
+  "source_quotes":
+    "cpi_2015_IND_200": "\"A 100 score is earned if lobbyists register before or within five days of initial lobbying activity. ... A 50 score is earned if lobbyists register about 10 days after initial lobbying activity ... A 0 score is earned if lobbyists register 20 or more days after initial lobbying activity ...\""
+  "prompt": "\"A 100 score is earned if lobbyists register before or within five days of initial lobbying activity. ... A 50 score is earned if lobbyists register about 10 days after initial lobbying activity ... A 0 score is earned if lobbyists register 20 or more days after initial lobbying activity ...\" Asks about the LOBBYIST's own statutory registration deadline — i.e., the number of days after first lobbying within which the LOBBYIST must register, not a principal-side filing trigger."
+"lobbyist_registration_renewal_cadence":
+  "source_quotes":
+    "cpi_2015_IND_199": "A YES score is earned if lobbyists must fill out and file a registration form with the state government at least once a year. A MODERATE score is earned where lobbyists must fill out and file a registration form, but with less frequency. A NO score is earned if no such law exists."
+  "prompt": "A YES score is earned if lobbyists must fill out and file a registration form with the state government at least once a year. A MODERATE score is earned where lobbyists must fill out and file a registration form, but with less frequency. A NO score is earned if no such law exists. Answer in months as an integer (e.g., 12 for annual, 24 for biennial, 36 for triennial). If no renewal is required, return null."
+"lobbyist_registration_required":
+  "source_quotes":
+    "cpi_2015_IND_198": "A 100 score is earned if all who are paid to lobby register as such. A 50 score is earned if most but not all who are paid to lobby register as such. A 0 score is earned if those who are paid to lobby rarely or never register."
+  "prompt": "A 100 score is earned if all who are paid to lobby register as such. A 50 score is earned if most but not all who are paid to lobby register as such. A 0 score is earned if those who are paid to lobby rarely or never register."
+"lobbyist_registration_threshold_compensation_dollars":
+  "source_quotes":
+    "cpi_2015_IND_197": "A YES score is earned if anyone paid any amount to carry out lobbying activity is defined as a lobbyist and must register as such. A MODERATE score is earned if only persons being paid more than a certain threshold are defined as a lobbyist. A NO score is earned if no such law exists."
+  "prompt": "A YES score is earned if anyone paid any amount to carry out lobbying activity is defined as a lobbyist and must register as such. A MODERATE score is earned if only persons being paid more than a certain threshold are defined as a lobbyist. A NO score is earned if no such law exists. Under state law, what is the dollar compensation threshold above which an individual must register as a lobbyist? Answer with the dollar amount as a non-negative decimal (e.g., 500 for a $500 threshold). Use 0 if anyone paid any amount to lobby is a lobbyist (no threshold, e.g., the statute defines a lobbyist as anyone receiving 'any economic consideration' to lobby). Use null if no statute defines a compensation standard at all."
+"lobbyist_registration_threshold_expenditure_dollars":
+  "source_quotes":
+    "newmark_2017_def_expenditure_standard": "\"if they spend a certain amount of money in lobbying (expenditure standards)\""
+  "prompt": "\"if they spend a certain amount of money in lobbying (expenditure standards)\" Asks about the LOBBYIST-DEFINITION expenditure threshold — i.e., the dollar amount the LOBBYIST spends in lobbying that triggers their registration as a lobbyist, not a principal-side filing trigger. Answer with the dollar amount as a non-negative decimal (e.g., 500 for a $500 expenditure threshold). Use 0 if anyone spending any amount on lobbying must register as a lobbyist (no expenditure threshold). Use null if no statute defines a lobbyist-side expenditure standard at all."
+"lobbyist_registration_threshold_time_percent":
+  "source_quotes":
+    "newmark_2017_def_time_standard": "if they devote a certain amount of time in their lobbying efforts (time standards). Each of these is coded 1 if the state includes the provision in its definition of a lobbyist and 0 otherwise."
+  "prompt": "if they devote a certain amount of time in their lobbying efforts (time standards). Each of these is coded 1 if the state includes the provision in its definition of a lobbyist and 0 otherwise."
+"lobbyist_required_to_submit_photograph_with_registration":
+  "source_quotes":
+    "hiredguns_2007_Q8": "8. Is a lobbyist required to submit a photograph with registration? No – 0 points Yes – 1 point"
+  "prompt": "8. Is a lobbyist required to submit a photograph with registration? No – 0 points Yes – 1 point Answer with the boolean value true or false."
+"lobbyist_spending_report_available_as_downloadable_database":
+  "source_quotes":
+    "hiredguns_2007_Q32": "32. Location/format of spending reports: Photocopies from ofﬁce only – 1 point; PDF or image ﬁles on the Web – 2 points; Searchable database on the Web – 3 points; Downloadable ﬁles/database – 4 points"
+  "prompt": "32. Location/format of spending reports: Photocopies from ofﬁce only – 1 point; PDF or image ﬁles on the Web – 2 points; Searchable database on the Web – 3 points; Downloadable ﬁles/database – 4 points Answer with the boolean value true or false."
+"lobbyist_spending_report_available_as_pdf_or_image_on_web":
+  "source_quotes":
+    "hiredguns_2007_Q32": "32. Location/format of spending reports: Photocopies from ofﬁce only – 1 point; PDF or image ﬁles on the Web – 2 points; Searchable database on the Web – 3 points; Downloadable ﬁles/database – 4 points"
+  "prompt": "32. Location/format of spending reports: Photocopies from ofﬁce only – 1 point; PDF or image ﬁles on the Web – 2 points; Searchable database on the Web – 3 points; Downloadable ﬁles/database – 4 points Answer with the boolean value true or false."
+"lobbyist_spending_report_available_as_photocopies_from_office_only":
+  "source_quotes":
+    "hiredguns_2007_Q32": "32. Location/format of spending reports: Photocopies from ofﬁce only – 1 point; PDF or image ﬁles on the Web – 2 points; Searchable database on the Web – 3 points; Downloadable ﬁles/database – 4 points"
+  "prompt": "32. Location/format of spending reports: Photocopies from ofﬁce only – 1 point; PDF or image ﬁles on the Web – 2 points; Searchable database on the Web – 3 points; Downloadable ﬁles/database – 4 points Answer with the boolean value true or false."
+"lobbyist_spending_report_available_as_searchable_database_on_web":
+  "source_quotes":
+    "hiredguns_2007_Q32": "32. Location/format of spending reports: Photocopies from ofﬁce only – 1 point; PDF or image ﬁles on the Web – 2 points; Searchable database on the Web – 3 points; Downloadable ﬁles/database – 4 points"
+  "prompt": "32. Location/format of spending reports: Photocopies from ofﬁce only – 1 point; PDF or image ﬁles on the Web – 2 points; Searchable database on the Web – 3 points; Downloadable ﬁles/database – 4 points Answer with the boolean value true or false."
+"lobbyist_spending_report_cadence_includes_annual":
+  "source_quotes":
+    "pri_2010_E2h_v": "Reporting frequency option: Annually."
+  "prompt": "Reporting frequency option: Annually. Answer with the boolean value true or false."
+"lobbyist_spending_report_cadence_includes_monthly":
+  "source_quotes":
+    "pri_2010_E2h_i": "Reporting frequency option: Monthly."
+  "prompt": "Reporting frequency option: Monthly. Answer with the boolean value true or false."
+"lobbyist_spending_report_cadence_includes_other":
+  "source_quotes":
+    "pri_2010_E2h_vi": "Reporting frequency option: Other (free-text)."
+  "prompt": "Reporting frequency option: Other (free-text). Answer with the boolean value true or false."
+"lobbyist_spending_report_cadence_includes_quarterly":
+  "source_quotes":
+    "pri_2010_E2h_ii": "Reporting frequency option: Quarterly."
+  "prompt": "Reporting frequency option: Quarterly. Answer with the boolean value true or false."
+"lobbyist_spending_report_cadence_includes_semiannual":
+  "source_quotes":
+    "pri_2010_§III.E2.h.iv": "\"Reporting frequency option: Semi-annually.\""
+  "prompt": "\"Reporting frequency option: Semi-annually.\" Asks whether the LOBBYIST is the named filer of a separate spending report — NOT whether the principal's expense statement contains lobbyist info (e.g., the lobbyist's signature on the principal's form, the lobbyist's name/address listed by the principal, or compensation paid to lobbyists itemized within the principal's aggregate). FALSE in regimes where the statute mandates the PRINCIPAL as the filer of the spending report, even if the principal's report references the lobbyist. Answer with the boolean value true or false."
+"lobbyist_spending_report_cadence_includes_triannual":
+  "source_quotes":
+    "pri_2010_E2h_iii": "Reporting frequency option: Tri-annually (linked with legislative calendar)."
+  "prompt": "Reporting frequency option: Tri-annually (linked with legislative calendar). Answer with the boolean value true or false."
+"lobbyist_spending_report_cadence_other_specification":
+  "source_quotes":
+    "pri_2010_E2h_vi": "Reporting frequency option: Other (free-text)."
+  "prompt": "Reporting frequency option: Other (free-text)."
+"lobbyist_spending_report_categorizes_expenses_by_type":
+  "source_quotes":
+    "sunlight_2015_#2_expenditure_transparency_tier_1": "\"Expenditure Transparency: Are lobbyists required to itemize all the expenses associated with their work, such as travel, holding an event, or buying gifts for lawmakers? Tier 2: Lobbyists report itemized list of expenses with dates and description of direct expenditure; Tier 1: Lobbyists report list of expenses categorized under broad descriptions, e.g. food, travel, meetings, media, etc.; Tier 0: Lobbyists report lump total of expenditures; Tier -1: Lobbyists do not report total expenditures.\""
+  "prompt": "\"Expenditure Transparency: Are lobbyists required to itemize all the expenses associated with their work, such as travel, holding an event, or buying gifts for lawmakers? Tier 2: Lobbyists report itemized list of expenses with dates and description of direct expenditure; Tier 1: Lobbyists report list of expenses categorized under broad descriptions, e.g. food, travel, meetings, media, etc.; Tier 0: Lobbyists report lump total of expenditures; Tier -1: Lobbyists do not report total expenditures.\" Asks whether the LOBBYIST is the named filer of a separate spending report — NOT whether the principal's expense statement contains lobbyist info (e.g., the lobbyist's signature on the principal's form, the lobbyist's name/address listed by the principal, or compensation paid to lobbyists itemized within the principal's aggregate). FALSE in regimes where the statute mandates the PRINCIPAL as the filer of the spending report, even if the principal's report references the lobbyist. Answer with the boolean value true or false."
+"lobbyist_spending_report_filing_cadence":
+  "source_quotes":
+    "cpi_2015_IND_202": "A 100 score is earned if lobbyists file at least quarterly, itemized expense reports, including amounts, descriptions and lobbied bill number(s). A 50 score is earned if lobbyists file at least semi-annual expense reports, or file them more frequently, but they lack sufficient details. A 0 score is earned if is earned where lobbyists file expense reports annually or less-frequently, and/or they usually lack details."
+  "prompt": "A 100 score is earned if lobbyists file at least quarterly, itemized expense reports, including amounts, descriptions and lobbied bill number(s). A 50 score is earned if lobbyists file at least semi-annual expense reports, or file them more frequently, but they lack sufficient details. A 0 score is earned if is earned where lobbyists file expense reports annually or less-frequently, and/or they usually lack details. Under state law, how often must a LOBBYIST file a separate spending report? Answer with one of: 'annual', 'semiannual', 'quarterly', 'monthly', 'biennial', 'triannual', 'other', or 'none'. Use 'none' if lobbyists are not required to file a separate spending report (e.g., if statutory filing duties are assigned only to the principal/employer, with lobbyists providing information to the principal). If 'other', describe the actual cadence in the justification field."
+"lobbyist_spending_report_includes_bill_or_action_identifier":
+  "source_quotes":
+    "sunlight_2015_#1_lobbyist_activity_tier_1_2": "\"Lobbyist Activity: Do lobbyists have to reveal which pieces of legislation or executive actions they are seeking to influence? Tier 2: Lobbyists report the bill/action discussed and position taken; Tier 1: Lobbyists report the bill/action discussed; Tier 0: Lobbyists report the general subjects of lobbying; Tier -1: Lobbyists do not report activity.\""
+  "prompt": "\"Lobbyist Activity: Do lobbyists have to reveal which pieces of legislation or executive actions they are seeking to influence? Tier 2: Lobbyists report the bill/action discussed and position taken; Tier 1: Lobbyists report the bill/action discussed; Tier 0: Lobbyists report the general subjects of lobbying; Tier -1: Lobbyists do not report activity.\" Asks whether the LOBBYIST is the named filer of a separate spending report — NOT whether the principal's expense statement contains lobbyist info (e.g., the lobbyist's signature on the principal's form, the lobbyist's name/address listed by the principal, or compensation paid to lobbyists itemized within the principal's aggregate). FALSE in regimes where the statute mandates the PRINCIPAL as the filer of the spending report, even if the principal's report references the lobbyist. Answer with the boolean value true or false."
+"lobbyist_spending_report_includes_campaign_contributions":
+  "source_quotes":
+    "hiredguns_2007_Q24": "24. What is the statutory provision for a lobbyist giving and reporting campaign contributions? Campaign contributions allowed and not required to be disclosed on spending report/prohibited during session – 0 points; Campaign contributions allowed and not required to be disclosed on spending report/allowed during session – 0 points; Campaign contributions allowed and required to be disclosed on spending report/prohibited during session – 1 point; Campaign contributions allowed and required to be disclosed on spending report/allowed during session – 1point; Campaign contributions prohibited – 2 points"
+  "prompt": "24. What is the statutory provision for a lobbyist giving and reporting campaign contributions? Campaign contributions allowed and not required to be disclosed on spending report/prohibited during session – 0 points; Campaign contributions allowed and not required to be disclosed on spending report/allowed during session – 0 points; Campaign contributions allowed and required to be disclosed on spending report/prohibited during session – 1 point; Campaign contributions allowed and required to be disclosed on spending report/allowed during session – 1point; Campaign contributions prohibited – 2 points Answer with the boolean value true or false."
+"lobbyist_spending_report_includes_compensation_broken_down_by_payer":
+  "source_quotes":
+    "sunlight_2015_lobbyist_compensation": "Lobbyist Compensation: Does the state mandate that lobbyists disclose how much they receive from a client? Tier 0: Lobbyists disclose earnings received from client/employer for lobbying; Tier −1: Lobbyists do not disclose earnings received from client/employer for lobbying."
+  "prompt": "Lobbyist Compensation: Does the state mandate that lobbyists disclose how much they receive from a client? Tier 0: Lobbyists disclose earnings received from client/employer for lobbying; Tier −1: Lobbyists do not disclose earnings received from client/employer for lobbying. Answer with the boolean value true or false."
+"lobbyist_spending_report_includes_contacts_made":
+  "source_quotes":
+    "pri_2010_E2i": "Are lobbyists required to disclose contacts?"
+  "prompt": "Are lobbyists required to disclose contacts? Answer with the boolean value true or false."
+"lobbyist_spending_report_includes_expenditure_per_issue":
+  "source_quotes":
+    "focal_2024_financials_8": "Expenditure per issue"
+  "prompt": "Expenditure per issue Answer with the boolean value true or false."
+"lobbyist_spending_report_includes_general_issues":
+  "source_quotes":
+    "pri_2010_§III.E2.g.i": "\"Are lobbyists required to disclose information on the issue lobbied by the general issues lobbied?\""
+  "prompt": "\"Are lobbyists required to disclose information on the issue lobbied by the general issues lobbied?\" Asks whether the LOBBYIST is the named filer of a separate spending report — NOT whether the principal's expense statement contains lobbyist info (e.g., the lobbyist's signature on the principal's form, the lobbyist's name/address listed by the principal, or compensation paid to lobbyists itemized within the principal's aggregate). FALSE in regimes where the statute mandates the PRINCIPAL as the filer of the spending report, even if the principal's report references the lobbyist. Answer with the boolean value true or false."
+"lobbyist_spending_report_includes_general_subject_matter":
+  "source_quotes":
+    "sunlight_2015_#1_lobbyist_activity_tier_0": "\"Lobbyist Activity: Do lobbyists have to reveal which pieces of legislation or executive actions they are seeking to influence? ... Tier 0: Lobbyists report the general subjects of lobbying; Tier -1: Lobbyists do not report activity.\""
+  "prompt": "\"Lobbyist Activity: Do lobbyists have to reveal which pieces of legislation or executive actions they are seeking to influence? ... Tier 0: Lobbyists report the general subjects of lobbying; Tier -1: Lobbyists do not report activity.\" Asks whether the LOBBYIST is the named filer of a separate spending report — NOT whether the principal's expense statement contains lobbyist info (e.g., the lobbyist's signature on the principal's form, the lobbyist's name/address listed by the principal, or compensation paid to lobbyists itemized within the principal's aggregate). FALSE in regimes where the statute mandates the PRINCIPAL as the filer of the spending report, even if the principal's report references the lobbyist. Answer with the boolean value true or false."
+"lobbyist_spending_report_includes_gifts_entertainment_transport_lodging":
+  "source_quotes":
+    "pri_2010_§III.E2.f.iii": "\"Required component of disclosure report: Other costs such as gifts, entertainment, transportation, and lodging.\""
+  "prompt": "\"Required component of disclosure report: Other costs such as gifts, entertainment, transportation, and lodging.\" Asks whether the LOBBYIST is the named filer of a separate spending report — NOT whether the principal's expense statement contains lobbyist info (e.g., the lobbyist's signature on the principal's form, the lobbyist's name/address listed by the principal, or compensation paid to lobbyists itemized within the principal's aggregate). FALSE in regimes where the statute mandates the PRINCIPAL as the filer of the spending report, even if the principal's report references the lobbyist. Answer with the boolean value true or false."
+"lobbyist_spending_report_includes_indirect_costs":
+  "source_quotes":
+    "pri_2010_§III.E2.f.ii": "\"Required component of disclosure report: Indirect lobbying costs (non-compensation).\""
+  "prompt": "\"Required component of disclosure report: Indirect lobbying costs (non-compensation).\" Asks whether the LOBBYIST is the named filer of a separate spending report — NOT whether the principal's expense statement contains lobbyist info (e.g., the lobbyist's signature on the principal's form, the lobbyist's name/address listed by the principal, or compensation paid to lobbyists itemized within the principal's aggregate). FALSE in regimes where the statute mandates the PRINCIPAL as the filer of the spending report, even if the principal's report references the lobbyist. Answer with the boolean value true or false."
+"lobbyist_spending_report_includes_itemized_expenses":
+  "source_quotes":
+    "cpi_2015_IND_201": "A YES score is earned if lobbyists are required to file itemized spending reports (including name of employer, lobbied issues and bill number(s) and compensation/payments received for lobbying services). A MODERATE score is earned if lobbyists are required to file itemized spending reports or compensation/payments received, but not both. A NO score is earned if no such law exists."
+  "prompt": "A YES score is earned if lobbyists are required to file itemized spending reports (including name of employer, lobbied issues and bill number(s) and compensation/payments received for lobbying services). A MODERATE score is earned if lobbyists are required to file itemized spending reports or compensation/payments received, but not both. A NO score is earned if no such law exists. Answer with the boolean value true or false."
+"lobbyist_spending_report_includes_lobbyist_contact_info":
+  "source_quotes":
+    "pri_2010_§III.E2.b": "\"Are lobbyists required to disclose their address and phone number?\""
+  "prompt": "\"Are lobbyists required to disclose their address and phone number?\" Asks whether the LOBBYIST is the named filer of a separate spending report — NOT whether the principal's expense statement contains lobbyist info (e.g., the lobbyist's signature on the principal's form, the lobbyist's name/address listed by the principal, or compensation paid to lobbyists itemized within the principal's aggregate). FALSE in regimes where the statute mandates the PRINCIPAL as the filer of the spending report, even if the principal's report references the lobbyist. Answer with the boolean value true or false."
+"lobbyist_spending_report_includes_position_on_bill":
+  "source_quotes":
+    "sunlight_2015_lobbyist_activity": "Lobbyist Activity: Do lobbyists have to reveal which pieces of legislation or executive actions they are seeking to influence? Tier 2: Lobbyists report the bill/action discussed and position taken; Tier 1: Lobbyists report the bill/action discussed; Tier 0: Lobbyists report the general subjects of lobbying; Tier −1: Lobbyists do not report activity."
+  "prompt": "Lobbyist Activity: Do lobbyists have to reveal which pieces of legislation or executive actions they are seeking to influence? Tier 2: Lobbyists report the bill/action discussed and position taken; Tier 1: Lobbyists report the bill/action discussed; Tier 0: Lobbyists report the general subjects of lobbying; Tier −1: Lobbyists do not report activity. Answer with the boolean value true or false."
+"lobbyist_spending_report_includes_principal_business_nature":
+  "source_quotes":
+    "pri_2010_E2e": "Are lobbyists required to disclose the nature of the principal's business (public or private)?"
+  "prompt": "Are lobbyists required to disclose the nature of the principal's business (public or private)? Answer with the boolean value true or false."
+"lobbyist_spending_report_includes_principal_contact_info":
+  "source_quotes":
+    "pri_2010_E2d": "Are lobbyists required to disclose the address and phone number of the principals represented?"
+  "prompt": "Are lobbyists required to disclose the address and phone number of the principals represented? Answer with the boolean value true or false."
+"lobbyist_spending_report_includes_principal_names":
+  "source_quotes":
+    "pri_2010_§III.E2.c": "\"Are lobbyists required to disclose the names of all the principals represented?\""
+  "prompt": "\"Are lobbyists required to disclose the names of all the principals represented?\" Asks whether the LOBBYIST is the named filer of a separate spending report — NOT whether the principal's expense statement contains lobbyist info (e.g., the lobbyist's signature on the principal's form, the lobbyist's name/address listed by the principal, or compensation paid to lobbyists itemized within the principal's aggregate). FALSE in regimes where the statute mandates the PRINCIPAL as the filer of the spending report, even if the principal's report references the lobbyist. Answer with the boolean value true or false."
+"lobbyist_spending_report_includes_specific_bill_number":
+  "source_quotes":
+    "pri_2010_§III.E2.g.ii": "\"Are lobbyists required to disclose information on the issue lobbied by the specific bill number or legislation ID?\""
+  "prompt": "\"Are lobbyists required to disclose information on the issue lobbied by the specific bill number or legislation ID?\" Asks whether the LOBBYIST is the named filer of a separate spending report — NOT whether the principal's expense statement contains lobbyist info (e.g., the lobbyist's signature on the principal's form, the lobbyist's name/address listed by the principal, or compensation paid to lobbyists itemized within the principal's aggregate). FALSE in regimes where the statute mandates the PRINCIPAL as the filer of the spending report, even if the principal's report references the lobbyist. Answer with the boolean value true or false."
+"lobbyist_spending_report_includes_total_compensation":
+  "source_quotes":
+    "pri_2010_§III.E2.f.i": "\"Required component of disclosure report: Direct lobbying costs (compensation).\""
+  "prompt": "\"Required component of disclosure report: Direct lobbying costs (compensation).\" Asks whether the LOBBYIST is the named filer of a separate spending report — NOT whether the principal's expense statement contains lobbyist info (e.g., the lobbyist's signature on the principal's form, the lobbyist's name/address listed by the principal, or compensation paid to lobbyists itemized within the principal's aggregate). FALSE in regimes where the statute mandates the PRINCIPAL as the filer of the spending report, even if the principal's report references the lobbyist. Answer with the boolean value true or false."
+"lobbyist_spending_report_includes_total_expenditures":
+  "source_quotes":
+    "newmark_2017_disclosure_total_expenditures": "\"total expenditures toward lobbying\""
+  "prompt": "\"total expenditures toward lobbying\" Asks whether the LOBBYIST is the named filer of a separate spending report — NOT whether the principal's expense statement contains lobbyist info (e.g., the lobbyist's signature on the principal's form, the lobbyist's name/address listed by the principal, or compensation paid to lobbyists itemized within the principal's aggregate). FALSE in regimes where the statute mandates the PRINCIPAL as the filer of the spending report, even if the principal's report references the lobbyist. Answer with the boolean value true or false."
+"lobbyist_spending_report_required":
+  "source_quotes":
+    "cpi_2015_IND_201": "\"A YES score is earned if lobbyists are required to file itemized spending reports (including name of employer, lobbied issues and bill number(s) and compensation/payments received for lobbying services). A MODERATE score is earned if lobbyists are required to file itemized spending reports or compensation/payments received, but not both. A NO score is earned if no such law exists.\""
+  "prompt": "\"A YES score is earned if lobbyists are required to file itemized spending reports (including name of employer, lobbied issues and bill number(s) and compensation/payments received for lobbying services). A MODERATE score is earned if lobbyists are required to file itemized spending reports or compensation/payments received, but not both. A NO score is earned if no such law exists.\" Asks whether the LOBBYIST is the named filer of a separate spending report — NOT whether the principal's expense statement contains lobbyist info (e.g., the lobbyist's signature on the principal's form, the lobbyist's name/address listed by the principal, or compensation paid to lobbyists itemized within the principal's aggregate). FALSE in regimes where the statute mandates the PRINCIPAL as the filer of the spending report, even if the principal's report references the lobbyist. Answer with the boolean value true or false."
+"lobbyist_spending_report_required_when_no_activity":
+  "source_quotes":
+    "hiredguns_2007_Q25": "\"Is a lobbyist who has done no spending during a filing period required to make a report of no activity?\""
+  "prompt": "\"Is a lobbyist who has done no spending during a filing period required to make a report of no activity?\" Asks whether the LOBBYIST is the named filer of a separate spending report — NOT whether the principal's expense statement contains lobbyist info (e.g., the lobbyist's signature on the principal's form, the lobbyist's name/address listed by the principal, or compensation paid to lobbyists itemized within the principal's aggregate). FALSE in regimes where the statute mandates the PRINCIPAL as the filer of the spending report, even if the principal's report references the lobbyist. Answer with the boolean value true or false."
+"lobbyist_spending_report_scope_includes_household_members_of_officials":
+  "source_quotes":
+    "hiredguns_2007_Q21": "21. Is spending on household members of public ofﬁcials by a lobbyist required to be reported? No – 0 points Yes – 1 point"
+  "prompt": "21. Is spending on household members of public ofﬁcials by a lobbyist required to be reported? No – 0 points Yes – 1 point Answer with the boolean value true or false."
+"lobbyist_spending_report_uses_itemized_format":
+  "source_quotes":
+    "pri_2010_E2f_iv": "Is the information disclosed in an itemized format (as opposed to an aggregated or lump-sum amount)?"
+  "prompt": "Is the information disclosed in an itemized format (as opposed to an aggregated or lump-sum amount)? Answer with the boolean value true or false."
+"ministerial_diary_available_online":
+  "source_quotes":
+    "focal_2024_openness_2": "Diaries available online (eg, lobbyists, ministers, ministerial staff)"
+  "prompt": "Diaries available online (eg, lobbyists, ministers, ministerial staff) Answer with the boolean value true or false."
+"ministerial_diary_disclosure_cadence":
+  "source_quotes":
+    "focal_2024_timeliness_3": "Ministerial diaries are disclosed monthly (or more frequently)"
+  "prompt": "Ministerial diaries are disclosed monthly (or more frequently). Under state law, how often must ministerial diaries be disclosed? Answer with one of: 'daily', 'weekly', 'monthly', 'quarterly', 'semiannual_or_less_often', or 'none'. Use 'none' if there is no statutory requirement for ministerial diary disclosure."
+"online_lobbyist_registration_filing_available":
+  "source_quotes":
+    "hiredguns_2007_Q28": "28. Does the oversight agency provide lobbyists/employers with online registration? No – 0 points Yes – 1 point"
+  "prompt": "28. Does the oversight agency provide lobbyists/employers with online registration? No – 0 points Yes – 1 point Answer with the boolean value true or false."
+"online_lobbyist_spending_report_filing_available":
+  "source_quotes":
+    "hiredguns_2007_Q29": "29. Does the oversight agency provide lobbyists/employers with online spending reporting? No – 0 points Yes – 1 point"
+  "prompt": "29. Does the oversight agency provide lobbyists/employers with online spending reporting? No – 0 points Yes – 1 point Answer with the boolean value true or false."
+"oversight_agency_provides_efile_training":
+  "source_quotes":
+    "hiredguns_2007_Q30": "30. Does the oversight agency provide training about how to ﬁle registrations/spending reports electronically? No – 0 points Yes – 1 point"
+  "prompt": "30. Does the oversight agency provide training about how to ﬁle registrations/spending reports electronically? No – 0 points Yes – 1 point Answer with the boolean value true or false."
+"oversight_agency_publishes_aggregate_lobbying_spending_by_filing_deadline":
+  "source_quotes":
+    "hiredguns_2007_Q36": "36. Does the state agency provide an overall lobbying spending total by spending-report deadlines? No – 0 points Yes – 2 points"
+  "prompt": "36. Does the state agency provide an overall lobbying spending total by spending-report deadlines? No – 0 points Yes – 2 points Answer with the boolean value true or false."
+"oversight_agency_publishes_aggregate_lobbying_spending_by_industry":
+  "source_quotes":
+    "hiredguns_2007_Q37": "37. Does the state agency provide an overall lobbying spending total by industries lobbyists represent? No – 0 points Yes – 2 points"
+  "prompt": "37. Does the state agency provide an overall lobbying spending total by industries lobbyists represent? No – 0 points Yes – 2 points Answer with the boolean value true or false."
+"oversight_agency_publishes_aggregate_lobbying_spending_by_year":
+  "source_quotes":
+    "hiredguns_2007_Q35": "35. Does the state agency provide an overall lobbying spending total by year? No – 0 points Yes – 2 points"
+  "prompt": "35. Does the state agency provide an overall lobbying spending total by year? No – 0 points Yes – 2 points Answer with the boolean value true or false."
+"principal_spending_report_cadence_includes_annual":
+  "source_quotes":
+    "pri_2010_E1h_v": "Reporting frequency option: Annually."
+  "prompt": "Reporting frequency option: Annually. Answer with the boolean value true or false."
+"principal_spending_report_cadence_includes_monthly":
+  "source_quotes":
+    "pri_2010_E1h_i": "Reporting frequency option: Monthly."
+  "prompt": "Reporting frequency option: Monthly. Answer with the boolean value true or false."
+"principal_spending_report_cadence_includes_other":
+  "source_quotes":
+    "pri_2010_E1h_vi": "Reporting frequency option: Other (free-text)."
+  "prompt": "Reporting frequency option: Other (free-text). Answer with the boolean value true or false."
+"principal_spending_report_cadence_includes_quarterly":
+  "source_quotes":
+    "pri_2010_E1h_ii": "Reporting frequency option: Quarterly."
+  "prompt": "Reporting frequency option: Quarterly. Answer with the boolean value true or false."
+"principal_spending_report_cadence_includes_semiannual":
+  "source_quotes":
+    "pri_2010_E1h_iv": "Reporting frequency option: Semi-annually."
+  "prompt": "Reporting frequency option: Semi-annually. Answer with the boolean value true or false."
+"principal_spending_report_cadence_includes_triannual":
+  "source_quotes":
+    "pri_2010_E1h_iii": "Reporting frequency option: Tri-annually (linked with legislative calendar)."
+  "prompt": "Reporting frequency option: Tri-annually (linked with legislative calendar). Answer with the boolean value true or false."
+"principal_spending_report_cadence_other_specification":
+  "source_quotes":
+    "pri_2010_E1h_vi": "Reporting frequency option: Other (free-text)."
+  "prompt": "Reporting frequency option: Other (free-text)."
+"principal_spending_report_includes_business_nature":
+  "source_quotes":
+    "pri_2010_E1e": "Are principals required to disclose the nature of the business (public or private)?"
+  "prompt": "Are principals required to disclose the nature of the business (public or private)? Answer with the boolean value true or false."
+"principal_spending_report_includes_compensation_paid_to_lobbyists":
+  "source_quotes":
+    "pri_2010_E1f_i": "Required component of disclosure report: Direct lobbying costs (compensation)."
+  "prompt": "Required component of disclosure report: Direct lobbying costs (compensation). Answer with the boolean value true or false."
+"principal_spending_report_includes_contacts_made":
+  "source_quotes":
+    "pri_2010_E1i": "Are principals required to disclose contacts?"
+  "prompt": "Are principals required to disclose contacts? Answer with the boolean value true or false."
+"principal_spending_report_includes_general_issues":
+  "source_quotes":
+    "pri_2010_E1g_i": "Are principals required to disclose information on the issue lobbied by the general issues lobbied?"
+  "prompt": "Are principals required to disclose information on the issue lobbied by the general issues lobbied? Answer with the boolean value true or false."
+"principal_spending_report_includes_gifts_entertainment_transport_lodging":
+  "source_quotes":
+    "pri_2010_E1f_iii": "Required component of disclosure report: Other costs such as gifts, entertainment, transportation, and lodging."
+  "prompt": "Required component of disclosure report: Other costs such as gifts, entertainment, transportation, and lodging. Answer with the boolean value true or false."
+"principal_spending_report_includes_indirect_costs":
+  "source_quotes":
+    "pri_2010_E1f_ii": "Required component of disclosure report: Indirect lobbying costs (non-compensation)."
+  "prompt": "Required component of disclosure report: Indirect lobbying costs (non-compensation). Answer with the boolean value true or false."
+"principal_spending_report_includes_lobbyist_contact_info":
+  "source_quotes":
+    "pri_2010_E1d": "Are principals required to disclose the address and phone number of contracted lobbyists?"
+  "prompt": "Are principals required to disclose the address and phone number of contracted lobbyists? Answer with the boolean value true or false."
+"principal_spending_report_includes_lobbyist_names":
+  "source_quotes":
+    "pri_2010_E1c": "Are principals required to disclose the names of all the lobbyists representing them?"
+  "prompt": "Are principals required to disclose the names of all the lobbyists representing them? Answer with the boolean value true or false."
+"principal_spending_report_includes_major_financial_contributors":
+  "source_quotes":
+    "pri_2010_E1j": "Are principals required to disclose major financial contributors?"
+  "prompt": "Are principals required to disclose major financial contributors? Answer with the boolean value true or false."
+"principal_spending_report_includes_principal_contact_info":
+  "source_quotes":
+    "pri_2010_E1b": "Are principals required to disclose their address and phone number?"
+  "prompt": "Are principals required to disclose their address and phone number? Answer with the boolean value true or false."
+"principal_spending_report_includes_specific_bill_number":
+  "source_quotes":
+    "pri_2010_E1g_ii": "Are principals required to disclose information on the issue lobbied by the specific bill number or legislation ID?"
+  "prompt": "Are principals required to disclose information on the issue lobbied by the specific bill number or legislation ID? Answer with the boolean value true or false."
+"principal_spending_report_includes_total_expenditures":
+  "source_quotes":
+    "focal_2024_financials_6": "Total lobbying expenditure (both in-house and consulting)"
+  "prompt": "Total lobbying expenditure (both in-house and consulting) Answer with the boolean value true or false."
+"principal_spending_report_lists_lobbyists_employed":
+  "source_quotes":
+    "focal_2024_2025-only addition": "We created an additional indicator for listing the lobbyists employed by a company or lobby firm, as we found this was inconsistently disclosed"
+  "prompt": "We created an additional indicator for listing the lobbyists employed by a company or lobby firm, as we found this was inconsistently disclosed Answer with the boolean value true or false."
+"principal_spending_report_required":
+  "source_quotes":
+    "cpi_2015_IND_203": "A YES score is earned if employers or principals fill out spending reports including salary or fees paid to their lobbyist(s). A MODERATE score is earned if they file spending reports, but they fail to include the specific amount of salary or fees paid to their lobbyist(s). A NO score is earned if no such law exists."
+  "prompt": "A YES score is earned if employers or principals fill out spending reports including salary or fees paid to their lobbyist(s). A MODERATE score is earned if they file spending reports, but they fail to include the specific amount of salary or fees paid to their lobbyist(s). A NO score is earned if no such law exists. Answer with the boolean value true or false."
+"principal_spending_report_uses_itemized_format":
+  "source_quotes":
+    "pri_2010_E1f_iv": "Is the information disclosed in an itemized format (as opposed to an aggregated or lump-sum amount)?"
+  "prompt": "Is the information disclosed in an itemized format (as opposed to an aggregated or lump-sum amount)? Answer with the boolean value true or false."
+"public_entity_def_relies_on_charter":
+  "source_quotes":
+    "pri_2010_C3": "Definition relies on Public charter or special government protection."
+  "prompt": "Definition relies on Public charter or special government protection. Answer with the boolean value true or false."
+"public_entity_def_relies_on_ownership":
+  "source_quotes":
+    "pri_2010_C1": "Definition relies on Ownership."
+  "prompt": "Definition relies on Ownership. Answer with the boolean value true or false."
+"public_entity_def_relies_on_revenue_structure":
+  "source_quotes":
+    "pri_2010_C2": "Definition relies on Structure or composition of revenue."
+  "prompt": "Definition relies on Structure or composition of revenue. Answer with the boolean value true or false."
+"sample_lobbying_forms_available_on_web":
+  "source_quotes":
+    "hiredguns_2007_Q34": "34. Are sample registration forms/spending reports available the Web? No – 0 points Yes – 1 point"
+  "prompt": "34. Are sample registration forms/spending reports available the Web? No – 0 points Yes – 1 point Answer with the boolean value true or false."
+"separate_registrations_for_lobbyists_and_clients":
+  "source_quotes":
+    "opensecrets_2022_tabled_candidate_1": "the baseline score was three and states that require separate registrations for the lobbyists and clients were assigned a four"
+  "prompt": "Does the state require both the lobbyist AND the client / principal to file SEPARATE registration forms (each as an independent registrant), as opposed to a single combined form covering both parties? Answer with the boolean value true or false."
+"state_has_dedicated_lobbying_website":
+  "source_quotes":
+    "pri_2010_Q2": "The state has a dedicated website for lobbying information."
+  "prompt": "The state has a dedicated website for lobbying information. Answer with the boolean value true or false."
