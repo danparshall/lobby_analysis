@@ -243,13 +243,19 @@ CHUNKS_V2: tuple[ChunkDef, ...] = (
         chunk_id="enforcement_and_audits",
         topic="Does the regime have teeth — penalties and audits",
         member_row_ids=(
+            "lobbying_violation_penalties_defined_in_law",
             "lobbying_violation_penalties_imposed_in_practice",
             "lobbying_disclosure_audit_required_in_law",
+            "lobbying_disclosure_audit_required_in_practice",
         ),
         notes=(
-            "Only 2 rows but topically distinct. Both rows are combined-axis "
-            "(4 cells total). If 2-row chunks feel too granular, merging into "
-            "`oversight_and_government_subjects` is reasonable."
+            "4 rows, all single-axis (4 cells total) after v2.1 Pattern C row "
+            "split (2026-06-05): the two CPI legal+practical rows were each "
+            "un-combined into a de-jure + de-facto pair. `_defined_in_law` and "
+            "`_audit_required_in_law` carry the legal half; `_imposed_in_practice` "
+            "and `_audit_required_in_practice` carry the practical half. If "
+            "merging feels desirable, `oversight_and_government_subjects` is "
+            "the topical neighbor."
         ),
     ),
     ChunkDef(

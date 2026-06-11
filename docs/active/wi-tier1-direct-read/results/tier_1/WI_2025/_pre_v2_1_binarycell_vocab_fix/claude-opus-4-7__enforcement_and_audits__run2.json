@@ -1,0 +1,144 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "claude-opus-4-7",
+    "sdk": "anthropic",
+    "chunk_id": "enforcement_and_audits",
+    "run_index": 2,
+    "state_abbr": "WI",
+    "vintage_year": 2025,
+    "prompt_sha256": "cf5e534eb79e06bd8862cb6a71fa3ba6db44eb86d8d1b12b85431ef394b042c8",
+    "timestamp_utc": "2026-06-05T11:37:56+00:00"
+  },
+  "wall_clock_seconds": 11.603642541042063,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 892
+    },
+    "cache_creation_input_tokens": 892,
+    "cache_read_input_tokens": 29466,
+    "inference_geo": "global",
+    "input_tokens": 6,
+    "output_tokens": 850,
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "cost_usd_estimate": 0.021279999999999997,
+  "legal_roster": [
+    [
+      "lobbying_violation_penalties_defined_in_law",
+      "legal"
+    ],
+    [
+      "lobbying_disclosure_audit_required_in_law",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_disclosure_audit_required_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": "moderate"
+      },
+      "cell_class": "EnumCell",
+      "cited_section": "§13.74(1); §13.685(3)",
+      "justification": "Section 13.74(1) requires the Ethics Commission to examine all filed statements and note discrepancies, and §13.685(3) requires the commission to examine each statement filed under §13.68 — establishing a mandatory compliance review by the regulator (not an independent third-party auditor), with subpoena/investigation powers triggered for suspected violations under §13.74(2)."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [
+    {
+      "reason": "instantiation_failed",
+      "key": [
+        "lobbying_violation_penalties_defined_in_law",
+        "legal"
+      ],
+      "error": "ValueError(\"BinaryCell: cannot coerce 'yes' to bool\")",
+      "arguments": {
+        "handle": "row_001",
+        "axis": "legal",
+        "value": "yes",
+        "confidence": "high",
+        "cited_section": "§13.69(1), (2), (3), (4), (6m)",
+        "justification": "Section 13.69 prescribes forfeitures up to $5,000 for principals and $1,000 for lobbyists who violate §§13.61-13.68, criminal fines/imprisonment for falsified statements, and Class H felony liability for knowingly filing false registration/reporting statements — covering failures to register, report, and false filings."
+      }
+    }
+  ],
+  "response": {
+    "id": "msg_01Uur8DyLEWB4Fdnweetj72i",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "I'll analyze the statute text for both cells.\n\n**Row 001**: § 13.69 clearly establishes penalties (forfeitures, fines, imprisonment) for various lobbying violations including false statements (§13.69(3), (6m)), unlicensed lobbying (§13.69(4)), and general violations of §§13.61-13.68 (§13.69(1)-(2)).\n\n**Row 002**: § 13.74 requires the commission to examine all statements filed - this is a compliance review by the Ethics Commission, but the commission is the regulator itself, not an \"impartial third party\" auditor. § 13.685(3) also requires the commission to examine each statement filed under §13.68. This appears to be a compliance review requirement, fitting MODERATE.",
+        "type": "text"
+      },
+      {
+        "id": "toolu_01PZ3pw7WNhb7N94bV36nibT",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_001",
+          "axis": "legal",
+          "value": "yes",
+          "confidence": "high",
+          "cited_section": "§13.69(1), (2), (3), (4), (6m)",
+          "justification": "Section 13.69 prescribes forfeitures up to $5,000 for principals and $1,000 for lobbyists who violate §§13.61-13.68, criminal fines/imprisonment for falsified statements, and Class H felony liability for knowingly filing false registration/reporting statements — covering failures to register, report, and false filings."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      },
+      {
+        "id": "toolu_01U19GhRwQ7SUNuHKSdHAtXt",
+        "caller": {
+          "type": "direct"
+        },
+        "input": {
+          "handle": "row_002",
+          "axis": "legal",
+          "value": "moderate",
+          "confidence": "medium",
+          "cited_section": "§13.74(1); §13.685(3)",
+          "justification": "Section 13.74(1) requires the Ethics Commission to examine all filed statements and note discrepancies, and §13.685(3) requires the commission to examine each statement filed under §13.68 — establishing a mandatory compliance review by the regulator (not an independent third-party auditor), with subpoena/investigation powers triggered for suspected violations under §13.74(2)."
+        },
+        "name": "record_cell",
+        "type": "tool_use"
+      }
+    ],
+    "model": "claude-opus-4-7",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 892
+      },
+      "cache_creation_input_tokens": 892,
+      "cache_read_input_tokens": 29466,
+      "inference_geo": "global",
+      "input_tokens": 6,
+      "output_tokens": 850,
+      "server_tool_use": null,
+      "service_tier": "standard",
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      }
+    }
+  }
+}

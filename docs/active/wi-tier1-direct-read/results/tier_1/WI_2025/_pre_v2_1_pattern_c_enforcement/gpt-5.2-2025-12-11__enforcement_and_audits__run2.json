@@ -1,0 +1,124 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "enforcement_and_audits",
+    "run_index": 2,
+    "state_abbr": "WI",
+    "vintage_year": 2025,
+    "prompt_sha256": "cf5e534eb79e06bd8862cb6a71fa3ba6db44eb86d8d1b12b85431ef394b042c8",
+    "timestamp_utc": "2026-06-04T17:05:00+00:00"
+  },
+  "wall_clock_seconds": 3.9579362500226125,
+  "usage": {
+    "completion_tokens": 212,
+    "prompt_tokens": 19129,
+    "total_tokens": 19341,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 19072
+    }
+  },
+  "cost_usd_estimate": 0.03644375,
+  "legal_roster": [
+    [
+      "lobbying_violation_penalties_imposed_in_practice",
+      "legal"
+    ],
+    [
+      "lobbying_disclosure_audit_required_in_law",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbying_disclosure_audit_required_in_law",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "MODERATE"
+      },
+      "cell_class": "EnumCell",
+      "cited_section": "Wis. Stat. § 13.74(1)-(2) (2025)",
+      "justification": "The commission is required to examine all required statements and may inspect underlying documents and use investigatory subpoenas, indicating a compliance review/audit function rather than a legally required regular independent third-party audit."
+    }
+  ],
+  "unscoreable_emissions": [
+    {
+      "handle": "row_001",
+      "axis": "legal",
+      "reason": "The statute text provides maximum penalties for violations (Wis. Stat. § 13.69) but does not mandate that sanctions are always imposed upon discovery of reporting violations; enforcement is framed as violators 'may be required' to forfeit, so the always/generally/rarely sanctioning standard cannot be determined de jure from this bundle.",
+      "row_id": "lobbying_violation_penalties_imposed_in_practice"
+    }
+  ],
+  "errors": [],
+  "response": {
+    "id": "chatcmpl-Dn5mzycQfIKiKrlkJIw2EuxDA9jLi",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_FG9Xu9axxz9prjhu7RpnlYmg",
+              "function": {
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"reason\": \"The statute text provides maximum penalties for violations (Wis. Stat. § 13.69) but does not mandate that sanctions are always imposed upon discovery of reporting violations; enforcement is framed as violators 'may be required' to forfeit, so the always/generally/rarely sanctioning standard cannot be determined de jure from this bundle.\"}",
+                "name": "record_unscoreable_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_q87uvqqCfzNh3peNXUQRMd1v",
+              "function": {
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": \"MODERATE\", \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.74(1)-(2) (2025)\", \"justification\": \"The commission is required to examine all required statements and may inspect underlying documents and use investigatory subpoenas, indicating a compliance review/audit function rather than a legally required regular independent third-party audit.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1780592697,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 212,
+      "prompt_tokens": 19129,
+      "total_tokens": 19341,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 19072
+      }
+    }
+  }
+}

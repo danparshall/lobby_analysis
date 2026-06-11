@@ -1,0 +1,917 @@
+{
+  "provenance": {
+    "originating_convo": "convos/20260520_tier_0_direct_read_execution.md",
+    "script": "scripts/tier_1_direct_read_legal_axis.py",
+    "model": "gpt-5.2-2025-12-11",
+    "sdk": "openai",
+    "chunk_id": "lobbyist_spending_report",
+    "run_index": 3,
+    "state_abbr": "WI",
+    "vintage_year": 2025,
+    "prompt_sha256": "cf5e534eb79e06bd8862cb6a71fa3ba6db44eb86d8d1b12b85431ef394b042c8",
+    "timestamp_utc": "2026-06-04T20:59:30+00:00"
+  },
+  "wall_clock_seconds": 30.652072916040197,
+  "usage": {
+    "completion_tokens": 2497,
+    "prompt_tokens": 21942,
+    "total_tokens": 24439,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 21888
+    }
+  },
+  "cost_usd_estimate": 0.0733565,
+  "legal_roster": [
+    [
+      "lobbyist_spending_report_cadence_includes_annual",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_includes_monthly",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_includes_other",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_includes_quarterly",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_includes_semiannual",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_includes_triannual",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_cadence_other_specification",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_categorizes_expenses_by_type",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_filing_cadence",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_bill_or_action_identifier",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_compensation_broken_down_by_payer",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_contacts_made",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_expenditure_per_issue",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_general_issues",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_general_subject_matter",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_gifts_entertainment_transport_lodging",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_indirect_costs",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_itemized_expenses",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_lobbyist_contact_info",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_position_on_bill",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_principal_business_nature",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_principal_contact_info",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_principal_names",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_specific_bill_number",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_total_compensation",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_includes_total_expenditures",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_required",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_required_when_no_activity",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_scope_includes_household_members_of_officials",
+      "legal"
+    ],
+    [
+      "lobbyist_spending_report_uses_itemized_format",
+      "legal"
+    ]
+  ],
+  "instantiated_cells": [
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_annual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. §§ 13.68(1), 13.69(1)-(2)",
+      "justification": "The statute imposes periodic expenditure reporting obligations on registered principals (not lobbyists) and contains no requirement that lobbyists file an annual spending report."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_monthly",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. §§ 13.68(1), 13.69(1)-(2)",
+      "justification": "Expense statements are required from principals on set dates, and no provision requires lobbyists to file monthly spending reports."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_other",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. §§ 13.68(1), 13.69(1)-(2)",
+      "justification": "Reporting duties for lobbying expenditures are assigned to principals via the principal expense statement, not to lobbyists on any alternative schedule."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_quarterly",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. §§ 13.68(1), 13.69(1)-(2)",
+      "justification": "The only periodic spending report described is the principal’s semiannual expense statement; the statute does not require lobbyists to file quarterly spending reports."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_semiannual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.68(1)",
+      "justification": "Section 13.68 requires 'Every principal' registered to file the periodic expense statement, so the lobbyist is not the named filer of a separate semiannual spending report."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_includes_triannual",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. §§ 13.68(1), 13.69(1)-(2)",
+      "justification": "No statute provision requires lobbyists to file triannual reports linked to the legislative calendar; reporting is via principals’ semiannual statements."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_cadence_other_specification",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": ""
+      },
+      "cell_class": "FreeTextCell",
+      "cited_section": "Wis. Stat. § 13.68(1)",
+      "justification": "Because the statute does not require any lobbyist-filed periodic spending report, there is no 'other' reporting frequency applicable to lobbyists."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_categorizes_expenses_by_type",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.68(1)",
+      "justification": "Itemization duties in §13.68 apply to the principal’s expense statement, not a separate spending report filed by the lobbyist."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_filing_cadence",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": "none"
+      },
+      "cell_class": "EnumCell",
+      "cited_section": "Wis. Stat. §§ 13.68(1), 13.68(4)",
+      "justification": "Principals file the semiannual expense statement while lobbyists only provide information for the principal’s filing, so lobbyists have no separate spending-report cadence ('none')."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_bill_or_action_identifier",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.67(1)",
+      "justification": "Section 13.67(1) requires the principal to report legislative proposals/topics, not the lobbyist as the filer of a separate report disclosing activity."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_compensation_broken_down_by_payer",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.68(1)(a)",
+      "justification": "Although principals must report aggregate lobbying expenditures including compensation to lobbyists, the statute does not mandate that lobbyists themselves disclose earnings in a separate spending report."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_contacts_made",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.68(1)(c)",
+      "justification": "The only contact-related time record requirement is imposed on principals in their expense statement; there is no lobbyist-filed contact disclosure report."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_expenditure_per_issue",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.68(1)(bn)",
+      "justification": "Per-issue/time allocation is required of principals for topics accounting for 10% or more of lobbying time, not as an expenditure-per-issue disclosure by lobbyists in a separate report."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_general_issues",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.67(1)",
+      "justification": "General issues/topics must be reported by the principal to the commission, so there is no requirement for lobbyists to disclose general issues in a separate spending report."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_general_subject_matter",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.67(1)",
+      "justification": "Lobbying subjects are disclosed by principals under §13.67(1), and the statute does not create a lobbyist-filed activity report even at a general-subject level."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_gifts_entertainment_transport_lodging",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.68(1)",
+      "justification": "Required components for reporting expenditures are in the principal’s expense statement, not in a lobbyist’s own spending report covering gifts/entertainment/travel."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_indirect_costs",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.68(1)(a)-(b)",
+      "justification": "Indirect costs/overhead are disclosed by principals in their expense statement, and the statute does not require a lobbyist to file a separate report disclosing such costs."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_itemized_expenses",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. §§ 13.68(1), 13.68(4)",
+      "justification": "Because lobbyists are not required to file their own itemized spending reports (they only provide signed information to principals), the described lobbyist-reporting regime does not exist."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_lobbyist_contact_info",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.63(1)(a)",
+      "justification": "While a license application may include a lobbyist’s residence address, the statute does not require lobbyists to disclose address/phone in a separate periodic spending report."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_position_on_bill",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.67(1)",
+      "justification": "Disclosure of specific legislative proposals/topics is required from principals, not from lobbyists via a separate activity report."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_principal_business_nature",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.64(1)(a)-(d)",
+      "justification": "The nature/purpose/business activity of the principal is disclosed in the principal’s registration statement, not as information the lobbyist must disclose in a separate spending report."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_principal_contact_info",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.64(1)",
+      "justification": "Principal address information is provided by the principal in its own registration statement, and there is no lobbyist-filed spending report requiring disclosure of principal address/phone."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_principal_names",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. §§ 13.65, 13.68(4)",
+      "justification": "Although a principal must file lobbyist authorizations and a lobbyist supplies information to the principal, the statute does not require lobbyists to file a separate report listing all principals represented."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_specific_bill_number",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.67(1)",
+      "justification": "Bill/proposal or rule numbers must be reported by the principal under §13.67(1), not by lobbyists in a separate spending report."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_total_compensation",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.68(1)(a)",
+      "justification": "Direct lobbying costs including compensation are reported by the principal’s expense statement, not by a separate lobbyist-filed spending report."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_includes_total_expenditures",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.68(1)(a)",
+      "justification": "Total lobbying expenditures are reported by principals in the semiannual expense statement, and there is no parallel requirement for lobbyists to file totals in their own report."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_required",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. §§ 13.68(1), 13.68(4)",
+      "justification": "Because the statute does not require lobbyists to file spending reports (itemized or otherwise) and instead makes principals the filers, the answer is no."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_required_when_no_activity",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.68(1)",
+      "justification": "The statute’s periodic filing obligation applies to registered principals regardless of spending; it does not impose a 'no activity' report obligation on lobbyists as separate filers."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_scope_includes_household_members_of_officials",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "medium",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.68(1)",
+      "justification": "Wisconsin’s lobbying reporting provisions assign expenditure reporting to principals rather than lobbyists, so there is no lobbyist spending report (including for household-member spending) required by the statute."
+    },
+    {
+      "cell": {
+        "cell_id": [
+          "lobbyist_spending_report_uses_itemized_format",
+          "legal"
+        ],
+        "conditional": false,
+        "condition_text": null,
+        "confidence": "high",
+        "provenance": [],
+        "value": false
+      },
+      "cell_class": "BinaryCell",
+      "cited_section": "Wis. Stat. § 13.68(1)",
+      "justification": "Any itemization requirements in Wisconsin are part of the principal’s expense statement, and the statute does not require lobbyists to disclose spending in any itemized-format report as separate filers."
+    }
+  ],
+  "unscoreable_emissions": [],
+  "errors": [],
+  "response": {
+    "id": "chatcmpl-Dn9RU7s4YqyGihmn4I5JnFcsQJPV3",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_tFgCJzjDP8iwZlILtDz95IPK",
+              "function": {
+                "arguments": "{\"handle\": \"row_001\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. §§ 13.68(1), 13.69(1)-(2)\", \"justification\": \"The statute imposes periodic expenditure reporting obligations on registered principals (not lobbyists) and contains no requirement that lobbyists file an annual spending report.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_BqbvCzXbc0666az7ONNuOUwA",
+              "function": {
+                "arguments": "{\"handle\": \"row_002\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. §§ 13.68(1), 13.69(1)-(2)\", \"justification\": \"Expense statements are required from principals on set dates, and no provision requires lobbyists to file monthly spending reports.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_NF2uQhdwxhLvNFPhRQdiU4wY",
+              "function": {
+                "arguments": "{\"handle\": \"row_003\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. §§ 13.68(1), 13.69(1)-(2)\", \"justification\": \"Reporting duties for lobbying expenditures are assigned to principals via the principal expense statement, not to lobbyists on any alternative schedule.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_OATHgemVCvExaS4lqgteXD9N",
+              "function": {
+                "arguments": "{\"handle\": \"row_004\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. §§ 13.68(1), 13.69(1)-(2)\", \"justification\": \"The only periodic spending report described is the principal’s semiannual expense statement; the statute does not require lobbyists to file quarterly spending reports.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_9wH0kI1lMXDGBd2f7OzXoSZd",
+              "function": {
+                "arguments": "{\"handle\": \"row_005\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.68(1)\", \"justification\": \"Section 13.68 requires 'Every principal' registered to file the periodic expense statement, so the lobbyist is not the named filer of a separate semiannual spending report.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_kYwhZkHpHl5daVltAyp4KVSS",
+              "function": {
+                "arguments": "{\"handle\": \"row_006\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. §§ 13.68(1), 13.69(1)-(2)\", \"justification\": \"No statute provision requires lobbyists to file triannual reports linked to the legislative calendar; reporting is via principals’ semiannual statements.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_b7ECqo2C4umiuw5r1iwY0ogD",
+              "function": {
+                "arguments": "{\"handle\": \"row_007\", \"axis\": \"legal\", \"value\": \"\", \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.68(1)\", \"justification\": \"Because the statute does not require any lobbyist-filed periodic spending report, there is no 'other' reporting frequency applicable to lobbyists.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_1y8wbejhUfFavZ1RC05R2LWS",
+              "function": {
+                "arguments": "{\"handle\": \"row_008\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.68(1)\", \"justification\": \"Itemization duties in §13.68 apply to the principal’s expense statement, not a separate spending report filed by the lobbyist.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_gPIjnl0onPdsPvajakHxwrpd",
+              "function": {
+                "arguments": "{\"handle\": \"row_009\", \"axis\": \"legal\", \"value\": \"none\", \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. §§ 13.68(1), 13.68(4)\", \"justification\": \"Principals file the semiannual expense statement while lobbyists only provide information for the principal’s filing, so lobbyists have no separate spending-report cadence ('none').\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_0HDWd6cilhC5VH5Z3O4abor8",
+              "function": {
+                "arguments": "{\"handle\": \"row_010\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.67(1)\", \"justification\": \"Section 13.67(1) requires the principal to report legislative proposals/topics, not the lobbyist as the filer of a separate report disclosing activity.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_m0KyP8FW5RHrXyOXU8qUBOyb",
+              "function": {
+                "arguments": "{\"handle\": \"row_011\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.68(1)(a)\", \"justification\": \"Although principals must report aggregate lobbying expenditures including compensation to lobbyists, the statute does not mandate that lobbyists themselves disclose earnings in a separate spending report.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_01w7uRnT1lpdgSV2A69wk4pj",
+              "function": {
+                "arguments": "{\"handle\": \"row_012\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.68(1)(c)\", \"justification\": \"The only contact-related time record requirement is imposed on principals in their expense statement; there is no lobbyist-filed contact disclosure report.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_aboxlncaASm63SSVdinqUQ89",
+              "function": {
+                "arguments": "{\"handle\": \"row_013\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.68(1)(bn)\", \"justification\": \"Per-issue/time allocation is required of principals for topics accounting for 10% or more of lobbying time, not as an expenditure-per-issue disclosure by lobbyists in a separate report.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_g2dTn0ltKyx81ZyXZoBNdw0L",
+              "function": {
+                "arguments": "{\"handle\": \"row_014\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.67(1)\", \"justification\": \"General issues/topics must be reported by the principal to the commission, so there is no requirement for lobbyists to disclose general issues in a separate spending report.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_hQ9r3YNxQwvWPELzpnLKZid7",
+              "function": {
+                "arguments": "{\"handle\": \"row_015\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.67(1)\", \"justification\": \"Lobbying subjects are disclosed by principals under §13.67(1), and the statute does not create a lobbyist-filed activity report even at a general-subject level.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_Z829RgnbNC3CMi10HFt8cIOl",
+              "function": {
+                "arguments": "{\"handle\": \"row_016\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.68(1)\", \"justification\": \"Required components for reporting expenditures are in the principal’s expense statement, not in a lobbyist’s own spending report covering gifts/entertainment/travel.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_PCDWdiGnu9IQaUyMJ2lW99GM",
+              "function": {
+                "arguments": "{\"handle\": \"row_017\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.68(1)(a)-(b)\", \"justification\": \"Indirect costs/overhead are disclosed by principals in their expense statement, and the statute does not require a lobbyist to file a separate report disclosing such costs.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_KZJKr05yclObTsjD59P13shu",
+              "function": {
+                "arguments": "{\"handle\": \"row_018\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. §§ 13.68(1), 13.68(4)\", \"justification\": \"Because lobbyists are not required to file their own itemized spending reports (they only provide signed information to principals), the described lobbyist-reporting regime does not exist.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_qK987LtX4sy6wqx9YA4BjbrY",
+              "function": {
+                "arguments": "{\"handle\": \"row_019\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.63(1)(a)\", \"justification\": \"While a license application may include a lobbyist’s residence address, the statute does not require lobbyists to disclose address/phone in a separate periodic spending report.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_DCrBk1mrtJfTGhJtJzcBA5gY",
+              "function": {
+                "arguments": "{\"handle\": \"row_020\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.67(1)\", \"justification\": \"Disclosure of specific legislative proposals/topics is required from principals, not from lobbyists via a separate activity report.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_l4KaiKlW7Cc4VbSOiDcCA6wN",
+              "function": {
+                "arguments": "{\"handle\": \"row_021\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.64(1)(a)-(d)\", \"justification\": \"The nature/purpose/business activity of the principal is disclosed in the principal’s registration statement, not as information the lobbyist must disclose in a separate spending report.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_PhbL9IDEdFLMDsfZ4gMzVztd",
+              "function": {
+                "arguments": "{\"handle\": \"row_022\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.64(1)\", \"justification\": \"Principal address information is provided by the principal in its own registration statement, and there is no lobbyist-filed spending report requiring disclosure of principal address/phone.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_f4cQFTDhgtfqKtHPmf2zctWc",
+              "function": {
+                "arguments": "{\"handle\": \"row_023\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. §§ 13.65, 13.68(4)\", \"justification\": \"Although a principal must file lobbyist authorizations and a lobbyist supplies information to the principal, the statute does not require lobbyists to file a separate report listing all principals represented.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_lfmwSTpnh2yWXjGgThSpKsgY",
+              "function": {
+                "arguments": "{\"handle\": \"row_024\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.67(1)\", \"justification\": \"Bill/proposal or rule numbers must be reported by the principal under §13.67(1), not by lobbyists in a separate spending report.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_IVhZmLVivNGujawRyB3v6AG4",
+              "function": {
+                "arguments": "{\"handle\": \"row_025\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.68(1)(a)\", \"justification\": \"Direct lobbying costs including compensation are reported by the principal’s expense statement, not by a separate lobbyist-filed spending report.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_DItnsd7Tu2yDBB91R48NUtIM",
+              "function": {
+                "arguments": "{\"handle\": \"row_026\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.68(1)(a)\", \"justification\": \"Total lobbying expenditures are reported by principals in the semiannual expense statement, and there is no parallel requirement for lobbyists to file totals in their own report.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_Wgduym9PQ32rIqMUEG5OkQZE",
+              "function": {
+                "arguments": "{\"handle\": \"row_027\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. §§ 13.68(1), 13.68(4)\", \"justification\": \"Because the statute does not require lobbyists to file spending reports (itemized or otherwise) and instead makes principals the filers, the answer is no.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_OMAfNUnfpBCFps6OZWaoH7cf",
+              "function": {
+                "arguments": "{\"handle\": \"row_028\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.68(1)\", \"justification\": \"The statute’s periodic filing obligation applies to registered principals regardless of spending; it does not impose a 'no activity' report obligation on lobbyists as separate filers.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_oafnZ9cnRYP9NNOV8u4lzcdx",
+              "function": {
+                "arguments": "{\"handle\": \"row_029\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"medium\", \"cited_section\": \"Wis. Stat. § 13.68(1)\", \"justification\": \"Wisconsin’s lobbying reporting provisions assign expenditure reporting to principals rather than lobbyists, so there is no lobbyist spending report (including for household-member spending) required by the statute.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            },
+            {
+              "id": "call_waP3z5E2XqrJF0nONxmFLvGF",
+              "function": {
+                "arguments": "{\"handle\": \"row_030\", \"axis\": \"legal\", \"value\": false, \"confidence\": \"high\", \"cited_section\": \"Wis. Stat. § 13.68(1)\", \"justification\": \"Any itemization requirements in Wisconsin are part of the principal’s expense statement, and the statute does not require lobbyists to disclose spending in any itemized-format report as separate filers.\"}",
+                "name": "record_cell"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1780606740,
+    "model": "gpt-5.2-2025-12-11",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 2497,
+      "prompt_tokens": 21942,
+      "total_tokens": 24439,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 21888
+      }
+    }
+  }
+}

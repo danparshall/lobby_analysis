@@ -2,11 +2,13 @@
 
 Two compendium versions coexist during the v1 → v2 deprecation window:
 
-- **v2 (active)** — ``compendium/disclosure_side_compendium_items_v2.tsv``. 181 rows.
+- **v2.1 (active)** — ``compendium/disclosure_side_compendium_items_v2.1.tsv``. 183 rows.
   Cell-typed observables across legal/practical axes. Read via
-  ``load_v2_compendium``. The minimal raw-dict return shape is intentional:
-  typed Pydantic models for v2 belong to the ``extraction-harness-brainstorm``
-  branch's surgery (model shape = extraction output shape).
+  ``load_v2_compendium``. v2.1 is the post-Pattern-C-row-split successor to v2
+  (2026-06-05); cell-count-neutral (186 registry entries either way). The
+  minimal raw-dict return shape is intentional: typed Pydantic models for v2
+  belong to the ``extraction-harness-brainstorm`` branch's surgery (model
+  shape = extraction output shape).
 - **v1 (deprecated)** — ``compendium/_deprecated/v1/disclosure_items.csv``. 141
   rows. Structurally PRI-shaped. Loaded via
   ``load_v1_compendium_deprecated`` only by legacy callers (PRI-MVP
@@ -27,7 +29,7 @@ import json
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_COMPENDIUM_V2_TSV = REPO_ROOT / "compendium" / "disclosure_side_compendium_items_v2.tsv"
+DEFAULT_COMPENDIUM_V2_TSV = REPO_ROOT / "compendium" / "disclosure_side_compendium_items_v2.1.tsv"
 DEFAULT_COMPENDIUM_V1_CSV = REPO_ROOT / "compendium" / "_deprecated" / "v1" / "disclosure_items.csv"
 
 
@@ -73,8 +75,9 @@ def load_v1_compendium_deprecated(
     """Read the deprecated v1 compendium CSV and return parsed CompendiumItem instances.
 
     **DEPRECATED.** v1 (141 rows, PRI-shaped) was superseded by v2 (181 rows,
-    cell-typed observables) on 2026-05-14. Use ``load_v2_compendium`` for new
-    code. This function exists only so legacy callers (the PRI-projection-MVP
+    cell-typed observables) on 2026-05-14, which was then succeeded by v2.1
+    (183 rows, Pattern C row split) on 2026-06-05. Use ``load_v2_compendium``
+    for new code. This function exists only so legacy callers (the PRI-projection-MVP
     ``cmd_build_smr`` subcommand, ``smr_projection`` module, and their tests)
     keep working until ``phase-c-projection-tdd`` retires them.
 
@@ -103,7 +106,7 @@ def load_v2_compendium(
 ) -> list[dict[str, str]]:
     """Read the v2 compendium TSV and return parsed rows as raw dicts.
 
-    The v2 TSV has 8 columns: ``compendium_row_id``, ``cell_type``, ``axis``,
+    The v2.1 TSV has 8 columns: ``compendium_row_id``, ``cell_type``, ``axis``,
     ``rubrics_reading``, ``n_rubrics``, ``first_introduced_by``, ``status``,
     ``notes``. See ``compendium/README.md`` for the row-shape contract.
 
@@ -113,11 +116,12 @@ def load_v2_compendium(
     that work lands.
 
     Args:
-        path: Path to the v2 compendium TSV. Defaults to
-            ``compendium/disclosure_side_compendium_items_v2.tsv``.
+        path: Path to the v2.1 compendium TSV. Defaults to
+            ``compendium/disclosure_side_compendium_items_v2.1.tsv``.
 
     Returns:
-        A list of row dicts in TSV order. The list has 181 entries.
+        A list of row dicts in TSV order. The list has 183 entries (v2.1;
+        was 181 in v2 pre-Pattern-C-row-split).
 
     Raises:
         FileNotFoundError: if the TSV does not exist.
@@ -134,8 +138,8 @@ def load_v2_compendium_typed() -> "list":
     """Return the v2 compendium as a list of `CompendiumCellSpec` entries.
 
     Thin wrapper around `build_cell_spec_registry()` for callers who want a
-    sequence rather than a dict. Length is 186 (181 TSV rows + 5
-    legal+practical doublings).
+    sequence rather than a dict. Length is 186 (183 v2.1 TSV rows + 3
+    legal+practical doublings; cell-count-neutral with v2's 181 + 5 split).
 
     Phase C projection functions and the extraction harness adopt this at
     their own pace; the raw-dict `load_v2_compendium` stays available for
