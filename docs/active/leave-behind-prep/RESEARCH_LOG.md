@@ -10,6 +10,26 @@ This branch hosts the 5-day pre-wrap cleanup + leave-behind work. Scope:
 
 ---
 
+## 2026-06-12 (PM) — gpt-5-mini quality-gap checks: 3 spotchecks + 3 diagnostic deep-dives
+
+**Convo:** [`convos/20260612_gpt5mini_quality_gap_checks.md`](convos/20260612_gpt5mini_quality_gap_checks.md)
+**Originating plan:** [`plans/20260609_is_itemized_investigation_and_writeup.md`](plans/20260609_is_itemized_investigation_and_writeup.md) (Steps 1 + 2 executed)
+**Originating commit:** [`bfdb8b6`](https://github.com/danparshall/lobby_analysis/commit/bfdb8b6) (forward-referenced this convo path)
+**Results:** [`results/20260612_gpt5mini_quality_gap_checks/`](results/20260612_gpt5mini_quality_gap_checks/) (verbatim stdout of the three spotchecks, committed at `8eaa131`)
+
+Ran the three spotcheck scripts from `bfdb8b6` against the OH 300-slice (100-rid comparison set, sonnet ∩ medium_briefv3, plus medium_briefv2 for is_itemized). Then three pointed diagnostics: did `HB 29` actually appear in rid 1394434's raw HTML (yes), where did mini put the missing subjects on rid 1412254 (in `description`, not `general_issue_area`), and Step-2 hand-read of the 5 is_itemized briefv2-emits/briefv3-abstains rids (all 5 are JLEC forms with sections literally titled "D. Non-Itemized Meals and Beverages" populated with a single Meals-Under-$50 amount).
+
+**Headline pivot:** the brief revision is the regression source, not the model swap. Two of three "gaps" from the 2026-06-09 cross-arm analyzer are softer than that headline suggested; one is harder.
+
+- **`total_expenditure`** — 0/100 stated-non-zero misses. The 62-rid gap is "form shows explicit $0.00, mini abstains" — a convention question the brief doesn't tie-break.
+- **`positions`** — 87/100 identical; 13/13 differing rows have `bills_match=False`, but Diagnostic #2 shows mini emits the subjects in `description` while sonnet uses `general_issue_area`. Same content, different slot. Composer-side normalization should close most of the diff without a brief change. Pattern 3 (rid 1438098, mini emits literal ORC/OAC rule numbers vs sonnet's subject roll-up) is a separate semantic question.
+- **`is_itemized`** — briefv3 has a real **regression vs briefv2** (not just vs sonnet): 5/5 hand-read rids are GROUND_TRUTH_EMITS with ground_truth_value=False. The form's own header uses the word "Non-Itemized." briefv2 had it; briefv3 abstains in all 5. Per plan §Step 4 decision table this maps to "brief-v4 with explicit is_itemized guidance, worth iterating" — but the convo proposes a cheaper alternative: identify the specific v3 change that nudged the abstention and back it out targeted-ly, preserving the v3 is_current fix.
+
+Five open questions left for remote-agent review (brief-side vs composer-side fix for positions; total_expenditure stated-zero convention; targeted v3 patch vs full v4; broader is_itemized sample for non-JLEC forms; chain-composer abstraction-level for rule numbers). Convo authored as a self-contained review brief.
+
+Recurring pattern noted: each brief revision so far has fixed one field while perturbing another (v2: fixed period, broke is_current; v3: fixed is_current, broke is_itemized). Worth treating cross-field coupling as a design constraint for v4 rather than discovering it after the fact again.
+
+
 ## 2026-06-12 — #49 executed: RESEARCH_ARC.md rewritten (Day-5 slot, claude.ai session)
 
 **Session type:** doc rewrite; claude.ai (claude_researcher workflow).
