@@ -1,0 +1,24 @@
+Comparison set: 100 report_ids in (sonnet ∩ medium_briefv2 ∩ medium_briefv3)
+
+is_itemized non-null emission census:
+  sonnet                39/100
+  medium_briefv2         5/100
+  medium_briefv3         0/100
+
+rids where medium_briefv2 emits but medium_briefv3 abstains: 5  (plan expects 5)
+
+  1398614  is_itemized sonnet=False v2=False v3=None  len(expenditures) sonnet/v2/v3=1/1/1
+      raw: /Users/dan/code/lobby_analysis/.worktrees/leave-behind-prep/data/oh_portal/raw/1398614/2026-06-05T01-24-04+00-00/raw.html
+  1401008  is_itemized sonnet=False v2=False v3=None  len(expenditures) sonnet/v2/v3=1/1/1
+      raw: /Users/dan/code/lobby_analysis/.worktrees/leave-behind-prep/data/oh_portal/raw/1401008/2026-06-05T02-03-04+00-00/raw.html
+  1405684  is_itemized sonnet=False v2=False v3=None  len(expenditures) sonnet/v2/v3=1/1/1
+      raw: /Users/dan/code/lobby_analysis/.worktrees/leave-behind-prep/data/oh_portal/raw/1405684/2026-06-03T19-38-45+00-00/raw.html
+  1413012  is_itemized sonnet=False v2=False v3=None  len(expenditures) sonnet/v2/v3=1/1/1
+      raw: /Users/dan/code/lobby_analysis/.worktrees/leave-behind-prep/data/oh_portal/raw/1413012/2026-06-05T02-28-41+00-00/raw.html
+  1427844  is_itemized sonnet=False v2=False v3=None  len(expenditures) sonnet/v2/v3=1/1/1
+      raw: /Users/dan/code/lobby_analysis/.worktrees/leave-behind-prep/data/oh_portal/raw/1427844/2026-06-03T20-32-21+00-00/raw.html
+
+Hand-read Step 2 per the plan: open each raw.html, look at Section II.
+Categorize each rid GROUND_TRUTH_EMITS / GROUND_TRUTH_ABSTAINS / AMBIGUOUS.
+Empty Section II (len(expenditures)==0 in all arms) is prima facie
+evidence for GROUND_TRUTH_ABSTAINS — confirm against the HTML.
