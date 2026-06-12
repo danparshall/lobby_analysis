@@ -31,6 +31,15 @@ Newest entries first.
 
 ---
 
+## 2026-06-12 — Merge `origin/main` into branch; STATUS.md conflict resolution for PR #55
+
+- **Convo:** [`convos/20260612_merge_main_for_pr55.md`](convos/20260612_merge_main_for_pr55.md)
+- **What happened.** PR #55 was DIRTY/CONFLICTING after main absorbed substantial activity from `wi-ralph-cpi-renewal-cadence`, `oh-portal-aprime-batch`, and `leave-behind-prep` (97 commits since merge-base `ce9bacf`). Only `STATUS.md` conflicted; 3 regions resolved per Dan's directive to "preserve both sets of notes" — no interleaving, no dropping. Active Research Lines: kept main's 6-row set; replaced main's stale `ny-disclosure-explore` row with HEAD's READY-TO-MERGE self-description per the multi-committer rule that each branch owns its own STATUS row.
+- **Regression check.** Full suite **2031 pass + 3 skipped + 3 xfailed** (`pytest --ignore=tests/test_scoring_integration.py` to skip the GH #38 CA-snapshot reds). NY-scoped suite **144 pass**. No code changed.
+- **Outcome.** Merge commit `e3ec15b` pushed; `gh pr view 55` confirms **MERGEABLE/CLEAN**. Ready for merge per the existing handoff convention.
+
+---
+
 ## 2026-06-10 — bi vs semi compensation reconciliation EMPIRICAL + #46 merge prep (Dan-in-the-loop)
 
 - **Convo:** [`convos/20260610_ny_bi_semi_reconciliation_and_merge_prep.md`](convos/20260610_ny_bi_semi_reconciliation_and_merge_prep.md)
