@@ -18,3 +18,19 @@ __pycache__/
 # Real-API response captured by T1 integration test (decoupled from the
 # committed hand-crafted parser fixture; ad-hoc local-inspection aid).
 tests/fixtures/retrieval_v2/sample_response_real.json
+
+# Raw 5k-row parties_lobbied API sample (raw response; regenerable via
+# scripts/ny_probe_parties_lobbied.py). The aggregated top-distinct JSON is
+# committed alongside it.
+docs/active/ny-disclosure-explore/results/20260605_ny_parties_lobbied_sample.json
+
+# Phase-0 grain probe raw API samples (raw responses; regenerable via
+# scripts/ny_probe_parties_lobbied_grain.py + ny_probe_grain_confirm.py).
+docs/active/ny-disclosure-explore/results/20260606_ny_parties_grain_sample.json
+docs/active/ny-disclosure-explore/results/20260606_ny_parties_grain_confirm_sample.json
+
+# NY release DATA TSVs are regenerable (materialize_cli + chain) and churn on
+# every regen — the 53MB chain TSV also trips GitHub's >50MB warning. Untracked
+# during development; re-add the final set as tracked release artifacts at merge
+# (`git add -f releases/ny/...`). The hand-written READMEs stay tracked.
+releases/ny/**/*.tsv
