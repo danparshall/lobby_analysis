@@ -23,6 +23,13 @@ This branch hosts the 5-day pre-wrap cleanup + leave-behind work. Scope:
 Commit message carries `Closes #49`; since it landed directly on main, the issue auto-closed.
 
 
+## 2026-06-10 — FTM NY sample query (#44): blocked at quota, evidence captured; OH bulk-CSV acquired
+
+**Session type:** browser-assisted data-access session (claude.ai + Claude-in-Chrome); $0 spend, 0 FTM records consumed.
+
+#44's deliverable doc didn't exist on any branch (it was the task's *target*, not a prior artifact). Pre-staged the query harness + writeup skeleton, then hit the real blocker: **FTM account at 1,083/1,000 records/year** (WI LeMahieu run consumed the annual budget; gate counts records, not calls). Gate wording changed post-OpenSecrets-integration — the "Institute will be in contact within two business days" review promise is gone; flat pre-flight refusal captured verbatim in the results doc §7. No @followthemoney.org contact address exists (banner → info@opensecrets.org; Contact Us → info@crp.org); follow-up email sent to both 2026-06-10; **on-site Exemption Request form still untried**. Bonus structural finding for #43 (commented there): followthemoney.org is unreachable from GCP egress (probable datacenter-IP blocking) — a cloud ingest pipeline needs a non-datacenter path. **Data acquired: Plural Policy OH bulk-CSV** (Dan, via login at open.pluralpolicy.com) — closes oh-portal-aprime-batch pending (b). Reminders #49/#54 surfaced, deliberately left fired for next session. Commits: `a26a7a0` `db6422c` `8669a7f` + finish-convo bundle. Convo: [`convos/20260610_ftm_ny_sample_query.md`](convos/20260610_ftm_ny_sample_query.md). Results: [`results/20260610_ftm_ny_sample_query.md`](results/20260610_ftm_ny_sample_query.md).
+
+
 ## 2026-06-09 (later) — Project review (claude.ai) → ticket sweep + STATE_COVERAGE corrections (#48)
 
 **Session type:** review + doc hygiene; claude.ai (claude_researcher workflow), no convo file in-repo.
