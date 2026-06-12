@@ -15,6 +15,16 @@ This is the data-acquisition counterpart to Dan's Track A work (`statute-retriev
 
 (Newest entries first.)
 
+### 2026-06-11 — Plural Policy 136th GA data drop + chain composer v0 design plan
+
+- **Plural Policy bundle landed** (data drop by Dan into `data/` + this session's mechanical move/extract). 136th GA session bundle now at `data/bills/OH/136/` (16 CSVs; 2,325 bills, 11,559 sponsorship rows, 36,023 vote-people rows). Layout mirrors `data/bills/WI/2025/`. Zip preserved at `data/bills/OH/PluralPolicy_OH_136_csv.zip`.
+- **Structural join smoke-test passed.** Joining 316 cached AER extractions' `positions[].bill_reference.bill_number` against `OH_136_bills.csv.identifier`: **86.4% row-weighted match** (887/1,027). Top match HB 96 (state biennial budget, 81 references). Unmatched 13.6% are exclusively OAC / JCARR admin-rule citations (e.g., `5160-32-02`, `JC 4731-9-01`) — not bills, expected miss. Reusable script at `results/20260611_plural_policy_join_smoke.py`.
+- **Chain composer v0 design plan authored** at `plans/20260611_oh_chain_composer_design.md` (Dan-requested follow-up after surfacing that no chain code or plan was pre-written). Captures: edge-inventory delta vs WI/NY (OH chain is a *third* structural form — no IPF needed since no $ or time marginals; gifts edge is native to OH and gets sibling artifact); proposed schemas for `releases/oh/chain/OH_chain_2025_2026.tsv` + `releases/oh/gifts/OH_gifts_2025_2026.tsv`; 7-phase TDD scaffold (Phases 0-5 = $0; Phase 6 dependent on #35); 5 open questions with recommendations for execution-session resolution.
+- **STATUS.md row 64**: pending item (b) Plural Policy download flipped to landed; pending item (c) `releases/oh/` materialization now points at the design plan with `oh-chain-composer` recommended branch name. STATE_COVERAGE.md OH Status line + footnote 7 updated to match.
+- **Honest scope read**: the data drop was the prerequisite, not a blocked script waiting to fire. The chain composer is now *designed*, not *built*. `oh.csv` legislator roster (footnote 7 second half) still pending — separate Plural Policy fetch.
+- Doc-only on main (per Dan's `feedback_weekly_updates_to_main` memory). Two commits this session: `551411b` (data drop + smoke test), `e8ad72c` (chain composer plan). Both pushed.
+- Convo: [`convos/20260611_oh_plural_policy_data_drop_and_chain_composer_plan.md`](convos/20260611_oh_plural_policy_data_drop_and_chain_composer_plan.md). Plan: [`plans/20260611_oh_chain_composer_design.md`](plans/20260611_oh_chain_composer_design.md). Result + smoke-test script: [`results/20260611_plural_policy_data_landed.md`](results/20260611_plural_policy_data_landed.md), [`results/20260611_plural_policy_join_smoke.py`](results/20260611_plural_policy_join_smoke.py).
+
 ### 2026-06-05 (later) — provenance fixes implemented (TDD): code-populated `raw_text` + true regime
 
 - **Part 1 — `raw_text` code-populated (commit `9b0fd7d`).** `extract.py`:
