@@ -10,6 +10,18 @@ This branch hosts the 5-day pre-wrap cleanup + leave-behind work. Scope:
 
 ---
 
+## 2026-06-12 — #49 executed: RESEARCH_ARC.md rewritten (Day-5 slot, claude.ai session)
+
+**Session type:** doc rewrite; claude.ai (claude_researcher workflow).
+
+`docs/RESEARCH_ARC.md` rewritten on **main** at `ff498c7` per issue #49's triaged scope (committed to main rather than this branch, following the #48 precedent — the doc describes main's merged state, and this branch is ~90 commits behind after the NY + backend-prototype merges).
+
+**MUST-FIX items:** (1) Status header — "Prong 1 paused 2026-05-24 / gather-first → v2.2" replaced with current truth (Prong 2 leads; Prong 1 in cross-state validation via direct-read on v2.1), with a history note explaining the two supersessions (additive-prompt track resumed extraction on v2.1; SMR-as-canonical mooted the v2.2 gating framing). (2) Prong-1 internals — the retrieval_v2 (Citations) → scoring_v2 path demoted to a clearly-bannered historical-design blockquote (greyed mermaid, "do not build against this"); the actual direct-read path (full bundle in context, YAML SSOT + opaque handles + cell-type-aligned format instructions, `record_cell` parsing, state-keyed 6-chunk × 2-model × 3-run dispatcher) now described as primary; component table marks scoring_v2 "never built; superseded" and retrieval_v2 "shipped but off-path."
+
+**SHOULD-ADD items:** Ralph-loop section reframed "designed, then run" with the empirical record (Phase B iters 1–5 / 4 cell types / additive pattern; Phase A 163 additives; Round 1 180 dispatches / $14.43; post-Phase-1 **19/30 = 63.3%**, per-state breakdown, measured σ_noise ranges); the six failure-mode trends sorted under SMR-as-canonical (1/6/2 = projection-translation engineering, 3/5 = prior-art gaps, 4 = data input). New **Operating principles** section: SMR-as-canonical, Anna Karenina (including a retraction of the old "stairs of leverage" amortization claim), de-jure-only (#51 ref). Prong table + new **three-axis architecture** subsection for Prong 2 (bespoke lobbying / Plural bills / FTM campaign-finance with the #43 sunset caveat); Prong 3 updated for the shipped backend-prototype v0. Phase C table converted to status form (incl. HG 2003-vintage correction; FOCAL 3+4 = #53). Open-questions list pruned of the three Citations-mooted items; replaced with the live set (#50 N=10, Trend-5 §13.74 check, TX corpus, OH IND_203, threshold-for-good-enough, #51, cross-vintage).
+
+Commit message carries `Closes #49`; since it landed directly on main, the issue auto-closed.
+
 
 ## 2026-06-09 (later) — Project review (claude.ai) → ticket sweep + STATE_COVERAGE corrections (#48)
 
