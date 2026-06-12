@@ -1,0 +1,119 @@
+"""FastAPI surface over the backend storage layer.
+
+Endpoints:
+    GET  /filings              List filings (filters: state, filer_role, limit, offset).
+    GET  /filings/{id}         Fetch one filing by id.
+    POST /filings              Ingest one LobbyingFiling JSON body.
+    GET  /search?q=...         Substring match on filer name.
+    GET  /stats                Dashboard aggregates (totals, breakdowns, top spenders).
+
+Storage engine is injected via the `get_engine` dependency so tests can swap
+in a test engine without touching module state.
+
+If a built frontend exists at `frontend/dist`, it is mounted at `/` so the
+whole prototype can be served from a single process. In dev, the Vite server
+(port 5173) proxies the API paths instead, and CORS is enabled as a fallback.
+"""
+
+from __future__ import annotations
+
+import os
+from pathlib import Path
+
+from fastapi import Depends, FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from sqlalchemy.engine import Engine
+
+from lobby_analysis.backend.storage import (
+    count_filings,
+    get_filing,
+    init_engine,
+    insert_filing,
+    list_filings,
+    search_filings,
+    stats,
+)
+from lobby_analysis.models.filings import LobbyingFiling
+
+app = FastAPI(title="Lobby Analysis Backend", version="0.3")
+
+# Allow the Vite dev server (and any local origin) to call the API directly.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+_engine: Engine | None = None
+
+
+def get_engine() -> Engine:
+    """Lazy-init the storage engine on first request; cached thereafter.
+
+    Reads `DATABASE_URL` at first call so tests can monkeypatch it before
+    spinning up the app.
+    """
+    global _engine
+    if _engine is None:
+        url = os.environ.get("DATABASE_URL")
+        if not url:
+            raise RuntimeError("DATABASE_URL is not set")
+        _engine = init_engine(url)
+    return _engine
+
+
+@app.get("/filings", response_model=list[LobbyingFiling])
+def list_filings_endpoint(
+    state: str | None = None,
+    filer_role: str | None = None,
+    limit: int = 100,
+    offset: int = 0,
+    engine: Engine = Depends(get_engine),
+) -> list[LobbyingFiling]:
+    return list_filings(
+        engine, state=state, filer_role=filer_role, limit=limit, offset=offset
+    )
+
+
+@app.get("/filings/{id}", response_model=LobbyingFiling)
+def get_filing_endpoint(
+    id: str,
+    engine: Engine = Depends(get_engine),
+) -> LobbyingFiling:
+    filing = get_filing(engine, id)
+    if filing is None:
+        raise HTTPException(status_code=404, detail=f"no filing with id {id!r}")
+    return filing
+
+
+@app.post("/filings", status_code=201)
+def post_filing_endpoint(
+    filing: LobbyingFiling,
+    engine: Engine = Depends(get_engine),
+) -> dict[str, str]:
+    inserted_id = insert_filing(engine, filing)
+    return {"id": inserted_id}
+
+
+@app.get("/search", response_model=list[LobbyingFiling])
+def search_endpoint(
+    q: str,
+    limit: int = 100,
+    offset: int = 0,
+    engine: Engine = Depends(get_engine),
+) -> list[LobbyingFiling]:
+    return search_filings(engine, q, limit=limit, offset=offset)
+
+
+@app.get("/stats")
+def stats_endpoint(engine: Engine = Depends(get_engine)) -> dict:
+    return stats(engine)
+
+
+# Serve the built frontend (if present) as a catch-all so the prototype runs
+# from a single process. Explicit API routes above always take precedence.
+_DIST = Path(__file__).resolve().parents[3] / "frontend" / "dist"
+if _DIST.is_dir():
+    app.mount("/", StaticFiles(directory=str(_DIST), html=True), name="frontend")
