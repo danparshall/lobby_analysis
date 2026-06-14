@@ -15,6 +15,24 @@ This is the data-acquisition counterpart to Dan's Track A work (`statute-retriev
 
 (Newest entries first.)
 
+### 2026-06-14 — Branch `oh-chain-composer` cut + Phase 1 classifier shipped + Phase 0 pre-flight audit clean
+
+This entry back-fills the morning Phase 1 classifier session (was captured in the handoff brief but not in this log) and adds the evening Phase 0 audit findings.
+
+**Morning session (commit `f59a7f9` by Claude-via-Dan):** branch `oh-chain-composer` cut off `bfe9f8f`. Phase 1 *classifier* (Steps A + B per plan §5) shipped at `src/lobby_analysis/allocation/oh/classify.py` (165 lines) + `tests/allocation/oh/test_classify.py` (290 lines, **48 tests all passing** — `python -m pytest tests/allocation/oh/ -v` runs in ~0.03s with no data/network/DB dependencies). Local conftest at `tests/allocation/oh/conftest.py` overrides the repo's autouse Postgres-dependent `_truncate_filings` fixture to a no-op, scoped to OH allocation tests only. Phase 1 *loader* (Step C) still open — that's Phase 1's remaining piece. Handoff brief shipped at `docs/active/oh-portal-extraction/HANDOFF_oh_chain_composer.md` for the next agent.
+
+**This session (Phase 0 pre-flight audit, Q1–Q6 resolution):** picked up the handoff. Surfaced Q1–Q6 to Dan; all six resolved at the plan's recommendations (Q1 = preview slice, Q2 = primary-only v1, Q3 = download `oh.csv`, Q4 = defer expenditures, Q5 = branch already cut, Q6 = include minimal filings TSV). Phase 0 audit findings doc at `results/20260614_phase0_preflight_audit.md` + script at `results/20260614_phase0_preflight_audit.py`. Five Phase 0 checks all green:
+
+- **(a) Schemas:** 16/16 Plural Policy CSVs row-count-stable vs the 2026-06-11 data-landed doc; columns inventoried.
+- **(b) Smoke test:** 86.4% row-weighted match identical to 06-11 (cache has not grown — #35 has not run).
+- **(c) Multi-primary:** CONFIRMED structural for OH (946 of 2,317 bills = **40.8%** have ≥2 primaries on substantive HBs/SBs, not just resolutions). High-primary tail (≥10) is exclusively ceremonial HRs (99 = whole-House signing on to memorial/honor resolutions); document as artifact in the chain README.
+- **(d) `bill_actions.description` cosponsor names:** 0 hits over 5,525 rows — **WI lesson does NOT apply to OH**. Cosponsors live cleanly in `bill_sponsorships.classification == "cosponsor"`; v1.1 cosponsor extension is a config flip.
+- **(e) `oh.csv` legislator roster:** downloaded from `https://data.openstates.org/people/current/oh.csv` (88,210 bytes, 132 legislators = 99 House + 33 Senate). Landed at `data/bills/OH/oh.csv` via the worktree's `data/` symlink to `~/data/lobby_analysis/`. Closes the second half of `STATE_COVERAGE.md` OH footnote 7.
+
+**Worktree setup note:** new agents picking this up should `readlink` an existing recent worktree's `data/` (e.g., `leave-behind-prep`, `backend-prototype`, `ny-disclosure-explore`) before assuming "no data on this machine" — the convention is `data → /Users/dan/data/lobby_analysis` symlink + `.env.local → ../../.env.local` symlink. Main worktree does not carry a `data/` dir, so a "missing data" first impression is a false negative.
+
+Phase 1 (loader Step C) is unblocked next. Plan reference: `plans/20260611_oh_chain_composer_design.md` §5; handoff: `HANDOFF_oh_chain_composer.md`.
+
 ### 2026-06-11 — Plural Policy 136th GA data drop + chain composer v0 design plan
 
 - **Plural Policy bundle landed** (data drop by Dan into `data/` + this session's mechanical move/extract). 136th GA session bundle now at `data/bills/OH/136/` (16 CSVs; 2,325 bills, 11,559 sponsorship rows, 36,023 vote-people rows). Layout mirrors `data/bills/WI/2025/`. Zip preserved at `data/bills/OH/PluralPolicy_OH_136_csv.zip`.
