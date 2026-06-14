@@ -3,7 +3,9 @@
 **Originating session:** [2026-06-11 main — Plural Policy 136th GA bundle landed](../results/20260611_plural_policy_data_landed.md)
 **Workstream:** OH disclosure data (Track B / Prong 2). Continuation of `oh-portal-aprime-batch` (merged PR #33).
 **Status:** plan only — no code yet. Ready for fresh-session implementer.
-**Audience:** the next agent that picks this up (likely Day 4 of `leave-behind-prep` per STATUS row 65).
+**Audience:** the next agent that picks this up (post-Fellowship continuation; original draft anticipated Day 4 of `leave-behind-prep`).
+
+**Last updated 2026-06-14** to incorporate findings from `docs/active/leave-behind-prep/results/20260613_mini_swap_quality_gate_findings.md` (on the `leave-behind-prep` branch). Three deltas: (a) §4 position-shape normalization added — subject-only positions were silently dropped by the original chain-schema; (b) §5 Phase 1 split into Step A (position-shape) and Step B (label classification); (c) §7 Q6 added re: filings-level table scope. Search for "2026-06-14" to find the inserted material.
 
 ---
 
@@ -71,9 +73,12 @@ releases/oh/
 ├── chain/
 │   ├── OH_chain_2025_2026.tsv      (per-(period, principal, lobbyist, bill, sponsor) — bill-side chain)
 │   └── README.md                   (methodology writeup, Suhan-droppable, mirroring releases/wi/chain/README.md)
-└── gifts/
-    ├── OH_gifts_2025_2026.tsv      (per-(period, lobbyist, lawmaker, gift) — OH's distinctive native edge)
-    └── README.md                   (Section II.A/B methodology + AER quirks)
+├── gifts/
+│   ├── OH_gifts_2025_2026.tsv      (per-(period, lobbyist, lawmaker, gift) — OH's distinctive native edge)
+│   └── README.md                   (Section II.A/B methodology + AER quirks)
+└── filings/                        (added 2026-06-14, conditional on §7 Q6)
+    ├── OH_filings_2025_2026.tsv    (per-filing — hosts Q2 stated-zero + is_current normalizations; one row per AER)
+    └── README.md                   (filing-grain field-level methodology, esp. total_expenditure & is_current)
 ```
 
 **Schema sketch for `OH_chain_2025_2026.tsv`** (decide at implementation; this is v0, not locked):
@@ -86,17 +91,42 @@ releases/oh/
 | `principal_id` | str | `org-<slug>` from extraction (no canonical OH employer ID; resolution layer is a separate concern) |
 | `lobbyist_name` | str | from `LobbyingFiling.filer_person` |
 | `lobbyist_id` | str | `person-<slug>` from extraction |
-| `bill_label_raw` | str | `positions[].bill_reference.original_text` (e.g. `HB 96`) |
+| `position_kind` | enum | **Added 2026-06-14.** `bill_referenced` / `subject_general` / `subject_hoisted_from_description` — see §4a |
+| `bill_label_raw` | str | bill reference text when `position_kind == 'bill_referenced'`; hoisted subject text otherwise (see §4a) |
 | `bill_label_normalized` | str | normalized for join key (e.g. `HB 96`) |
-| `bill_class` | str | `bill` / `oac_rule` / `jcarr` / `unmatched` — see OAC classification §6 |
+| `bill_class` | str | `bill` / `oac_rule` / `jcarr` / `subject` / `unmatched` — see OAC classification §6. `subject` added 2026-06-14 for subject-only positions. |
 | `bill_id` | str \| null | `ocd-bill/...` when `bill_class == 'bill'`; null otherwise |
 | `bill_title` | str \| null | from `OH_136_bills.csv` |
-| `position_description` | str | `positions[].description` — what the lobbyist said they did |
-| `num_primary_sponsors` | int | OH allows multi-primary sponsorship (verify on `OH_136_bill_sponsorships.csv`) |
-| `sponsor_lawmaker_id` | str | `ocd-person/...` |
-| `sponsor_lawmaker_name` | str | from `oh.csv` if downloaded; else surname from `OH_136_bill_sponsorships.csv` |
-| `sponsor_role` | str | `primary` / `cosponsor` (per-row; Plural Policy classification column) |
-| `confidence` | str | `direct` (extracted + joined) / `oac_dropped` / `unmatched` / `null_extraction` |
+| `position_description` | str | `positions[].description` — what the lobbyist said they did (may be null for `subject_hoisted_from_description` rows, since description was hoisted into `bill_label_raw`) |
+| `num_primary_sponsors` | int | OH allows multi-primary sponsorship (verify on `OH_136_bill_sponsorships.csv`). 0 for non-bill rows. |
+| `sponsor_lawmaker_id` | str \| null | `ocd-person/...`; null for non-bill rows (subject / oac_rule / jcarr / unmatched) |
+| `sponsor_lawmaker_name` | str \| null | from `oh.csv` if downloaded; else surname from `OH_136_bill_sponsorships.csv`. Null for non-bill rows. |
+| `sponsor_role` | str | `primary` in v1 — Q2 recommends primary-only; column structure reserved for v1.1 cosponsor extension. Null for non-bill rows. |
+| `confidence` | str | `direct` (extracted + joined) / `oac_dropped` / `unmatched` / `null_extraction` / `subject_only` |
+
+### §4a. Position-shape normalization (added 2026-06-14)
+
+**Background.** Findings from the 2026-06-13 mini-swap quality-gate work identified that `LobbyingPosition` (`src/lobby_analysis/models/filings.py:53`) has three independent fields the composer must handle:
+
+- `bill_reference: BillReference | None`
+- `general_issue_area: str | None`
+- `description: str | None`
+
+This produces three real position shapes in extraction output:
+
+| Case | `bill_reference` | `general_issue_area` | `description` | Treatment |
+|---|---|---|---|---|
+| (a) Bill-referenced | set | optional | optional | `position_kind = bill_referenced`; `bill_label_raw = bill_reference.original_text`; cross-product with sponsors as in §5 Phase 2 |
+| (b) Subject-only (canonical) | null | set | optional | `position_kind = subject_general`; `bill_label_raw = general_issue_area`; `bill_class = subject`; **no sponsor cross-product** (single row per (filing, position)) |
+| (c) Subject-only (mini quirk) | null | null | set | `position_kind = subject_hoisted_from_description`; `bill_label_raw = description`; `bill_class = subject`; **no sponsor cross-product** |
+
+The (c) case is mini-specific — the 2026-06-13 findings doc documents that mini emits subject content into `description` rather than `general_issue_area`. Originally the findings doc proposed handling this in the same Phase-1 classifier seam as the OAC routing, but those are two orthogonal classifications (Step A: which field carries the subject; Step B: textual pattern of the resulting label). The plan separates them — see §5 Phase 1.
+
+**Conservation implication.** Cases (b) and (c) emit one chain row per (filing, position) with null sponsor fields — they don't multiply through the sponsor cross-product the way bill-referenced positions do. Document this in the chain README's "30-second tour" so an analyst doesn't double-count subjects under a `LEFT JOIN sponsorships` mental model. This is the OH analog of WI's `modeled_hours_per_sponsor` cautionary.
+
+**Why this matters for the original schema sketch.** Without §4a, the original `bill_label_raw = positions[].bill_reference.original_text` definition silently drops any position with `bill_reference is None`. On a sonnet baseline this is rare; on mini the (c) case is the more common shape for subject-only advocacy per the findings doc. Silently dropping subject-only positions would understate lobbying activity on regulatory subjects (the exact category Q5 in the findings doc flagged as composer-valuable).
+
+
 
 **Schema sketch for `OH_gifts_2025_2026.tsv`** (OH's distinctive native edge):
 
@@ -127,10 +157,11 @@ Pre-execution: this plan should be re-read by the implementing agent. Open quest
 | Phase | Scope | Cost | Tests |
 |---|---|---|---|
 | **Phase 0 — Pre-flight audit** | Load Plural Policy CSVs into pandas, inspect schemas, verify the smoke-test result against current cache (extractions can grow between this plan and execution). Confirm OH allows multi-primary sponsorship empirically. Confirm `bill_actions.csv` does NOT carry cosponsor names (WI lesson — cosponsors only in `bill_actions.description` free text). | $0 | RED: structural pandas assertions on CSV schemas; sanity counts. GREEN: pure-read code. |
-| **Phase 1 — Loaders + classifier** | `src/lobby_analysis/allocation/oh/load.py` — load extractions + Plural Policy CSVs as typed pandas DataFrames. `src/lobby_analysis/allocation/oh/classify.py` — `bill_class` classifier (regex: `HB|SB|HR|SR|HJR|SJR|HCR|SCR` → `bill`; `JC ` prefix → `jcarr`; pure-numeric OAC pattern `\d+-\d+-\d+` → `oac_rule`; else `unmatched`). | $0 | TDD: classifier round-trips known examples from §3 above; loader DataFrames have expected columns + non-empty. |
-| **Phase 2 — Chain composer** | `src/lobby_analysis/allocation/oh/chain.py` → `compose_bill_chain(extractions_dir, plural_dir) -> DataFrame`. Cross-product per filing: each position × each primary sponsor (+ cosponsors per §7 Q3). | $0 | TDD: hand-crafted test fixture w/ 1 filing × 2 positions × 1 bill × 2 sponsors → 4 rows; conservation invariant. |
+| **Phase 1 — Loaders + classifier (two steps)** | `src/lobby_analysis/allocation/oh/load.py` — load extractions + Plural Policy CSVs as typed pandas DataFrames. `src/lobby_analysis/allocation/oh/classify.py` — **Step A (position-shape, added 2026-06-14):** map each `LobbyingPosition` to one of `bill_referenced` / `subject_general` / `subject_hoisted_from_description` per §4a truth table; produce a unified `position_label` string. **Step B (label-pattern, original):** classifier (regex: `HB|SB|HR|SR|HJR|SJR|HCR|SCR` → `bill`; `JC ` prefix → `jcarr`; pure-numeric OAC pattern `\d+-\d+-\d+` → `oac_rule`; non-bill-pattern with `position_kind ∈ {subject_general, subject_hoisted_from_description}` → `subject`; else → `unmatched`). | $0 | TDD: Step A round-trips all three cases from §4a fixture; Step B round-trips known examples from §3 + subject case; loader DataFrames have expected columns + non-empty. |
+| **Phase 2 — Chain composer** | `src/lobby_analysis/allocation/oh/chain.py` → `compose_bill_chain(extractions_dir, plural_dir) -> DataFrame`. Cross-product per filing: each `position_kind == 'bill_referenced'` position × each primary sponsor (+ cosponsors per §7 Q2). Subject-only positions (`position_kind ∈ {subject_general, subject_hoisted_from_description}`) emit **one row per (filing, position)** with null sponsor fields — they skip the cross-product entirely (see §4a). | $0 | TDD: hand-crafted test fixture w/ 1 filing × 2 bill-positions × 1 bill × 2 sponsors + 1 subject-only position → 5 rows (4 from cross-product + 1 subject); conservation invariant; subject row has null `sponsor_lawmaker_id`. |
 | **Phase 3 — Gifts edge composer** | `src/lobby_analysis/allocation/oh/gifts.py` → `compose_gifts(extractions_dir, oh_csv_path \| None) -> DataFrame`. Independent of chain composer. | $0 | TDD: per-row attribution; `oh.csv` matcher tested with/without the file present. |
-| **Phase 4 — CLI + materialize** | `src/lobby_analysis/allocation/oh/cli.py` → `python -m lobby_analysis.allocation.oh.cli materialize --extractions ... --bills ...`. Writes `releases/oh/chain/OH_chain_2025_2026.tsv` + `releases/oh/gifts/OH_gifts_2025_2026.tsv`. | $0 | TDD: CLI integration test with a 1-filing fixture; output TSV row count + column shape. |
+| **Phase 3.5 — Filings-level composer (added 2026-06-14, conditional on §7 Q6)** | `src/lobby_analysis/allocation/oh/filings.py` → `compose_filings(extractions_dir) -> DataFrame`. One row per AER; applies the findings-doc normalizations: `(total_expenditure is None and len(expenditures) == 0) → 0.0`, and `(filing_action == 'original' and supersedes is None) → is_current = True`. Skip phase entirely if Q6 → defer. | $0 | TDD: fixture with three filings (one nil/zero, one populated, one supersession-shaped) verifies both normalizations; assertion that no row has `total_expenditure is None` post-normalize. |
+| **Phase 4 — CLI + materialize** | `src/lobby_analysis/allocation/oh/cli.py` → `python -m lobby_analysis.allocation.oh.cli materialize --extractions ... --bills ...`. Writes `releases/oh/chain/OH_chain_2025_2026.tsv` + `releases/oh/gifts/OH_gifts_2025_2026.tsv` (+ `releases/oh/filings/OH_filings_2025_2026.tsv` if Q6 → include). | $0 | TDD: CLI integration test with a 1-filing fixture; output TSV row count + column shape. |
 | **Phase 5 — READMEs + release** | Author `releases/oh/README.md` + `releases/oh/chain/README.md` + `releases/oh/gifts/README.md` mirroring WI's Suhan-droppable pattern. | $0 | None (docs); manual review against `releases/wi/chain/README.md`. |
 | **Phase 6 — Full-corpus run (separate decision)** | If §7 Q1 → "wait for full corpus": defer Phase 6 to post-#35. Else: run composer against current cache and ship a "preview" release. | depends on §7 Q1 | n/a |
 
@@ -147,6 +178,7 @@ The 13.6% unmatched class is structural, not noise. Plural Policy bill bundles c
 | `HB \d+`, `SB \d+`, `HR \d+`, `SR \d+`, `HJR \d+`, `SJR \d+`, `HCR \d+`, `SCR \d+` | `bill` | `HB 96` | `OH_136_bills.csv` |
 | `JC \d+-\d+-\d+` | `jcarr` | `JC 4731-24-03` | not in Plural Policy — joint committee on administrative rule review |
 | `\d+-\d+-\d+` (no `JC` prefix) | `oac_rule` | `5160-32-02` | not in Plural Policy — Ohio Administrative Code rule |
+| Position has no `bill_reference` (Step A `position_kind != 'bill_referenced'`) | `subject` | `HEALTH CARE`, `MEDICAID / HOME CARE` | not joinable to bills bundle by design — see §4a (added 2026-06-14) |
 | else | `unmatched` | (TBD — should be empty if classifier is complete) | n/a |
 
 The composer should emit these rows but mark them `bill_id = null`, `bill_class != 'bill'`. **Do not drop them silently** — a Suhan-facing audit will want to see "lobbyists tracked X OAC rules" as a finding, not a hidden gap.
@@ -204,6 +236,25 @@ Rationale:
 
 Rationale: clean branch hygiene; merges to main cleanly without dragging archived branch state.
 
+### Q6. Filings-level table in v0, or defer to v0.1? (added 2026-06-14)
+
+**Recommendation: include a minimal `OH_filings_2025_2026.tsv` in v0** — adds one TSV per `releases/oh/filings/`, one row per filing, hosting the filing-grain fields the chain TSV doesn't carry.
+
+Rationale (and what motivated this question):
+
+The 2026-06-13 findings doc proposed two composer-side normalizations that have no home in the v0 outputs as originally specified:
+
+- **Q2 (stated-zero `total_expenditure`):** normalize `(null + empty expenditures) → 0.0` so nil filings sum correctly. But `total_expenditure` is filing-level data — it doesn't appear in the position-grain chain TSV or the per-event gifts TSV.
+- **`is_current` schema-default forcing:** force `is_current = True` for `filing_action == 'original'` rows. Same shape — filing-level field with no v0 home.
+
+A `releases/oh/filings/OH_filings_2025_2026.tsv` (one row per filing: `filing_id`, `report_period`, `principal_*`, `lobbyist_*`, `total_expenditure` post-normalize, `is_current` post-force, `filing_action`, `supersedes`, `extraction_warnings`) hosts both normalizations and matches the WI release pattern (`WI_lobbyist_filings.tsv`, `WI_principal_filings.tsv`). Without it, both normalizations are deferred to v0.1 and the release is less self-contained than WI's.
+
+Minimum-version argument: this is one DataFrame, one TSV writer, and a small README — roughly Phase 3.5 between gifts (Phase 3) and CLI (Phase 4). Doesn't extend the timeline materially. Implementation-cost-to-coverage ratio favors inclusion.
+
+Downside: more surface area to maintain, and `is_current = True` forcing under the all-original regime is an untested assumption per the findings doc's Honest Limitations. Defensible to defer if v0 is meant to be strictly the chain artifact.
+
+If deferred: explicitly note in the chain README that filing-level normalizations are a v0.1 follow-up, and document the (Q2, is_current) decisions there even if the table isn't shipped — so a consumer reading the chain knows what convention to apply downstream.
+
 ---
 
 ## 8. Pre-execution checklist (read before starting)
@@ -215,8 +266,9 @@ The implementing agent should:
 3. Read [`releases/wi/chain/README.md`](../../../../releases/wi/chain/README.md) and skim `src/lobby_analysis/allocation/wi/chain.py` — the precedent.
 4. Read `docs/STATE_COVERAGE.md` OH section (the 6-row matrix in §3 above is a summary; the source-of-truth is the doc).
 5. Re-run [`../results/20260611_plural_policy_join_smoke.py`](../results/20260611_plural_policy_join_smoke.py) on the current cache — verify the 86.4% number hasn't drifted (extractions may have grown).
-6. Surface Q1, Q2, Q3, Q4, Q5 to Dan with rationale before Phase 1 RED. Per `skills/test-driven-development/SKILL.md` and Nori-flow protocol.
-7. Cut `oh-chain-composer` branch + worktree per `skills/using-git-worktrees/SKILL.md`. Symlink `data/` into the worktree (mandatory per CLAUDE.md "Worktree data discipline" — `data/` holds irreplaceable cached extractions).
+6. **Also read** `docs/active/leave-behind-prep/results/20260613_mini_swap_quality_gate_findings.md` (on the `leave-behind-prep` branch) — the source of the 2026-06-14 deltas to this plan (§4a position-shape normalization, Phase 1 Step A/B split, Q6).
+7. Surface Q1, Q2, Q3, Q4, Q5, Q6 to Dan with rationale before Phase 1 RED. Per `skills/test-driven-development/SKILL.md` and Nori-flow protocol.
+8. Cut `oh-chain-composer` branch + worktree per `skills/using-git-worktrees/SKILL.md`. Symlink `data/` into the worktree (mandatory per CLAUDE.md "Worktree data discipline" — `data/` holds irreplaceable cached extractions).
 
 ---
 
