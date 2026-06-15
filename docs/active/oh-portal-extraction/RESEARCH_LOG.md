@@ -15,6 +15,21 @@ This is the data-acquisition counterpart to Dan's Track A work (`statute-retriev
 
 (Newest entries first.)
 
+### 2026-06-15 (later) — PR #59 verification + `finishing-a-research-branch` initiated; TDD claim corroborated; full-repo pytest sanity check
+
+Fresh session picked up `oh-chain-composer` after the earlier 2026-06-15 gifts-spotcheck session opened PR #59 and ended on the "next session opens / merges the PR" handoff. The substantive work was verification before merge: read the canonical plan end-to-end, audit the TDD claim made by the 06-14 execution convo against the per-phase findings docs (`20260614_phase0_preflight_audit.md`, `phase1_loaders_findings.md`, `phase2_chain_findings.md`), and re-run pytest on this machine.
+
+**Verification clean.** Plan + findings docs corroborate the convo's "Phases 0–6 landed end-to-end in TDD" claim. Test-file counts match the per-phase deltas exactly (Phase 1 loaders +37, Phase 2 chain +21, Phases 3+3.5+4 bundled +33 = 91 added to the 48-test Phase 1 classifier baseline → 139 total). Real-time pytest: **139/139 OH allocation tests green in 0.78s**. What's NOT independently auditable from commit graph alone is the within-session test-first ordering (each phase = one commit) — that part of the claim rests on the convo + findings-doc word.
+
+**Full-repo pytest sanity check** surfaced 2,055 `psycopg.OperationalError: connection refused` errors — all caused by `tests/conftest.py`'s autouse `_truncate_filings` fixture firing without Postgres up. This is the known test-infra issue documented in STATUS 2026-06-12 from `backend-prototype`. Pre-exists on main; provably not introduced by this branch (diff vs `main` is purely additive: 7 new files under `src/lobby_analysis/allocation/oh/` + 9 new files under `tests/allocation/oh/`, zero edits to existing tests, `conftest.py`, or shared infra). Out of scope for this PR; may need attention if GH Actions CI doesn't have Postgres provisioned.
+
+**Session-hygiene failure surfaced and owned.** Framed the work as "draft the PR" without checking GitHub. PR #59 had been open ~4 hr (since 10:24 UTC), authored by Dan. Cost ~15 min of misframed reporting. Root cause: `gh pr status` / `gh pr list --head <branch>` not in session-start pre-flight. STATUS.md staleness is not evidence a PR doesn't exist — GitHub is the source of truth. Lesson captured for future sessions.
+
+**Convo:** [`convos/20260615_pr59_verify_and_finish_branch.md`](convos/20260615_pr59_verify_and_finish_branch.md)
+**PR:** [#59](https://github.com/danparshall/lobby_analysis/pull/59) (already open from prior session)
+
+`finishing-a-research-branch` skill now continues: audit-docs → archive `docs/active/oh-portal-extraction/` → `docs/historical/...` → STATUS row Active → Archived → commit + push → user gate on merge.
+
 ### 2026-06-15 — Gifts-empty resolution: empirical base-rate finding (not prompt-scope); release READMEs reframed; orthogonal form-type mismatch filed as #58
 
 Picked up the 2026-06-14 chain-composer handoff at `b7f8bab`. Branch was technically shippable per Q1's preview-release scope but carried one explicit open question: are the 0 gift-event rows a sampling artifact or an extraction-prompt scope issue at `src/lobby_analysis/oh_portal/extraction_brief.py`? Chose the spot-check-first path on EV grounds (bounded ~30 min vs. $800/$24-hr risk of baking any prompt defect into the #35 full-corpus run).
