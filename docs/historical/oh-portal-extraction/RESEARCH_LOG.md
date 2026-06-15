@@ -15,6 +15,129 @@ This is the data-acquisition counterpart to Dan's Track A work (`statute-retriev
 
 (Newest entries first.)
 
+### 2026-06-15 (later) — PR #59 verification + `finishing-a-research-branch` initiated; TDD claim corroborated; full-repo pytest sanity check
+
+Fresh session picked up `oh-chain-composer` after the earlier 2026-06-15 gifts-spotcheck session opened PR #59 and ended on the "next session opens / merges the PR" handoff. The substantive work was verification before merge: read the canonical plan end-to-end, audit the TDD claim made by the 06-14 execution convo against the per-phase findings docs (`20260614_phase0_preflight_audit.md`, `phase1_loaders_findings.md`, `phase2_chain_findings.md`), and re-run pytest on this machine.
+
+**Verification clean.** Plan + findings docs corroborate the convo's "Phases 0–6 landed end-to-end in TDD" claim. Test-file counts match the per-phase deltas exactly (Phase 1 loaders +37, Phase 2 chain +21, Phases 3+3.5+4 bundled +33 = 91 added to the 48-test Phase 1 classifier baseline → 139 total). Real-time pytest: **139/139 OH allocation tests green in 0.78s**. What's NOT independently auditable from commit graph alone is the within-session test-first ordering (each phase = one commit) — that part of the claim rests on the convo + findings-doc word.
+
+**Full-repo pytest sanity check** surfaced 2,055 `psycopg.OperationalError: connection refused` errors — all caused by `tests/conftest.py`'s autouse `_truncate_filings` fixture firing without Postgres up. This is the known test-infra issue documented in STATUS 2026-06-12 from `backend-prototype`. Pre-exists on main; provably not introduced by this branch (diff vs `main` is purely additive: 7 new files under `src/lobby_analysis/allocation/oh/` + 9 new files under `tests/allocation/oh/`, zero edits to existing tests, `conftest.py`, or shared infra). Out of scope for this PR; may need attention if GH Actions CI doesn't have Postgres provisioned.
+
+**Session-hygiene failure surfaced and owned.** Framed the work as "draft the PR" without checking GitHub. PR #59 had been open ~4 hr (since 10:24 UTC), authored by Dan. Cost ~15 min of misframed reporting. Root cause: `gh pr status` / `gh pr list --head <branch>` not in session-start pre-flight. STATUS.md staleness is not evidence a PR doesn't exist — GitHub is the source of truth. Lesson captured for future sessions.
+
+**Convo:** [`convos/20260615_pr59_verify_and_finish_branch.md`](convos/20260615_pr59_verify_and_finish_branch.md)
+**PR:** [#59](https://github.com/danparshall/lobby_analysis/pull/59) (already open from prior session)
+
+`finishing-a-research-branch` skill now continues: audit-docs → archive `docs/active/oh-portal-extraction/` → `docs/historical/...` → STATUS row Active → Archived → commit + push → user gate on merge.
+
+### 2026-06-15 — Gifts-empty resolution: empirical base-rate finding (not prompt-scope); release READMEs reframed; orthogonal form-type mismatch filed as #58
+
+Picked up the 2026-06-14 chain-composer handoff at `b7f8bab`. Branch was technically shippable per Q1's preview-release scope but carried one explicit open question: are the 0 gift-event rows a sampling artifact or an extraction-prompt scope issue at `src/lobby_analysis/oh_portal/extraction_brief.py`? Chose the spot-check-first path on EV grounds (bounded ~30 min vs. $800/$24-hr risk of baking any prompt defect into the #35 full-corpus run).
+
+**Decisive empirical result:** the 0-gifts result is neither a sampling artifact nor a prompt-scope issue — it's an **empirical base-rate finding**. Across all 305 cached filings: 93.8% have empty Section II ("No expenditures"); of the 6.2% with content, **zero** have any itemized rows in Section II.A (Gifts) or Section II.B (Itemized Meals). All disclosed expenditure activity concentrates in the non-itemized sub-$50 meal aggregate (Section II.D-Legislative / II.C-Executive), correctly extracted to `category="entertainment"`. The brief at `extraction_brief.py` Rule 2 explicitly enumerates Section II.A; the source data is just empty. **Q2's gifts-coverage projection should be revised downward** — expect 0 or single-digit absolute itemized gifts at full corpus, not a richer-with-scale result.
+
+**Orthogonal finding — form-type mismatch.** The brief is titled "OH legislative-agent AER" but is applied uniformly to all 305 cached filings, including **140 Executive AERs (46%) and 1 Retirement AER**. Executive AERs have a 3-subsection structure (A/B/C where C IS the aggregate), not 4 (A/B/C/D). The model recovers gracefully on the current sample but the recovery is brittle to model versions, edge cases, and future regulatory form changes. Filed as issue [#58](https://github.com/danparshall/lobby_analysis/issues/58) — team's call between (1) parameterizing the brief by form type or (2) filtering discovery to Legislative-only. Worth resolving before #35 ships at scale.
+
+**Release READMEs reframed in-branch.** Both `releases/oh/gifts/README.md` and `releases/oh/README.md` updated to replace the original "likely sampling artifact / secondary extraction-prompt scope" language with the empirical-base-rate finding plus the new diagnostic table. The form-type mismatch is also noted in the gifts README as an orthogonal caveat with link to #58.
+
+**Convo:** [`convos/20260615_oh_gifts_spotcheck_and_pr_prep.md`](convos/20260615_oh_gifts_spotcheck_and_pr_prep.md)
+**Findings doc:** [`results/20260615_gifts_spotcheck_findings.md`](results/20260615_gifts_spotcheck_findings.md)
+**Re-run scripts:** [`results/20260615_oh_form_type_audit.py`](results/20260615_oh_form_type_audit.py), [`results/20260615_oh_find_with_expenditures.py`](results/20260615_oh_find_with_expenditures.py)
+
+Next session opens the PR for `oh-chain-composer` per Q1's preview-release scope.
+
+### 2026-06-14 (later) — Phases 3 + 3.5 + 4 + 5 + 6 shipped end-to-end: PREVIEW release materialized at `releases/oh/`; full OH suite 139/139 green
+
+Six commits in earlier-in-this-session (Phase 0, 1, 2) shipped audit + loaders + chain. This entry covers the remaining five phases — gifts composer, filings composer, CLI materializer, four release READMEs, and the actual preview-release run.
+
+**Phase 3 — gifts composer.** `src/lobby_analysis/allocation/oh/gifts.py` (~170 lines) ships `compose_gifts(extractions_dir, oh_csv_path=None) -> DataFrame`. Schema is the 10-column `GIFTS_COLUMNS` tuple per plan §4. Event-type derivation: `gift_type == "meal"` → `event_type="meal"` (Section II.B); anything else → `event_type="gift"` (Section II.A). Lawmaker resolver: prefix-strips `Sen.`/`Rep.`/`Senator`/`Representative`, looks up the result in a full-name index (case-folded `oh.csv.name`), falls back to surname-only when the recipient is a single token, **declines on ambiguous surnames** (two Smiths in oh.csv + recipient = "Sen. Smith" → null, not arbitrary pick). 14 tests cover schema, row shape, event-type derivation, all four resolver paths (full-name hit / surname-only hit / unknown / ambiguous).
+
+**Phase 3.5 — filings composer (Q6 → include).** `src/lobby_analysis/allocation/oh/filings.py` (~110 lines) ships `compose_filings(extractions_dir) -> DataFrame`. Schema is the 14-column `FILINGS_COLUMNS` tuple. Two findings-doc normalizations applied with strict guards: (1) **stated-zero** — `(total_expenditure is None AND len(expenditures) == 0) → 0.0`; `(None, non-empty)` stays null so upstream defects surface. (2) **is_current forcing** — `(filing_action == 'original' AND supersedes is None) → True`; both conjuncts required. 14 tests cover both normalizations + the strict-guard cases + summary stats.
+
+**Phase 4 — CLI materializer.** `src/lobby_analysis/allocation/oh/cli.py` (~95 lines) ships one subcommand: `materialize --extractions ... --bills ... [--oh-csv ...] --out ...`. Writes the three TSVs with `_preview` suffix (Q1-locked). 5 integration tests cover end-to-end CLI invocation, schema, row counts, normalization application, and the `--oh-csv` optional path.
+
+**Phase 5 — release READMEs.** Four READMEs at `releases/oh/README.md` + `releases/oh/{chain,gifts,filings}/README.md`. Top-level documents the three-edge framework (compared to WI/NY), the preview caveat, and the six caveats analysts must read before quantitative use. Per-artifact READMEs document schema + conservation rules + provenance per the WI release-doc pattern.
+
+**Phase 6 — preview materialize run.** `uv run python -m lobby_analysis.allocation.oh.cli materialize` against the 316-filing cache + Plural Policy bundle + oh.csv produced the three preview TSVs in-tree at `releases/oh/`:
+
+- `chain/OH_chain_2025_2026_preview.tsv` — **1,589 rows × 18 cols, ~600 KB** (1,299 bill + 150 subject + 88 jcarr + 34 oac_rule + 18 unmatched; top bill HB 96 budget at 73 rows)
+- `gifts/OH_gifts_2025_2026_preview.tsv` — **0 rows, 131 bytes (header only)** — empty per Phase 1 Finding 2 (likely sampling artifact; secondary hypothesis is extraction-prompt scope). Honestly documented in the gifts README.
+- `filings/OH_filings_2025_2026_preview.tsv` — **305 rows × 14 cols, ~220 KB** (97 stated-zero normalizations applied; 0 is_current forcings needed in this slice — all already True).
+
+Full OH suite at session end: **139/139 green** (48 classifier + 32 loaders + 5 dedup + 21 chain + 14 gifts + 14 filings + 5 CLI). All pure-logic; no DB, network, or real-data dependency.
+
+**End-of-phase posture.** The composer code is complete and the preview release is shipped in-tree. The remaining open follow-ups are documented in the phase-2 findings doc + the release READMEs: (a) extraction-prompt verification for II.A/II.B gifts (likely separate PR); (b) `bill_number` over `original_text` for join key (low-impact in current slice); (c) OAC regex widening for v0.1 (colon-subdivided rules, multi-rule strings). Branch is ready for PR per Q1's preview-release scope.
+
+**Convo:** [`convos/20260614_oh_chain_composer_execution.md`](convos/20260614_oh_chain_composer_execution.md)
+
+### 2026-06-14 — Phase 2 (chain composer) shipped: `compose_bill_chain` + 21 tests; full OH suite 106/106 green; real-data smoke = 1,589 chain rows
+
+`src/lobby_analysis/allocation/oh/chain.py` (~250 lines) ships `compose_bill_chain(extractions_dir, plural_dir) -> DataFrame` per plan §4/§4a/§6. Schema is the 18-column `CHAIN_COLUMNS` tuple matching the plan §4 sketch. 21 chain tests + the existing 85 = **106/106 OH tests green**. Per-class behavior locked:
+
+- `bill` (joins Plural) → cross-product over primary sponsorships → N rows with populated sponsor fields, `confidence='direct'`.
+- `bill` (no Plural match, defensive 0-primary, or fuzzy label) → 1 row, null sponsor, `confidence` reflects the route.
+- `jcarr` / `oac_rule` → 1 row, null sponsor, `confidence='oac_dropped'`.
+- `subject` (both subject kinds) → 1 row, null sponsor, `confidence='subject_only'`.
+- Empty position (classifier raises) → 1 sentinel row, `confidence='null_extraction'`. One bad position cannot kill the composer run.
+
+Composer calls `select_canonical_extraction(load_filings(...))` to dedupe the 11 cached duplicates surfaced in Phase 1.
+
+**Real-data smoke against the 316-filing cache** (full writeup at `results/20260614_phase2_chain_findings.md`): **1,589 chain rows** with conservation arithmetic clean. 1,299 `bill` + 150 `subject` + 88 `jcarr` + 34 `oac_rule` + 18 `unmatched`. Cross-product: 411 (1-primary) + 444 (2-primary) = 855 unique bill-position joins → 1,299 bill chain rows. Deduped input position count = 855 + 290 = 1,145 (32 lower than Phase 1's 1,177 because dedup dropped non-canonical extractions of 5 dupe-cached filings — confirming `select_canonical_extraction` is working).
+
+Top-5 lobbied bills: HB 96 (FY 2026-27 budget, 73 rows), HB 1 (Property Protection Act, 22), HB 276 (340B reimbursement, 14), HB 105 (litigation funding, 14), HB 227 (excavation, 12). 140 of 305 canonical filings contribute chain rows (54% are position-empty in this slice — matches the 53% nil rate from the 06-11 data-landed doc).
+
+**Two open follow-ups** flagged in the findings doc:
+1. `extract_position_label` returns `original_text` not `bill_number`. In this slice no extra-text labels surface, so practical impact is zero — but the 06-11 smoke-test script used `bill_number` as preferred join key. Worth swapping when the full-corpus run lands.
+2. No `confidence='direct_no_primary'` distinction for the defensive 0-primary case; analysts filter via `num_primary_sponsors==0 AND bill_class=='bill'` if needed. Could split for v0.1.
+
+Phase 3 (gifts composer) is unblocked next.
+
+**Convo:** [`convos/20260614_oh_chain_composer_execution.md`](convos/20260614_oh_chain_composer_execution.md)
+
+### 2026-06-14 — Phase 1 (loaders) shipped: 5 typed loaders + dedup helper; 85/85 OH tests green
+
+Phase 1 Step C complete (classifier Steps A+B were already in at `f59a7f9`). `src/lobby_analysis/allocation/oh/load.py` (240 lines) ships five typed loaders plus `select_canonical_extraction` (helper). Test count for OH allocation: 48 (classifier) + 32 (loaders) + 5 (dedup) = **85**, all green via `python -m pytest tests/allocation/oh/`.
+
+**Loader contracts:**
+
+- `load_filings` / `load_positions` / `load_gifts` walk `data/oh_portal/extracted/*/*/filing.json` and project to (filing | position | gift) grain. Each carries the typed Pydantic model in an `*_obj` column (preserves the classifier-callable contract).
+- `load_plural_bills` / `load_plural_sponsorships` read the 16 Plural Policy 136th GA CSVs. Bills loader adds `identifier_norm` (uppercase + dot-stripped + whitespace-collapsed) for direct join with extraction labels; sponsorships loader filters to `classification == "primary"` by default per Q2.
+- Loaders do NOT pre-filter empty positions or duplicate extractions — they surface upstream defects at the composition seam, not silently.
+
+**Three structural findings from the real-data smoke test on the 316-filing cache** (full writeup at `results/20260614_phase1_loaders_findings.md`):
+
+1. **Cache has 11 duplicate extractions for 5 filing_ids** (one filing has 8 hash-subdir-distinct extractions). `select_canonical_extraction` picks most-recent by mtime, lex `source_path` tiebreaker. Phase 2 chain composer must invoke it before composing.
+2. **0 gifts across the 316 cached filings.** Possible causes (sampling artifact / 53% nil rate / extraction-prompt scope). Phase 3 composer ships either way; preview release's `releases/oh/gifts/` artifact will be empty until extraction-side investigation resolves this. Flag in gifts README.
+3. **18 unmatched bill_referenced positions are extraction-side defects**, not classifier bugs (subject text mis-placed in `bill_reference`, OAC variants with colons/Chapter prefix not in the regex, two malformed `CB ...` identifiers). The classifier correctly flags them; the chain composer emits them with `bill_class="unmatched"`, `bill_id=null` as a quality canary.
+
+**Conservation sanity-check.** Across 1,177 positions: 887 `bill` + 150 `subject` + 88 `jcarr` + 34 `oac_rule` + 18 `unmatched` = 1,177. Every position routes to exactly one class. The 887 `bill` count matches the 06-11 smoke-test 86.4% row-weighted match against `OH_136_bills.csv` — the classifier-loader integration is consistent with the data-landed finding.
+
+Smoke + diagnostic scripts saved at `results/20260614_phase1_loaders_smoke.py` and `results/20260614_phase1_loaders_diags.py` for re-run after #35 lands the full corpus.
+
+Phase 2 (chain composer) is unblocked next.
+
+**Convo:** [`convos/20260614_oh_chain_composer_execution.md`](convos/20260614_oh_chain_composer_execution.md)
+
+### 2026-06-14 — Branch `oh-chain-composer` cut + Phase 1 classifier shipped + Phase 0 pre-flight audit clean
+
+This entry back-fills the morning Phase 1 classifier session (was captured in the handoff brief but not in this log) and adds the evening Phase 0 audit findings.
+
+**Morning session (commit `f59a7f9` by Claude-via-Dan):** branch `oh-chain-composer` cut off `bfe9f8f`. Phase 1 *classifier* (Steps A + B per plan §5) shipped at `src/lobby_analysis/allocation/oh/classify.py` (165 lines) + `tests/allocation/oh/test_classify.py` (290 lines, **48 tests all passing** — `python -m pytest tests/allocation/oh/ -v` runs in ~0.03s with no data/network/DB dependencies). Local conftest at `tests/allocation/oh/conftest.py` overrides the repo's autouse Postgres-dependent `_truncate_filings` fixture to a no-op, scoped to OH allocation tests only. Phase 1 *loader* (Step C) still open — that's Phase 1's remaining piece. Handoff brief shipped at `docs/active/oh-portal-extraction/HANDOFF_oh_chain_composer.md` for the next agent.
+
+**This session (Phase 0 pre-flight audit, Q1–Q6 resolution):** picked up the handoff. Surfaced Q1–Q6 to Dan; all six resolved at the plan's recommendations (Q1 = preview slice, Q2 = primary-only v1, Q3 = download `oh.csv`, Q4 = defer expenditures, Q5 = branch already cut, Q6 = include minimal filings TSV). Phase 0 audit findings doc at `results/20260614_phase0_preflight_audit.md` + script at `results/20260614_phase0_preflight_audit.py`. Five Phase 0 checks all green:
+
+- **(a) Schemas:** 16/16 Plural Policy CSVs row-count-stable vs the 2026-06-11 data-landed doc; columns inventoried.
+- **(b) Smoke test:** 86.4% row-weighted match identical to 06-11 (cache has not grown — #35 has not run).
+- **(c) Multi-primary:** CONFIRMED structural for OH (946 of 2,317 bills = **40.8%** have ≥2 primaries on substantive HBs/SBs, not just resolutions). High-primary tail (≥10) is exclusively ceremonial HRs (99 = whole-House signing on to memorial/honor resolutions); document as artifact in the chain README.
+- **(d) `bill_actions.description` cosponsor names:** 0 hits over 5,525 rows — **WI lesson does NOT apply to OH**. Cosponsors live cleanly in `bill_sponsorships.classification == "cosponsor"`; v1.1 cosponsor extension is a config flip.
+- **(e) `oh.csv` legislator roster:** downloaded from `https://data.openstates.org/people/current/oh.csv` (88,210 bytes, 132 legislators = 99 House + 33 Senate). Landed at `data/bills/OH/oh.csv` via the worktree's `data/` symlink to `~/data/lobby_analysis/`. Closes the second half of `STATE_COVERAGE.md` OH footnote 7.
+
+**Worktree setup note:** new agents picking this up should `readlink` an existing recent worktree's `data/` (e.g., `leave-behind-prep`, `backend-prototype`, `ny-disclosure-explore`) before assuming "no data on this machine" — the convention is `data → /Users/dan/data/lobby_analysis` symlink + `.env.local → ../../.env.local` symlink. Main worktree does not carry a `data/` dir, so a "missing data" first impression is a false negative.
+
+Phase 1 (loader Step C) is unblocked next. Plan reference: `plans/20260611_oh_chain_composer_design.md` §5; handoff: `HANDOFF_oh_chain_composer.md`.
+
+**Convo:** [`convos/20260614_oh_chain_composer_execution.md`](convos/20260614_oh_chain_composer_execution.md)
+
 ### 2026-06-11 — Plural Policy 136th GA data drop + chain composer v0 design plan
 
 - **Plural Policy bundle landed** (data drop by Dan into `data/` + this session's mechanical move/extract). 136th GA session bundle now at `data/bills/OH/136/` (16 CSVs; 2,325 bills, 11,559 sponsorship rows, 36,023 vote-people rows). Layout mirrors `data/bills/WI/2025/`. Zip preserved at `data/bills/OH/PluralPolicy_OH_136_csv.zip`.
