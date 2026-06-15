@@ -15,6 +15,22 @@ This is the data-acquisition counterpart to Dan's Track A work (`statute-retriev
 
 (Newest entries first.)
 
+### 2026-06-15 — Gifts-empty resolution: empirical base-rate finding (not prompt-scope); release READMEs reframed; orthogonal form-type mismatch filed as #58
+
+Picked up the 2026-06-14 chain-composer handoff at `b7f8bab`. Branch was technically shippable per Q1's preview-release scope but carried one explicit open question: are the 0 gift-event rows a sampling artifact or an extraction-prompt scope issue at `src/lobby_analysis/oh_portal/extraction_brief.py`? Chose the spot-check-first path on EV grounds (bounded ~30 min vs. $800/$24-hr risk of baking any prompt defect into the #35 full-corpus run).
+
+**Decisive empirical result:** the 0-gifts result is neither a sampling artifact nor a prompt-scope issue — it's an **empirical base-rate finding**. Across all 305 cached filings: 93.8% have empty Section II ("No expenditures"); of the 6.2% with content, **zero** have any itemized rows in Section II.A (Gifts) or Section II.B (Itemized Meals). All disclosed expenditure activity concentrates in the non-itemized sub-$50 meal aggregate (Section II.D-Legislative / II.C-Executive), correctly extracted to `category="entertainment"`. The brief at `extraction_brief.py` Rule 2 explicitly enumerates Section II.A; the source data is just empty. **Q2's gifts-coverage projection should be revised downward** — expect 0 or single-digit absolute itemized gifts at full corpus, not a richer-with-scale result.
+
+**Orthogonal finding — form-type mismatch.** The brief is titled "OH legislative-agent AER" but is applied uniformly to all 305 cached filings, including **140 Executive AERs (46%) and 1 Retirement AER**. Executive AERs have a 3-subsection structure (A/B/C where C IS the aggregate), not 4 (A/B/C/D). The model recovers gracefully on the current sample but the recovery is brittle to model versions, edge cases, and future regulatory form changes. Filed as issue [#58](https://github.com/danparshall/lobby_analysis/issues/58) — team's call between (1) parameterizing the brief by form type or (2) filtering discovery to Legislative-only. Worth resolving before #35 ships at scale.
+
+**Release READMEs reframed in-branch.** Both `releases/oh/gifts/README.md` and `releases/oh/README.md` updated to replace the original "likely sampling artifact / secondary extraction-prompt scope" language with the empirical-base-rate finding plus the new diagnostic table. The form-type mismatch is also noted in the gifts README as an orthogonal caveat with link to #58.
+
+**Convo:** [`convos/20260615_oh_gifts_spotcheck_and_pr_prep.md`](convos/20260615_oh_gifts_spotcheck_and_pr_prep.md)
+**Findings doc:** [`results/20260615_gifts_spotcheck_findings.md`](results/20260615_gifts_spotcheck_findings.md)
+**Re-run scripts:** [`results/20260615_oh_form_type_audit.py`](results/20260615_oh_form_type_audit.py), [`results/20260615_oh_find_with_expenditures.py`](results/20260615_oh_find_with_expenditures.py)
+
+Next session opens the PR for `oh-chain-composer` per Q1's preview-release scope.
+
 ### 2026-06-14 (later) — Phases 3 + 3.5 + 4 + 5 + 6 shipped end-to-end: PREVIEW release materialized at `releases/oh/`; full OH suite 139/139 green
 
 Six commits in earlier-in-this-session (Phase 0, 1, 2) shipped audit + loaders + chain. This entry covers the remaining five phases — gifts composer, filings composer, CLI materializer, four release READMEs, and the actual preview-release run.
