@@ -15,6 +15,28 @@ This is the data-acquisition counterpart to Dan's Track A work (`statute-retriev
 
 (Newest entries first.)
 
+### 2026-06-14 — Phase 2 (chain composer) shipped: `compose_bill_chain` + 21 tests; full OH suite 106/106 green; real-data smoke = 1,589 chain rows
+
+`src/lobby_analysis/allocation/oh/chain.py` (~250 lines) ships `compose_bill_chain(extractions_dir, plural_dir) -> DataFrame` per plan §4/§4a/§6. Schema is the 18-column `CHAIN_COLUMNS` tuple matching the plan §4 sketch. 21 chain tests + the existing 85 = **106/106 OH tests green**. Per-class behavior locked:
+
+- `bill` (joins Plural) → cross-product over primary sponsorships → N rows with populated sponsor fields, `confidence='direct'`.
+- `bill` (no Plural match, defensive 0-primary, or fuzzy label) → 1 row, null sponsor, `confidence` reflects the route.
+- `jcarr` / `oac_rule` → 1 row, null sponsor, `confidence='oac_dropped'`.
+- `subject` (both subject kinds) → 1 row, null sponsor, `confidence='subject_only'`.
+- Empty position (classifier raises) → 1 sentinel row, `confidence='null_extraction'`. One bad position cannot kill the composer run.
+
+Composer calls `select_canonical_extraction(load_filings(...))` to dedupe the 11 cached duplicates surfaced in Phase 1.
+
+**Real-data smoke against the 316-filing cache** (full writeup at `results/20260614_phase2_chain_findings.md`): **1,589 chain rows** with conservation arithmetic clean. 1,299 `bill` + 150 `subject` + 88 `jcarr` + 34 `oac_rule` + 18 `unmatched`. Cross-product: 411 (1-primary) + 444 (2-primary) = 855 unique bill-position joins → 1,299 bill chain rows. Deduped input position count = 855 + 290 = 1,145 (32 lower than Phase 1's 1,177 because dedup dropped non-canonical extractions of 5 dupe-cached filings — confirming `select_canonical_extraction` is working).
+
+Top-5 lobbied bills: HB 96 (FY 2026-27 budget, 73 rows), HB 1 (Property Protection Act, 22), HB 276 (340B reimbursement, 14), HB 105 (litigation funding, 14), HB 227 (excavation, 12). 140 of 305 canonical filings contribute chain rows (54% are position-empty in this slice — matches the 53% nil rate from the 06-11 data-landed doc).
+
+**Two open follow-ups** flagged in the findings doc:
+1. `extract_position_label` returns `original_text` not `bill_number`. In this slice no extra-text labels surface, so practical impact is zero — but the 06-11 smoke-test script used `bill_number` as preferred join key. Worth swapping when the full-corpus run lands.
+2. No `confidence='direct_no_primary'` distinction for the defensive 0-primary case; analysts filter via `num_primary_sponsors==0 AND bill_class=='bill'` if needed. Could split for v0.1.
+
+Phase 3 (gifts composer) is unblocked next.
+
 ### 2026-06-14 — Phase 1 (loaders) shipped: 5 typed loaders + dedup helper; 85/85 OH tests green
 
 Phase 1 Step C complete (classifier Steps A+B were already in at `f59a7f9`). `src/lobby_analysis/allocation/oh/load.py` (240 lines) ships five typed loaders plus `select_canonical_extraction` (helper). Test count for OH allocation: 48 (classifier) + 32 (loaders) + 5 (dedup) = **85**, all green via `python -m pytest tests/allocation/oh/`.
