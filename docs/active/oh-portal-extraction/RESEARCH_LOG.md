@@ -15,6 +15,28 @@ This is the data-acquisition counterpart to Dan's Track A work (`statute-retriev
 
 (Newest entries first.)
 
+### 2026-06-14 — Phase 1 (loaders) shipped: 5 typed loaders + dedup helper; 85/85 OH tests green
+
+Phase 1 Step C complete (classifier Steps A+B were already in at `f59a7f9`). `src/lobby_analysis/allocation/oh/load.py` (240 lines) ships five typed loaders plus `select_canonical_extraction` (helper). Test count for OH allocation: 48 (classifier) + 32 (loaders) + 5 (dedup) = **85**, all green via `python -m pytest tests/allocation/oh/`.
+
+**Loader contracts:**
+
+- `load_filings` / `load_positions` / `load_gifts` walk `data/oh_portal/extracted/*/*/filing.json` and project to (filing | position | gift) grain. Each carries the typed Pydantic model in an `*_obj` column (preserves the classifier-callable contract).
+- `load_plural_bills` / `load_plural_sponsorships` read the 16 Plural Policy 136th GA CSVs. Bills loader adds `identifier_norm` (uppercase + dot-stripped + whitespace-collapsed) for direct join with extraction labels; sponsorships loader filters to `classification == "primary"` by default per Q2.
+- Loaders do NOT pre-filter empty positions or duplicate extractions — they surface upstream defects at the composition seam, not silently.
+
+**Three structural findings from the real-data smoke test on the 316-filing cache** (full writeup at `results/20260614_phase1_loaders_findings.md`):
+
+1. **Cache has 11 duplicate extractions for 5 filing_ids** (one filing has 8 hash-subdir-distinct extractions). `select_canonical_extraction` picks most-recent by mtime, lex `source_path` tiebreaker. Phase 2 chain composer must invoke it before composing.
+2. **0 gifts across the 316 cached filings.** Possible causes (sampling artifact / 53% nil rate / extraction-prompt scope). Phase 3 composer ships either way; preview release's `releases/oh/gifts/` artifact will be empty until extraction-side investigation resolves this. Flag in gifts README.
+3. **18 unmatched bill_referenced positions are extraction-side defects**, not classifier bugs (subject text mis-placed in `bill_reference`, OAC variants with colons/Chapter prefix not in the regex, two malformed `CB ...` identifiers). The classifier correctly flags them; the chain composer emits them with `bill_class="unmatched"`, `bill_id=null` as a quality canary.
+
+**Conservation sanity-check.** Across 1,177 positions: 887 `bill` + 150 `subject` + 88 `jcarr` + 34 `oac_rule` + 18 `unmatched` = 1,177. Every position routes to exactly one class. The 887 `bill` count matches the 06-11 smoke-test 86.4% row-weighted match against `OH_136_bills.csv` — the classifier-loader integration is consistent with the data-landed finding.
+
+Smoke + diagnostic scripts saved at `results/20260614_phase1_loaders_smoke.py` and `results/20260614_phase1_loaders_diags.py` for re-run after #35 lands the full corpus.
+
+Phase 2 (chain composer) is unblocked next.
+
 ### 2026-06-14 — Branch `oh-chain-composer` cut + Phase 1 classifier shipped + Phase 0 pre-flight audit clean
 
 This entry back-fills the morning Phase 1 classifier session (was captured in the handoff brief but not in this log) and adds the evening Phase 0 audit findings.
