@@ -68,6 +68,8 @@ Full OH suite at session end: **139/139 green** (48 classifier + 32 loaders + 5 
 
 **End-of-phase posture.** The composer code is complete and the preview release is shipped in-tree. The remaining open follow-ups are documented in the phase-2 findings doc + the release READMEs: (a) extraction-prompt verification for II.A/II.B gifts (likely separate PR); (b) `bill_number` over `original_text` for join key (low-impact in current slice); (c) OAC regex widening for v0.1 (colon-subdivided rules, multi-rule strings). Branch is ready for PR per Q1's preview-release scope.
 
+**Convo:** [`convos/20260614_oh_chain_composer_execution.md`](convos/20260614_oh_chain_composer_execution.md)
+
 ### 2026-06-14 — Phase 2 (chain composer) shipped: `compose_bill_chain` + 21 tests; full OH suite 106/106 green; real-data smoke = 1,589 chain rows
 
 `src/lobby_analysis/allocation/oh/chain.py` (~250 lines) ships `compose_bill_chain(extractions_dir, plural_dir) -> DataFrame` per plan §4/§4a/§6. Schema is the 18-column `CHAIN_COLUMNS` tuple matching the plan §4 sketch. 21 chain tests + the existing 85 = **106/106 OH tests green**. Per-class behavior locked:
@@ -89,6 +91,8 @@ Top-5 lobbied bills: HB 96 (FY 2026-27 budget, 73 rows), HB 1 (Property Protecti
 2. No `confidence='direct_no_primary'` distinction for the defensive 0-primary case; analysts filter via `num_primary_sponsors==0 AND bill_class=='bill'` if needed. Could split for v0.1.
 
 Phase 3 (gifts composer) is unblocked next.
+
+**Convo:** [`convos/20260614_oh_chain_composer_execution.md`](convos/20260614_oh_chain_composer_execution.md)
 
 ### 2026-06-14 — Phase 1 (loaders) shipped: 5 typed loaders + dedup helper; 85/85 OH tests green
 
@@ -112,6 +116,8 @@ Smoke + diagnostic scripts saved at `results/20260614_phase1_loaders_smoke.py` a
 
 Phase 2 (chain composer) is unblocked next.
 
+**Convo:** [`convos/20260614_oh_chain_composer_execution.md`](convos/20260614_oh_chain_composer_execution.md)
+
 ### 2026-06-14 — Branch `oh-chain-composer` cut + Phase 1 classifier shipped + Phase 0 pre-flight audit clean
 
 This entry back-fills the morning Phase 1 classifier session (was captured in the handoff brief but not in this log) and adds the evening Phase 0 audit findings.
@@ -129,6 +135,8 @@ This entry back-fills the morning Phase 1 classifier session (was captured in th
 **Worktree setup note:** new agents picking this up should `readlink` an existing recent worktree's `data/` (e.g., `leave-behind-prep`, `backend-prototype`, `ny-disclosure-explore`) before assuming "no data on this machine" — the convention is `data → /Users/dan/data/lobby_analysis` symlink + `.env.local → ../../.env.local` symlink. Main worktree does not carry a `data/` dir, so a "missing data" first impression is a false negative.
 
 Phase 1 (loader Step C) is unblocked next. Plan reference: `plans/20260611_oh_chain_composer_design.md` §5; handoff: `HANDOFF_oh_chain_composer.md`.
+
+**Convo:** [`convos/20260614_oh_chain_composer_execution.md`](convos/20260614_oh_chain_composer_execution.md)
 
 ### 2026-06-11 — Plural Policy 136th GA data drop + chain composer v0 design plan
 
