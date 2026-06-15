@@ -15,6 +15,28 @@ This is the data-acquisition counterpart to Dan's Track A work (`statute-retriev
 
 (Newest entries first.)
 
+### 2026-06-14 (later) — Phases 3 + 3.5 + 4 + 5 + 6 shipped end-to-end: PREVIEW release materialized at `releases/oh/`; full OH suite 139/139 green
+
+Six commits in earlier-in-this-session (Phase 0, 1, 2) shipped audit + loaders + chain. This entry covers the remaining five phases — gifts composer, filings composer, CLI materializer, four release READMEs, and the actual preview-release run.
+
+**Phase 3 — gifts composer.** `src/lobby_analysis/allocation/oh/gifts.py` (~170 lines) ships `compose_gifts(extractions_dir, oh_csv_path=None) -> DataFrame`. Schema is the 10-column `GIFTS_COLUMNS` tuple per plan §4. Event-type derivation: `gift_type == "meal"` → `event_type="meal"` (Section II.B); anything else → `event_type="gift"` (Section II.A). Lawmaker resolver: prefix-strips `Sen.`/`Rep.`/`Senator`/`Representative`, looks up the result in a full-name index (case-folded `oh.csv.name`), falls back to surname-only when the recipient is a single token, **declines on ambiguous surnames** (two Smiths in oh.csv + recipient = "Sen. Smith" → null, not arbitrary pick). 14 tests cover schema, row shape, event-type derivation, all four resolver paths (full-name hit / surname-only hit / unknown / ambiguous).
+
+**Phase 3.5 — filings composer (Q6 → include).** `src/lobby_analysis/allocation/oh/filings.py` (~110 lines) ships `compose_filings(extractions_dir) -> DataFrame`. Schema is the 14-column `FILINGS_COLUMNS` tuple. Two findings-doc normalizations applied with strict guards: (1) **stated-zero** — `(total_expenditure is None AND len(expenditures) == 0) → 0.0`; `(None, non-empty)` stays null so upstream defects surface. (2) **is_current forcing** — `(filing_action == 'original' AND supersedes is None) → True`; both conjuncts required. 14 tests cover both normalizations + the strict-guard cases + summary stats.
+
+**Phase 4 — CLI materializer.** `src/lobby_analysis/allocation/oh/cli.py` (~95 lines) ships one subcommand: `materialize --extractions ... --bills ... [--oh-csv ...] --out ...`. Writes the three TSVs with `_preview` suffix (Q1-locked). 5 integration tests cover end-to-end CLI invocation, schema, row counts, normalization application, and the `--oh-csv` optional path.
+
+**Phase 5 — release READMEs.** Four READMEs at `releases/oh/README.md` + `releases/oh/{chain,gifts,filings}/README.md`. Top-level documents the three-edge framework (compared to WI/NY), the preview caveat, and the six caveats analysts must read before quantitative use. Per-artifact READMEs document schema + conservation rules + provenance per the WI release-doc pattern.
+
+**Phase 6 — preview materialize run.** `uv run python -m lobby_analysis.allocation.oh.cli materialize` against the 316-filing cache + Plural Policy bundle + oh.csv produced the three preview TSVs in-tree at `releases/oh/`:
+
+- `chain/OH_chain_2025_2026_preview.tsv` — **1,589 rows × 18 cols, ~600 KB** (1,299 bill + 150 subject + 88 jcarr + 34 oac_rule + 18 unmatched; top bill HB 96 budget at 73 rows)
+- `gifts/OH_gifts_2025_2026_preview.tsv` — **0 rows, 131 bytes (header only)** — empty per Phase 1 Finding 2 (likely sampling artifact; secondary hypothesis is extraction-prompt scope). Honestly documented in the gifts README.
+- `filings/OH_filings_2025_2026_preview.tsv` — **305 rows × 14 cols, ~220 KB** (97 stated-zero normalizations applied; 0 is_current forcings needed in this slice — all already True).
+
+Full OH suite at session end: **139/139 green** (48 classifier + 32 loaders + 5 dedup + 21 chain + 14 gifts + 14 filings + 5 CLI). All pure-logic; no DB, network, or real-data dependency.
+
+**End-of-phase posture.** The composer code is complete and the preview release is shipped in-tree. The remaining open follow-ups are documented in the phase-2 findings doc + the release READMEs: (a) extraction-prompt verification for II.A/II.B gifts (likely separate PR); (b) `bill_number` over `original_text` for join key (low-impact in current slice); (c) OAC regex widening for v0.1 (colon-subdivided rules, multi-rule strings). Branch is ready for PR per Q1's preview-release scope.
+
 ### 2026-06-14 — Phase 2 (chain composer) shipped: `compose_bill_chain` + 21 tests; full OH suite 106/106 green; real-data smoke = 1,589 chain rows
 
 `src/lobby_analysis/allocation/oh/chain.py` (~250 lines) ships `compose_bill_chain(extractions_dir, plural_dir) -> DataFrame` per plan §4/§4a/§6. Schema is the 18-column `CHAIN_COLUMNS` tuple matching the plan §4 sketch. 21 chain tests + the existing 85 = **106/106 OH tests green**. Per-class behavior locked:
