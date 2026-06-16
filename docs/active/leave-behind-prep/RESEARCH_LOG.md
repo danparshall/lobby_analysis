@@ -10,6 +10,37 @@ This branch hosts the 5-day pre-wrap cleanup + leave-behind work. Scope:
 
 ---
 
+## 2026-06-15 — mini-swap chain-level experiment + composer-side normalizations plan
+
+**Convo:** [`convos/20260615_mini_swap_chain_level_experiment.md`](convos/20260615_mini_swap_chain_level_experiment.md)
+**Findings:** [`results/20260615_mini_swap_chain_level_evidence.md`](results/20260615_mini_swap_chain_level_evidence.md)
+**Plan:** [`plans/20260615_composer_side_mini_swap_normalizations.md`](plans/20260615_composer_side_mini_swap_normalizations.md)
+
+Session opened as a leave-behind-prep audit; user noted #52 (OH chain composer + `releases/oh/`) closed mid-session via PR #59. Pivoted to "have we actually *tried* the mini-swap?" — answer was no, only validated. Ran a $0 end-to-end experiment using existing briefv2 mini outputs on disk: staged 100 briefv2 mini filings in a parallel directory, ran the freshly-shipped OH chain composer on them, and diffed against the shipped sonnet chain on the same 100 rids.
+
+### Headline result
+On **LUPA AERs** (the form type the brief targets), briefv2 mini produces chain output structurally equivalent to sonnet: same position count (236=236), same per-filing median, zero disagreement on `bill_id`/`bill_class`/`bill_title`/`sponsor_lawmaker_id`/`num_primary_sponsors` on the 240 shared chain rows. On **EUPA AERs**, both models abstain at high rates (sonnet 78% zero-position, mini 70%) — a form-type sparsity property, not a model failure; mini emits slightly more EUPA positions than sonnet. The earlier hypothesis "mini follows the Legislative-AER brief literally and over-abstains on Executive AERs" is not supported by data.
+
+### Residual chain-level gaps (two composer-side conventions)
+1. **`principal_id` / `lobbyist_id` disagree on ~98% of shared rows** — model-emitted `Organization.id` / `Person.id` schema fields. Sonnet uses (mostly) stable kebab-case; mini uses inconsistent formats. Names match. Fix: derive deterministically from name at composer time.
+2. **59 mini-only `bill_referenced + unmatched` rows** — mini routes subject content into the `bill_reference` slot, composer correctly flags `unmatched` (no HB/SB/JC/OAC pattern). Mini's unmatched rate is 14.2% (59/416) vs sonnet's 1.2% (18/1,468) — 92% of mini's are concentrated on 3 EUPA filings. Fix: demote unmatched bill_referenced rows to `subject_general` when the bill_reference text contains no digits (preserves sonnet's malformed-bill audit signal).
+
+### Mid-experiment correction
+Initial draft framed the 2026-06-13 Q1 issue as "hoist `description` into `general_issue_area`." Reading the composer code revealed that hoist (`POSITION_KIND_SUBJECT_HOISTED`) is already implemented in PR #59 with a docstring citing the 2026-06-13 findings — accounts for only 2 of 426 mini chain rows. The actual residual issue is the *opposite* direction (subject content in `bill_reference`, not in `description`). Findings doc + plan now reflect the corrected story.
+
+### Next steps
+- Fresh agent executes the plan on a new branch off `main` (NOT leave-behind-prep — code lives on main; this branch is ~90 commits behind).
+- Implementation is TDD per CLAUDE.md.
+- Estimated wall: half a day, $0 new spend.
+
+### Items still open after this session (mini-swap workstream)
+- Cost-identity reconciliation (which model id = the $0.0066 measurement?)
+- Q4 39-rid is_itemized-by-template follow-up (for filings TSV writeup; not chain-blocking)
+- Q5 OAC granularity (Dan's call)
+- Filings TSV story (briefv2 vs briefv3 vs sonnet `is_itemized` / `total_expenditure` conventions)
+- #35 full-corpus run (Batches API, ~$150 batched)
+
+
 ## 2026-06-12 (PM) — gpt-5-mini quality-gap checks: 3 spotchecks + 3 diagnostic deep-dives
 
 **Convo:** [`convos/20260612_gpt5mini_quality_gap_checks.md`](convos/20260612_gpt5mini_quality_gap_checks.md)
