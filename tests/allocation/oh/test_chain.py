@@ -183,7 +183,11 @@ def mixed_class_dirs(tmp_path: Path) -> tuple[Path, Path]:
     - bill (joinable) — 1 primary
     - jcarr
     - oac_rule
-    - unmatched (bill_referenced with malformed label)
+    - unmatched (bill_referenced with digit-containing malformed label —
+      a label that *contains a digit* so the 2026-06-15 composer-side
+      demotion rule does NOT demote it to subject. This preserves the
+      malformed-bill audit signal that the unmatched class exists to
+      carry.)
     - subject_general
     - subject_hoisted (mini quirk)
     """
@@ -200,7 +204,7 @@ def mixed_class_dirs(tmp_path: Path) -> tuple[Path, Path]:
                 _bill_pos("SB 2"),  # bill, joinable
                 _bill_pos("JC 4731-9-01"),  # jcarr
                 _bill_pos("5160-32-02"),  # oac_rule
-                _bill_pos("Early Intervention"),  # unmatched (subject in bill_reference)
+                _bill_pos("HJ Res 5"),  # unmatched (digit-containing malformed bill — exempt from no-digit demotion)
                 _subject_pos("Education Policy"),  # subject_general
                 _hoisted_pos("Mini-quirk subject"),  # subject_hoisted
             ],
@@ -553,3 +557,325 @@ class TestBillNotInPlural:
         assert row["bill_label_raw"] == "HB 999"
         # num_primary_sponsors is 0 for non-bill rows per the schema
         assert row["num_primary_sponsors"] == 0
+
+
+# ---------------------------------------------------------------------------
+# Tests: Step 1 — deterministic entity-ID derivation at composer time
+# ---------------------------------------------------------------------------
+#
+# Plan: docs/active/leave-behind-prep/plans/20260615_composer_side_mini_swap_normalizations.md
+#
+# These are the composer-level integration tests for Step 1. The pure
+# derivation helpers are exercised in test_entity_id_derivation.py; the
+# tests below prove the composer reads the derived ID, not the model-
+# emitted .id field.
+
+
+class TestEntityIdDerivationComposerIntegration:
+    def test_composer_ignores_model_emitted_id_and_derives_principal_id(
+        self, tmp_path: Path
+    ) -> None:
+        """The model-emitted ``employer.id`` may be inconsistent across
+        models (sonnet vs mini). The composer must derive ``principal_id``
+        from ``employer.name`` and ignore whatever the model put in
+        ``employer.id``. This is the chain-level mini-swap fix."""
+        ext = tmp_path / "extractions"
+        pl = tmp_path / "plural" / "136"
+
+        _write_filing(
+            ext,
+            "700",
+            "h7",
+            _make_filing(
+                "FID700",
+                principal_name="AAA Club Alliance Inc",
+                principal_id="garbage-model-emitted-id",  # must be ignored
+                lobbyist_name="Jane Doe",
+                lobbyist_id="another-garbage-id",  # must be ignored
+                positions=[_bill_pos("HB 7")],
+            ),
+        )
+        _write_plural(
+            pl,
+            bills=[("ocd-bill/hb-7", "HB 7", "x", "['bill']")],
+            sponsorships=[("sp70", "Rep. P", "ocd-person/p", "ocd-bill/hb-7", "primary")],
+        )
+
+        df = compose_bill_chain(ext, pl)
+        assert len(df) == 1
+        row = df.iloc[0]
+        # Derived from the *name*, not the model-emitted .id
+        assert row["principal_id"] == "org-aaa-club-alliance-inc"
+        assert row["lobbyist_id"] == "person-jane-doe"
+        # Names pass through untouched
+        assert row["principal_name"] == "AAA Club Alliance Inc"
+        assert row["lobbyist_name"] == "Jane Doe"
+
+    def test_two_filings_with_inconsistent_model_ids_but_same_name_collapse(
+        self, tmp_path: Path
+    ) -> None:
+        """Two filings from the same principal, but the model emits
+        different ``.id`` strings for each (the canonical mini-swap
+        failure mode). Derivation collapses them to one
+        ``principal_id`` — the whole point of the fix."""
+        ext = tmp_path / "extractions"
+        pl = tmp_path / "plural" / "136"
+
+        _write_filing(
+            ext,
+            "800",
+            "h8",
+            _make_filing(
+                "FID800",
+                principal_name="Cleveland Browns",
+                principal_id="cleveland-browns-llc",  # sonnet-ish
+                positions=[_bill_pos("HB 8")],
+            ),
+        )
+        _write_filing(
+            ext,
+            "801",
+            "h8b",
+            _make_filing(
+                "FID801",
+                principal_name="Cleveland Browns",
+                principal_id="org_cleveland_browns_id_42",  # mini-ish
+                positions=[_bill_pos("HB 8")],
+            ),
+        )
+        _write_plural(
+            pl,
+            bills=[("ocd-bill/hb-8", "HB 8", "x", "['bill']")],
+            sponsorships=[("sp80", "Rep. Q", "ocd-person/q", "ocd-bill/hb-8", "primary")],
+        )
+
+        df = compose_bill_chain(ext, pl)
+        assert (df["principal_id"] == "org-cleveland-browns").all()
+
+    def test_missing_name_yields_null_id(self, tmp_path: Path) -> None:
+        """If the filing has no employer.name (defensive — the model
+        could emit a null), principal_id is None. The derivation does
+        NOT attach an ``org-`` prefix to nothing."""
+        # We use _make_filing with empty principal_name and a non-empty
+        # principal_id (would-be model garbage). The composer must still
+        # null-out principal_id.
+        ext = tmp_path / "extractions"
+        pl = tmp_path / "plural" / "136"
+
+        _write_filing(
+            ext,
+            "900",
+            "h9",
+            _make_filing(
+                "FID900",
+                principal_name="",  # blank name
+                principal_id="garbage",
+                positions=[_bill_pos("HB 9")],
+            ),
+        )
+        _write_plural(
+            pl,
+            bills=[("ocd-bill/hb-9", "HB 9", "x", "['bill']")],
+            sponsorships=[("sp90", "Rep. R", "ocd-person/r", "ocd-bill/hb-9", "primary")],
+        )
+
+        df = compose_bill_chain(ext, pl)
+        row = df.iloc[0]
+        assert pd.isna(row["principal_id"])
+
+
+# ---------------------------------------------------------------------------
+# Tests: Step 2 — no-digit demotion of unmatched bill_referenced rows
+# ---------------------------------------------------------------------------
+#
+# Plan: docs/active/leave-behind-prep/plans/20260615_composer_side_mini_swap_normalizations.md
+#
+# Mini routes regulatory/policy subjects ("Medicaid Reform", "Competency
+# Restoration") into the bill_reference slot — composer correctly flags
+# them as unmatched (no HB/SB pattern), but they really are subjects in
+# disguise. Rule: if a bill_referenced position classifies as unmatched
+# AND its label contains no digits, demote it to subject_general+subject.
+# A label without digits is structurally incapable of being a bill/rule/
+# JCARR citation (all of those require digits), so the demotion is safe.
+# Digit-containing unmatched rows (e.g., 'HJ Res 5') are preserved as
+# unmatched so the genuinely-malformed-bill audit signal survives.
+
+
+class TestUnmatchedDemotion:
+    def test_no_digit_unmatched_demoted_to_subject(self, tmp_path: Path) -> None:
+        """bill_reference.original_text contains no digits → demoted.
+        The row's position_kind becomes subject_general, bill_class
+        becomes subject, confidence becomes subject_only."""
+        ext = tmp_path / "extractions"
+        pl = tmp_path / "plural" / "136"
+
+        _write_filing(
+            ext,
+            "1000",
+            "ha",
+            _make_filing(
+                "FID1000",
+                positions=[_bill_pos("Competency Restoration")],
+            ),
+        )
+        _write_plural(pl, bills=[], sponsorships=[])
+
+        df = compose_bill_chain(ext, pl)
+        assert len(df) == 1
+        row = df.iloc[0]
+        assert row["position_kind"] == "subject_general"
+        assert row["bill_class"] == "subject"
+        assert row["confidence"] == "subject_only"
+        # The original label text is preserved as the row's subject content
+        assert row["bill_label_raw"] == "Competency Restoration"
+        # Demoted rows behave like subject rows: no sponsor cross-product
+        assert pd.isna(row["bill_id"])
+        assert pd.isna(row["sponsor_lawmaker_id"])
+
+    @pytest.mark.parametrize(
+        "label",
+        [
+            "Healthcare Policy",
+            "Medicaid Reform",
+            "Public Safety",
+            "Issue advocacy and outreach",
+        ],
+    )
+    def test_no_digit_labels_all_demote(self, tmp_path: Path, label: str) -> None:
+        """A handful of mini's observed no-digit unmatched leak patterns —
+        all demote to subject."""
+        ext = tmp_path / "extractions"
+        pl = tmp_path / "plural" / "136"
+
+        _write_filing(
+            ext, "1100", "hb", _make_filing("FID1100", positions=[_bill_pos(label)])
+        )
+        _write_plural(pl, bills=[], sponsorships=[])
+
+        df = compose_bill_chain(ext, pl)
+        row = df.iloc[0]
+        assert row["bill_class"] == "subject", (
+            f"{label!r} (no digits) should demote to subject"
+        )
+
+    def test_digit_containing_unmatched_preserved(self, tmp_path: Path) -> None:
+        """bill_reference label contains a digit but doesn't match any
+        bill / OAC / JCARR pattern (e.g., 'HJ Res 5'). Stays unmatched —
+        the audit signal that 'this *looked* like a bill citation but
+        didn't join' is exactly what the unmatched class exists for."""
+        ext = tmp_path / "extractions"
+        pl = tmp_path / "plural" / "136"
+
+        _write_filing(
+            ext,
+            "1200",
+            "hc",
+            _make_filing("FID1200", positions=[_bill_pos("HJ Res 5")]),
+        )
+        _write_plural(pl, bills=[], sponsorships=[])
+
+        df = compose_bill_chain(ext, pl)
+        row = df.iloc[0]
+        assert row["position_kind"] == "bill_referenced"
+        assert row["bill_class"] == "unmatched"
+        assert row["confidence"] == "unmatched"
+        assert row["bill_label_raw"] == "HJ Res 5"
+
+    @pytest.mark.parametrize(
+        "label",
+        [
+            "Title IV-D",  # contains '4' as Roman numeral text? No — actually 'IV' is letters; this label has no digits → would demote. Skip.
+            "Chapter 4",  # digit; stays unmatched
+            "Issue 3",  # digit; stays unmatched
+            "Section 230",  # digit; stays unmatched
+            "5 USC 552",  # digit; stays unmatched
+        ],
+    )
+    def test_digit_containing_labels_stay_unmatched(
+        self, tmp_path: Path, label: str
+    ) -> None:
+        """Several digit-containing-but-not-bill-shape labels — all stay
+        unmatched per the plan's audit-signal preservation goal."""
+        if "IV-D" in label:
+            pytest.skip("Roman numerals don't count as digits; this would demote")
+        ext = tmp_path / "extractions"
+        pl = tmp_path / "plural" / "136"
+
+        _write_filing(
+            ext, "1300", "hd", _make_filing("FID1300", positions=[_bill_pos(label)])
+        )
+        _write_plural(pl, bills=[], sponsorships=[])
+
+        df = compose_bill_chain(ext, pl)
+        row = df.iloc[0]
+        assert row["bill_class"] == "unmatched", (
+            f"{label!r} (digit-containing) should stay unmatched"
+        )
+
+    def test_real_bill_unaffected(self, tmp_path: Path) -> None:
+        """The demotion rule must not fire on rows that classify as 'bill'
+        (joinable) — only on 'unmatched'. Regression guard."""
+        ext = tmp_path / "extractions"
+        pl = tmp_path / "plural" / "136"
+
+        _write_filing(
+            ext,
+            "1400",
+            "he",
+            _make_filing("FID1400", positions=[_bill_pos("HB 96")]),
+        )
+        _write_plural(
+            pl,
+            bills=[("ocd-bill/hb-96", "HB 96", "x", "['bill']")],
+            sponsorships=[
+                ("sp01", "Rep. A", "ocd-person/a", "ocd-bill/hb-96", "primary"),
+            ],
+        )
+
+        df = compose_bill_chain(ext, pl)
+        # 1 primary sponsor → 1 row, class='bill', not demoted
+        assert len(df) == 1
+        assert df.iloc[0]["bill_class"] == "bill"
+
+    def test_real_oac_rule_unaffected(self, tmp_path: Path) -> None:
+        """OAC rule labels (e.g., '5160-46-01') contain digits AND match
+        the OAC pattern — classify as oac_rule, not unmatched. The
+        demotion rule must not fire."""
+        ext = tmp_path / "extractions"
+        pl = tmp_path / "plural" / "136"
+
+        _write_filing(
+            ext,
+            "1500",
+            "hf",
+            _make_filing("FID1500", positions=[_bill_pos("5160-46-01")]),
+        )
+        _write_plural(pl, bills=[], sponsorships=[])
+
+        df = compose_bill_chain(ext, pl)
+        row = df.iloc[0]
+        assert row["bill_class"] == "oac_rule"
+        assert row["confidence"] == "oac_dropped"
+
+    def test_subject_general_unaffected(self, tmp_path: Path) -> None:
+        """subject_general positions (no bill_reference) bypass the
+        demotion path entirely — they're already subject. The rule
+        targets the bill_referenced+unmatched intersection only."""
+        ext = tmp_path / "extractions"
+        pl = tmp_path / "plural" / "136"
+
+        _write_filing(
+            ext,
+            "1600",
+            "hg",
+            _make_filing(
+                "FID1600",
+                positions=[_subject_pos("Education Policy")],
+            ),
+        )
+        _write_plural(pl, bills=[], sponsorships=[])
+
+        df = compose_bill_chain(ext, pl)
+        row = df.iloc[0]
+        assert row["position_kind"] == "subject_general"
+        assert row["bill_class"] == "subject"

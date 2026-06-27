@@ -45,6 +45,7 @@ Every position routes to ≥1 chain row. No position is silently dropped.
 from __future__ import annotations
 
 import re
+import unicodedata
 from pathlib import Path
 
 import pandas as pd
@@ -70,7 +71,70 @@ from lobby_analysis.allocation.oh.load import (
 )
 from lobby_analysis.models.filings import LobbyingFiling, LobbyingPosition
 
-__all__ = ["CHAIN_COLUMNS", "compose_bill_chain"]
+__all__ = [
+    "CHAIN_COLUMNS",
+    "compose_bill_chain",
+    "derive_org_id",
+    "derive_person_id",
+]
+
+
+# ---------------------------------------------------------------------------
+# Deterministic entity-ID derivation (composer-side normalization)
+# ---------------------------------------------------------------------------
+#
+# Plan: docs/active/leave-behind-prep/plans/20260615_composer_side_mini_swap_normalizations.md
+# §"Step 1 — Entity-ID derivation from name"
+#
+# The 2026-06-15 chain-level mini-swap experiment measured 97-98% per-row
+# disagreement on principal_id/lobbyist_id between sonnet- and mini-sourced
+# chains — driven entirely by inconsistent model formatting of the
+# Organization.id/Person.id schema fields, with identical names underneath.
+# Composer-time derivation from name collapses that noise to zero.
+
+
+def _slugify(s: str) -> str:
+    """Reduce a free-text name to a stable kebab-case ASCII slug.
+
+    NFKD-normalize, drop non-ASCII (so accented characters fold to their
+    base letters), lowercase, replace any run of non-alphanumerics with a
+    single hyphen, strip leading/trailing hyphens. Empty input → empty
+    string; the public ``derive_*`` helpers turn that into ``None``.
+    """
+    nfkd = unicodedata.normalize("NFKD", s)
+    ascii_only = nfkd.encode("ascii", "ignore").decode("ascii")
+    lower = ascii_only.lower()
+    hyphenated = re.sub(r"[^a-z0-9]+", "-", lower)
+    return hyphenated.strip("-")
+
+
+def derive_org_id(name: str | None) -> str | None:
+    """Derive a deterministic chain-time organization ID from a name.
+
+    Returns ``None`` for None / empty / whitespace-only input (we don't
+    attach an ``"org-"`` prefix to nothing). Otherwise returns
+    ``f"org-{slug}"``.
+    """
+    if name is None or not name.strip():
+        return None
+    slug = _slugify(name)
+    if not slug:
+        return None
+    return f"org-{slug}"
+
+
+def derive_person_id(name: str | None) -> str | None:
+    """Derive a deterministic chain-time person ID from a name.
+
+    Returns ``None`` for None / empty / whitespace-only input. Otherwise
+    returns ``f"person-{slug}"``.
+    """
+    if name is None or not name.strip():
+        return None
+    slug = _slugify(name)
+    if not slug:
+        return None
+    return f"person-{slug}"
 
 
 # ---------------------------------------------------------------------------
@@ -145,9 +209,12 @@ def _filing_base(filing: LobbyingFiling) -> dict[str, object]:
         report_period = ""
 
     principal_name = filing.employer.name if filing.employer is not None else None
-    principal_id = filing.employer.id if filing.employer is not None else None
+    # Derive principal_id from the *name* rather than the model-emitted
+    # employer.id. See plan §"Step 1" for the 97-98% inter-model
+    # disagreement that this collapses.
+    principal_id = derive_org_id(principal_name)
     lobbyist_name = filing.filer_person.name if filing.filer_person is not None else None
-    lobbyist_id = filing.filer_person.id if filing.filer_person is not None else None
+    lobbyist_id = derive_person_id(lobbyist_name)
 
     return {
         "report_period": report_period,
@@ -239,6 +306,22 @@ def _emit_position_rows(
         ]
 
     bill_class = classify_bill_label(raw_label, kind)
+
+    # Composer-side rescue (plan §"Step 2"): mini routes regulatory /
+    # policy subjects into the bill_reference slot, where they correctly
+    # classify as unmatched (no HB/SB/JC/OAC pattern). A no-digit label
+    # is structurally incapable of being a bill / JCARR / OAC citation
+    # (all of those require digits), so demote it to subject_general +
+    # subject. Digit-containing unmatched rows stay as-is so the
+    # genuinely-malformed-bill audit signal survives.
+    if (
+        kind == POSITION_KIND_BILL_REFERENCED
+        and bill_class == BILL_CLASS_UNMATCHED
+        and not re.search(r"\d", raw_label)
+    ):
+        kind = POSITION_KIND_SUBJECT_GENERAL
+        bill_class = BILL_CLASS_SUBJECT
+
     norm_label = _normalize_identifier(raw_label) if kind == POSITION_KIND_BILL_REFERENCED else raw_label.strip()
     desc = _position_description_for(position, kind)
 
