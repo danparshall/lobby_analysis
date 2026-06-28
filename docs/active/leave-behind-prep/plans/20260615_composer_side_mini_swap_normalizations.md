@@ -422,3 +422,15 @@ composer; the diff against the regenerated sonnet chain should show:
 7. Convo doc + RESEARCH_LOG entry; commit; PR.
 
 **Estimated wall:** half a day, $0 spend.
+
+---
+
+## Closing note (2026-06-27)
+
+**Implemented via [PR #60](https://github.com/danparshall/lobby_analysis/pull/60) / merge `7fe6c046`.**
+
+Executed on branch `oh-composer-mini-swap-normalizations` (cut off main
+at `8b043f9`), now archived to
+`docs/historical/oh-composer-mini-swap-normalizations/` via a separate
+archive PR. See that branch's RESEARCH_LOG for the implementation
+session and the post-fix acceptance writeup.
