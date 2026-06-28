@@ -25,9 +25,9 @@
 | `filing_id` | str | OH AER report ID |
 | `report_period` | str | Same `start..end` format as chain + gifts |
 | `principal_name` | str | `LobbyingFiling.employer.name` |
-| `principal_id` | str | `LobbyingFiling.employer.id` |
+| `principal_id` | str | Derived deterministically from `principal_name` (`org-{slug}`). Mirrors the chain TSV's convention for join consistency — see `chain/README.md` §"Entity-ID derivation". |
 | `lobbyist_name` | str | `LobbyingFiling.filer_person.name` |
-| `lobbyist_id` | str | `LobbyingFiling.filer_person.id` |
+| `lobbyist_id` | str | Derived from `lobbyist_name` (`person-{slug}`). Same convention as chain TSV. |
 | `total_expenditure` | float | **Post-stated-zero-normalize.** See Normalization 1 below. Never null when `expenditures` is empty. |
 | `is_current` | bool | **Post-force.** See Normalization 2 below. |
 | `filing_action` | enum | `original` / `amendment` / `termination` / `withdrawal` |

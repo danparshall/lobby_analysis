@@ -38,6 +38,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from lobby_analysis.allocation.oh.chain import derive_org_id, derive_person_id
 from lobby_analysis.allocation.oh.load import load_filings, select_canonical_extraction
 from lobby_analysis.models.filings import LobbyingFiling
 
@@ -93,14 +94,20 @@ def compose_filings(extractions_dir: Path) -> pd.DataFrame:
     rows: list[dict[str, object]] = []
     for _, frow in filings.iterrows():
         filing: LobbyingFiling = frow["filing_obj"]
+        principal_name = filing.employer.name if filing.employer else None
+        lobbyist_name = filing.filer_person.name if filing.filer_person else None
         rows.append(
             {
                 "filing_id": filing.filing_id,
                 "report_period": _report_period(filing),
-                "principal_name": filing.employer.name if filing.employer else None,
-                "principal_id": filing.employer.id if filing.employer else None,
-                "lobbyist_name": filing.filer_person.name if filing.filer_person else None,
-                "lobbyist_id": filing.filer_person.id if filing.filer_person else None,
+                "principal_name": principal_name,
+                # Derive principal_id / lobbyist_id from name (mirror of
+                # the chain composer's Step-1 normalization — keeps the
+                # filings TSV's ID columns join-consistent with the chain
+                # TSV. Plan §"Step 1" lives on leave-behind-prep.)
+                "principal_id": derive_org_id(principal_name),
+                "lobbyist_name": lobbyist_name,
+                "lobbyist_id": derive_person_id(lobbyist_name),
                 "total_expenditure": _normalize_stated_zero(filing),
                 "is_current": _force_is_current(filing),
                 "filing_action": filing.filing_action,
