@@ -61,18 +61,36 @@ updated: the "unmatched" position's bill_reference changed from
 `"Early Intervention"` to `"HJ Res 5"` so the fixture's stated intent
 (one row per bill_class) is preserved after the demotion rule lands.
 
-### Acceptance criteria status
+### Acceptance criteria status (final)
 
 Plan §"Acceptance criteria (whole plan)":
 
 1. ✅ Step-1 + Step-2 tests pass (TDD ground state).
-2. ✅ Existing OH allocation tests still green (139 → 184 with new tests).
-3. ⏸ Re-run the 2026-06-15 experiment end-to-end — **pending Dan's call.**
-4. ⏸ Regenerate `releases/oh/chain/OH_chain_2025_2026_preview.tsv` — pending Dan's sign-off on the column-level change.
-5. ⏸ Update `releases/oh/chain/README.md` for the new conventions.
-6. ⏳ Convo doc + RESEARCH_LOG entry (this entry + this branch's `convos/` for the implementation session).
+2. ✅ Existing OH allocation tests still green (139 → 186 with new tests).
+3. ✅ Re-run the 2026-06-15 experiment end-to-end — see
+   [`results/20260615_post_fix_acceptance.md`](results/20260615_post_fix_acceptance.md).
+   Cell-level acceptance (principal_id / lobbyist_id 0/246) **PASSES strongly**.
+   Two of the plan's row-set acceptance numbers came in different
+   from estimate; Dan reviewed and accepted as-is (rule is correct;
+   plan author's mental model for those two numbers was wrong, not
+   the rule).
+4. ✅ Regenerated `releases/oh/chain/OH_chain_2025_2026_preview.tsv` +
+   `releases/oh/filings/OH_filings_2025_2026_preview.tsv` (commit
+   `ed61518`). The filings TSV regen was an in-scope extension
+   surfaced during the acceptance experiment — `filings.py` also
+   read model-emitted `.id`s, so leaving it untouched would have
+   broken `(filing_id, principal_id)` joins between the two TSVs.
+   Step 1 mirrored into `compose_filings` + 2 new tests.
+5. ✅ Updated `releases/oh/chain/README.md` (new section "Entity-ID
+   derivation and bill_referenced demotion"), plus
+   `releases/oh/filings/README.md` and `releases/oh/README.md` for
+   consistency.
+6. ✅ Convo doc at [`convos/20260615_implementation_session.md`](convos/20260615_implementation_session.md).
 
-Acceptance criteria 3-5 deferred to a follow-up check-in: re-staging
-briefv2 mini outputs + diffing against a regenerated sonnet chain is
-non-trivial and the release-TSV re-roll is the plan's flagged
-"surface to Dan before merging" gate.
+**Branch status:** PR-ready; not yet merged. Dan's call when to open it.
+
+**Commits on branch:**
+
+- `3f2c677` — Steps 1+2 implementation + tests
+- `5474189` — post-fix acceptance experiment writeup
+- `ed61518` — release re-roll + filings.py mirror + README updates
