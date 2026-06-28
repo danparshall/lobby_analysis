@@ -20,6 +20,27 @@ workflow.
 
 ---
 
+## 2026-06-27 — Branch closed: PR #60 merged; archive landed
+
+Implementation work shipped via **[PR #60](https://github.com/danparshall/lobby_analysis/pull/60)**,
+merged to `main` at `7fe6c046`. This branch is now archived to
+`docs/historical/oh-composer-mini-swap-normalizations/` via a separate
+`archive-oh-composer-mini-swap-normalizations` archive PR; the
+implementation commits themselves (`3f2c677` / `5474189` / `ed61518`)
+are already on `main`.
+
+Originating-plan closure: the leave-behind-prep plan
+`plans/20260615_composer_side_mini_swap_normalizations.md` was amended
+in a separate commit on `leave-behind-prep` with a closing
+"Implemented via PR #60 / merge 7fe6c046" note, so the
+originating-plan side of the link graph reflects the implementation
+landing too.
+
+Supersedes the "Branch status: PR-ready; not yet merged" line at the
+end of the 2026-06-15 entry below.
+
+---
+
 ## 2026-06-15 — Phase 1 + Phase 2 implementation landed (TDD)
 
 **Branch:** cut off `main` @ `8b043f9` (post-fellowship-final-reports).
