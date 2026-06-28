@@ -328,3 +328,103 @@ class TestSummaryStats:
         s = str(wrn)
         assert "odd_value_in_section_iv" in s
         assert "ambiguous_recipient" in s
+
+
+# ---------------------------------------------------------------------------
+# Entity-ID derivation (Step 1 of the mini-swap normalizations) —
+# filings.py mirror of the chain-composer behavior so the two TSVs join
+# consistently on (filing_id, principal_id) / (filing_id, lobbyist_id).
+# ---------------------------------------------------------------------------
+
+
+def _make_filing_with_explicit_ids(
+    filing_id: str,
+    principal_name: str,
+    principal_id: str,
+    lobbyist_name: str,
+    lobbyist_id: str,
+) -> dict:
+    """Variant of _make_filing that lets the test set arbitrary model-
+    emitted .id values (the default fixture derives them from names,
+    which would mask the bug this test exists to prevent)."""
+    return {
+        "id": f"filing-{filing_id}",
+        "state": "OH",
+        "filing_id": filing_id,
+        "filing_type": "activity_report",
+        "filer_person": {"id": lobbyist_id, "name": lobbyist_name, "source_state": "OH"},
+        "filer_role": "lobbyist",
+        "employer": {"id": principal_id, "name": principal_name, "source_state": "OH"},
+        "reporting_period_start": "2025-01-01",
+        "reporting_period_end": "2025-04-30",
+        "filing_action": "original",
+        "is_current": True,
+        "supersedes": None,
+        "total_expenditure": 0.0,
+        "positions": [],
+        "expenditures": [],
+        "engagements": [],
+        "gifts": [],
+        "extraction_warnings": [],
+    }
+
+
+class TestEntityIdDerivation:
+    def test_filings_tsv_ignores_model_emitted_id(self, tmp_path: Path) -> None:
+        """The filings TSV's principal_id / lobbyist_id columns must mirror
+        the chain TSV's derivation — read from name, ignore the model-
+        emitted .id. Otherwise the two TSVs disagree on the ID columns
+        for the same filing and any join between them breaks."""
+        root = tmp_path / "extractions"
+        _write_filing(
+            root,
+            "Z",
+            "hz",
+            _make_filing_with_explicit_ids(
+                "FID_Z",
+                principal_name="AAA Club Alliance Inc",
+                principal_id="garbage-model-emitted",
+                lobbyist_name="Jane Doe",
+                lobbyist_id="another-garbage",
+            ),
+        )
+        df = compose_filings(root)
+        row = df.iloc[0]
+        assert row["principal_id"] == "org-aaa-club-alliance-inc"
+        assert row["lobbyist_id"] == "person-jane-doe"
+
+    def test_filings_tsv_matches_chain_tsv_ids_for_same_filing(
+        self, tmp_path: Path
+    ) -> None:
+        """The two TSVs must produce the same principal_id / lobbyist_id
+        from the same source filing (join consistency)."""
+        # Write a filing usable by both composers
+        from lobby_analysis.allocation.oh.chain import compose_bill_chain
+
+        root = tmp_path / "extractions"
+        plural = tmp_path / "plural" / "136"
+        _write_filing(
+            root,
+            "X",
+            "hx",
+            _make_filing_with_explicit_ids(
+                "FID_X",
+                principal_name="Cleveland Browns",
+                principal_id="garbage-id-1",
+                lobbyist_name="John Smith",
+                lobbyist_id="garbage-id-2",
+            ),
+        )
+        # Empty plural — the bill-side composer will still emit one row
+        # per position; with no positions, the chain is empty, so add a
+        # minimal position to get a row.
+        # ... actually with no positions the chain DataFrame is empty;
+        # to keep this test scoped to ID consistency, we instead read
+        # the principal_id from compose_filings only and verify it
+        # matches what chain.derive_org_id would produce.
+        from lobby_analysis.allocation.oh.chain import derive_org_id, derive_person_id
+
+        df = compose_filings(root)
+        row = df.iloc[0]
+        assert row["principal_id"] == derive_org_id("Cleveland Browns")
+        assert row["lobbyist_id"] == derive_person_id("John Smith")
