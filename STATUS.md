@@ -16,6 +16,20 @@ Earlier: 2026-06-05 (later still) — Phase A pre-flight YAML audit at scale **p
 
 ---
 
+## 🔧 Machine-sync note (2026-10-04) — stale local branches; do NOT force-push
+
+`compendium-source-extracts` and `extraction-harness-brainstorm` were both merged to main and archived in May. Any machine whose local copy shows "ahead N, behind M" of origin has **pre-rewrite history**: the compendium branch was history-rewritten before merge to strip ~9 MB of `.npy` embedding blobs. A force-push would resurrect them. **Origin is correct; local copies are stale.**
+
+Resolved on the Pro (2026-10-04):
+- Unique Pro-only work preserved: uncommitted `tests/test_scoring_v2_*.py` (~750 lines, superseded design) + empty scaffold commit `c28b60c` → pushed as branch `archive/extraction-harness-brainstorm-pro-leftovers`. The untracked tier-0 JSONs (an earlier run that differs from main's `b3bf4d8` copies) and the four `.npy` files → `~/data/lobby_analysis/archive/20261004_pro_worktree_leftovers/` (Syncthing, has a README).
+- Worktree + local-branch removal handed to Dan (agents are denied `git worktree remove` / `git branch -D`).
+
+**On the Air (or any other machine), for each of the two branches:**
+1. `git fetch`, then `git cherry -v origin/<branch> <branch>`. Lines starting `-` are already on origin (rewritten SHAs) — ignore. Lines starting `+` are candidates; check whether their content is already on main (most is, under `docs/historical/<branch>/`).
+2. `git -C .worktrees/<branch> status --short` for uncommitted/untracked work.
+3. If anything is genuinely unique, push it to a new `archive/<branch>-air-leftovers` branch (non-data) or copy into `~/data/lobby_analysis/archive/` (data/results). Never force-push the original branch.
+4. Then remove the worktree and delete the local branch (`git branch -D` is agent-denied; Dan runs it).
+
 ## ⭐ Compendium 2.0 success criterion (load-bearing)
 
 The deliverable is a **populated data layer** — N canonical-question rows × 50 states × M vintages × {legal_availability, practical_availability} cells. The architecture commits to:
