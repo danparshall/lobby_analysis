@@ -31,6 +31,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import numpy as np
+import pytest
 
 from lobby_analysis.allocation.wi.graph import (
     FreeComponent,
@@ -307,21 +308,30 @@ def test_fit_pettack_cc_assigns_most_hours_to_pettack():
 # ---------------------------------------------------------------------------
 
 
-def test_fit_all_returns_allocation_matrix_for_h1_2025():
+@pytest.fixture(scope="module")
+def h1_graph():
+    return _load_h1_2025_graph()
+
+
+@pytest.fixture(scope="module")
+def h1_matrix(h1_graph):
+    """Run fit_all once; the fit_all tests below only read the result."""
+    return fit_all(h1_graph)
+
+
+def test_fit_all_returns_allocation_matrix_for_h1_2025(h1_graph, h1_matrix):
     """fit_all consumes the H1 2025 graph and returns an
     AllocationMatrix covering every edge with a confidence label."""
-    graph = _load_h1_2025_graph()
-    matrix = fit_all(graph)
+    graph, matrix = h1_graph, h1_matrix
     # Every edge in the graph has a cell in the output.
     for edge in graph.edges:
         assert edge in matrix.cells
 
 
-def test_fit_all_exact_cells_match_marginals():
+def test_fit_all_exact_cells_match_marginals(h1_graph, h1_matrix):
     """Edges in singleton (exactly-pinned) CCs round-trip exactly: the
     cell value equals the lobbyist's reported marginal."""
-    graph = _load_h1_2025_graph()
-    matrix = fit_all(graph)
+    graph, matrix = h1_graph, h1_matrix
     pinned, _ = classify_components(connected_components(graph))
     for ep in pinned:
         cell = matrix.cells[(ep.lobbyist_id, ep.principal_id)]
@@ -330,13 +340,12 @@ def test_fit_all_exact_cells_match_marginals():
         assert cell.confidence == "exact"
 
 
-def test_fit_all_zero_marginal_lobbyists_get_zero_filed_label():
+def test_fit_all_zero_marginal_lobbyists_get_zero_filed_label(h1_graph, h1_matrix):
     """Cells in the rows of zero-marginal lobbyists (in free CCs)
     materialize as (0.0, 0.0, 'zero_filed') — Dan's call: preserve
     them in the output so downstream comparisons can surface 'principal
     paid but lobbyist didn't file' patterns."""
-    graph = _load_h1_2025_graph()
-    matrix = fit_all(graph)
+    graph, matrix = h1_graph, h1_matrix
     _, free = classify_components(connected_components(graph))
     # Find a free CC with at least one zero-comm-and-other-marginal lobbyist
     for fc in free:
@@ -359,11 +368,10 @@ def test_fit_all_zero_marginal_lobbyists_get_zero_filed_label():
     raise AssertionError("expected at least one zero-marginal lobbyist in free CCs")
 
 
-def test_fit_all_pettack_cells_labeled_aggregation_flagged():
+def test_fit_all_pettack_cells_labeled_aggregation_flagged(h1_matrix):
     """Cells in Pettack's row materialize with
     confidence='aggregation_flagged' (per the flag_outliers list)."""
-    graph = _load_h1_2025_graph()
-    matrix = fit_all(graph)
+    matrix = h1_matrix
     pettack_cells = [
         cell for (lid, _), cell in matrix.cells.items() if lid == 11072
     ]
@@ -372,12 +380,11 @@ def test_fit_all_pettack_cells_labeled_aggregation_flagged():
         assert cell.confidence == "aggregation_flagged"
 
 
-def test_fit_all_emits_ipf_fit_confidence_for_free_nonzero():
+def test_fit_all_emits_ipf_fit_confidence_for_free_nonzero(h1_matrix):
     """Cells in free CCs with nonzero lobbyist marginals get
     confidence='ipf_fit' (unless overridden by aggregation_flagged or
     zero_filed)."""
-    graph = _load_h1_2025_graph()
-    matrix = fit_all(graph)
+    matrix = h1_matrix
     # Spot-check: there must be at least some 'ipf_fit' cells
     n_ipf_fit = sum(
         1 for cell in matrix.cells.values() if cell.confidence == "ipf_fit"
@@ -385,11 +392,10 @@ def test_fit_all_emits_ipf_fit_confidence_for_free_nonzero():
     assert n_ipf_fit > 100  # giant CC alone has > 1000 such cells
 
 
-def test_fit_all_confidence_distribution_covers_all_labels():
+def test_fit_all_confidence_distribution_covers_all_labels(h1_matrix):
     """Every materialized cell has one of the four documented
     confidence labels."""
-    graph = _load_h1_2025_graph()
-    matrix = fit_all(graph)
+    matrix = h1_matrix
     valid = {"exact", "ipf_fit", "zero_filed", "aggregation_flagged"}
     for cell in matrix.cells.values():
         assert cell.confidence in valid
