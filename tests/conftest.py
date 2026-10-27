@@ -2,8 +2,9 @@
 
 A session-scoped engine connects to the `lobby_test` postgres database
 (spun up by `docker compose up -d postgres`). The `filings` table is
-created once at session start and dropped at the end. Each test is
-isolated via an autouse `TRUNCATE` after every test function.
+created once at session start and dropped at the end. Each test that
+uses `engine` is isolated via a `TRUNCATE` after the test function;
+tests that don't use the database don't need postgres at all.
 """
 
 from __future__ import annotations
@@ -37,7 +38,17 @@ def db_url() -> str:
 
 
 @pytest.fixture(autouse=True)
-def _truncate_filings(engine: Engine):
+def _truncate_filings(request: pytest.FixtureRequest):
+    """TRUNCATE `filings` after each test that uses the database.
+
+    Tests that never request `engine` (directly or via another fixture)
+    don't touch postgres, so they neither need a connection nor pay for
+    a TRUNCATE.
+    """
+    if "engine" not in request.fixturenames:
+        yield
+        return
+    engine: Engine = request.getfixturevalue("engine")
     yield
     with engine.begin() as conn:
         conn.execute(text("TRUNCATE TABLE filings"))
